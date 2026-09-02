@@ -7,7 +7,7 @@ A modern, full-stack Next.js application built for **British Hajj Travel UK** �
 ## 🚀 Key Features
 
 ### Frontend (Client-Facing Site)
-- **Header Navigation**: Responsive navigation bar with custom dropdowns (`About Us` → `LICENSES`), WhatsApp click-to-chat integration (`+1 905-624-8344`), and a mobile hamburger drawer.
+- **Header Navigation**: Responsive navigation bar with custom dropdowns (`About Us` → `LICENSES`)
 - **Hero & Search Cards**: Dynamic hero banners with interactive package search and filter widgets.
 - **Packages Showcase**: Dedicated pages for **Umrah Packages** (`/umrah-packages`), **Hajj Packages** (`/hajj-packages`), **Deluxe Hajj 2027**, and **Economy Hajj 2027**.
 - **Services & Visas**: Specialized landing pages for **Saudi Visa Services** (`/saudi-visa`) and **Airline Tickets** (`/airlines`).
