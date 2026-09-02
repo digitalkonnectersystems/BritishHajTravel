@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1785238905173,
+      "tag": "0000_mixed_christian_walker",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1785243072018,
+      "tag": "0001_first_solo",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1786086922133,
+      "tag": "0002_pale_morgan_stark",
+      "breakpoints": true
+    }
+  ]
+}
