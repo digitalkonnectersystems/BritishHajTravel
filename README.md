@@ -1,6 +1,6 @@
-# King Travel Canada — Next.js Application
+# British Hajj Travel UK — Next.js Application
 
-A modern, full-stack Next.js application built for **King Travel Can Ltd** — a licensed Canadian travel agency specializing in Hajj & Umrah pilgrimages, Saudi visa processing, and global airline ticketing.
+A modern, full-stack Next.js application built for **British Hajj Travel UK** — a licensed Canadian travel agency specializing in Hajj & Umrah pilgrimages, Saudi visa processing, and global airline ticketing.
 
 ---
 
@@ -14,12 +14,6 @@ A modern, full-stack Next.js application built for **King Travel Can Ltd** — a
 - **Trust Badges & Testimonials**: Fully integrated accreditation badges (ACTA, ATAC, TICO, IATA, ASTA, ATOL, ABTA) and Google Reviews carousel with verified ratings.
 - **Progressive Reveal Animations**: Smooth scroll-triggered animations optimized for zero-blank SSR page rendering.
 
-### Admin Panel
-- **Secure Authentication**: Accessible via custom path `/letstravel` (replaced default `/admin/login`).
-- **Dashboard**: Interactive analytics displaying monthly revenue, total enquiries, active packages, and visa application counts.
-- **Package Management** (`/admin/packages`): Complete CRUD controls to create, update, publish, or archive travel packages.
-- **Enquiries Management** (`/admin/enquiries`): Filter, search, and manage customer booking leads and contact requests.
-- **Visa Applications** (`/admin/visas`): Track and process Saudi visa applications by status.
 
 ---
 
