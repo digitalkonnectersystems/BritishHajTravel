@@ -6,7 +6,7 @@ async function fixDisclaimerJson() {
   console.log('--------------------------------------------------');
 
   const configs = [
-    { name: 'Local MySQL', host: 'localhost', user: 'root', password: '', database: 'kingtravel_db' },
+    { name: 'Local MySQL', host: 'localhost', user: 'root', password: '', database: 'bht_travel_db' },
     { name: 'Hostinger MySQL', host: '145.79.20.149', user: 'u328269640_DKSDEV', password: 'KingTravel@78600', database: 'u328269640_kingtravelNXT' }
   ];
 

@@ -11,7 +11,7 @@
   /* --green: #004B39; */
   /* --green-light: color-mix(in srgb, var(--green), #ffffff 80%); */
 
-  --gold: #DB9E30;
+  --gold: #020e43;
   --gold-lt: #E7BE6E;
   --gold-soft: #f5e7c8;
   --yellow-light: color-mix(in srgb, var(--gold), #ffffff 80%);

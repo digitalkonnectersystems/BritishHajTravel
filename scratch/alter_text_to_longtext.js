@@ -11,12 +11,12 @@ async function alterColumns() {
       host: 'localhost',
       user: 'root',
       password: '',
-      database: 'kingtravel_db'
+      database: 'bht_travel_db'
     });
     await localConn.query('ALTER TABLE site_settings MODIFY `value` LONGTEXT NOT NULL');
     await localConn.query('ALTER TABLE site_pages MODIFY `sections` LONGTEXT');
     await localConn.query('ALTER TABLE site_pages MODIFY `rich_text` LONGTEXT');
-    console.log('✅ Local MySQL (kingtravel_db) site_settings.value ALTERED TO LONGTEXT!');
+    console.log('✅ Local MySQL (bht_travel_db) site_settings.value ALTERED TO LONGTEXT!');
     await localConn.end();
   } catch (err) {
     console.error('Local alter warning:', err.message);

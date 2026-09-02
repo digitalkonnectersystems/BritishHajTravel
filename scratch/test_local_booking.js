@@ -5,7 +5,7 @@ async function testLocalInsert() {
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'kingtravel_db'
+    database: 'bht_travel_db'
   });
 
   const [tables] = await conn.query('SHOW TABLES');

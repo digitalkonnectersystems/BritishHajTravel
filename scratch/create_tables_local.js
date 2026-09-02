@@ -5,10 +5,10 @@ async function createLocalTables() {
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'kingtravel_db'
+    database: 'bht_travel_db'
   });
 
-  console.log('Creating missing enquiry sub-tables on Local MySQL database (kingtravel_db)...');
+  console.log('Creating missing enquiry sub-tables on Local MySQL database (bht_travel_db)...');
 
   await conn.query(`
     CREATE TABLE IF NOT EXISTS quote_enquiries (
@@ -98,7 +98,7 @@ async function createLocalTables() {
     )
   `);
 
-  console.log('✅ ALL 5 MISSING ENQUIRY SUB-TABLES CREATED SUCCESSFULLY IN LOCAL kingtravel_db!');
+  console.log('✅ ALL 5 MISSING ENQUIRY SUB-TABLES CREATED SUCCESSFULLY IN LOCAL bht_travel_db!');
   await conn.end();
 }
 

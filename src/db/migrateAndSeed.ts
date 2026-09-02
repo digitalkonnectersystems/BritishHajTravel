@@ -11,7 +11,7 @@ async function runMigrationAndSeed() {
   const port = Number(process.env.DB_PORT || 3306);
   const user = process.env.DB_USER || 'root';
   const password = process.env.DB_PASSWORD || '';
-  const database = process.env.DB_NAME || 'kingtravel_db';
+  const database = process.env.DB_NAME || 'bht_travel_db';
 
   try {
     const connection = await mysql.createConnection({
