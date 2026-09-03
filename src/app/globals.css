@@ -218,7 +218,9 @@ input[type="date"]:not(.opacity-0):not([class*="opacity-0"])::-webkit-calendar-p
   margin-bottom: 12px;
 }
 
-
+.make-white {
+  filter: brightness(0) invert(1);
+}
 
 h1,
 h2,

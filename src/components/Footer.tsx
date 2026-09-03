@@ -24,14 +24,14 @@ export default function Footer({ initialFooterData = {} }: { initialFooterData?:
               <Link href="/">
                 {footerData.logo ? (
                   footerData.logo.startsWith('data:') ? (
-                    <img src={footerData.logo} alt="British Haj Travel Logo" loading="lazy" className="w-[210px] h-auto" />
+                    <img src={footerData.logo} alt="British Haj Travel Logo" loading="lazy" className="w-[210px]  h-auto" />
                   ) : (
                     <Image
                       src={footerData.logo}
                       alt="King Travel Logo"
                       width={210}
                       height={50}
-                      className="w-[210px] h-auto"
+                      className="w-[210px] h-auto make-white"
                       unoptimized
                     />
                   )
