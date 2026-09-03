@@ -126,7 +126,7 @@ export default async function HajjPackagesPage() {
 
   return (
     <main>
-      <style dangerouslySetInnerHTML={{ __html: 'body { background-color: #f1f5e6 !important; }' }} />
+      <style dangerouslySetInnerHTML={{ __html: 'body { background-color: #fffff !important; }' }} />
       <section className="hero packages">
         <div className="wrap">
           <h1 className="page-header-title">

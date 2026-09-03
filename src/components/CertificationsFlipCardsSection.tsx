@@ -123,7 +123,7 @@ export default function CertificationsFlipCardsSection({
   }
 
   return (
-    <section className="py-20 relative bg-[#f4f6ec] overflow-hidden">
+    <section className="py-20 relative bg-gray overflow-hidden">
 
       {/* Background */}
       {bgImage && (
@@ -145,7 +145,7 @@ export default function CertificationsFlipCardsSection({
             {eyebrow}
           </span>
 
-          <h2 className="section-heading font-serif text-ink">
+          <h2 className="section-heading font-serif head">
             {title}
           </h2>
         </div>
@@ -265,8 +265,8 @@ export default function CertificationsFlipCardsSection({
                       h-full
                       w-full
                       rounded-3xl
-                      bg-primary
-                      text-white
+                      bg-white
+                      text-primary
                       p-8
                       [transform:rotateY(180deg)]
                       [backface-visibility:hidden]
@@ -278,11 +278,11 @@ export default function CertificationsFlipCardsSection({
                     "
                   >
 
-                    <h3 className="font-bold text-lg mb-3 text-gold">
+                    <h3 className="font-bold text-lg mb-3 head">
                       {item.title}
                     </h3>
 
-                    <p className="text-sm text-emerald-50/90 leading-relaxed overflow-y-auto custom-scrollbar">
+                    <p className="text-sm text-ink leading-relaxed overflow-y-auto custom-scrollbar">
                       {item.description}
                     </p>
 

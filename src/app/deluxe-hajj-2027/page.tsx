@@ -307,7 +307,7 @@ export default function DeluxeHajj2027Page() {
 
                 <Link
                   href="/contact"
-                  className="w-full bg-[#d4af37] hover:bg-[#bfa030] text-slate-900 font-bold py-4 px-6 rounded-xl shadow-md flex items-center justify-center gap-2 transition duration-200 text-center block"
+                  className="w-full bg-[#d4af37] hover:bg-gold-lt text-white font-bold py-4 px-6 rounded-xl shadow-md flex items-center justify-center gap-2 transition duration-200 text-center block"
                 >
                   <span>Book Hajj 2027 Now</span>
                   <i className="fa-solid fa-arrow-right text-xs"></i>

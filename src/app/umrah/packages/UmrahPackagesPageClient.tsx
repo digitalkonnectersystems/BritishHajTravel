@@ -14,7 +14,7 @@ const umrahCardsData = [
     duration: "10, 15 Days",
     heroImage:
       "https://antiquewhite-stinkbug-399384.hostingersite.com/wp-content/uploads/2026/05/Umrah_packages_202605092201.jpeg",
-    price: "CAD 7,499",
+    price: "£ 7,499",
     makkahHotel: {
       name: "5 Star Hotel in Makkah",
       location: "Near to Haram",
@@ -38,7 +38,7 @@ const umrahCardsData = [
     duration: "15 Days",
     heroImage:
       "https://images.unsplash.com/photo-1745775759814-9b60ed1718ed?q=80&w=1159&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    price: "CAD 10,950",
+    price: "£ 10,950",
     makkahHotel: {
       name: "Fairmont Clock Royal Tower",
       location: "Zero distance (In Front)",
@@ -62,7 +62,7 @@ const umrahCardsData = [
     duration: "10 Days",
     heroImage:
       "https://images.unsplash.com/photo-1586811388230-21835e10b83d?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    price: "CAD 5,850",
+    price: "£ 5,850",
     makkahHotel: {
       name: "Hyatt Regency Makkah",
       location: "2 Mins Walk",
@@ -101,14 +101,14 @@ export default function UmrahPackagesPageClient({ initialPageData, packages = []
   } catch (e) { }
 
   const eyebrow = umrahHeadingData?.eyebrow || "EXCLUSIVE UPCOMING";
-  const title = umrahHeadingData?.title || "Umrah Packages<br />from Canada";
-  const description = umrahHeadingData?.description || umrahHeadingData?.subtext || "Departures from CAD 2,595 per person. Availability and accommodations are confirmed with every booking — contact us before reserving.";
+  const title = umrahHeadingData?.title || "Umrah Packages<br />from UNited Kingdom";
+  const description = umrahHeadingData?.description || umrahHeadingData?.subtext || "Departures from £ 2,595 per person. Availability and accommodations are confirmed with every booking — contact us before reserving.";
 
   const openDetailModal = (card: any) => {
     setSelectedDetailPkg({
       ...card,
       badgeTag: card.badgeTag || "UMRAH 2026",
-      departure: card.departure || "CANADA",
+      departure: card.departure || "United Kingdom",
       destination: card.destination || "SAUDIA"
     });
     setIsDetailOpen(true);
@@ -123,8 +123,8 @@ export default function UmrahPackagesPageClient({ initialPageData, packages = []
       />
       {/* ================= DYNAMIC HERO BANNER ================= */}
       <PageBanner
-        title={pageData?.bannerTitle || pageData?.title || "Umrah Packages from Canada 2026 <br /><span>Travel with Confidence</span> by King Travel"}
-        description={pageData?.bannerDescription || "Perform your sacred obligation of Umrah in 2026 with comfort, organization, and spiritual focus. King Travel proudly offers premium Umrah Packages from Canada 2026, designed to provide Canadian Muslims with a smooth and well-managed pilgrimage experience."}
+        title={pageData?.bannerTitle || pageData?.title || "Umrah Packages from United Kingdom 2026 <br /><span>Travel with Confidence</span> by King Travel"}
+        description={pageData?.bannerDescription || "Perform your sacred obligation of Umrah in 2026 with comfort, organization, and spiritual focus. King Travel proudly offers premium Umrah Packages from United Kingdom 2026, designed to provide Canadian Muslims with a smooth and well-managed pilgrimage experience."}
         bgImage={pageData?.bannerBgImage}
         position={pageData?.bannerPosition}
         size={pageData?.bannerSize}
@@ -164,7 +164,7 @@ export default function UmrahPackagesPageClient({ initialPageData, packages = []
       </div>
 
       {/* ================= MAIN PACKAGES GRID ================= */}
-      <section className="packages-grid-container pt-16 bg-sage">
+      <section className="packages-grid-container pt-16 bg-white">
         <div className="max-w-[1400px] mx-auto px-5">
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-12 gap-6 text-center md:text-left">
@@ -186,7 +186,7 @@ export default function UmrahPackagesPageClient({ initialPageData, packages = []
               const heroImage = card.thumbnail || card.heroImage || "https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=1170&auto=format&fit=crop";
               const title = card.title || "Umrah Package 2026";
               const rawPrice = (card.startingPrice || card.price || "12,995").toString();
-              const price = rawPrice.startsWith("CAD") ? rawPrice : `CAD ${rawPrice.replace("$", "").trim()}`;
+              const price = rawPrice.startsWith("£") ? rawPrice : `£ ${rawPrice.replace("$", "").trim()}`;
 
               const makkahHotel = card.detailPageData?.makkahHotel || card.makkahHotel || { name: "5 Star Hotel", location: "Near Haram", image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=300&q=80", badge: "Breakfast", nights: "5 Nights" };
               const madinahHotel = card.detailPageData?.madinahHotel || card.madinahHotel || { name: "5 Star Hotel", location: "Near Masjid", image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=300&q=80", badge: "Breakfast", nights: "5 Nights" };
@@ -220,7 +220,7 @@ export default function UmrahPackagesPageClient({ initialPageData, packages = []
                     {/* Title & Route Placement */}
                     <div className="card-hero-text">
                       <div className="route-subtext">
-                        <i className="fa-solid fa-plane text-xs"></i> FROM CANADA <i className="fa-solid fa-arrow-right text-[10px]"></i> TO SAUDIA
+                        <i className="fa-solid fa-plane text-xs"></i> FROM United Kingdom <i className="fa-solid fa-arrow-right text-[10px]"></i> TO SAUDIA
                       </div>
                       <h2 className="card-main-title">{title}</h2>
                     </div>
@@ -313,7 +313,7 @@ export default function UmrahPackagesPageClient({ initialPageData, packages = []
                           </div>
                         </div>
                         <div>
-                          <div className="price-title">CAD / QUAD OCCUPANCY</div>
+                          <div className="price-title">£ / QUAD OCCUPANCY</div>
                           <div className="text-[24px] font-black text-primary text-right leading-none">{card.price}</div>
                         </div>
                       </div>
@@ -376,7 +376,7 @@ export default function UmrahPackagesPageClient({ initialPageData, packages = []
               return (
                 <section
                   key={`tb-${idx}`}
-                  className="pt-12 md:pt-16 bg-sage px-4"
+                  className="pt-12 md:pt-16 bg-primary px-4"
                 >
                   <div className="section-rich bg-white rounded-3xl p-4 md:p-8 max-w-[1360px] mx-auto w-full">
                     <div

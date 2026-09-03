@@ -110,7 +110,7 @@ export default function PackageBookingModal({
     })
     : null;
 
-  const currencyCode = cd.currencyCode || "CAD";
+  const currencyCode = cd.currencyCode || "£";
   const badgeTag = cd.badgeTag || "Package";
 
   const isHajj =
@@ -236,7 +236,7 @@ export default function PackageBookingModal({
 
             {/* Modal Heading */}
             <div className="text-center mb-5 px-4 sm:px-6 pt-3">
-              <h3 className="text-xl md:text-2xl font-serif font-bold text-slate-900 mb-1.5 leading-tight">
+              <h3 className="text-xl md:text-2xl font-serif font-bold text-primary mb-1.5 leading-tight">
                 Book {pkg?.title || "Umrah Package"}
                 {pkg?.month ? ` - ${formatTravelMonth(pkg.month) || pkg.month}` : ""}
               </h3>
@@ -571,7 +571,7 @@ export default function PackageBookingModal({
                     >
                       {packagePrices.map((item, idx) => (
                         <option key={idx} value={item.packageType} className="bg-white text-ink">
-                          CAD {item.price ? item.price.toLocaleString("en-CA") : ""} - {item.packageType}
+                          £ {item.price ? item.price.toLocaleString("en-CA") : ""} - {item.packageType}
                         </option>
                       ))}
                     </select>
@@ -601,7 +601,7 @@ export default function PackageBookingModal({
                   Estimated Total
                 </span>
 
-                <span className="text-xl font-black text-slate-900 font-serif">
+                <span className="text-xl font-black text-primary font-serif">
                   {estimatedTotalFormatted ? `${currencyCode} ${estimatedTotalFormatted}` : "—"}
                 </span>
 
@@ -614,7 +614,7 @@ export default function PackageBookingModal({
 
               <button
                 type="submit"
-                className="w-full bg-gold text-ink font-extrabold py-3.5 px-6 rounded-sm shadow-md hover:bg-gold-lt active:scale-[0.99] transition-all duration-300 tracking-wider uppercase text-sm flex items-center justify-center cursor-pointer"
+                className="w-full bg-gold text-white font-extrabold py-3.5 px-6 rounded-sm shadow-md hover:bg-gold-lt hover:text-white active:scale-[0.99] transition-all duration-300 tracking-wider uppercase text-sm flex items-center justify-center cursor-pointer"
               >
                 <TicketPercent className="w-4 h-4 mr-2" />
 

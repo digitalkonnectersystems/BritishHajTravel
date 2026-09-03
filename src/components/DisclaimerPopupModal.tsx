@@ -93,7 +93,7 @@ export default function DisclaimerPopupModal() {
         <button
           type="button"
           onClick={handleClose}
-          className="w-full bg-primary hover:bg-[#00382B] text-white font-extrabold text-xs py-3 rounded-xl transition-colors cursor-pointer shadow-md"
+          className="w-full bg-primary hover:bg-[#000d38] text-white font-extrabold text-xs py-3 rounded-xl transition-colors cursor-pointer shadow-md"
         >
           I Understand & Close
         </button>

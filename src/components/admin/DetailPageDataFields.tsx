@@ -576,7 +576,7 @@ export default function DetailPageDataFields({
                 const uploadPromises = files.map(async (file) => {
                   const formData = new FormData();
                   formData.append('file', file);
-                  formData.append('subfolder', 'packages/gallery');
+                  formData.append('subfolder', 'packages');
                   try {
                     const res = await fetch('/api/admin/upload', {
                       method: 'POST',
@@ -621,7 +621,7 @@ export default function DetailPageDataFields({
                   next[galleryIdx] = url;
                   onGalleryChange?.(next);
                 }}
-                subfolder="packages/gallery"
+                subfolder="packages"
                 hideDeleteButton={true}
               />
               <button

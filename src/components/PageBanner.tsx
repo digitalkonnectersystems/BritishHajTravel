@@ -28,7 +28,7 @@ export default function PageBanner({
   return (
     <section
       style={{
-        backgroundImage: `linear-gradient(rgba(10, 66, 45, 0.45), rgba(10, 66, 45, 1)), url("${cleanBg}")`,
+        backgroundImage: `linear-gradient(rgba(2, 14, 67, 0.45), rgba(2, 14, 67, 1)), url("${cleanBg}")`,
         backgroundPosition: activePos,
         backgroundSize: activeSize,
       }}

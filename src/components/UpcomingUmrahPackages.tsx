@@ -1,5 +1,5 @@
 "use client";
-
+ 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import * as LucideIcons from "lucide-react";
@@ -22,15 +22,15 @@ export default function UpcomingUmrahPackages({
   const description =
     data?.description ||
     data?.subtext ||
-    "Departures from CAD 2,595 per person. Availability and accommodations are confirmed with every booking — contact us before reserving.";
-
+    "Departures from £ 2,595 per person. Availability and accommodations are confirmed with every booking — contact us before reserving.";
+ 
   const isUmrahListingPage =
     pathname === "/umrah-packages" ||
     pathname === "/umrah" ||
     pathname?.startsWith("/umrah") ||
     pageData?.slug === "/umrah-packages" ||
     pageData?.slug === "umrah-packages";
-
+ 
   const isHomepage =
     pathname === "/" ||
     pathname === "" ||
@@ -40,15 +40,15 @@ export default function UpcomingUmrahPackages({
     pageData?.slug === "/home" ||
     pageData?.slug === "home" ||
     (!isUmrahListingPage && (!pathname || pathname === "/"));
-
+ 
   const [pkgs, setPkgs] = useState<any[]>(initialPackages || []);
   const [loading, setLoading] = useState(!initialPackages);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [selectedPkgForBooking, setSelectedPkgForBooking] = useState<any>(null);
-
+ 
   useEffect(() => {
     const packageIds = data?.packageIds || [];
-
+ 
     // The main Umrah listing page must always show every non-draft, non-sold-out
     // Umrah package from the database. Ignore CMS-selected packageIds here.
     if (isUmrahListingPage) {
@@ -57,7 +57,7 @@ export default function UpcomingUmrahPackages({
         setLoading(false);
         return;
       }
-
+ 
       setLoading(true);
       getPackagesByType("umrah")
         .then((rows) => setPkgs(rows))
@@ -65,16 +65,16 @@ export default function UpcomingUmrahPackages({
         .finally(() => setLoading(false));
       return;
     }
-
+ 
     // On other pages, keep supporting manually selected packages.
     if (initialPackages && packageIds.length === 0) {
       setPkgs(initialPackages);
       setLoading(false);
       return;
     }
-
+ 
     setLoading(true);
-
+ 
     if (packageIds.length > 0) {
       getPackagesByIds(packageIds)
         .then((rows) => setPkgs(rows))
@@ -87,11 +87,11 @@ export default function UpcomingUmrahPackages({
         .finally(() => setLoading(false));
     }
   }, [data?.packageIds, initialPackages, pathname, isUmrahListingPage]);
-
+ 
   // Homepage should only show the first 4 Umrah packages.
   const displayedPkgs = isHomepage ? pkgs.slice(0, 4) : pkgs;
-  const sectionBgClass = isUmrahListingPage ? "bg-sage" : isHomepage ? "bg-white" : (pathname === "/" ? "bg-white" : "bg-sage");
-
+  const sectionBgClass = isUmrahListingPage ? "bg-gray" : isHomepage ? "bg-white" : (pathname === "/" ? "bg-white" : "bg-sage");
+ 
   return (
     <section className={`py-12 md:py-16 ${sectionBgClass}`}>
       <div className="max-w-[1400px] mx-auto px-5">
@@ -100,7 +100,7 @@ export default function UpcomingUmrahPackages({
           <div className="flex flex-col items-center md:items-start">
             <h3 className="eyebrow">{eyebrow}</h3>
             <h2
-              className="section-heading"
+              className="section-heading head"
               dangerouslySetInnerHTML={{ __html: title }}
             />
           </div>
@@ -108,7 +108,7 @@ export default function UpcomingUmrahPackages({
             {description}
           </div>
         </div>
-
+ 
         {/* Loading skeleton */}
         {loading && (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
@@ -129,14 +129,14 @@ export default function UpcomingUmrahPackages({
             ))}
           </div>
         )}
-
+ 
         {/* No packages */}
         {!loading && pkgs.length === 0 && (
-          <p className="text-center text-slate-400 py-12">
+          <p className="text-center text-ink-lt py-12">
             No Umrah packages added to this section yet.
           </p>
         )}
-
+ 
         {/* Packages Grid */}
         {!loading && pkgs.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 items-stretch md:pt-5">
@@ -163,7 +163,7 @@ export default function UpcomingUmrahPackages({
                 : "";
               const buttonUrl = `/${pkg.slug}`;
               const buttonText = cd.btnLabel || "BOOK NOW";
-
+ 
               // Parse inclusions: stored as JSON string or array
               let includes: string[] = [];
               if (cd.includes && Array.isArray(cd.includes)) {
@@ -180,13 +180,13 @@ export default function UpcomingUmrahPackages({
                   includes = [];
                 }
               }
-
+ 
               return (
                 <div
                   key={pkg.id || idx}
                   className={`${isGold
-                    ? "bg-gold hover:bg-paper transition duration-400 shadow-[0_8px_30px_rgb(0,0,0,0.12)] mt-0 xl:-mt-8 xl:mb-8"
-                    : "hover:bg-[#FBF8F1] transition-[transform,box-shadow] duration-400 border-1 border-[#ccc] transition duration-400 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)]"
+                    ? "bg-primary hover:bg-primary/90 transition duration-400 shadow-[0_8px_30px_rgb(0,0,0,0.12)] mt-0 xl:-mt-8 xl:mb-8"
+                    : "hover:bg-[#ebefff] transition-[transform,box-shadow] duration-400 border-1 border-[#ccc] transition duration-400 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)]"
                     } rounded-3xl overflow-hidden flex flex-col`}
                 >
                   <div className="relative h-48 w-full">
@@ -203,34 +203,38 @@ export default function UpcomingUmrahPackages({
                   </div>
                   <div className="p-8 flex-1 flex flex-col">
                     <div
-                      className={`${isGold ? "" : "text-gray-500"
+                      className={`${isGold ? "text-white/90" : "text-gray-500"
                         } text-xs font-bold uppercase tracking-widest mb-2`}
                     >
                       {formatTravelMonth(month) || month}
                     </div>
-                    <h3 className="text-2xl font-serif mb-2">{pkg.title}</h3>
-                    <span className="text-xs font-medium text-ink-soft">
+                    <h3 className={`text-2xl font-serif mb-2 ${isGold ? "text-white" : "text-primary"}`}>
+                      {pkg.title}
+                    </h3>
+                    <span className={`text-xs font-medium ${isGold ? "text-white/85" : "text-ink-soft"}`}>
                       Starting From
                     </span>
                     <div
-                      className={`${isGold ? "" : "text-gold"
+                      className={`${isGold ? "text-white" : "text-gold"
                         } font-black text-xl mb-6`}
                     >
-                      CAD {price}{" "}
+                      £ {price}{" "}
                       <span
-                        className={`text-sm font-medium ${isGold ? "" : "text-ink-soft"
+                        className={`text-sm font-medium ${isGold ? "text-white/80" : "text-ink-soft"
                           }`}
                       >
                         / Person
                       </span>
                     </div>
-
-                    <div className="incl-label">PACKAGE INCLUDES</div>
+ 
+                    <div className={`incl-label ${isGold ? "text-white" : "text-ink-soft"}`}>
+                      PACKAGE INCLUDES
+                    </div>
                     <ul className="space-y-4 mb-8 flex-1">
                       {includes.map((inc: any, i: number) => {
                         let iconName = "CheckCircle";
                         let text = "";
-
+ 
                         if (typeof inc === 'string') {
                           text = inc;
                           const firstWord = text.split(" ")[0].toLowerCase();
@@ -250,16 +254,16 @@ export default function UpcomingUmrahPackages({
                           text = inc.text || "";
                           iconName = inc.icon || "CheckCircle";
                         }
-
+ 
                         return (
                           <li
                             key={i}
-                            className={`flex gap-3 text-sm ${isGold ? "" : "text-ink-soft"
+                            className={`flex gap-3 text-sm ${isGold ? "text-white" : "text-ink-soft"
                               }`}
                           >
                             <DynamicIcon
                               name={iconName}
-                              className={`w-4 h-4 shrink-0 ${isGold ? "" : "text-ink-soft"
+                              className={`w-4 h-4 shrink-0 ${isGold ? "text-white" : "text-ink-soft"
                                 }`}
                             />{" "}
                             <span className="leading-tight">{text}</span>
@@ -267,11 +271,14 @@ export default function UpcomingUmrahPackages({
                         );
                       })}
                     </ul>
-
+ 
                     <div className="flex gap-2">
                       <a
                         href={`/${pkg.slug}`}
-                        className={`flex-1 py-3 text-center text-xs font-black rounded-md uppercase tracking-widest transition-colors block border-2 border-ink-soft text-ink-soft hover:bg-ink-soft/5`}
+                        className={`flex-1 py-3 text-center text-xs font-black rounded-md uppercase tracking-widest transition-colors block border-2 ${isGold
+                          ? "border-white text-white hover:bg-white hover:border-primary hover:text-primary"
+                          : "border-primary text-primary hover:bg-primary hover:text-white"
+                          }`}
                       >
                         View Detail
                       </a>
@@ -281,8 +288,8 @@ export default function UpcomingUmrahPackages({
                           setBookingModalOpen(true);
                         }}
                         className={`flex-1 py-3 text-center text-xs font-black rounded-md uppercase tracking-widest transition-colors block border-2 border-transparent cursor-pointer ${isGold
-                          ? "bg-ink-soft hover:bg-ink text-white"
-                          : "bg-gold hover:bg-gold-lt text-black"
+                          ? "bg-gold hover:bg-white hover:border-gold text-white hover:text-gold"
+                          : "bg-gold hover:bg-white hover:border-gold text-white hover:text-gold"
                           }`}
                       >
                         {buttonText}
@@ -294,19 +301,19 @@ export default function UpcomingUmrahPackages({
             })}
           </div>
         )}
-
+ 
         {pathname !== "/umrah-packages" && (
           <div className="flex justify-center mt-12">
             <a
               href="/umrah-packages"
-              className="px-8 py-3.5 border-2 border-primary text-primary font-bold text-xs uppercase tracking-widest rounded-md hover:bg-primary hover:text-white transition-all flex items-center gap-3"
+              className="px-8 py-3.5 border-2 border-gold text-gold font-bold text-xs uppercase tracking-widest rounded-md hover:bg-gold hover:text-white transition-all flex items-center gap-3"
             >
               SEE ALL PACKAGES <span>→</span>
             </a>
           </div>
         )}
       </div>
-
+ 
       <PackageBookingModal
         isOpen={bookingModalOpen}
         onClose={() => setBookingModalOpen(false)}
@@ -315,3 +322,4 @@ export default function UpcomingUmrahPackages({
     </section>
   );
 }
+ 

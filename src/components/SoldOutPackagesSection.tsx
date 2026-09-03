@@ -44,18 +44,18 @@ export default function SoldOutPackagesSection({ data, initialPackages }: { data
   if (!loading && pkgs.length === 0) return null;
 
   return (
-    <section className="py-12 md:py-16 bg-sage">
+    <section className="py-12 md:py-16 bg-primary">
       <div className="max-w-[1400px] mx-auto px-5">
         {/* Header (Two Columns) */}
         <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-12 gap-6 text-center md:text-left">
           <div className="flex flex-col items-center md:items-start">
             <h3 className="eyebrow">{eyebrow}</h3>
             <h2
-              className="section-heading"
+              className="section-heading text-white"
               dangerouslySetInnerHTML={{ __html: title }}
             />
           </div>
-          <div className="max-w-sm text-ink-soft text-sm leading-relaxed border-t-2 md:border-t-0 md:border-l-2 border-gray-200 pt-4 md:pt-0 pl-0 md:pl-4">
+          <div className="max-w-sm text-white/90 text-sm leading-relaxed border-t-2 md:border-t-0 md:border-l-2 border-gray-200 pt-4 md:pt-0 pl-0 md:pl-4">
             {description}
           </div>
         </div>
@@ -106,10 +106,10 @@ export default function SoldOutPackagesSection({ data, initialPackages }: { data
               const monthLabel = `${typeName} \u00B7 ${cd.duration || pkg.durationDays + ' Days'}`;
 
               const price = pkg.startingPrice
-                ? `CAD ${Number(pkg.startingPrice).toLocaleString("en-CA")}`
-                : "CAD 0";
+                ? `£ ${Number(pkg.startingPrice).toLocaleString("en-CA")}`
+                : "£ 0";
               const rawPriceSubtext = cd.priceSubtext?.trim();
-              const priceUnit = (!rawPriceSubtext || /occupancy|package|cad\s*\/\s*quad/i.test(rawPriceSubtext))
+              const priceUnit = (!rawPriceSubtext || /occupancy|package|£\s*\/\s*quad/i.test(rawPriceSubtext))
                 ? "/ Person"
                 : (rawPriceSubtext.startsWith('/') ? rawPriceSubtext : `/ ${rawPriceSubtext.replace(/^from\s+/i, '')}`);
               const includesText = "PACKAGE INCLUDES";
@@ -160,13 +160,13 @@ export default function SoldOutPackagesSection({ data, initialPackages }: { data
                       {pkg.type === "hajj" ? <LucideIcons.Tent className="w-3.5 h-3.5" /> : <LucideIcons.MoonStar className="w-3.5 h-3.5" />}
                       {monthLabel}
                     </div>
-                    <h3 className="text-2xl font-serif mb-2">
+                    <h3 className="text-2xl text-primary font-serif mb-2">
                       {pkg.title}
                     </h3>
                     <span className="text-xs font-medium text-ink-soft">
                       Starting From
                     </span>
-                    <div className="text-ink font-black text-xl mb-6">
+                    <div className="text-gold font-black text-xl mb-6">
                       {price}{" "}
                       <span className="text-sm font-medium text-ink-soft">
                         {priceUnit}

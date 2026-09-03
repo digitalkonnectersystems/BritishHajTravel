@@ -3,30 +3,32 @@
 /* ============ DESIGN TOKENS ============ */
 :root {
   /* Brand & Base Colors */
-  --ink: #132723;
+  --ink: #0a0a0a;
   /* --ink-2: #1c352f; */
-  --ink-soft: #2e2e2e;
+  --ink-soft: #1e1e1e;
   --ink-light: color-mix(in srgb, var(--ink), #ffffff 50%);
 
   /* --green: #004B39; */
   /* --green-light: color-mix(in srgb, var(--green), #ffffff 80%); */
 
-  --gold: #020e43;
-  --gold-lt: #E7BE6E;
-  --gold-soft: #f5e7c8;
+  --gold: #b50007;
+  --gold-lt: color-mix(in srgb, var(--gold), #000000 20%);
+  --gold-soft: #ffefef;
   --yellow-light: color-mix(in srgb, var(--gold), #ffffff 80%);
 
-  --cream: #F5EFE1;
-  --sage: #F1F5E5;
+  --gray: #F5EFE1;
+  --sage: #F5EFE1;
+  /* --sage: #c8c8c866; */
   --paper: #FBF8F1;
-  --gray: #EAEAE4;
+  /* --gray: #EAEAE4; */
   --line: #E4DAC0;
   --light-bg: #F4F6F5;
   --dark: #222222;
   --white: #ffffff;
 
   /* Functional Color Aliases */
-  --primary: #004B39;
+  --primary: #020e43;
+  /* --primary: #2f2f8f; */
   /* --primary-light: #125c40; */
   --primary-light: color-mix(in srgb, var(--primary) 77%, #ffffff);
   --accent: var(--gold);
@@ -217,6 +219,7 @@ input[type="date"]:not(.opacity-0):not([class*="opacity-0"])::-webkit-calendar-p
 }
 
 
+
 h1,
 h2,
 h3,
@@ -224,10 +227,15 @@ h4 {
   font-family: var(--serif);
   line-height: 1.1;
   letter-spacing: .2px;
+  /* color: var(--color-primary); */
 }
 
 h2.section-heading {
   font-size: clamp(28px, 3.2vw, 38px);
+}
+
+.head{
+  color: var(--primary);
 }
 
 .eyebrow {
@@ -236,6 +244,20 @@ h2.section-heading {
   letter-spacing: .28em;
   text-transform: uppercase;
   color: var(--gold);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  display: inline-block;
+  margin-bottom: 16px;
+}
+
+.eyebrowht {
+  font-family: var(--sans);
+  font-size: 18px;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--white);
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -304,17 +326,21 @@ h2.section-heading {
   border-radius: 99px;
   text-transform: uppercase;
   border: 1px solid var(--gold);
-  color: var(--ink);
+  color: var(--white); 
+   /* color: var(--ink); */
   background: var(--gold);
   transition: .35s ease;
   white-space: nowrap;
-  box-shadow: 0 14px 28px -14px rgba(217, 164, 65, .55);
+  box-shadow: 0 14px 28px -14px rgba(217, 65, 65, 0.55);
 }
 
 .btn:hover {
-  background: var(--gold-lt);
+  /* background: var(--gold-lt); */
+  background: var(--white);
   transform: translateY(-2px);
-  box-shadow: 0 18px 34px -14px rgba(217, 164, 65, .6);
+  color: var(--gold); 
+
+  /* box-shadow: 0 18px 34px -14px rgba(217, 65, 65, 0.6); */
   text-decoration: none;
 }
 
@@ -330,16 +356,16 @@ h2.section-heading {
 }
 
 .btn.ghost-light {
-  border-color: rgba(255, 255, 255, .5);
-  color: var(--cream);
+  border-color: var(--primary);
+  color: var(--primary);
   background: transparent;
   box-shadow: none;
 }
 
 .btn.ghost-light:hover {
-  background: var(--cream);
-  color: var(--ink);
-  border-color: var(--cream);
+  background: var(--primary);
+  color: var(--white);
+  /* border-color: var(--cream); */
 }
 
 .btn svg {
@@ -371,6 +397,18 @@ h2.section-heading {
 
 .btn.block {
   width: 100%;
+}
+
+.btnff {
+  border: var(--gold);
+  color: var(--white); 
+  background: var(--gold);
+}
+
+.btnff:hover {
+  border: var(--gold);
+  background: var(--white);
+  color: var(--gold); 
 }
 
 .travels-section {
@@ -676,9 +714,9 @@ header {
 }
 
 .float-badge {
-  background: var(--paper);
+  background: var(--white);
   border-radius: var(--r-md);
-  box-shadow: var(--shadow-soft);
+  box-shadow: var(--primary);
   padding: 18px 22px;
   display: flex;
   align-items: center;
@@ -692,7 +730,7 @@ header {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: var(--gold-soft);
+  background: var(--gold-lt);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -710,7 +748,7 @@ header {
 .float-badge .n {
   font-family: var(--serif);
   font-size: 22px;
-  color: var(--ink);
+  color: var(--primary);
   line-height: 1;
 }
 
@@ -1450,7 +1488,7 @@ section#flights {
 /* ============ PAGE SPECIFIC OVERRIDES ============ */
 /* ── Internal Page Hero Banners ── */
 .hero.about {
-  background: linear-gradient(rgba(10, 66, 45, 0.88), rgba(10, 66, 45, 0.82)),
+  background: linear-gradient(#c8c9f0eb , #020e43),
     url('https://images.unsplash.com/photo-1542856391-010fb87dcfed?auto=format&fit=crop&w=1800&q=80') no-repeat center center/cover;
   min-height: 360px;
   display: flex;
@@ -1477,8 +1515,9 @@ section#flights {
   font-weight: 300;
 }
 
+
 .hero.contact {
-  background: linear-gradient(rgba(10, 66, 45, 0.85), rgba(10, 66, 45, 0.85)),
+  background: linear-gradient(#c8c9f0eb , #020e43),
     url('https://images.unsplash.com/photo-1740560051533-3acef26ace95?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center/cover;
   min-height: 360px;
   display: flex;
@@ -1486,7 +1525,7 @@ section#flights {
 }
 
 .hero.packages {
-  background: linear-gradient(rgba(10, 66, 45, 0.85), rgba(10, 66, 45, 0.85)),
+  background: linear-gradient(#050643b3, #020e43b8),
     url('https://images.unsplash.com/photo-1589677485484-84a02e8d4742?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center/cover;
   min-height: 360px;
   display: flex;
@@ -1494,7 +1533,7 @@ section#flights {
 }
 
 .hero.airlines {
-  background: linear-gradient(rgba(10, 66, 46, 0.59), rgba(10, 66, 45, 0.85)),
+  background: linear-gradient(#c8c9f0eb , #020e43),
     url('https://antiquewhite-stinkbug-399384.hostingersite.com/wp-content/uploads/2026/05/Hero_section_background_image_202605072032.jpeg') no-repeat center center/cover;
   min-height: 360px;
   display: flex;
@@ -1502,7 +1541,7 @@ section#flights {
 }
 
 .hero.umrahpackages {
-  background: linear-gradient(rgba(10, 66, 45, 0.85), rgba(10, 66, 45, 0.85)),
+  background: linear-gradient(#c8c9f0eb , #020e43),
     url('https://antiquewhite-stinkbug-399384.hostingersite.com/wp-content/uploads/2026/05/Umrah_packages_202605092201.jpeg') no-repeat center center/cover;
   min-height: 360px;
   display: flex;
@@ -1510,7 +1549,7 @@ section#flights {
 }
 
 .hero.saudi {
-  background: linear-gradient(rgba(10, 66, 45, 0.85), rgba(10, 66, 45, 0.85)),
+  background: linear-gradient(#c8c9f0eb , #020e43),
     url('https://img.magnific.com/free-photo/camel-caravan-dune-erg-chebbi-morocco_53876-139877.jpg?t=st=1784205613~exp=1784209213~hmac=0a5071804cc48cc625bc249e99a2bba04c55f77f5ae049763989b5a3c25e0787&w=2000') no-repeat center center/cover;
   min-height: 360px;
   display: flex;
@@ -1614,7 +1653,13 @@ section#flights {
 
 .section-title {
   font-size: 2.2rem;
-  color: var(--ink);
+  color: var(--primary);
+  margin-bottom: 20px;
+}
+
+.sectionpr-title {
+  font-size: 2.2rem;
+  color: var(--white);
   margin-bottom: 20px;
 }
 
@@ -1647,7 +1692,7 @@ section#flights {
 } */
 
 .services-section {
-  background-color: var(--sage);
+  background-color: var(--primary);
   /* padding: 100px 0; */
 }
 
@@ -1832,7 +1877,7 @@ section#flights {
   left: -20px;
   top: 30px;
   background: var(--gold);
-  color: var(--ink);
+  color: var(--white);
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -1841,7 +1886,7 @@ section#flights {
   justify-content: center;
   font-weight: 700;
   font-size: 0.9rem;
-  box-shadow: 0 0 0 6px rgba(10, 66, 45, 0.94);
+  box-shadow: 0 0 0 6px var(--primary);
   z-index: 3;
 }
 
@@ -1945,7 +1990,7 @@ section#flights {
 
 /* ============ UMRAH PACKAGES PAGE CUSTOM STYLES ============ */
 .umrah-page-wrapper {
-  background-color: var(--sage, #F1F5E5);
+  background-color: var(--primary);
   min-height: 100vh;
   width: 100%;
   font-family: var(--sans, 'Plus Jakarta Sans', sans-serif);
@@ -2020,7 +2065,7 @@ section#flights {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #004B39;
+  color: var(--gold);
   font-size: 20px;
 }
 
@@ -2427,7 +2472,7 @@ section#flights {
 .card-title {
   font-size: 1.44rem;
   font-weight: 700;
-  color: var(--ink);
+  color: var(--primary);
   margin-bottom: 12px;
   line-height: 1.3;
 }

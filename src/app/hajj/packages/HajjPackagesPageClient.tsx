@@ -342,15 +342,15 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                       unoptimized
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-black/30" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-primary via-transparent to-primary/30" />
 
                     {/* Top Bar Tags */}
                     <div className="absolute top-4 inset-x-4 flex justify-between items-center text-xs">
-                      <div className="bg-[#0a422d]/90 text-white font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 backdrop-blur-sm">
+                      <div className="bg-primary text-white font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 backdrop-blur-sm">
                         <i className="fa-solid fa-kaaba text-gold"></i>
                         <span>{badgeTag}</span>
                       </div>
-                      <div className="bg-amber-500 text-slate-950 font-extrabold px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+                      <div className="text-gold font-extrabold px-3 py-1.5 rounded-lg flex items-center gap-1.5">
                         <i className="fa-solid fa-calendar-days"></i>
                         <span>{duration}</span>
                       </div>
@@ -542,7 +542,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
                 {eyebrow && (
                   <span className="text-xs font-extrabold uppercase tracking-widest text-gold block mb-2">{eyebrow}</span>
                 )}
-                <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-3">{heading}</h2>
+                <h2 className="text-3xl md:text-4xl font-extrabold text-primary mb-3">{heading}</h2>
                 {subtitle && (
                   <p className="text-sm text-slate-500 max-w-xl mx-auto">{subtitle}</p>
                 )}
@@ -557,7 +557,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
                       <DynamicIcon name={svc.icon || 'Star'} className="w-8 h-8" />
                     </div>
                     <h3 className="text-sm font-extrabold text-primary leading-snug">{svc.title}</h3>
-                    <p className="text-[11px] text-white leading-relaxed">{svc.description}</p>
+                    <p className="text-[11px] text-slate-500 leading-relaxed">{svc.description}</p>
                   </div>
                 ))}
               </div>
@@ -608,7 +608,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
               return (
                 <section
                   key={`tb-${idx}`}
-                  className="pt-12 md:pt-16 bg-sage px-4"
+                  className="py-12 md:py-16 bg-sage px-4"
                 >
                   <div className="section-rich bg-white rounded-3xl p-4 md:p-8 max-w-[1360px] mx-auto w-full">
                     <div

@@ -1,36 +1,85 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+
+Skip to content
+Using Gmail with screen readers
+2 of many
+for bht nxt
+Inbox
+
+DKS PKLHR D003 <dkspklhrd003@gmail.com>
+Attachments
+2:12 PM (2 hours ago)
+to me
+
+
+ One attachment
+  •  Scanned by Gmail
 # dependencies
 /node_modules
-/.pnp
-.pnp.js
-
-# testing
-/coverage
-
+ 
 # next.js
 /.next/
 /out/
-
+/.cursor/*
+ 
 # production
 /build
-
+ 
 # misc
 .DS_Store
 *.pem
-
+*.rar
+*.zip
+/kingtravelcan_html
+*.html
+*.php
+/temp
+/temp_html
+public/uploads/
+ 
 # debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# local env files
-.env*.local
+.pnpm-debug.log*
+ 
+# Ignore all environment files
 .env
-
-# vercel
-.vercel
+.env.*
+*.env
+*.env.*
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+/scratch
+scratch/*
+# Scratch and audit scripts
+gather.ps1
+gather.sh
+find_admin_sections.js
+find_sections.js
+fix-db.js
+fix-admin-styles.js
+test-db.ts
+test-save.ts
+fix.ts
+fix-db.js
+check.ts
+temp_errors.md
+test-db.js
+clear-db.js
+check_packages.ts
+check_pages.ts
+create_table.ts
+test_fetch.ts
+test_insert.ts
+/drizzle
+/drizzle/meta
+temp-fetch.js
+temp-fetch.ts
+test-insert.ts
+drizzle/meta/_journal.json
+fix.js
+alter_table.mjs
+*.cjs

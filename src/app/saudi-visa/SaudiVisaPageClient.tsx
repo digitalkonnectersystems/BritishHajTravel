@@ -42,7 +42,7 @@ function VisaProcessStepsSection({ data }: { data?: any }) {
             </div>
           </div>
 
-          <Link href="/contact" className="inline-block bg-gold hover:bg-gold-lt text-slate-950 font-extrabold px-6 py-3.5 rounded-md shadow-lg transition-all text-sm mt-4">
+          <Link href="/contact" className="inline-block bg-gold hover:bg-gold-soft text-white font-extrabold px-6 py-3.5 rounded-md shadow-lg transition-all text-sm mt-4">
             Start Your Visa Application Today
           </Link>
         </div>

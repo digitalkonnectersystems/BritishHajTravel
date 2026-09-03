@@ -21,16 +21,16 @@ export default function TravelServicesSection({ data }: { data: any }) {
   const services = data?.items?.length ? data.items : defaultServices;
 
   return (
-    <section className="py-12 md:py-16 bg-sage">
+    <section className="py-12 md:py-16 bg-primary">
       <div className="max-w-[1400px] mx-auto px-5">
         <div className="text-center flex flex-col items-center mb-10">
           <h3 className="eyebrow">{eyebrow}</h3>
           <h2
-            className="section-heading"
+            className="section-heading text-white"
             dangerouslySetInnerHTML={{ __html: title }}
           />
           {subtitle && (
-            <p className="text-gray-500 max-w-2xl mt-4 leading-relaxed">
+            <p className="text-white/90 max-w-2xl mt-4 leading-relaxed">
               {subtitle}
             </p>
           )}

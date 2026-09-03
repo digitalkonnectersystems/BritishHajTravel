@@ -12,7 +12,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   'Pilgrimage Guide': 'bg-emerald-100 text-emerald-700 border-emerald-200',
   'Hajj Tips': 'bg-amber-100 text-amber-700 border-amber-200',
   'Umrah Guide': 'bg-teal-100 text-teal-700 border-teal-200',
-  'Saudi Visa': 'bg-blue-100 text-blue-700 border-blue-200',
+  'Saudi Visa': 'bg-gold text-white border-gold',
   'Travel Tips': 'bg-purple-100 text-purple-700 border-purple-200',
   'News & Updates': 'bg-rose-100 text-rose-700 border-rose-200',
   'Spiritual Journey': 'bg-indigo-100 text-indigo-700 border-indigo-200',
@@ -126,7 +126,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
           alt={blog.title}
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0a422d]/45 to-[#0a422d]/100" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#c8c9f0eb] to-[#020e43]" />
         <div className="absolute inset-0 flex flex-col justify-center px-6 xl:px-0 pb-10 max-w-[1280px] mx-auto left-0 right-0">
           <span className={`self-start text-[11px] font-extrabold px-3 py-1 rounded-full border mb-4 ${catClass}`}>
             {blog.category || 'Article'}
@@ -148,7 +148,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
               </>
             )}
           </div> */}
-          <span className="self-start date-display !text-gold p-2 border border-gold rounded-full bg-gold/10">{displayDate}</span>
+          <span className="self-start date-display !text-white p-2 border border-gold rounded-full bg-gold">{displayDate}</span>
         </div>
       </div>
 
@@ -170,8 +170,8 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
 
               {/* Excerpt callout */}
               {blog.excerpt && (
-                <div className="bg-[var(--gold-soft)] border-l-4 border-primary rounded-r-2xl px-6 py-5 mb-8 shadow-sm">
-                  <p className="text-base text-slate-700 italic leading-relaxed font-medium m-0">{blog.excerpt}</p>
+                <div className="bg-[var(--gold-soft)] border-l-4 border-gold rounded-r-2xl px-6 py-5 mb-8 shadow-sm">
+                  <p className="text-base text-gold italic leading-relaxed font-medium m-0">{blog.excerpt}</p>
                 </div>
               )}
 

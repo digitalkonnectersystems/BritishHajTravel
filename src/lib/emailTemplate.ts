@@ -309,3 +309,71 @@ export function getResponsiveEmailTemplateHtml(
 </body>
 </html>`;
 }
+
+export const CANONICAL_FORM_SUBJECTS = [
+  'Get a Free Quote Form',
+  'Umrah Package Booking Form',
+  'Hajj Package Booking Form',
+  'Contact Inquiry Form',
+  'Flights Booking Inquiry Form',
+  'Drop Us A Message Form',
+  'Blog Detail Page',
+] as const;
+
+export type CanonicalFormSubject = (typeof CANONICAL_FORM_SUBJECTS)[number];
+
+export const FORM_SAMPLE_DATA: Record<CanonicalFormSubject, Record<string, unknown>> = {
+  'Get a Free Quote Form': {
+    fullName: 'Ahmed Khan',
+    email: 'ahmed@example.com',
+    phone: '+1 416 555 0123',
+    packageType: 'Umrah Package',
+    departureMonth: 'December 2026',
+    numberOfPilgrims: 2,
+  },
+  'Umrah Package Booking Form': {
+    fullName: 'Fatima Ali',
+    email: 'fatima@example.com',
+    phone: '+1 647 555 0145',
+    packageName: 'Premium Umrah Package',
+    departureDate: '2026-12-10',
+    adults: 2,
+    children: 1,
+  },
+  'Hajj Package Booking Form': {
+    fullName: 'Omar Hassan',
+    email: 'omar@example.com',
+    phone: '+1 905 555 0167',
+    packageName: 'Hajj 2027 Package',
+    numberOfPilgrims: 4,
+    nationality: 'Canadian',
+  },
+  'Contact Inquiry Form': {
+    name: 'Sarah Ahmed',
+    email: 'sarah@example.com',
+    phone: '+1 289 555 0189',
+    message: 'I would like more information about your pilgrimage packages.',
+  },
+  'Flights Booking Inquiry Form': {
+    passengerName: 'Bilal Mahmood',
+    email: 'bilal@example.com',
+    phone: '+1 416 555 0190',
+    originCity: 'Toronto',
+    destinationCity: 'Jeddah',
+    travelDates: '2027-05-20 to 2027-06-05',
+    numberOfPassengers: 2,
+  },
+  'Drop Us A Message Form': {
+    name: 'Aisha Rahman',
+    email: 'aisha@example.com',
+    phone: '+1 647 555 0191',
+    message: 'Please contact me about arranging a private group trip.',
+  },
+  'Blog Detail Page': {
+    fullName: 'Yusuf Ibrahim',
+    email: 'yusuf@example.com',
+    phone: '+1 905 555 0192',
+    packageType: 'Hajj Package',
+    message: 'I am interested in learning more about this package.',
+  },
+};

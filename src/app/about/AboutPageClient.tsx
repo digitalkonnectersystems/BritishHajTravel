@@ -153,14 +153,14 @@ export default function AboutPageClient({ initialPageData }: { initialPageData?:
         if (sec.type === "Intro") {
           return (
             <div key={idx} className="wrap my-8">
-              <div className="bg-[#f2f5e8] border border-[#e4ebd3] rounded-2xl p-8 max-w-7xl mx-auto shadow-xs">
+              <div className="bg-primary border border-primary rounded-2xl p-8 max-w-7xl mx-auto shadow-xs">
                 <span className="eyebrow">
                   {sec.data?.eyebrow || "ABOUT"}
                 </span>
-                <h2 className="font-serif mb-3">
+                <h2 className="font-serif mb-3 text-white">
                   {sec.data?.title || "King Travel"}
                 </h2>
-                <p className="text-ink-soft text-sm leading-relaxed font-normal m-0">
+                <p className="text-white/90 text-sm leading-relaxed font-normal m-0">
                   {sec.data?.description}
                 </p>
               </div>
@@ -225,7 +225,7 @@ export default function AboutPageClient({ initialPageData }: { initialPageData?:
               <div className="wrap">
                 <div className="flex flex-col items-center text-center mb-4">
                   <span className="eyebrow mx-auto block">{sec.data?.eyebrow || "WHAT WE PROVIDE"}</span>
-                  <h2 className="section-title">{sec.data?.title || "Our Premium Travel Services"}</h2>
+                  <h2 className="sectionpr-title">{sec.data?.title || "Our Premium Travel Services"}</h2>
                 </div>
                 <div className="flex flex-col md:grid md:grid-cols-2 gap-6">
                   {svcs.map((item: any, i: number) => (
@@ -233,8 +233,8 @@ export default function AboutPageClient({ initialPageData }: { initialPageData?:
                       <div className="flex items-center gap-3 mb-4">
                         <span className="service-icon text-2xl p-2.5 rounded-xl bg-slate-50 border border-slate-100">{item.icon}</span>
                         <div>
-                          <h3 className="text-[20px] font-bold text-ink m-0">{item.title}</h3>
-                          {item.subtitle && <span className="text-[14px] font-semibold text-ink block mt-0.5">{item.subtitle}</span>}
+                          <h3 className="text-[20px] font-bold head m-0">{item.title}</h3>
+                          {item.subtitle && <span className="text-[14px] font-semibold text-gold block mt-0.5">{item.subtitle}</span>}
                         </div>
                       </div>
                       <p className="text-[14px] text-ink-soft leading-relaxed font-normal m-0">{item.description}</p>

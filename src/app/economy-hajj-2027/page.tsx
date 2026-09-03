@@ -291,12 +291,12 @@ export default function EconomyHajj2027Page() {
 
                 <div className="flex justify-between items-center py-1">
                   <span className="text-sm text-slate-500 font-medium">Estimated Total</span>
-                  <span className="text-2xl font-bold text-emerald-900">CAD {getEstimatedTotal()}</span>
+                  <span className="text-2xl font-bold text-gold">£ {getEstimatedTotal()}</span>
                 </div>
 
                 <Link
                   href="/contact"
-                  className="w-full bg-[#d4af37] hover:bg-[#bfa030] text-slate-900 font-bold py-4 px-6 rounded-xl shadow-md flex items-center justify-center gap-2 transition duration-200 text-center block"
+                  className="w-full bg-[#d4af37] hover:bg-gold-lt text-white font-bold py-4 px-6 rounded-xl shadow-md flex items-center justify-center gap-2 transition duration-200 text-center block"
                 >
                   <span>Book Hajj 2027 Now</span>
                   <i className="fa-solid fa-arrow-right text-xs"></i>

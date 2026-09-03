@@ -48,7 +48,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
 
           if (isPackagesPage) {
             return (
-              <section key={idx} className="pb-12 md:pb-16 bg-sage px-4">
+              <section key={idx} className="pb-12 md:pt-16 md:pb-16 bg-sage px-4">
                 <div className="section-rich bg-white rounded-3xl p-4 md:p-8 max-w-[1360px] mx-auto w-full">
                   <div
                     className={`${RICH_TEXT_PROSE_CLASS} max-w-none text-sm leading-relaxed`}
@@ -84,7 +84,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                   <span className="eyebrow mx-auto block">
                     {sec.data?.eyebrow || "AVAILABLE FLIGHTS"}
                   </span>
-                  <h2 className="section-heading font-serif tracking-tight">
+                  <h2 className="section-heading text-primary font-serif tracking-tight">
                     {sec.data?.title || "BEST FARES, LIMITED AVAILABILITY FROM LONDON"}
                   </h2>
                 </div>
@@ -105,7 +105,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                               <Image src={flight.logo} alt={flight.name || "Airline Logo"} fill className="object-cover" unoptimized />
                             </div>
                           ) : (
-                            <div className="bg-emerald-900 text-white font-bold px-3 py-2 rounded text-base tracking-wide flex items-center justify-center min-w-[54px] h-[44px]">
+                            <div className="bg-gold text-white font-bold px-3 py-2 rounded text-base tracking-wide flex items-center justify-center min-w-[54px] h-[44px]">
                               {flight.code || "PIA"}
                             </div>
                           )}
@@ -153,7 +153,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                             target={pageData?.slug === "/cheap-flights-air-tickets" || pageData?.slug === "cheap-flights-air-tickets" ? undefined : "_blank"}
                             rel="noopener noreferrer"
                             suppressHydrationWarning
-                            className="bg-primary text-white hover:bg-primary-light font-bold py-3 px-6 md:px-8 rounded-md tracking-wide shadow-sm transition-all duration-150 cursor-pointer text-sm w-full md:w-auto inline-block text-center"
+                            className="bg-gold text-white hover:bg-gold-lt border hover:border-gold  hover:text-white font-bold py-3 px-6 md:px-8 rounded-md tracking-wide shadow-sm transition-all duration-150 cursor-pointer text-sm w-full md:w-auto inline-block text-center"
                           >
                             Booking
                           </a>
@@ -253,7 +253,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                       alt="King Travel logo"
                     />
                     <div className="reviews-owner">
-                      <b>King Travel Can Ltd - Mississauga</b>
+                      <b>British Hajj Travel Ltd - United Kingdom</b>
                       <div className="stars">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -338,7 +338,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                           href={sec.data.reviewLink}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="w-fit inline-block border border-white/40 text-white font-bold text-xs px-5 py-2.5 rounded-full hover:bg-white/10 transition-colors"
+                          className="w-fit inline-block border-gold text-white bg-gold font-bold text-xs px-5 py-2.5 rounded-full hover:border-gold hover:text-gold hover:bg-white transition-colors"
                         >
                           {sec.data?.ctaLabel || "Write A Review"}
                         </a>
@@ -384,7 +384,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                       {sec.data.eyebrow}
                     </span>
                   )}
-                  <h2 className="section-heading font-serif text-ink font-normal">
+                  <h2 className="section-heading font-serif text-primary font-normal">
                     {sec.data?.title || "Airlines We Sourced Deals From"}
                   </h2>
                 </div>
@@ -619,7 +619,7 @@ function GoogleReviewsSlider() {
         type="button"
         onClick={prevSlide}
         aria-label="Previous Review"
-        className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white text-primary shadow-xl border border-slate-200/80 flex items-center justify-center transition-all cursor-pointer"
+        className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full hover:bg-gold hover:text-white bg-white text-primary shadow-xl border border-primary flex items-center justify-center transition-all"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <polyline points="15 18 9 12 15 6"></polyline>
@@ -631,7 +631,7 @@ function GoogleReviewsSlider() {
         type="button"
         onClick={nextSlide}
         aria-label="Next Review"
-        className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white text-primary shadow-xl border border-slate-200/80 flex items-center justify-center transition-all cursor-pointer"
+        className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full  hover:bg-gold hover:text-white bg-white text-primary shadow-xl border border-primary flex items-center justify-center transition-all cursor-pointer"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <polyline points="9 18 15 12 9 6"></polyline>

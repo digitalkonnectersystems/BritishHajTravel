@@ -20,6 +20,16 @@ const ALLOWED_SUBFOLDERS = new Set([
   'uploads',
 ]);
 
+const SUBFOLDER_ALIASES: Record<string, string> = {
+  backgrounds: 'banners',
+  disclaimer: 'banners',
+  footer: 'logos',
+  login: 'branding',
+  logo: 'logos',
+  'packages/gallery': 'packages',
+  visas: 'umrah',
+};
+
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10MB limit
 
 export async function POST(req: NextRequest) {
@@ -37,6 +47,7 @@ export async function POST(req: NextRequest) {
 
     // Validate subfolder against allow-list
     subfolder = subfolder.toLowerCase().trim();
+    subfolder = SUBFOLDER_ALIASES[subfolder] || subfolder;
     if (!ALLOWED_SUBFOLDERS.has(subfolder)) {
       return NextResponse.json(
         {

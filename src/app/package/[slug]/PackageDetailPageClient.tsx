@@ -97,7 +97,7 @@ export default function PackageDetailPageClient({
       <div className="min-h-screen bg-[#faf7f2] flex flex-col justify-center items-center p-8 text-center">
         <h2 className="text-2xl font-bold font-serif text-slate-800 mb-2">Package Not Found</h2>
         <p className="text-xs text-slate-500 mb-6">The requested package details could not be loaded.</p>
-        <Link href="/" className="bg-[#004B39] text-white px-6 py-3 rounded-xl font-extrabold text-xs">
+        <Link href="/" className="bg-primary text-white px-6 py-3 rounded-xl font-extrabold text-xs">
           ← Back to Homepage
         </Link>
       </div>
@@ -191,7 +191,7 @@ export default function PackageDetailPageClient({
   const bannerPrice = minFormattedPrice;
   const priceSubtext = `PER PERSON - ${minPriceItem.packageType.toUpperCase()}`;
   const exclusiveBadge = detailData.exclusiveBadge || cardData.exclusiveBadge || pkg.exclusiveBadge || "STARTING FROM";
-  const currencyCode = pkg.currency || pkg.currencyCode || "CAD";
+  const currencyCode = pkg.currency || pkg.currencyCode || "£";
 
   // Default selected package type is the minimum priced package (or single price if only 1)
   useEffect(() => {
@@ -467,7 +467,7 @@ export default function PackageDetailPageClient({
         metaTitle={pkgSeo?.metaTitle || `${title} Canada | King Travel`}
         metaDescription={
           pkgSeo?.metaDescription ||
-          `Book official ${title} packages with King Travel Canada. ${durationText}, departure from ${departure}, starting price CAD $${price}. Authorized visa, 5-star hotels & flight options.`
+          `Book official ${title} packages with King Travel Canada. ${durationText}, departure from ${departure}, starting price £ $${price}. Authorized visa, 5-star hotels & flight options.`
         }
         canonicalUrl={pkgSeo?.canonicalUrl || `/package/${rawSlug}`}
         ogImageUrl={pkgSeo?.ogImageUrl || pkg.heroImage || 'https://media.kingtravelcan.com/uploads/branding/logo.png'}
@@ -487,7 +487,7 @@ export default function PackageDetailPageClient({
               offers: {
                 '@type': 'Offer',
                 url: `/package/${rawSlug}`,
-                priceCurrency: 'CAD',
+                priceCurrency: '£',
                 price: String(pkg.startingPrice ?? pkg.price ?? price ?? '12995').replace(/,/g, ''),
                 priceValidUntil: '2027-12-31',
                 availability: 'https://schema.org/InStock',
@@ -504,16 +504,16 @@ export default function PackageDetailPageClient({
         seoData={pkgSeo}
       />
       {/* ================= FULL-WIDTH HEADER BANNER ================= */}
-      <div className="w-full bg-[#004B39] text-white py-10 sm:py-14 shadow-lg border-b border-emerald-900">
+      <div className="w-full bg-primary text-white py-10 sm:py-14 shadow-lg border-b border-primary">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-10 relative">
           <div className="max-w-4xl">
             <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold tracking-tight uppercase text-white font-serif mb-2.5 leading-tight">
               {title}
             </h1>
-            <p className="text-xs sm:text-sm font-semibold tracking-wider text-emerald-200 uppercase mb-5">
+            <p className="text-xs sm:text-sm font-semibold tracking-wider text-white/90 uppercase mb-5">
               DURATION: {durationText}
             </p>
-            <div className="flex flex-wrap items-center gap-4 text-xs font-bold text-emerald-100">
+            <div className="flex flex-wrap items-center gap-4 text-xs font-bold text-gold">
               <span className="flex items-center gap-1.5 bg-white/10 px-3.5 py-2 rounded-xl border border-white/20">
                 <Plane className="w-4 h-4 text-gold" /> DEPARTURE: <strong className="text-white">{departure}</strong>
               </span>
@@ -524,14 +524,14 @@ export default function PackageDetailPageClient({
           </div>
 
           {/* Price Box Overlay on Right */}
-          <div className="mt-8 md:mt-0 md:absolute md:top-1/2 md:-translate-y-1/2 md:right-10 bg-[#00382B]/90 border-2 border-dashed border-gold rounded-2xl p-5 text-center min-w-[220px] backdrop-blur-md shadow-xl">
-            <span className="text-[10px] font-extrabold uppercase tracking-widest text-gold block mb-1">
+          <div className="mt-8 md:mt-0 md:absolute md:top-1/2 md:-translate-y-1/2 md:right-10 bg-gold border-2 border-dashed border-gold rounded-2xl p-5 text-center min-w-[220px] backdrop-blur-md shadow-xl">
+            <span className="text-[10px] font-extrabold uppercase tracking-widest text-white block mb-1">
               {exclusiveBadge}
             </span>
             <div className="text-3xl font-black text-white font-serif">
               {currencyCode} {price}
             </div>
-            <span className="text-[10px] font-medium text-emerald-200 uppercase tracking-wide block mt-1">
+            <span className="text-[10px] font-medium text-white/90 uppercase tracking-wide block mt-1">
               {priceSubtext}
             </span>
           </div>
@@ -555,7 +555,7 @@ export default function PackageDetailPageClient({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   {/* Makkah Hotel Card */}
                   {(rawMakkahHotel.name || rawMakkahHotel.image) && (
-                    <div className="bg-white rounded-2xl overflow-hidden border border-emerald-100 shadow-md flex flex-col">
+                    <div className="bg-white rounded-2xl overflow-hidden border border-blue-100 shadow-md flex flex-col">
                       <div className="relative h-48 w-full bg-slate-200">
                         {makkahImg ? (
                           <Image
@@ -566,20 +566,20 @@ export default function PackageDetailPageClient({
                             unoptimized
                           />
                         ) : (
-                          <div className="w-full h-full bg-emerald-900/10 flex items-center justify-center text-slate-400 text-xs">
+                          <div className="w-full h-full bg-blue-900/10 flex items-center justify-center text-slate-400 text-xs">
                             No image available
                           </div>
                         )}
-                        <span className="absolute top-3 left-3 bg-[#004B39] text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
+                        <span className="absolute top-3 left-3 bg-primary text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
                           Makkah
                         </span>
                       </div>
                       <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
                         <div>
-                          <h4 className="font-bold text-slate-900 text-base line-clamp-1">{makkahName}</h4>
+                          <h4 className="font-bold text-primary text-base line-clamp-1">{makkahName}</h4>
                           {makkahLoc && (
                             <p className="text-xs text-slate-500 flex items-center gap-1 mt-1">
-                              <MapPin className="w-3.5 h-3.5 text-[#004B39]" />
+                              <MapPin className="w-3.5 h-3.5 text-primary" />
                               <span>{makkahLoc}</span>
                             </p>
                           )}
@@ -587,7 +587,7 @@ export default function PackageDetailPageClient({
                         {(makkahBadge || makkahNights) && (
                           <div className="flex items-center gap-2 pt-2 border-t border-slate-100 text-xs font-semibold text-slate-600">
                             {makkahBadge && (
-                              <span className="bg-emerald-50 text-[#004B39] px-2.5 py-1 rounded-lg border border-emerald-200/60 flex items-center gap-1 text-[11px]">
+                              <span className="bg-blue-100 text-primary px-2.5 py-1 rounded-lg border border-primary/10 flex items-center gap-1 text-[11px]">
                                 {makkahBadgeIcon ? <DynamicIcon name={makkahBadgeIcon} className="w-3 h-3" /> : <Utensils className="w-3 h-3" />} {makkahBadge}
                               </span>
                             )}
@@ -609,7 +609,7 @@ export default function PackageDetailPageClient({
 
                   {/* Madinah Hotel Card */}
                   {(rawMadinahHotel.name || rawMadinahHotel.image) && (
-                    <div className="bg-white rounded-2xl overflow-hidden border border-amber-100 shadow-md flex flex-col">
+                    <div className="bg-white rounded-2xl overflow-hidden border border-gold-soft shadow-md flex flex-col">
                       <div className="relative h-48 w-full bg-slate-200">
                         {madinahImg ? (
                           <Image
@@ -624,13 +624,13 @@ export default function PackageDetailPageClient({
                             No image available
                           </div>
                         )}
-                        <span className="absolute top-3 left-3 bg-gold text-slate-950 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
+                        <span className="absolute top-3 left-3 bg-gold text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
                           Madinah
                         </span>
                       </div>
                       <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
                         <div>
-                          <h4 className="font-bold text-slate-900 text-base line-clamp-1">{madinahName}</h4>
+                          <h4 className="font-bold text-gold text-base line-clamp-1">{madinahName}</h4>
                           {madinahLoc && (
                             <p className="text-xs text-slate-500 flex items-center gap-1 mt-1">
                               <MapPin className="w-3.5 h-3.5 text-gold" />
@@ -641,7 +641,7 @@ export default function PackageDetailPageClient({
                         {(madinahBadge || madinahNights) && (
                           <div className="flex items-center gap-2 pt-2 border-t border-slate-100 text-xs font-semibold text-slate-600">
                             {madinahBadge && (
-                              <span className="bg-amber-50 text-amber-900 px-2.5 py-1 rounded-lg border border-amber-200/60 flex items-center gap-1 text-[11px]">
+                              <span className="bg-gold-soft text-gold px-2.5 py-1 rounded-lg border border-gold-lt flex items-center gap-1 text-[11px]">
                                 {madinahBadgeIcon ? <DynamicIcon name={madinahBadgeIcon} className="w-3 h-3" /> : <Utensils className="w-3 h-3" />} {madinahBadge}
                               </span>
                             )}
@@ -667,7 +667,7 @@ export default function PackageDetailPageClient({
             {/* 2. Package Overview (Timeline) */}
             {overviewArray.length > 0 && (
               <div>
-                <h3 className="text-xl sm:text-2xl font-bold font-serif text-slate-800 mb-5">
+                <h3 className="text-xl sm:text-2xl font-bold font-serif text-primary mb-5">
                   Package Overview
                 </h3>
                 <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-md space-y-6">
@@ -676,10 +676,10 @@ export default function PackageDetailPageClient({
                     const details = block.details || [];
 
                     return (
-                      <div key={bIdx} className="relative pl-6 border-l-2 border-[#004B39] space-y-2">
-                        <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-[#004B39] border-2 border-white" />
+                      <div key={bIdx} className="relative pl-6 border-l-2 border-primary space-y-2">
+                        <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-primary border-2 border-white" />
                         {heading && (
-                          <h4 className="font-bold text-slate-900 text-sm sm:text-base leading-snug">
+                          <h4 className="font-bold text-primary text-sm sm:text-base leading-snug">
                             {heading}
                           </h4>
                         )}
@@ -710,7 +710,7 @@ export default function PackageDetailPageClient({
                   {/* Highlights */}
                   {highlightsList.length > 0 && (
                     <div className="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-md">
-                      <h4 className="text-lg font-bold font-serif text-slate-900 mb-4 flex items-center gap-2">
+                      <h4 className="text-lg font-bold font-serif text-primary mb-4 flex items-center gap-2">
                         ⭐️
                         Package Highlights
                       </h4>
@@ -722,7 +722,7 @@ export default function PackageDetailPageClient({
                               {isCross ? (
                                 <span className="text-red-500 font-bold shrink-0 text-base leading-none">✕</span>
                               ) : (
-                                <span className="text-amber-500 font-bold shrink-0 text-base leading-none">✦</span>
+                                <span className="text-primary font-bold shrink-0 text-base leading-none">✦</span>
                               )}
                               <span className={isCross ? "text-red-500" : "font-medium"}>
                                 {hl.text}
@@ -737,7 +737,7 @@ export default function PackageDetailPageClient({
                   {/* Eligibility Requirements */}
                   {eligibilityList.length > 0 && (
                     <div className="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-md">
-                      <h4 className="text-lg font-bold font-serif text-slate-900 mb-4 flex items-center gap-2">
+                      <h4 className="text-lg font-bold font-serif text-primary mb-4 flex items-center gap-2">
                         📋
                         Eligibility Requirements
                       </h4>
@@ -797,13 +797,13 @@ export default function PackageDetailPageClient({
 
             {/* 5. Important Booking Notice */}
             {importantNotice && (
-              <div className="bg-amber-50/80 border border-amber-200/80 rounded-2xl p-5 sm:p-6 flex items-start gap-4 shadow-sm">
-                <div className="p-2.5 bg-amber-500/10 rounded-xl shrink-0">
-                  <AlertCircle className="w-6 h-6 text-amber-700" />
+              <div className="bg-gold-soft border border-gold-lt rounded-2xl p-5 sm:p-6 flex items-start gap-4 shadow-sm">
+                <div className="p-2.5 bg-gold-soft rounded-xl shrink-0">
+                  <AlertCircle className="w-6 h-6 text-gold" />
                 </div>
                 <div className="space-y-1">
-                  <h4 className="font-bold text-amber-950 text-sm">Important Booking Notice</h4>
-                  <p className="text-xs text-amber-900/80 leading-relaxed font-medium">
+                  <h4 className="font-bold text-gold text-sm">Important Booking Notice</h4>
+                  <p className="text-xs text-gold-900/80 leading-relaxed font-medium">
                     {importantNotice}
                   </p>
                 </div>
@@ -813,7 +813,7 @@ export default function PackageDetailPageClient({
             {/* 6. Frequently Asked Questions (Accordion) */}
             {faqs.length > 0 && (
               <div>
-                <h3 className="text-xl sm:text-2xl font-bold font-serif text-slate-800 mb-5">
+                <h3 className="text-xl sm:text-2xl font-bold font-serif text-primary mb-5">
                   Frequently Asked Questions
                 </h3>
                 <div className="space-y-3">
@@ -828,7 +828,7 @@ export default function PackageDetailPageClient({
                           onClick={() => setOpenFaqIdx(isOpenItem ? null : idx)}
                           className="w-full p-5 text-left flex justify-between items-center gap-4 hover:bg-slate-50 transition-colors"
                         >
-                          <span className="font-bold text-slate-900 text-sm sm:text-base">
+                          <span className="font-bold text-primary text-sm sm:text-base">
                             {faq.question}
                           </span>
                           {isOpenItem ? (
@@ -858,19 +858,19 @@ export default function PackageDetailPageClient({
               {/* Operator Badge Header */}
               <div className="flex justify-between items-start pb-4 border-b border-slate-100">
                 <div>
-                  <h4 className="font-bold font-serif text-slate-900 text-lg">{operatorName}</h4>
+                  <h4 className="font-bold font-serif text-primary text-lg">{operatorName}</h4>
                   <p className="text-xs pt-1 text-ink-lt font-medium">{operatorReviews}</p>
                 </div>
-                <div className="bg-amber-100 text-amber-900 font-extrabold text-xs px-2.5 py-1 rounded-lg flex items-center gap-1 shadow-sm">
+                <div className="bg-gold-soft text-gold font-extrabold text-xs px-2.5 py-1 rounded-lg flex items-center gap-1 shadow-sm">
                   <span>{operatorRating}</span>
-                  <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
+                  <Star className="w-3 h-3 fill-gold text-gold" />
                 </div>
               </div>
 
               {/* Booking Input Form */}
               <form onSubmit={handleBookingSubmit} noValidate className="space-y-4">
                 {bookingStatus && (
-                  <p className="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl text-center">
+                  <p className="text-xs font-bold text-primary bg-white border border-gray-200 p-2.5 rounded-xl text-center">
                     {bookingStatus}
                   </p>
                 )}
@@ -1058,7 +1058,7 @@ export default function PackageDetailPageClient({
                       >
                         {packagePrices.map((item, idx) => (
                           <option key={idx} value={item.packageType} className="bg-white text-ink py-1">
-                            CAD {item.price ? item.price.toLocaleString("en-CA") : ""} - {item.packageType}
+                            £ {item.price ? item.price.toLocaleString("en-CA") : ""} - {item.packageType}
                           </option>
                         ))}
                       </select>
@@ -1085,7 +1085,7 @@ export default function PackageDetailPageClient({
                 {/* Submit CTA Button */}
                 <button
                   type="submit"
-                  className="w-full bg-gold text-ink font-extrabold py-3.5 px-6 rounded-sm shadow-md hover:bg-gold-lt active:scale-[0.99] transition-all duration-300 tracking-wider uppercase text-sm flex items-center justify-center cursor-pointer"
+                  className="w-full bg-gold text-white font-extrabold py-3.5 px-6 rounded-sm shadow-md hover:bg-gold-lt hover:text-white active:scale-[0.99] transition-all duration-300 tracking-wider uppercase text-sm flex items-center justify-center cursor-pointer"
                 >
                   <TicketPercent className="w-4 h-4 mr-2" />
                   <span>Book {pkg.badgeTag || "Package"}</span>

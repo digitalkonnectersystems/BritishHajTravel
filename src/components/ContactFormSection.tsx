@@ -118,7 +118,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
               <span className="eyebrow">
                 {data.eyebrow || "GET IN TOUCH"}
               </span>
-              <h2 className="text-3xl md:text-4xl font-serif text-ink font-normal mb-3">
+              <h2 className="text-3xl md:text-4xl font-serif text-primary font-normal mb-3">
                 {data.title || "Drop Us A Message"}
               </h2>
             </div>
@@ -134,7 +134,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                           href={`tel:${item.number.replace(/\s+/g, '')}`}
                           target={item.openInNewTab ?? true ? "_blank" : "_self"}
                           rel={item.openInNewTab ?? true ? "noopener noreferrer" : undefined}
-                          className="hover:text-emerald-800 transition-colors inline-block"
+                          className="hover:text-primary transition-colors inline-block"
                         >
                           {item.number}
                         </a>
@@ -154,7 +154,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                           href={`https://wa.me/${item.number.replace(/[^0-9]/g, '')}`}
                           target={item.openInNewTab ?? true ? "_blank" : "_self"}
                           rel={item.openInNewTab ?? true ? "noopener noreferrer" : undefined}
-                          className="hover:text-emerald-800 transition-colors inline-block"
+                          className="hover:text-primary transition-colors inline-block"
                         >
                           {item.number}
                         </a>
@@ -175,7 +175,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                     href={`mailto:${data.email || "info@kingtravelcan.com"}`}
                     target={data.emailNewTab ?? true ? "_blank" : "_self"}
                     rel={data.emailNewTab ?? true ? "noopener noreferrer" : undefined}
-                    className="hover:text-emerald-800 transition-colors"
+                    className="hover:text-primary transition-colors"
                   >
                     {data.email || "info@kingtravelcan.com"}
                   </a>
@@ -198,7 +198,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                     href={data.headOfficeMapUrl || "https://maps.app.goo.gl/1BRUoBxtt4wWw58t6"}
                     target={data.headOfficeNewTab ?? true ? "_blank" : "_self"}
                     rel={data.headOfficeNewTab ?? true ? "noopener noreferrer" : undefined}
-                    className="leading-relaxed block hover:text-emerald-800 transition-colors no-underline text-inherit"
+                    className="leading-relaxed block hover:text-primary transition-colors no-underline text-inherit"
                     dangerouslySetInnerHTML={{ __html: (data.headOffice || "1325 Eglinton Ave E Suite Number 218,\nMississauga, ON L4W 4L9, Canada").replace(/\n/g, '<br />') }}
                   />
                 ) : (
@@ -217,7 +217,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                     href={data.branchOfficeMapUrl || "https://maps.app.goo.gl/U6B4fci2Jas4sh6S6"}
                     target={data.branchOfficeNewTab ?? true ? "_blank" : "_self"}
                     rel={data.branchOfficeNewTab ?? true ? "noopener noreferrer" : undefined}
-                    className="leading-relaxed block hover:text-emerald-800 transition-colors no-underline text-inherit"
+                    className="leading-relaxed block hover:text-primary transition-colors no-underline text-inherit"
                     dangerouslySetInnerHTML={{ __html: (data.branchOffice || "22 Ontario St S,\nMilton, ON L9T 2M6, Canada").replace(/\n/g, '<br />') }}
                   />
                 ) : (
@@ -231,9 +231,9 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
           </div>
 
           {/* Right Column: Contact Form */}
-          <div className="bg-white rounded-3xl p-8 lg:p-10 shadow-xl border border-slate-100 relative">
+          <div className="bg-primary rounded-3xl p-8 lg:p-10 shadow-xl relative">
             {status && (
-              <p className="text-center text-emerald-800 font-semibold mb-6 text-sm">{status}</p>
+              <p className="text-center text-primary font-semibold mb-6 text-sm">{status}</p>
             )}
             <form noValidate className="flex flex-col gap-4" onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -247,7 +247,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                       setForm({ ...form, fullName: e.target.value });
                       if (errors.fullName) setErrors((prev) => ({ ...prev, fullName: "" }));
                     }}
-                    className={`w-full border !border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium ${errors.fullName ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"
+                    className={`w-full border !border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium ${errors.fullName ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-primary"
                       }`}
                   />
                   {errors.fullName && <span className="text-red-600 text-xs font-semibold mt-1 block">{errors.fullName}</span>}
@@ -263,7 +263,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                       setForm({ ...form, email: e.target.value });
                       if (errors.email) setErrors((prev) => ({ ...prev, email: "" }));
                     }}
-                    className={`w-full border border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium ${errors.email ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"
+                    className={`w-full border border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium ${errors.email ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-primary"
                       }`}
                   />
                   {errors.email && <span className="text-red-600 text-xs font-semibold mt-1 block">{errors.email}</span>}
@@ -284,7 +284,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                       if (val.length > 11) val = val.slice(0, 11);
                       setForm({ ...form, phone: val });
                     }}
-                    className="w-full border border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium focus:border-emerald-800"
+                    className="w-full border border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium focus:border-primary"
                   />
                 </div>
 
@@ -300,7 +300,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                       if (errors.packageType) setErrors((prev) => ({ ...prev, packageType: "" }));
                     }}
                     className={`cursor-pointer w-full border border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-sm font-medium appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat ${form.packageType ? "text-[#111111]" : "text-slate-400"
-                      } ${errors.packageType ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"}`}
+                      } ${errors.packageType ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-primary"}`}
                   >
                     <option value="" disabled hidden>Select Package *</option>
                     <option value="Umrah Package" className="text-[#111111]">Umrah Package</option>
@@ -325,7 +325,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                       setErrors((prev) => ({ ...prev, message: "" }));
                     }
                   }}
-                  className={`w-full border border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium ${errors.message ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"
+                  className={`w-full border border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium ${errors.message ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-primary"
                     }`}
                 />
                 {errors.message && <span className="text-red-600 text-xs font-semibold mt-1 block">{errors.message}</span>}
@@ -334,7 +334,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
               <div>
                 <button
                   type="submit"
-                  className="group w-full bg-gold hover:bg-gold-lt text-ink font-bold py-4 px-8 rounded-md shadow-md hover:shadow-md active:scale-[0.99] transition-all duration-200 tracking-wider uppercase text-sm flex items-center justify-center gap-2 cursor-pointer mt-2"
+                  className="group w-full text-white bg-gold hover:bg-gold-lt font-bold py-4 px-8 rounded-md shadow-md hover:shadow-md active:scale-[0.99] transition-all duration-200 tracking-wider uppercase text-sm flex items-center justify-center gap-2 cursor-pointer mt-2"
                 >
                   <span>SEND ENQUIRY</span>
                   <i className="fa-solid fa-paper-plane text-xs group-hover:translate-x-1 group-hover:-translate-y-0.5 transition-transform"></i>

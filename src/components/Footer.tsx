@@ -14,7 +14,7 @@ export default function Footer({ initialFooterData = {} }: { initialFooterData?:
   }
 
   return (
-    <footer id="footer-place" className="px-5 bg-primary text-[#bccfc6] py-[70px] pb-[30px] text-[14px] md:text-[16px] [&_a]:text-[#bccfc6] [&_a:hover]:text-gold">
+    <footer id="footer-place" className="px-5 bg-[#2d2d2d] text-[#bccfc6] py-[70px] pb-[30px] text-[14px] md:text-[16px] [&_a]:text-[#bccfc6] [&_a:hover]:text-white">
       <div className="max-w-[1400px] mx-auto px-5 ">
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-[1.8fr_0.9fr_0.9fr_1.4fr] gap-x-[20px] gap-y-[40px] lg:gap-[40px]">
 
@@ -24,7 +24,7 @@ export default function Footer({ initialFooterData = {} }: { initialFooterData?:
               <Link href="/">
                 {footerData.logo ? (
                   footerData.logo.startsWith('data:') ? (
-                    <img src={footerData.logo} alt="King Travel Logo" loading="lazy" className="w-[210px] h-auto" />
+                    <img src={footerData.logo} alt="British Haj Travel Logo" loading="lazy" className="w-[210px] h-auto" />
                   ) : (
                     <Image
                       src={footerData.logo}
@@ -36,7 +36,7 @@ export default function Footer({ initialFooterData = {} }: { initialFooterData?:
                     />
                   )
                 ) : (
-                  <span className="font-serif font-bold text-xl text-white">KING TRAVEL</span>
+                  <span className="font-serif font-bold text-xl text-white">British Hajj Travel</span>
                 )}
               </Link>
             </div>
@@ -98,7 +98,7 @@ export default function Footer({ initialFooterData = {} }: { initialFooterData?:
 
           {/* ── Column 2: Services ── */}
           <div className="col-span-1 md:col-span-1 lg:col-span-1">
-            <h5 className="text-[15px] tracking-[0.16em] uppercase text-gold mb-[18px] font-semibold">{footerData.servicesTitle || 'SERVICES'}</h5>
+            <h5 className="text-[15px] tracking-[0.16em] uppercase text-white mb-[18px] font-semibold">{footerData.servicesTitle || 'SERVICES'}</h5>
             <ul className="list-none p-0 m-0 space-y-2.5">
               {(footerData.servicesLinks || []).map((link: any, sIdx: number) => (
                 <li key={sIdx} className="font-light">
@@ -110,10 +110,10 @@ export default function Footer({ initialFooterData = {} }: { initialFooterData?:
 
           {/* ── Column 3: Sitemap ── */}
           <div className="col-span-1 md:col-span-1 lg:col-span-1">
-            <h5 className="text-[15px] tracking-[0.16em] uppercase text-gold mb-[18px] font-semibold">{footerData.sitemapTitle || 'SITEMAP'}</h5>
-            <ul className="list-none p-0 m-0 space-y-2.5">
+            <h5 className="text-[15px] tracking-[0.16em] uppercase text-white mb-[18px] font-semibold">{footerData.sitemapTitle || 'SITEMAP'}</h5>
+            <ul className="list-none p-0 m-0  space-y-2.5">
               {(footerData.sitemapLinks || []).map((link: any, mIdx: number) => (
-                <li key={mIdx} className="font-light">
+                <li key={mIdx} className="font-light ">
                   <Link href={link.url || '#'}>{link.label}</Link>
                 </li>
               ))}
@@ -122,7 +122,7 @@ export default function Footer({ initialFooterData = {} }: { initialFooterData?:
 
           {/* ── Column 4: Customer Support ── */}
           <div className="col-span-2 md:col-span-1 lg:col-span-1">
-            <h5 className="text-[15px] tracking-[0.16em] uppercase text-gold mb-[18px] font-semibold">{footerData.supportTitle || '24/7 CUSTOMER SUPPORT'}</h5>
+            <h5 className="text-[15px] tracking-[0.16em] uppercase text-white mb-[18px] font-semibold">{footerData.supportTitle || '24/7 CUSTOMER SUPPORT'}</h5>
             <ul className="list-none p-0 m-0 space-y-2.5">
               {(footerData.supportItems || []).map((item: any, cIdx: number) => {
                 const phoneDisplay = item.phone || item.text || '';
@@ -136,7 +136,7 @@ export default function Footer({ initialFooterData = {} }: { initialFooterData?:
                           href={item.url}
                           target={item.openInNewTab ? "_blank" : "_self"}
                           rel={item.openInNewTab ? "noopener noreferrer" : undefined}
-                          className="footer-support-phone text-gold-lt hover:text-gold transition-colors"
+                          className="footer-support-phone text-white-lt hover:text-white transition-colors"
                         >
                           {phoneDisplay}
                         </a>
@@ -147,10 +147,10 @@ export default function Footer({ initialFooterData = {} }: { initialFooterData?:
                         )}
                       </div>
                     ) : (
-                      <span className="whitespace-nowrap text-md inline-flex items-center gap-1.5 text-gold-lt">
+                      <span className="whitespace-nowrap text-md inline-flex items-center gap-1.5 text-white-lt">
                         <span className="footer-support-phone">{phoneDisplay}</span>
                         {labelDisplay && (
-                          <span className="footer-support-label text-gold-lt/80 font-normal text-xs">
+                          <span className="footer-support-label text-white-lt/80 font-normal text-xs">
                             - {labelDisplay}
                           </span>
                         )}

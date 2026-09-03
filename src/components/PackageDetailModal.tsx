@@ -321,14 +321,14 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
           <div className="lg:col-span-8 flex flex-col gap-10">            {/* 1. Premium Accommodations */}
             {(isMakkahVisible || isMadinahVisible || isAziziyaVisible || isMinaVisible) && (
               <div>
-                <h3 className="text-xl sm:text-2xl font-bold font-serif text-slate-800 mb-5 flex items-center gap-2">
+                <h3 className="text-xl sm:text-2xl font-bold font-serif text-primary mb-5 flex items-center gap-2">
                   Premium Accommodations
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   {/* Makkah Hotel Card */}
                   {isMakkahVisible && (
-                    <div className="bg-white rounded-2xl overflow-hidden border border-emerald-100 shadow-md flex flex-col">
+                    <div className="bg-white rounded-2xl overflow-hidden border border-primary shadow-md flex flex-col">
                       <div className="relative h-48 w-full bg-slate-200">
                         {makkahImg ? (
                           <Image
@@ -349,7 +349,7 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
                       </div>
                       <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
                         <div>
-                          <h4 className="font-bold text-slate-900 text-base line-clamp-1">{makkahName}</h4>
+                          <h4 className="font-bold text-primary text-base line-clamp-1">{makkahName}</h4>
                           {makkahLoc && (
                             <p className="text-xs text-slate-500 flex items-center gap-1 mt-1">
                               <MapPin className="w-3.5 h-3.5 text-primary" />
@@ -436,7 +436,7 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
 
                   {/* Aziziya Hotel Card */}
                   {isAziziyaVisible && (
-                    <div className="bg-white rounded-2xl overflow-hidden border border-emerald-100 shadow-md flex flex-col">
+                    <div className="bg-white rounded-2xl overflow-hidden border border-primary shadow-md flex flex-col">
                       <div className="relative h-48 w-full bg-slate-200">
                         {aziziyaImg ? (
                           <Image
@@ -447,7 +447,7 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
                             unoptimized
                           />
                         ) : (
-                          <div className="w-full h-full bg-emerald-900/10 flex items-center justify-center text-slate-400 text-xs">
+                          <div className="w-full h-full bg-primary flex items-center justify-center text-white text-xs">
                             No image available
                           </div>
                         )}
@@ -468,7 +468,7 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
                         {(aziziyaBadge || isAziziyaDurationVisible) && (
                           <div className="flex items-center gap-2 pt-2 border-t border-slate-100 text-xs font-semibold text-slate-600">
                             {aziziyaBadge && (
-                              <span className="bg-emerald-50 text-primary px-2.5 py-1 rounded-lg border border-emerald-200/60 flex items-center gap-1 text-[11px]">
+                              <span className="bg-primary text-white px-2.5 py-1 rounded-lg border border-primary/60 flex items-center gap-1 text-[11px]">
                                 {aziziyaHotel?.badgeIcon ? <DynamicIcon name={aziziyaHotel.badgeIcon} className="w-3 h-3" /> : <Utensils className="w-3 h-3" />} {aziziyaBadge}
                               </span>
                             )}
@@ -522,7 +522,7 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
                         {(minaBadge || isMinaDurationVisible) && (
                           <div className="flex items-center gap-2 pt-2 border-t border-slate-100 text-xs font-semibold text-slate-600">
                             {minaBadge && (
-                              <span className="bg-amber-50 text-amber-900 px-2.5 py-1 rounded-lg border border-amber-200/60 flex items-center gap-1 text-[11px]">
+                              <span className="bg-gold-soft text-gold px-2.5 py-1 rounded-lg border border-gold-lt flex items-center gap-1 text-[11px]">
                                 {minaHotel?.badgeIcon ? <DynamicIcon name={minaHotel.badgeIcon} className="w-3 h-3" /> : <Utensils className="w-3 h-3" />} {minaBadge}
                               </span>
                             )}
@@ -628,14 +628,14 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
             </div>
 
             {/* 4. Important Booking Notice */}
-            <div className="bg-amber-50/80 border border-amber-200/80 rounded-2xl p-5 sm:p-6 flex items-start gap-4 shadow-sm">
-              <div className="p-2.5 bg-amber-500/10 rounded-xl shrink-0">
-                <AlertCircle className="w-6 h-6 text-amber-700" />
+            <div className="bg-gold-soft border border-gold-lt rounded-2xl p-5 sm:p-6 flex items-start gap-4 shadow-sm">
+              <div className="p-2.5 bg-gold rounded-xl shrink-0">
+                <AlertCircle className="w-6 h-6 text-gold" />
               </div>
               <div className="space-y-1">
-                <h4 className="font-bold text-amber-950 text-sm">Important Booking Notice</h4>
+                <h4 className="font-bold text-gold text-sm">Important Booking Notice</h4>
                 <div
-                  className="text-xs text-amber-900/80 leading-relaxed font-medium prose prose-sm max-w-none"
+                  className="text-xs text-gold leading-relaxed font-medium prose prose-sm max-w-none"
                   dangerouslySetInnerHTML={{ __html: importantNotice }}
                 />
               </div>
@@ -643,7 +643,7 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
 
             {/* 5. Frequently Asked Questions (Accordion) */}
             <div>
-              <h3 className="text-xl sm:text-2xl font-bold font-serif text-slate-800 mb-5 flex items-center gap-2">
+              <h3 className="text-xl sm:text-2xl font-bold font-serif text-primary mb-5 flex items-center gap-2">
                 <AlertCircle className="w-6 h-6 text-primary" /> Frequently Asked Questions
               </h3>
               <div className="bg-white rounded-2xl border border-slate-200/80 shadow-md overflow-hidden">
@@ -687,12 +687,12 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
               {/* Operator Badge Header */}
               <div className="flex justify-between items-start pb-4 border-b border-slate-100">
                 <div>
-                  <h4 className="font-bold font-serif text-slate-900 text-lg">{operatorName}</h4>
+                  <h4 className="font-bold font-serif text-gold text-lg">{operatorName}</h4>
                   <p className="text-xs text-slate-400 font-medium">{operatorReviews}</p>
                 </div>
-                <div className="bg-amber-100 text-amber-900 font-extrabold text-xs px-2.5 py-1 rounded-lg flex items-center gap-1 shadow-sm">
+                <div className="bg-gold-soft text-gold font-extrabold text-xs px-2.5 py-1 rounded-lg flex items-center gap-1 shadow-sm">
                   <span>{operatorRating}</span>
-                  <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
+                  <Star className="w-3 h-3 fill-gold text-gold" />
                 </div>
               </div>
 
@@ -759,7 +759,7 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
                 {/* Submit CTA Button */}
                 <button
                   type="submit"
-                  className="w-full bg-gold hover:bg-[#c48c26] text-slate-950 font-extrabold py-3.5 px-4 rounded-xl text-sm transition-all duration-300 shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 group cursor-pointer"
+                  className="w-full bg-gold hover:bg-gold-lt text-white font-extrabold py-3.5 px-4 rounded-xl text-sm transition-all duration-300 shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 group cursor-pointer"
                 >
                   <span>Book {pkg.badgeTag || "Package"} Now</span>
                   <span className="group-hover:translate-x-1 transition-transform">➔</span>

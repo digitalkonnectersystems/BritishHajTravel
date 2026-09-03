@@ -70,7 +70,7 @@ export default function VisaSolutionsSection({ data, className }: { data?: any; 
             {data?.eyebrow || "EXPLORE OUR"}
           </div>
 
-          <h2>
+          <h2 className="head">
             {data?.title || "Saudi Visa Solutions"}
           </h2>
         </div>
@@ -105,7 +105,7 @@ export default function VisaSolutionsSection({ data, className }: { data?: any; 
 
                 <Link
                   href="/contact"
-                  className="mt-5 inline-flex items-center justify-center bg-gold text-ink font-bold text-sm px-6 py-3 rounded-md hover:bg-gold-lt transition-colors"
+                  className="mt-5 inline-flex items-center justify-center bg-gold text-white font-bold text-sm px-6 py-3 rounded-md hover:bg-gold-lt transition-colors"
                 >
                   Apply Now
                 </Link>

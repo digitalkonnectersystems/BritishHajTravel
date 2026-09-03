@@ -72,7 +72,7 @@ export default function HajjPackagesSection({
 
   const sectionClass = isHomepage
     ? "pb-12 md:pb-16 bg-white"
-    : "pt-12 md:pt-16 bg-sage";
+    : "pt-12 md:pb-16 bg-sage";
 
   return (
     <section className={sectionClass}>
@@ -81,7 +81,7 @@ export default function HajjPackagesSection({
         <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-12 gap-6 text-center md:text-left">
           <div className="flex flex-col items-center md:items-start">
             <h3 className="eyebrow">{eyebrow}</h3>
-            <h2 className="section-heading">{title}</h2>
+            <h2 className="section-heading text-primary">{title}</h2>
           </div>
           <div className="max-w-sm text-ink-soft text-sm leading-relaxed border-t-2 md:border-t-0 md:border-l-2 border-gray-200 pt-4 md:pt-0 pl-0 md:pl-4">
             {description}
@@ -139,7 +139,7 @@ export default function HajjPackagesSection({
               const operatorName = cd.operatorName || "King Travel";
               const operatorRating = cd.operatorRating || "4.4/5";
               const priceSubtext =
-                cd.priceSubtext || "CAD / QUAD OCCUPANCY";
+                cd.priceSubtext || "From £ / QUAD OCCUPANCY";
               const price = pkg.startingPrice
                 ? Number(pkg.startingPrice).toLocaleString("en-CA", {
                   minimumFractionDigits: 0,
@@ -251,13 +251,13 @@ export default function HajjPackagesSection({
                     <div className="absolute top-4 left-4 flex items-center gap-1.5 text-white text-[11px] font-bold tracking-wider">
                       <LucideIcons.Shield className="w-3.5 h-3.5" /> {badgeTag}
                     </div>
-                    <div className="absolute top-4 right-4 bg-gold text-ink px-3 py-1 rounded-full text-[11px] font-black tracking-wider flex items-center gap-1.5 shadow-sm">
+                    <div className="absolute top-4 right-4 bg-gold text-white px-3 py-1 rounded-full text-[11px] font-black tracking-wider flex items-center gap-1.5 shadow-sm">
                       <LucideIcons.Calendar className="w-3.5 h-3.5" /> {duration}
                     </div>
 
                     {/* Bottom text */}
                     <div className="absolute bottom-4 left-5 right-5">
-                      <div className="text-[#20d88a] text-[11px] font-black tracking-widest mb-1 flex items-center gap-1.5">
+                      <div className="text-gold text-[11px] font-black tracking-widest mb-1 flex items-center gap-1.5">
                         <LucideIcons.Plane className="w-3.5 h-3.5" /> {flightRoute}
                       </div>
                       <h3 className="text-white font-serif text-2xl leading-tight font-bold">
@@ -267,7 +267,7 @@ export default function HajjPackagesSection({
                   </div>
 
                   <div className="p-5 flex-1 flex flex-col">
-                    <div className="text-[11px] font-black text-ink uppercase tracking-widest mb-3">
+                    <div className="text-[11px] font-black text-primary uppercase tracking-widest mb-3">
                       ACCOMMODATIONS
                     </div>
 
@@ -308,11 +308,11 @@ export default function HajjPackagesSection({
                                 </span>
                               )}
                               {acc.durationEnabled !== false && acc.nights && (
-                                <span className="bg-gold-lt text-ink-soft text-[9px] px-1.5 py-0.5 rounded font-bold tracking-wider flex items-center gap-1 shrink-0">
+                                <span className="bg-gold-lt text-white text-[9px] px-1.5 py-0.5 rounded font-bold tracking-wider flex items-center gap-1 shrink-0">
                                   {getDurationUnit(acc.nights) === 'days' ? (
-                                    <LucideIcons.Sun className="w-2.5 h-2.5 text-ink" />
+                                    <LucideIcons.Sun className="w-2.5 h-2.5 text-white" />
                                   ) : (
-                                    <LucideIcons.MoonStar className="w-2.5 h-2.5 text-ink" />
+                                    <LucideIcons.MoonStar className="w-2.5 h-2.5 text-white" />
                                   )}
                                   {acc.nights}
                                 </span>
@@ -371,16 +371,16 @@ export default function HajjPackagesSection({
                         </div>
                         <div className="text-sm font-bold text-ink flex items-center gap-2 whitespace-nowrap">
                           {operatorName}{" "}
-                          <span className="bg-gold text-ink text-[10px] px-1.5 py-0.5 rounded font-black">
+                          <span className="bg-gold text-white text-[10px] px-1.5 py-0.5 rounded font-black">
                             {operatorRating}
                           </span>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-[10px] font-bold text-ink-soft uppercase tracking-widest mb-1">
+                        <div className="text-[10px] font-bold text-gold uppercase tracking-widest mb-1">
                           {priceSubtext}
                         </div>
-                        <div className="text-2xl font-black text-ink leading-none">
+                        <div className="text-2xl font-black text-primary leading-none">
                           {price}
                         </div>
                       </div>
@@ -389,7 +389,7 @@ export default function HajjPackagesSection({
                     <div className="flex flex-col sm:flex-row gap-2.5">
                       <a
                         href={`/${pkg.slug}`}
-                        className="flex-1 py-3.5 border-2 border-ink text-ink hover:bg-ink/5 text-xs font-black rounded-xl uppercase tracking-wider transition-colors flex justify-center items-center gap-2"
+                        className="flex-1 py-3.5 border-2 border-primary text-primary hover:bg-primary hover:text-white text-xs font-black rounded-xl uppercase tracking-wider transition-colors flex justify-center items-center gap-2"
                       >
                         <LucideIcons.Eye className="w-4 h-4" /> View Detail
                       </a>
@@ -400,7 +400,7 @@ export default function HajjPackagesSection({
                           setSelectedPkgForBooking(pkg);
                           setBookingModalOpen(true);
                         }}
-                        className="flex-1 py-3.5 bg-gold hover:bg-gold-lt text-ink text-xs font-black rounded-xl uppercase tracking-wider transition-colors flex justify-center items-center gap-2 cursor-pointer shadow-sm"
+                        className="flex-1 py-3.5 bg-gold hover:bg-white hover:border hover:border-gold text-white hover:text-gold text-xs font-black rounded-xl uppercase tracking-wider transition-colors flex justify-center items-center gap-2 shadow-sm"
                       >
                         <LucideIcons.BookOpen className="w-4 h-4" /> Book Hajj 2027
                       </button>

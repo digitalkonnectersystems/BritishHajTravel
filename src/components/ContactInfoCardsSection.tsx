@@ -4,7 +4,7 @@ export default function ContactInfoCardsSection({ data }: { data?: any }) {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
         {/* Card 1: Locations */}
         <div className="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-slate-100/80 flex flex-col items-center text-center">
-          <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-800 flex items-center justify-center text-xl mb-4">
+          <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-gold flex items-center justify-center text-xl mb-4">
             <i className="fa-solid fa-location-dot"></i>
           </div>
           <h3 className="text-xs font-extrabold uppercase tracking-widest text-primary mb-4">

@@ -233,11 +233,11 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
 
   return (
     <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-6">
-      <span className="text-xl font-extrabold mb-4">Plan Your Journey</span>
+      <span className="text-xl text-primary font-extrabold mb-4">Plan Your Journey</span>
 
       <form onSubmit={handleBookingSubmit} noValidate className="space-y-4">
         {bookingStatus && (
-          <p className="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl text-center">
+          <p className="text-xs font-bold text-gray-800 bg-emerald-50 border border-gray-200 p-2.5 rounded-xl text-center">
             {bookingStatus}
           </p>
         )}
@@ -330,7 +330,7 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
                   }
                 }}
                 className={`py-2.5 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${packageType === "hajj"
-                  ? "bg-[#004B39] text-white shadow-sm"
+                  ? "bg-primary text-white shadow-sm"
                   : "bg-transparent text-slate-500 hover:text-slate-800"
                   }`}
               >
@@ -348,7 +348,7 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
                   }
                 }}
                 className={`py-2.5 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${packageType === "umrah"
-                  ? "bg-[#004B39] text-white shadow-sm"
+                  ? "bg-primary text-white shadow-sm"
                   : "bg-transparent text-slate-500 hover:text-slate-800"
                   }`}
               >
@@ -540,7 +540,7 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
         {/* Submit CTA Button */}
         <button
           type="submit"
-          className="w-full bg-gold text-ink font-extrabold py-3.5 px-6 rounded-sm shadow-md hover:bg-gold-lt active:scale-[0.99] transition-all duration-300 tracking-wider uppercase text-sm flex items-center justify-center cursor-pointer"
+          className="w-full bg-gold text-white font-extrabold py-3.5 px-6 rounded-sm shadow-md hover:text-white hover:bg-gold-lt active:scale-[0.99] transition-all duration-300 tracking-wider uppercase text-sm flex items-center justify-center cursor-pointer"
         >
           <TicketPercent className="w-4 h-4 mr-2" />
           <span>Submit Inquiry</span>

@@ -12,19 +12,19 @@ function ContactInfoCardsSection({ data }: { data?: any }) {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
         {/* Card 1: Locations */}
         <div className="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-slate-100/80 flex flex-col items-center text-center">
-          <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-800 flex items-center justify-center text-xl mb-4">
+          <div className="w-12 h-12 rounded-2xl bg-gold-soft text-gold flex items-center justify-center text-xl mb-4">
             <i className="fa-solid fa-location-dot"></i>
           </div>
-          <h3 className="text-md font-extrabold uppercase tracking-widest text-[#004B39] mb-4">
+          <h3 className="text-md font-extrabold uppercase tracking-widest text-primary mb-4">
             {data?.card1Title || "OUR LOCATIONS"}
           </h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full text-center sm:text-left border-t border-slate-100 pt-4 mt-auto">
             {/* Head Office */}
             <div className="flex flex-col items-center sm:items-start">
-              <span className="text-[12px] font-extrabold text-[#004B39] uppercase tracking-wide mb-1">HEAD OFFICE</span>
+              <span className="text-[12px] font-extrabold text-primary uppercase tracking-wide mb-1">HEAD OFFICE</span>
               <a
-                className="text-xs font-medium leading-relaxed text-ink hover:text-emerald-800 transition no-underline"
+                className="text-xs font-medium leading-relaxed text-ink hover:text-gold transition no-underline"
                 href="https://maps.app.goo.gl/1BRUoBxtt4wWw58t6"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -35,9 +35,9 @@ function ContactInfoCardsSection({ data }: { data?: any }) {
 
             {/* Branch Office */}
             <div className="flex flex-col items-center sm:items-start border-t sm:border-t-0 sm:border-l border-slate-100 pt-3 sm:pt-0 sm:pl-4">
-              <span className="text-[12px] font-extrabold text-[#004B39] uppercase tracking-wide mb-1">BRANCH OFFICE</span>
+              <span className="text-[12px] font-extrabold text-primary uppercase tracking-wide mb-1">BRANCH OFFICE</span>
               <a
-                className="text-xs font-medium leading-relaxed text-ink hover:text-emerald-800 transition no-underline"
+                className="text-xs font-medium leading-relaxed text-ink hover:text-gold transition no-underline"
                 href="https://maps.app.goo.gl/U6B4fci2Jas4sh6S6"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -51,10 +51,10 @@ function ContactInfoCardsSection({ data }: { data?: any }) {
         {/* Card 2: Phone Support */}
         <div className="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-slate-100/80 flex flex-col items-center text-center justify-between">
           <div className="flex flex-col items-center w-full">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-800 flex items-center justify-center text-xl mb-4">
+            <div className="w-12 h-12 rounded-2xl bg-gold-soft text-gold flex items-center justify-center text-xl mb-4">
               <i className="fa-solid fa-phone"></i>
             </div>
-            <h3 className="text-md font-extrabold uppercase tracking-widest text-[#004B39] mb-4">
+            <h3 className="text-md font-extrabold uppercase tracking-widest text-primary mb-4">
               {data?.card2Title || "24/7 SUPPORT"}
             </h3>
             <div className="flex flex-col gap-1.5 border-t border-slate-100 pt-4 w-full">
@@ -77,12 +77,12 @@ function ContactInfoCardsSection({ data }: { data?: any }) {
                     return (
                       <a
                         key={idx}
-                        className="text-sm hover:text-emerald-800 transition font-semibold no-underline flex items-center justify-center gap-1.5 flex-wrap"
+                        className="text-sm hover:text-gold transition font-semibold no-underline flex items-center justify-center gap-1.5 flex-wrap"
                         href={actionUrl}
                         target={item.openInNewTab ? "_blank" : undefined}
                         rel={item.openInNewTab ? "noopener noreferrer" : undefined}
                       >
-                        <span className="text-ink font-sans text-sm">{phoneDisplay} -</span>
+                        <span className="text-ink hover:text-gold font-sans text-sm">{phoneDisplay} -</span>
                         {item.label && (
                           <span className="text-ink-light font-medium text-xs inline-flex items-center">
                             {item.label}
@@ -99,19 +99,19 @@ function ContactInfoCardsSection({ data }: { data?: any }) {
         {/* Card 3: Email & Socials */}
         <div className="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-slate-100/80 flex flex-col items-center text-center justify-between">
           <div className="flex flex-col items-center w-full mb-4">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-800 flex items-center justify-center text-xl mb-4">
+            <div className="w-12 h-12 rounded-2xl bg-gold-soft text-gold flex items-center justify-center text-xl mb-4">
               <i className="fa-solid fa-envelope"></i>
             </div>
-            <h3 className="text-md font-extrabold uppercase tracking-widest text-[#004B39] mb-2">
+            <h3 className="text-md font-extrabold uppercase tracking-widest text-primary mb-2">
               {data?.card3Title || "EMAIL US"}
             </h3>
-            <a href={`mailto:${data?.email || "info@kingtravelcan.com"}`} className="text-sm text-ink hover:text-emerald-800 transition break-all font-semibold no-underline">
+            <a href={`mailto:${data?.email || "info@kingtravelcan.com"}`} className="text-sm text-ink hover:text-gold transition break-all font-semibold no-underline">
               {data?.email || "info@kingtravelcan.com"}
             </a>
           </div>
 
           <div className="w-full border-t border-slate-100 pt-3 flex flex-col items-center">
-            <h4 className="text-md font-extrabold uppercase tracking-widest text-[#004B39] mb-2.5">FOLLOW US</h4>
+            <h4 className="text-md font-extrabold uppercase tracking-widest text-primary mb-2.5">FOLLOW US</h4>
             <div className="flex flex-wrap items-center justify-center gap-2">
               {(() => {
                 const socialList: any[] = (data?.socialLinks && Array.isArray(data.socialLinks) && data.socialLinks.length > 0)
@@ -228,7 +228,7 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
   };
 
   return (
-    <div className="relative rounded-3xl overflow-hidden shadow-xl shadow-slate-100/50 bg-white">
+    <div className="relative rounded-3xl overflow-hidden shadow-xl bg-white">
       {isDisabled && (
         <div className="absolute inset-0 z-30 flex flex-col items-center justify-center p-8 text-center bg-slate-950/75 backdrop-blur-md border border-gold/40 rounded-3xl shadow-2xl">
           <div className="w-14 h-14 rounded-2xl bg-gold/10 border border-gold/30 flex items-center justify-center text-2xl mb-4 text-gold">
@@ -247,12 +247,12 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
         <div>
           <div className="text-center mb-10">
             <h2 className="text-2xl md:text-3xl font-serif font-bold text-slate-900 tracking-tight">
-              {formConfig?.title ? formConfig.title : <>Drop Us A <span className="text-[#004B39]">Message</span></>}
+              {formConfig?.title ? formConfig.title : <>Drop Us A <span className="text-primary">Message</span></>}
             </h2>
-            <p className="text-slate-400 text-sm mt-2">{formConfig?.subtitle || data?.subtitle || "Fill out the form below and we'll get back to you shortly."}</p>
+            <p className="text-gray-500 text-sm mt-2">{formConfig?.subtitle || data?.subtitle || "Fill out the form below and we'll get back to you shortly."}</p>
           </div>
 
-          {contactStatus && <p className="text-center text-emerald-800 font-semibold mb-6">{contactStatus}</p>}
+          {contactStatus && <p className="text-center text-gold font-semibold mb-6">{contactStatus}</p>}
 
           <form noValidate className="flex flex-col gap-4" onSubmit={handleContactSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -266,11 +266,11 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
                     setContactForm({ ...contactForm, name: e.target.value });
                     if (errors.name) setErrors((prev) => ({ ...prev, name: "" }));
                   }}
-                  className={`peer w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium appearance-none bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat ${errors.name ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"}`}
+                  className={`peer w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium appearance-none bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat ${errors.name ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-gold"}`}
                 />
                 <label
                   htmlFor="name"
-                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.name ? "text-red-600 peer-focus:text-red-600" : "text-slate-400 peer-focus:text-emerald-800"}`}
+                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.name ? "text-red-600 peer-focus:text-red-600" : "text-slate-400 peer-focus:text-gold"}`}
                 >
                   Name
                 </label>
@@ -287,11 +287,11 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
                     setContactForm({ ...contactForm, email: e.target.value });
                     if (errors.email) setErrors((prev) => ({ ...prev, email: "" }));
                   }}
-                  className={`peer w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium appearance-none bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat ${errors.email ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"}`}
+                  className={`peer w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium appearance-none bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat ${errors.email ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-gold"}`}
                 />
                 <label
                   htmlFor="email"
-                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.email ? "text-red-600 peer-focus:text-red-600" : "text-slate-400 peer-focus:text-emerald-800"}`}
+                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.email ? "text-red-600 peer-focus:text-red-600" : "text-slate-400 peer-focus:text-gold"}`}
                 >
                   Email Address
                 </label>
@@ -313,11 +313,11 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
                     if (val.length > 11) val = val.slice(0, 11);
                     setContactForm({ ...contactForm, phone: val });
                   }}
-                  className={`peer w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium appearance-none bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat ${errors.phone ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"}`}
+                  className={`peer w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium appearance-none bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat ${errors.phone ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-gold"}`}
                 />
                 <label
                   htmlFor="phone"
-                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.phone ? "text-red-600 peer-focus:text-red-600" : "text-slate-400 peer-focus:text-emerald-800"}`}
+                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.phone ? "text-red-600 peer-focus:text-red-600" : "text-slate-400 peer-focus:text-gold"}`}
                 >
                   Phone Number
                 </label>
@@ -330,11 +330,11 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
                   placeholder=" "
                   value={contactForm.website}
                   onChange={(e) => setContactForm({ ...contactForm, website: e.target.value })}
-                  className={`peer w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium appearance-none bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat focus:border-emerald-800`}
+                  className={`peer w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium appearance-none bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat focus:border-gold`}
                 />
                 <label
                   htmlFor="subject"
-                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs text-slate-400 peer-focus:text-emerald-800`}
+                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs text-slate-400 peer-focus:text-gold`}
                 >
                   Subject
                 </label>
@@ -357,12 +357,12 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
                     }));
                   }
                 }}
-                className={`peer w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium appearance-none bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat ${errors.message ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800 min-h-[230px]"}`}
+                className={`peer w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium appearance-none bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat ${errors.message ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-gold min-h-[230px]"}`}
               />
 
               <label
                 htmlFor="message"
-                className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.message ? "text-red-600 peer-focus:text-red-600" : "text-slate-400 peer-focus:text-emerald-800"}`}
+                className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.message ? "text-red-600 peer-focus:text-red-600" : "text-slate-400 peer-focus:text-gold"}`}
               >
                 How can we help you?
               </label>
@@ -377,7 +377,7 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
             <div>
               <button
                 type="submit"
-                className="group w-full bg-gold hover:bg-gold-lt text-ink font-bold py-4 px-8 rounded-md shadow-md hover:shadow-md active:scale-[0.99] transition-all duration-200 tracking-wider uppercase text-sm flex items-center justify-center gap-2 cursor-pointer"
+                className="group w-full bg-gold hover:bg-gold-lt hover:text-white text-white font-bold py-4 px-8 rounded-md shadow-md hover:shadow-md active:scale-[0.99] transition-all duration-200 tracking-wider uppercase text-sm flex items-center justify-center gap-2 cursor-pointer"
               >
                 <span>SEND MESSAGE</span>
                 <i className="fa-solid fa-paper-plane text-xs group-hover:translate-x-1 group-hover:-translate-y-0.5 transition-transform"></i>
@@ -407,9 +407,9 @@ function ContactMapsSection({ data }: { data?: any }) {
 
   return (
     <div className="flex flex-col gap-6 h-full justify-between">
-      <div className="bg-white rounded-3xl shadow-xl shadow-slate-100/50 border border-slate-100/80 p-4 flex-1 flex flex-col min-h-[250px]">
+      <div className="bg-white rounded-3xl shadow-xl border border-slate-100/80 p-4 flex-1 flex flex-col min-h-[250px]">
         <div className="mb-3 pl-2">
-          <h3 className="text-md font-extrabold uppercase tracking-widest text-[#004B39] flex items-center gap-2">
+          <h3 className="text-md font-extrabold uppercase tracking-widest text-primary flex items-center gap-2">
             <i className="fa-solid fa-building text-gold"></i> {headTitle}
           </h3>
           <p className="text-sm text-slate-500 font-medium mt-0.5">{headAddress}</p>
@@ -423,9 +423,9 @@ function ContactMapsSection({ data }: { data?: any }) {
         ></iframe>
       </div>
 
-      <div className="bg-white rounded-3xl shadow-xl shadow-slate-100/50 border border-slate-100/80 p-4 flex-1 flex flex-col min-h-[250px]">
+      <div className="bg-white rounded-3xl shadow-xl border border-slate-100/80 p-4 flex-1 flex flex-col min-h-[250px]">
         <div className="mb-3 pl-2">
-          <h3 className="text-md font-extrabold uppercase tracking-widest text-[#004B39] flex items-center gap-2">
+          <h3 className="text-md font-extrabold uppercase tracking-widest text-primary flex items-center gap-2">
             <i className="fa-solid fa-building text-gold"></i> {branchTitle}
           </h3>
           <p className="text-sm text-slate-500 font-medium mt-0.5">{branchAddress}</p>

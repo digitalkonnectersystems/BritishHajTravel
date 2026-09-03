@@ -3024,7 +3024,7 @@ function PageBuilderContent() {
                                             currentVisas[vIdx] = { ...currentVisas[vIdx], image: url };
                                             updateSectionData(sec.id, 'items', currentVisas);
                                           }}
-                                          subfolder="visas"
+                                          subfolder="umrah"
                                           compact={true}
                                         />
                                       </div>
@@ -3606,7 +3606,7 @@ function PageBuilderContent() {
                                         <ImageUploadWidget
                                           value={sec.data?.bgImage || ''}
                                           onChange={(url) => updateSectionData(sec.id, 'bgImage', url)}
-                                          subfolder="backgrounds"
+                                          subfolder="banners"
                                         />
                                       </div>
                                       <span className="text-xs text-slate-500">Upload background image (JPG, PNG, WebP) for the section. Suggested size: 1920x800px.</span>

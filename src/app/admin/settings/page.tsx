@@ -28,7 +28,12 @@ import {
   saveSeoIntelligenceSettingsAction,
 } from '@/actions/pageActions';
 import { getEmailDeliveryLogsAction } from '@/actions/logActions';
-import { getResponsiveEmailTemplateHtml } from '@/lib/emailTemplate';
+import {
+  getResponsiveEmailTemplateHtml,
+  CANONICAL_FORM_SUBJECTS,
+  FORM_SAMPLE_DATA,
+  CanonicalFormSubject,
+} from '@/lib/emailTemplate';
 import {
   getUsersList,
   createUserAction,
@@ -470,14 +475,14 @@ export default function AdminSettingsPage() {
     ],
   });
 
+  const [selectedTemplateSubject, setSelectedTemplateSubject] =
+    useState<CanonicalFormSubject>('Get a Free Quote Form');
+
   const [emailTemplateHtml, setEmailTemplateHtml] = useState<string>(() =>
-    getResponsiveEmailTemplateHtml('Sample Form Submission', {
-      fullName: 'John Doe',
-      email: 'john.doe@example.com',
-      phone: '+1 905-624-8555',
-      packageType: 'Flight Only',
-      numberOfPilgrims: 20,
-    })
+    getResponsiveEmailTemplateHtml(
+      'Get a Free Quote Form',
+      FORM_SAMPLE_DATA['Get a Free Quote Form']
+    )
   );
 
   const [formsData, setFormsData] = useState<any>({
@@ -961,8 +966,6 @@ export default function AdminSettingsPage() {
   const handleSaveIdentity = () => {
     const updatedIdentity = {
       ...identityData,
-      siteName: siteName || identityData.siteName,
-      logoAlt: altText || identityData.logoAlt,
     };
     setConfirmConfig({
       icon: '🏷️',
@@ -994,8 +997,6 @@ export default function AdminSettingsPage() {
   const handleSaveHeaderAll = async () => {
     const updatedIdentity = {
       ...identityData,
-      siteName: siteName || identityData.siteName,
-      logoAlt: altText || identityData.logoAlt,
     };
     if (typeof window !== 'undefined') {
       localStorage.setItem('king_travel_site_identity', JSON.stringify(updatedIdentity));
@@ -1056,7 +1057,7 @@ export default function AdminSettingsPage() {
             <span className="text-xl">⚙️</span>
             <h1 className="text-2xl font-extrabold text-slate-900 m-0">Settings</h1>
           </div>
-          <p className="text-xs text-slate-400 mt-1 mb-0">
+          <p className="text-ink-lt mt-1 mb-0">
             Manage global interface settings, brand identity, navigation builders, and system options.
           </p>
         </div>
@@ -1108,7 +1109,7 @@ export default function AdminSettingsPage() {
         )}
 
         {/* ── Main Tab Content Box ── */}
-        <div className="bg-white rounded-2xl p-7 border border-slate-100 shadow-xs flex flex-col gap-7">
+        <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-xs flex flex-col gap-7">
 
           {/* ================= TAB 1: HEADER & FOOTER ================= */}
           {activeTab === 'header-footer' && subTab === 'header' && (
@@ -1127,35 +1128,58 @@ export default function AdminSettingsPage() {
                     <Save className="w-3.5 h-3.5 text-emerald-300" /> Save Logo &amp; Identity
                   </button>
                 </div>
-                <div className="grid grid-cols-[180px_1fr] gap-6 items-center">
-                  <div className="bg-slate-50 border-2 border-dashed border-slate-300 rounded-2xl p-5 text-center">
-                    <img src="/img/logo.png" alt="Logo Preview" className="max-w-full h-auto block mx-auto" />
-                    <span className="text-[10px] text-slate-400 mt-2 block">PNG, SVG or WEBP</span>
+                <div className="grid grid-cols-1 md:grid-cols-[180px_1fr] gap-4 items-center">
+                  <div className="h-28 bg-primary rounded-xl p-3 flex flex-col items-center justify-center border border-slate-300 shadow-2xs">
+                    {identityData.logo ? (
+                      <img
+                        src={identityData.logo}
+                        alt="Logo Preview"
+                        className="max-h-16 max-w-full object-contain drop-shadow-xs"
+                      />
+                    ) : (
+                      <span className="text-xs text-white font-bold">No Logo</span>
+                    )}
+                    <span className="text-[9px] text-emerald-200 mt-1.5 font-bold">Live Preview</span>
                   </div>
 
-                  <div className="flex flex-col gap-3.5">
+                  <div className="flex flex-col gap-3">
                     <div>
-                      <label className="block text-[11px] font-extrabold text-slate-500 mb-1.5">
-                        SITE NAME (TEXT FALLBACK)
+                      <label className="block text-[10px] font-bold text-slate-600 uppercase mb-1">
+                        Header Logo Image
                       </label>
-                      <input
-                        type="text"
-                        value={siteName}
-                        onChange={(e) => setSiteName(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs outline-none focus:border-primary"
-                      />
+                      <div className="w-full">
+                        <ImageUploadWidget
+                          value={identityData.logo || ''}
+                          onChange={(url: string) => setIdentityData({ ...identityData, logo: url })}
+                          subfolder="branding"
+                        />
+                      </div>
                     </div>
 
-                    <div>
-                      <label className="block text-[11px] font-extrabold text-slate-500 mb-1.5">
-                        ALTERNATIVE TEXT
-                      </label>
-                      <input
-                        type="text"
-                        value={altText}
-                        onChange={(e) => setAltText(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs outline-none focus:border-primary"
-                      />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-600 uppercase mb-1">
+                          SITE NAME (TEXT FALLBACK)
+                        </label>
+                        <input
+                          type="text"
+                          value={identityData.siteName || ''}
+                          onChange={(e) => setIdentityData({ ...identityData, siteName: e.target.value })}
+                          className="w-full px-3 py-2 rounded-lg border border-slate-300 bg-white text-xs outline-none focus:border-primary font-semibold text-slate-800"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-600 uppercase mb-1">
+                          ALTERNATIVE TEXT
+                        </label>
+                        <input
+                          type="text"
+                          value={identityData.logoAlt || ''}
+                          onChange={(e) => setIdentityData({ ...identityData, logoAlt: e.target.value })}
+                          className="w-full px-3 py-2 rounded-lg border border-slate-300 bg-white text-xs outline-none focus:border-primary font-semibold text-slate-800"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1223,7 +1247,7 @@ export default function AdminSettingsPage() {
                         style={dragOverL1 === item.id ? { borderLeft: '3px solid #004B39', background: 'linear-gradient(to right, #d1fae5, white)' } : {}}
                       >
                         <div className="flex items-center gap-2.5">
-                          <span className="text-slate-400 font-bold text-xs cursor-grab active:cursor-grabbing select-none" title="Drag to reorder">⋮⋮</span>
+                          <span className="text-ink-lt font-bold text-xs cursor-grab active:cursor-grabbing select-none" title="Drag to reorder">⋮⋮</span>
                           <span className="font-bold text-xs text-slate-800">{item.label}</span>
                           {item.children && item.children.length > 0 && (
                             <span className="text-[10px] font-extrabold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
@@ -1418,7 +1442,7 @@ export default function AdminSettingsPage() {
                   <div className="flex justify-between items-center">
                     <div>
                       <div className="text-xs font-bold">Search Bar</div>
-                      <div className="text-[11px] text-slate-400">Show the search input in the header</div>
+                      <div className="text-[11px] text-ink-lt">Show the search input in the header</div>
                     </div>
                     <Field orientation="horizontal">
                       <Switch id="switch-search-bar" checked={showSearchBar} onChange={setShowSearchBar} />
@@ -1472,7 +1496,7 @@ export default function AdminSettingsPage() {
                         <ImageUploadWidget
                           value={footerData.logo || ''}
                           onChange={(url: string) => setFooterData({ ...footerData, logo: url })}
-                          subfolder="footer"
+                          subfolder="logos"
                         />
                       </div>
                     </div>
@@ -1624,7 +1648,7 @@ export default function AdminSettingsPage() {
                         {badge.icon ? (
                           <img src={badge.icon} alt={badge.name} className="max-h-full max-w-full object-contain" />
                         ) : (
-                          <span className="text-[9px] text-slate-400 font-bold">{badge.name || 'SVG Icon'}</span>
+                          <span className="text-[9px] text-ink-lt font-bold">{badge.name || 'SVG Icon'}</span>
                         )}
                       </div>
                       <input
@@ -1721,7 +1745,7 @@ export default function AdminSettingsPage() {
                                 updated[lIdx] = temp;
                                 setFooterData({ ...footerData, servicesLinks: updated });
                               }}
-                              className={`p-1 rounded border border-slate-200 flex items-center justify-center transition-colors ${isFirst ? 'opacity-30 cursor-not-allowed bg-slate-50 text-slate-400' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs'
+                              className={`p-1 rounded border border-slate-200 flex items-center justify-center transition-colors ${isFirst ? 'opacity-30 cursor-not-allowed bg-slate-50 text-ink-lt' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs'
                                 }`}
                               title="Move Up"
                             >
@@ -1738,7 +1762,7 @@ export default function AdminSettingsPage() {
                                 updated[lIdx] = temp;
                                 setFooterData({ ...footerData, servicesLinks: updated });
                               }}
-                              className={`p-1 rounded border border-slate-200 flex items-center justify-center transition-colors ${isLast ? 'opacity-30 cursor-not-allowed bg-slate-50 text-slate-400' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs'
+                              className={`p-1 rounded border border-slate-200 flex items-center justify-center transition-colors ${isLast ? 'opacity-30 cursor-not-allowed bg-slate-50 text-ink-lt' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs'
                                 }`}
                               title="Move Down"
                             >
@@ -1825,7 +1849,7 @@ export default function AdminSettingsPage() {
                                 updated[lIdx] = temp;
                                 setFooterData({ ...footerData, sitemapLinks: updated });
                               }}
-                              className={`p-1 rounded border border-slate-200 flex items-center justify-center transition-colors ${isFirst ? 'opacity-30 cursor-not-allowed bg-slate-50 text-slate-400' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs'
+                              className={`p-1 rounded border border-slate-200 flex items-center justify-center transition-colors ${isFirst ? 'opacity-30 cursor-not-allowed bg-slate-50 text-ink-lt' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs'
                                 }`}
                               title="Move Up"
                             >
@@ -1842,7 +1866,7 @@ export default function AdminSettingsPage() {
                                 updated[lIdx] = temp;
                                 setFooterData({ ...footerData, sitemapLinks: updated });
                               }}
-                              className={`p-1 rounded border border-slate-200 flex items-center justify-center transition-colors ${isLast ? 'opacity-30 cursor-not-allowed bg-slate-50 text-slate-400' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs'
+                              className={`p-1 rounded border border-slate-200 flex items-center justify-center transition-colors ${isLast ? 'opacity-30 cursor-not-allowed bg-slate-50 text-ink-lt' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs'
                                 }`}
                               title="Move Down"
                             >
@@ -1932,7 +1956,7 @@ export default function AdminSettingsPage() {
                               updated[cIdx] = temp;
                               setFooterData({ ...footerData, supportItems: updated });
                             }}
-                            className={`p-1.5 rounded-lg border border-slate-200 flex items-center justify-center transition-colors ${isFirst ? 'opacity-30 cursor-not-allowed bg-slate-50 text-slate-400' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs'
+                            className={`p-1.5 rounded-lg border border-slate-200 flex items-center justify-center transition-colors ${isFirst ? 'opacity-30 cursor-not-allowed bg-slate-50 text-ink-lt' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs'
                               }`}
                             title="Move Up"
                           >
@@ -1949,7 +1973,7 @@ export default function AdminSettingsPage() {
                               updated[cIdx] = temp;
                               setFooterData({ ...footerData, supportItems: updated });
                             }}
-                            className={`p-1.5 rounded-lg border border-slate-200 flex items-center justify-center transition-colors ${isLast ? 'opacity-30 cursor-not-allowed bg-slate-50 text-slate-400' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs'
+                            className={`p-1.5 rounded-lg border border-slate-200 flex items-center justify-center transition-colors ${isLast ? 'opacity-30 cursor-not-allowed bg-slate-50 text-ink-lt' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs'
                               }`}
                             title="Move Down"
                           >
@@ -2247,7 +2271,7 @@ export default function AdminSettingsPage() {
                   <div>
                     <div className="flex items-center justify-between mb-1.5">
                       <label className="text-xs font-bold text-slate-700">Canonical Sitemap Endpoint</label>
-                      <span className="text-[10px] font-bold text-slate-400 uppercase">
+                      <span className="text-[10px] font-bold text-ink-lt uppercase">
                         Type: XML URLSET
                       </span>
                     </div>
@@ -2288,19 +2312,19 @@ export default function AdminSettingsPage() {
                   {/* Sitemap Metrics Bar */}
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-1">
                     <div className="p-3 bg-white rounded-xl border border-slate-200/80">
-                      <span className="text-[10px] font-bold text-slate-400 uppercase block mb-0.5">ELIGIBLE URLS</span>
+                      <span className="text-[10px] font-bold text-ink-lt uppercase block mb-0.5">ELIGIBLE URLS</span>
                       <span className="text-sm font-extrabold text-slate-900 font-mono">
                         {sitemapStats.totalUrls > 0 ? sitemapStats.totalUrls : (seoData.sitemapTotalUrls || 'Auto-computed')}
                       </span>
                     </div>
                     <div className="p-3 bg-white rounded-xl border border-slate-200/80">
-                      <span className="text-[10px] font-bold text-slate-400 uppercase block mb-0.5">SITEMAP SIZE</span>
+                      <span className="text-[10px] font-bold text-ink-lt uppercase block mb-0.5">SITEMAP SIZE</span>
                       <span className="text-sm font-extrabold text-slate-900 font-mono">
                         {sitemapStats.sizeKb && sitemapStats.sizeKb !== '0' ? `${sitemapStats.sizeKb} KB` : (seoData.sitemapSizeKb ? `${seoData.sitemapSizeKb} KB` : 'Dynamic')}
                       </span>
                     </div>
                     <div className="p-3 bg-white rounded-xl border border-slate-200/80 col-span-2 sm:col-span-1">
-                      <span className="text-[10px] font-bold text-slate-400 uppercase block mb-0.5">LAST GENERATED</span>
+                      <span className="text-[10px] font-bold text-ink-lt uppercase block mb-0.5">LAST GENERATED</span>
                       <span className="text-xs font-semibold text-slate-700 block truncate" title={sitemapStats.lastGenerated || seoData.sitemapLastGenerated || 'Dynamic on crawler request'}>
                         {sitemapStats.lastGenerated || seoData.sitemapLastGenerated || 'On crawler visit'}
                       </span>
@@ -2353,7 +2377,7 @@ export default function AdminSettingsPage() {
 
                   {/* Effective Served Directives */}
                   <div className="bg-white p-3.5 rounded-xl border border-slate-200 flex flex-col gap-2 font-mono text-[11px] text-slate-800">
-                    <div className="flex items-center justify-between text-slate-400 uppercase text-[10px] font-bold border-b border-slate-100 pb-1">
+                    <div className="flex items-center justify-between text-ink-lt uppercase text-[10px] font-bold border-b border-slate-100 pb-1">
                       <span>EFFECTIVE ROBOTS.TXT DIRECTIVES</span>
                       <span className={seoData.siteIndexingEnabled ? 'text-emerald-700 font-bold' : 'text-red-700 font-bold'}>
                         {seoData.siteIndexingEnabled ? '● HEALTHY' : '● BLOCKED'}
@@ -2442,7 +2466,7 @@ export default function AdminSettingsPage() {
                                   additionalDisallowPaths: seoData.additionalDisallowPaths.filter((item: string) => item !== p),
                                 });
                               }}
-                              className="text-slate-400 hover:text-red-600 cursor-pointer"
+                              className="text-ink-lt hover:text-red-600 cursor-pointer"
                             >
                               <X className="w-3 h-3" />
                             </button>
@@ -2781,7 +2805,7 @@ export default function AdminSettingsPage() {
                       {identityData.logo ? (
                         <img src={identityData.logo} alt="Site Logo" className="max-h-24 max-w-full object-contain" />
                       ) : (
-                        <span className="text-xs text-slate-400 font-bold">Click to upload site logo</span>
+                        <span className="text-xs text-ink-lt font-bold">Click to upload site logo</span>
                       )}
                       <div className="flex gap-2 items-center mt-3">
                         <label className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer border border-slate-300 flex items-center gap-1.5">
@@ -2827,7 +2851,7 @@ export default function AdminSettingsPage() {
                         }}
                       />
                     </div>
-                    <span className="text-xs text-slate-400 font-bold mt-1">Recommended: .ico, .png, .svg</span>
+                    <span className="text-xs text-ink-lt font-bold mt-1">Recommended: .ico, .png, .svg</span>
                   </div>
                 </div>
               </div>
@@ -3075,7 +3099,7 @@ export default function AdminSettingsPage() {
                         className="w-full p-2.5 rounded-xl border border-slate-300 bg-emerald-50/20 text-xs font-mono"
                         placeholder="/cart, /checkout, /private"
                       />
-                      <span className="text-[10px] text-slate-400 mt-1 block">Enter paths separated by commas where the sidebar should not appear.</span>
+                      <span className="text-[10px] text-ink-lt mt-1 block">Enter paths separated by commas where the sidebar should not appear.</span>
                     </div>
                   </div>
 
@@ -3165,7 +3189,7 @@ export default function AdminSettingsPage() {
                       {(shareData.activePlatforms || []).map((p: any, pIdx: number) => (
                         <div key={p.id || pIdx} className="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-emerald-50/10">
                           <div className="flex items-center gap-3">
-                            <span className="text-slate-400 font-bold text-xs cursor-move">⋮⋮</span>
+                            <span className="text-ink-lt font-bold text-xs cursor-move">⋮⋮</span>
                             <input
                               type="checkbox"
                               checked={p.enabled ?? true}
@@ -3224,7 +3248,7 @@ export default function AdminSettingsPage() {
                     <div className="w-3 h-3 rounded-full bg-red-500"></div>
                     <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                     <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                    <span className="text-xs font-bold text-slate-400 ml-2">Live Web Preview</span>
+                    <span className="text-xs font-bold text-ink-lt ml-2">Live Web Preview</span>
                   </div>
 
                   {/* Wireframe Web Page Content */}
@@ -3301,7 +3325,7 @@ export default function AdminSettingsPage() {
                     )}
                   </div>
 
-                  <span className="text-[10px] text-slate-400 text-center">Changes reflect live in preview above based on selected options.</span>
+                  <span className="text-[10px] text-ink-lt text-center">Changes reflect live in preview above based on selected options.</span>
                 </div>
 
               </div>
@@ -3343,7 +3367,7 @@ export default function AdminSettingsPage() {
                   <tbody className="divide-y divide-slate-100 text-xs font-semibold text-slate-700">
                     {usersList.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="p-8 text-center text-slate-400 font-normal">
+                        <td colSpan={5} className="p-8 text-center text-ink-lt font-normal">
                           No users found. Click &quot;Add User&quot; to create your first account.
                         </td>
                       </tr>
@@ -3370,7 +3394,7 @@ export default function AdminSettingsPage() {
                                     Badge
                                   </span>
                                 </div>
-                                <div className="text-[11px] text-slate-400 font-medium">{u.email}</div>
+                                <div className="text-[11px] text-ink-lt font-medium">{u.email}</div>
                               </div>
                             </div>
                           </td>
@@ -3445,7 +3469,7 @@ export default function AdminSettingsPage() {
                       <button
                         type="button"
                         onClick={() => setUserModalOpen(false)}
-                        className="text-slate-400 hover:text-slate-600 p-1 border-none bg-transparent cursor-pointer"
+                        className="text-ink-lt hover:text-slate-600 p-1 border-none bg-transparent cursor-pointer"
                       >
                         <X className="w-4 h-4" />
                       </button>
@@ -3500,7 +3524,7 @@ export default function AdminSettingsPage() {
                           <button
                             type="button"
                             onClick={() => setShowModalPassword(!showModalPassword)}
-                            className="absolute right-3 text-slate-400 hover:text-slate-600 border-none bg-transparent cursor-pointer"
+                            className="absolute right-3 text-ink-lt hover:text-slate-600 border-none bg-transparent cursor-pointer"
                           >
                             {showModalPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                           </button>
@@ -3547,7 +3571,7 @@ export default function AdminSettingsPage() {
                               </div>
                               <div className="flex justify-between items-center text-[10px] uppercase font-extrabold tracking-wider mt-1">
                                 <span className={textColor}>{label}</span>
-                                <span className="text-slate-400 font-semibold lowercase">{percent}% secure</span>
+                                <span className="text-ink-lt font-semibold lowercase">{percent}% secure</span>
                               </div>
                             </div>
                           );
@@ -3710,7 +3734,7 @@ export default function AdminSettingsPage() {
                             onChange={async (e) => {
                               const file = e.target.files?.[0];
                               if (file) {
-                                const url = await uploadFileToFtp(file, 'login');
+                                const url = await uploadFileToFtp(file, 'branding');
                                 if (url) setLoginAuthData({ ...loginAuthData, backgroundImage: url });
                               }
                             }}
@@ -3739,7 +3763,7 @@ export default function AdminSettingsPage() {
                         className="w-full p-2.5 rounded-xl border border-slate-300 bg-emerald-50/20 text-xs font-semibold outline-none"
                         placeholder="Describe this image for accessibility..."
                       />
-                      <span className="text-[10px] text-slate-400 mt-1 block">
+                      <span className="text-[10px] text-ink-lt mt-1 block">
                         Upload a high-quality background for the login page (1920x1080 recommended).
                       </span>
                     </div>
@@ -3833,7 +3857,7 @@ export default function AdminSettingsPage() {
                           <Upload className="w-5 h-5" />
                         </div>
                         <div className="text-xs font-bold text-slate-800 mb-0.5">Click to upload or drag and drop</div>
-                        <div className="text-[11px] text-slate-400">WebP, PNG &amp; SVG (max. 50KB)</div>
+                        <div className="text-[11px] text-ink-lt">WebP, PNG &amp; SVG (max. 50KB)</div>
                         <input
                           type="file"
                           accept="image/*"
@@ -3841,7 +3865,7 @@ export default function AdminSettingsPage() {
                           onChange={async (e) => {
                             const file = e.target.files?.[0];
                             if (file) {
-                              const url = await uploadFileToFtp(file, 'disclaimer');
+                                  const url = await uploadFileToFtp(file, 'banners');
                               if (url) setDisclaimerData({ ...disclaimerData, image: url });
                             }
                           }}
@@ -3849,7 +3873,7 @@ export default function AdminSettingsPage() {
                       </label>
                     )}
                   </div>
-                  <span className="text-[10px] text-slate-400 mt-1">Upload the image to be shown in the popup.</span>
+                  <span className="text-[10px] text-ink-lt mt-1">Upload the image to be shown in the popup.</span>
                 </div>
 
                 {/* Right Box: Enable Disclaimer Popup Switch */}
@@ -3922,10 +3946,10 @@ export default function AdminSettingsPage() {
               {/* FORMS MANAGEMENT Header with Universal Save Form Button */}
               <div className="flex items-center justify-between pb-2 border-b border-slate-200/60">
                 <div>
-                  <span className="text-xl font-extrabold text-slate-900 m-0 flex items-center gap-2">
-                    🚩 FORMS MANAGEMENT
+                  <span className="text-2xl font-serif font-extrabold text-slate-900 m-0 flex items-center gap-2">
+                    FORMS MANAGEMENT
                   </span>
-                  <p className="text-xs text-slate-500 mt-1 mb-0">
+                  <p className="text-xs text-ink-lt mt-1 mb-0">
                     Configure titles, email routing, notification templates, submission inbox, and form field inputs across King Travel.
                   </p>
                 </div>
@@ -3986,7 +4010,7 @@ export default function AdminSettingsPage() {
                   <div className="flex justify-between items-center bg-white p-5 rounded-3xl border border-slate-100 shadow-2xs">
                     <div>
                       <h3 className="text-base font-extrabold text-slate-900 m-0">All Dynamic Website Forms</h3>
-                      <p className="text-xs text-slate-500 mt-1 mb-0">Overview of active forms, field inputs count, recipient routing, and field manager.</p>
+                      <p className="text-xs text-ink-lt mt-1 mb-0">Overview of active forms, field inputs count, recipient routing, and field manager.</p>
                     </div>
                     <span className="text-xs font-bold bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full border border-emerald-200">
                       {Object.keys(formsData).length} Active Forms
@@ -4032,7 +4056,7 @@ export default function AdminSettingsPage() {
                                 <span className="text-xl">{f.icon}</span>
                                 <div>
                                   <h4 className="text-base font-extrabold text-slate-900 m-0">{f.title}</h4>
-                                  <span className="text-[10px] font-mono font-bold text-slate-400 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full inline-block mt-0.5">
+                                  <span className="text-[10px] font-mono font-bold text-ink-lt bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full inline-block mt-0.5">
                                     🗄️ DB Table: {
                                       formKey === 'quoteForm' ? 'quote_enquiries' :
                                         formKey === 'packageDetailForm' ? 'package_booking_enquiries' :
@@ -4083,7 +4107,7 @@ export default function AdminSettingsPage() {
                             <p className="text-xs text-slate-500 leading-relaxed mb-4">{f.desc}</p>
 
                             <div className="mb-4">
-                              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                              <div className="text-[11px] font-bold text-ink-lt uppercase tracking-wider mb-2">
                                 Form Input Fields ({fieldsList.length}):
                               </div>
                               <div className="flex flex-wrap gap-1.5">
@@ -4285,7 +4309,7 @@ export default function AdminSettingsPage() {
                                           {fd.label} {fd.required && <span className="text-red-500 font-bold">*</span>}
                                         </label>
                                         {fd.type === 'textarea' || fd.type === 'richtext' ? (
-                                          <div className="w-full p-3 border border-slate-200 rounded-xl text-xs bg-slate-50/70 min-h-[60px] text-slate-400 font-medium">
+                                          <div className="w-full p-3 border border-slate-200 rounded-xl text-xs bg-slate-50/70 min-h-[60px] text-ink-lt font-medium">
                                             {fd.type === 'richtext' ? '✍️ Rich Text Editor' : fd.placeholder || `Enter ${fd.label.toLowerCase()}...`}
                                           </div>
                                         ) : fd.type === 'select' ? (
@@ -4434,7 +4458,7 @@ export default function AdminSettingsPage() {
                           {/* Routing Rule Cards */}
                           <div className="flex flex-col gap-3">
                             {rules.length === 0 && (
-                              <div className="text-center py-8 text-slate-400 text-xs border-2 border-dashed border-slate-200 rounded-2xl">
+                              <div className="text-center py-8 text-ink-lt text-xs border-2 border-dashed border-slate-200 rounded-2xl">
                                 No routing rules configured. Click <strong>Add Routing Rule</strong> to get started.
                               </div>
                             )}
@@ -4483,7 +4507,7 @@ export default function AdminSettingsPage() {
                                             <span
                                               key={fKey}
                                               className={`flex items-center gap-1.5 border px-2.5 py-1 rounded-lg text-[10px] font-bold shadow-2xs ${isFormDisabled
-                                                ? 'bg-slate-100/90 border-slate-300 text-slate-400'
+                                                ? 'bg-slate-100/90 border-slate-300 text-ink-lt'
                                                 : 'bg-white border-slate-200 text-slate-700'
                                                 }`}
                                             >
@@ -4532,7 +4556,7 @@ export default function AdminSettingsPage() {
                                                     key={k}
                                                     value={k}
                                                     disabled={isFormDisabled}
-                                                    className={isFormDisabled ? 'text-slate-400 bg-slate-50 font-normal italic' : 'text-slate-800 font-bold'}
+                                                    className={isFormDisabled ? 'text-ink-lt bg-slate-50 font-normal italic' : 'text-slate-800 font-bold'}
                                                   >
                                                     {km.icon} {km.title} {isFormDisabled ? '— (Disabled)' : ''}
                                                   </option>
@@ -4558,7 +4582,7 @@ export default function AdminSettingsPage() {
                                           placeholder="e.g. booking@kingtravelcan.com"
                                           value={rule.sendTo}
                                           onChange={(e) => updateRule(rule.id, { sendTo: e.target.value })}
-                                          className="w-full px-3 py-2 bg-white border border-emerald-200 rounded-xl text-xs outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 font-mono font-semibold text-slate-800 shadow-2xs placeholder:text-slate-400"
+                                          className="w-full px-3 py-2 bg-white border border-emerald-200 rounded-xl text-xs outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 font-mono font-semibold text-slate-800 shadow-2xs placeholder:text-ink-lt"
                                         />
                                         <p className="text-[10px] text-emerald-700/70 m-0">Destination email address for selected forms</p>
                                       </div>
@@ -4575,7 +4599,7 @@ export default function AdminSettingsPage() {
                                           placeholder="cc@domain.com"
                                           value={rule.cc}
                                           onChange={(e) => updateRule(rule.id, { cc: e.target.value })}
-                                          className="w-full px-3 py-2 bg-white border border-violet-200 rounded-xl text-xs outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-400/10 font-mono font-semibold text-slate-800 shadow-2xs placeholder:text-slate-400"
+                                          className="w-full px-3 py-2 bg-white border border-violet-200 rounded-xl text-xs outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-400/10 font-mono font-semibold text-slate-800 shadow-2xs placeholder:text-ink-lt"
                                         />
                                         <p className="text-[10px] text-violet-700/70 m-0">Optional — leave blank for no CC</p>
                                       </div>
@@ -4592,7 +4616,7 @@ export default function AdminSettingsPage() {
                                           placeholder="bcc@domain.com"
                                           value={rule.bcc || ''}
                                           onChange={(e) => updateRule(rule.id, { bcc: e.target.value })}
-                                          className="w-full px-3 py-2 bg-white border border-sky-200 rounded-xl text-xs outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-400/10 font-mono font-semibold text-slate-800 shadow-2xs placeholder:text-slate-400"
+                                          className="w-full px-3 py-2 bg-white border border-sky-200 rounded-xl text-xs outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-400/10 font-mono font-semibold text-slate-800 shadow-2xs placeholder:text-ink-lt"
                                         />
                                         <p className="text-[10px] text-sky-700/70 m-0">Optional — leave blank for no BCC</p>
                                       </div>
@@ -4696,7 +4720,7 @@ export default function AdminSettingsPage() {
                           <span className="text-xs font-mono font-bold text-white block truncate">
                             smtp.kingtravelcan.com
                           </span>
-                          <span className="text-[10px] text-slate-400 mt-0.5 block">Configured in process.env.SMTP_HOST</span>
+                          <span className="text-[10px] text-ink-lt mt-0.5 block">Configured in process.env.SMTP_HOST</span>
                         </div>
 
                         <div className="p-3.5 rounded-2xl bg-[#051410]/70 border border-emerald-500/20 backdrop-blur-md">
@@ -4706,7 +4730,7 @@ export default function AdminSettingsPage() {
                           <span className="text-xs font-mono font-bold text-emerald-300 block">
                             Port 587 (STARTTLS)
                           </span>
-                          <span className="text-[10px] text-slate-400 mt-0.5 block">Configured in process.env.SMTP_PORT</span>
+                          <span className="text-[10px] text-ink-lt mt-0.5 block">Configured in process.env.SMTP_PORT</span>
                         </div>
 
                         <div className="p-3.5 rounded-2xl bg-[#051410]/70 border border-emerald-500/20 backdrop-blur-md">
@@ -4716,7 +4740,7 @@ export default function AdminSettingsPage() {
                           <span className="text-xs font-mono font-bold text-white block truncate">
                             no-reply@kingtravelcan.com
                           </span>
-                          <span className="text-[10px] text-slate-400 mt-0.5 block">Configured in process.env.SMTP_USER</span>
+                          <span className="text-[10px] text-ink-lt mt-0.5 block">Configured in process.env.SMTP_USER</span>
                         </div>
 
                         <div className="p-3.5 rounded-2xl bg-[#051410]/70 border border-emerald-500/20 backdrop-blur-md">
@@ -4726,7 +4750,7 @@ export default function AdminSettingsPage() {
                           <span className="text-xs font-mono font-bold text-emerald-300 block">
                             🔒 Environment Protected
                           </span>
-                          <span className="text-[10px] text-slate-400 mt-0.5 block">Password secured in .env</span>
+                          <span className="text-[10px] text-ink-lt mt-0.5 block">Password secured in .env</span>
                         </div>
                       </div>
                     </div>
@@ -4785,38 +4809,99 @@ export default function AdminSettingsPage() {
                 </div>
               )}
 
-              {/* ── 3. EMAIL TEMPLATE SUB-TAB (Matching Screenshot 2: HTML Editor & Real-Time Preview) ── */}
+              {/* ── 3. EMAIL TEMPLATE SUB-TAB (Matching Screenshot 2: Form Subjects Switcher, HTML Editor & Real-Time Preview) ── */}
               {formsSubTab === 'emailTemplate' && (
                 <div className="flex flex-col gap-6">
-                  <div className="flex justify-between items-center bg-white p-5 rounded-3xl border border-slate-100 shadow-2xs">
+                  {/* Top Bar: Title + Form Subject Selector + Reset Button */}
+                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white p-5 rounded-3xl border border-slate-100 shadow-2xs">
                     <div>
-                      <h3 className="text-base font-extrabold text-slate-900 m-0">✉️ EMAIL TEMPLATE CONFIGURATION</h3>
-                      <p className="text-xs text-slate-500 mt-0.5 mb-0">Edit HTML notification layout sent to administrators upon form submission.</p>
+                      <h3 className="text-base font-extrabold text-slate-900 m-0 flex items-center gap-2">
+                        ✉️ EMAIL TEMPLATE CONFIGURATION
+                      </h3>
+                      <p className="text-xs text-slate-500 mt-0.5 mb-0">
+                        Select and preview responsive HTML notification templates for each of King Travel&apos;s 7 dynamic form subjects.
+                      </p>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const html = getResponsiveEmailTemplateHtml('Sample Form Submission', {
-                          fullName: 'John Doe',
-                          email: 'john.doe@example.com',
-                          phone: '+1 905-624-8555',
-                          packageType: 'Deluxe Hajj Package 2027',
-                          departureDate: 'Flexible 2027',
-                          message: 'Looking for quad occupancy options and flight schedules from Toronto.',
-                        });
-                        setEmailTemplateHtml(html);
-                      }}
-                      className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl border border-slate-200 transition-colors cursor-pointer"
-                    >
-                      🔄 Reset to Default
-                    </button>
+
+                    <div className="flex items-center gap-2.5 flex-wrap">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const sampleData = FORM_SAMPLE_DATA[selectedTemplateSubject];
+                          const html = getResponsiveEmailTemplateHtml(selectedTemplateSubject, sampleData);
+                          setEmailTemplateHtml(html);
+                        }}
+                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl border border-slate-200 transition-colors cursor-pointer flex items-center gap-1.5"
+                      >
+                        <span>🔄</span> Reset to Default
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handleSaveFormsSettings}
+                        disabled={savingForms}
+                        className="bg-primary hover:bg-[#00382B] text-white px-5 py-2 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer border-none"
+                      >
+                        <Save className="w-3.5 h-3.5 text-emerald-300" />
+                        {savingForms ? 'Saving...' : 'Save Template'}
+                      </button>
+                    </div>
                   </div>
 
+                  {/* ── 7 Canonical Form Subject Switcher Pills ── */}
+                  <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-2xs flex flex-col gap-2.5">
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">
+                      SELECT FORM SUBJECT TEMPLATE
+                    </span>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-2">
+                      {CANONICAL_FORM_SUBJECTS.map((subject) => {
+                        const isSelected = selectedTemplateSubject === subject;
+                        const iconMap: Record<CanonicalFormSubject, string> = {
+                          'Get a Free Quote Form': '🏠',
+                          'Umrah Package Booking Form': '📊',
+                          'Hajj Package Booking Form': '🕋',
+                          'Contact Inquiry Form': '💬',
+                          'Flights Booking Inquiry Form': '✈️',
+                          'Drop Us A Message Form': '📬',
+                          'Blog Detail Page': '📝',
+                        };
+
+                        return (
+                          <button
+                            key={subject}
+                            type="button"
+                            onClick={() => {
+                              setSelectedTemplateSubject(subject);
+                              const sampleData = FORM_SAMPLE_DATA[subject];
+                              const html = getResponsiveEmailTemplateHtml(subject, sampleData);
+                              setEmailTemplateHtml(html);
+                            }}
+                            className={`p-3 rounded-2xl text-left border transition-all cursor-pointer flex flex-col gap-1.5 ${isSelected
+                              ? 'bg-emerald-900 text-white border-primary shadow-md ring-2 ring-emerald-500/20'
+                              : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
+                              }`}
+                          >
+                            <span className="text-base">{iconMap[subject]}</span>
+                            <span className="text-xs font-extrabold leading-tight">
+                              {subject}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Live Code Editor & Real-Time Preview Panels */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* HTML Editor Panel */}
                     <div className="bg-[#0B132B] rounded-3xl p-5 border border-slate-800 shadow-xl flex flex-col gap-3 text-white">
-                      <div className="flex items-center justify-between text-xs font-bold text-slate-400 border-b border-slate-800 pb-3">
-                        <span>&lt;/&gt; HTML EDITOR</span>
+                      <div className="flex items-center justify-between text-xs font-bold text-ink-lt border-b border-slate-800 pb-3">
+                        <span className="flex items-center gap-2">
+                          <span>&lt;/&gt; HTML EDITOR</span>
+                          <span className="text-[10px] font-mono text-gold bg-gold/10 px-2 py-0.5 rounded-full border border-gold/30">
+                            {selectedTemplateSubject}
+                          </span>
+                        </span>
                         <span className="text-[10px] text-emerald-400">Live Code Mode</span>
                       </div>
                       <textarea
@@ -4829,8 +4914,14 @@ export default function AdminSettingsPage() {
 
                     {/* Real-Time Preview Panel */}
                     <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-2xs flex flex-col gap-3">
-                      <div className="text-xs font-bold text-slate-700 uppercase tracking-wider border-b border-slate-100 pb-3 flex items-center gap-2">
-                        👁 REAL-TIME PREVIEW
+                      <div className="text-xs font-bold text-slate-700 uppercase tracking-wider border-b border-slate-100 pb-3 flex items-center justify-between">
+                        <span className="flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                          REAL-TIME EMAIL TEMPLATE PREVIEW
+                        </span>
+                        <span className="text-[11px] font-extrabold text-primary">
+                          Subject: {selectedTemplateSubject}
+                        </span>
                       </div>
                       <div className="bg-slate-100 p-4 rounded-2xl border border-slate-200 min-h-[420px] overflow-auto">
                         <iframe
@@ -4851,7 +4942,7 @@ export default function AdminSettingsPage() {
                     <div>
                       <h4 className="text-sm font-extrabold text-slate-900 uppercase tracking-wider m-0 flex items-center gap-2">
                         📩 Inbox
-                        <button onClick={fetchInbox} className={`bg-transparent border-none cursor-pointer text-slate-400 hover:text-slate-600 transition-colors ${isLoadingInbox ? 'animate-spin' : ''}`}>
+                        <button onClick={fetchInbox} className={`bg-transparent border-none cursor-pointer text-ink-lt hover:text-slate-600 transition-colors ${isLoadingInbox ? 'animate-spin' : ''}`}>
                           🔄
                         </button>
                       </h4>
@@ -4933,12 +5024,12 @@ export default function AdminSettingsPage() {
                                 </span>
                               </div>
                             </div>
-                            <span className="text-xs text-slate-400 font-medium md:text-right">{dateStr}</span>
+                            <span className="text-xs text-ink-lt font-medium md:text-right">{dateStr}</span>
                           </div>
                         );
                       })
                     ) : (
-                      <div className="py-8 text-center text-slate-400 font-medium">{isLoadingInbox ? 'Loading inbox...' : 'No incoming submissions found.'}</div>
+                      <div className="py-8 text-center text-ink-lt font-medium">{isLoadingInbox ? 'Loading inbox...' : 'No incoming submissions found.'}</div>
                     )}
                   </div>
                 </div>
@@ -4951,7 +5042,7 @@ export default function AdminSettingsPage() {
                     <div>
                       <h4 className="text-sm font-extrabold text-slate-900 uppercase tracking-wider m-0 flex items-center gap-2">
                         EMAIL DELIVERY LOGS
-                        <button onClick={fetchEmailLogs} className={`bg-transparent border-none cursor-pointer text-slate-400 hover:text-slate-600 transition-colors ${isLoadingLogs ? 'animate-spin' : ''}`}>
+                        <button onClick={fetchEmailLogs} className={`bg-transparent border-none cursor-pointer text-ink-lt hover:text-slate-600 transition-colors ${isLoadingLogs ? 'animate-spin' : ''}`}>
                           🔄
                         </button>
                       </h4>
@@ -4962,7 +5053,7 @@ export default function AdminSettingsPage() {
                   <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs border-collapse">
                       <thead>
-                        <tr className="bg-slate-50 border-b border-slate-200 text-slate-400 font-bold uppercase text-[10px] tracking-wider">
+                        <tr className="bg-slate-50 border-b border-slate-200 text-ink-lt font-bold uppercase text-[10px] tracking-wider">
                           <th className="py-3 px-4">DATE &amp; TIME</th>
                           <th className="py-3 px-4">FORM ID</th>
                           <th className="py-3 px-4">STATUS</th>
@@ -4990,7 +5081,7 @@ export default function AdminSettingsPage() {
                           })
                         ) : (
                           <tr>
-                            <td colSpan={5} className="py-8 text-center text-slate-400 font-medium">{isLoadingLogs ? 'Loading logs...' : 'No email delivery logs found.'}</td>
+                            <td colSpan={5} className="py-8 text-center text-ink-lt font-medium">{isLoadingLogs ? 'Loading logs...' : 'No email delivery logs found.'}</td>
                           </tr>
                         )}
                       </tbody>
@@ -5223,7 +5314,7 @@ export default function AdminSettingsPage() {
                 {/* Email Footer */}
                 <div className="bg-[#111827] px-8 py-10 flex flex-col items-center text-center">
                   <h3 className="text-white font-bold m-0 mb-3 text-sm">King Travel Canada Ltd.</h3>
-                  <p className="text-slate-400 text-[11px] leading-relaxed m-0 mb-6 max-w-sm">
+                  <p className="text-ink-lt text-[11px] leading-relaxed m-0 mb-6 max-w-sm">
                     1325 Eglinton Ave E Suite Number 218, Mississauga, ON L4W 4L9, Canada<br />
                     TICO &amp; IATA Licensed Pilgrimage &amp; Flight Operator
                   </p>

@@ -106,11 +106,11 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any, page
             />
             <div
               aria-hidden="true"
-              className="absolute inset-0 bg-[linear-gradient(100deg,rgba(10,20,18,.92)_0%,rgba(10,20,18,.72)_38%,rgba(10,20,18,.15)_68%)]"
+              className="absolute inset-0 bg-[linear-gradient(100deg,#0A1447D9_0%,#0A1447B3_38%,#0A144626_68%)]"
             />
             <div className="hero-pattern"></div>
             <div className="hero-content">
-              <div className="eyebrow">{heroData.heroEyebrow}</div>
+              <div className="eyebrowht">{heroData.heroEyebrow}</div>
               <h1 dangerouslySetInnerHTML={{ __html: heroData.title }} />
               <p className="lead">{heroData.description}</p>
               <div className="hero-cta">
@@ -151,16 +151,16 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any, page
         </div>
 
         <div className="max-w-[1080px] mx-auto px-5">
-          <div className="relative rounded-3xl shadow-xl bg-sage p-6 md:p-8 max-md:mt-6 -mt-8">
-            <h2 className="text-2xl md:text-3xl font-serif tracking-tight text-center mb-6">
+          <div className="relative rounded-3xl shadow-xl bg-primary p-6 md:p-8 max-md:mt-6 -mt-8">
+            <h2 className="text-2xl text-white md:text-3xl font-serif tracking-tight text-center mb-6">
               Get a free Quote
             </h2>
-            {quoteStatus && <p className="text-center text-emerald-800 font-semibold mb-6">{quoteStatus}</p>}
+            {quoteStatus && <p className="text-center text-primary font-semibold mb-6">{quoteStatus}</p>}
 
             <form noValidate className="flex flex-col gap-4" onSubmit={handleQuoteSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="relative">
-                  <label htmlFor="quote-fullName" className="block text-xs font-bold uppercase tracking-wider mb-1.5">
+                  <label htmlFor="quote-fullName" className="text-white block text-xs font-bold uppercase tracking-wider mb-1.5">
                     Your Name
                   </label>
                   <input
@@ -179,7 +179,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any, page
                 </div>
 
                 <div className="relative">
-                  <label htmlFor="quote-phone" className="block text-xs font-bold uppercase tracking-wider mb-1.5">
+                  <label htmlFor="quote-phone" className="text-white block text-xs font-bold uppercase tracking-wider mb-1.5">
                     Phone Number
                   </label>
                   <input
@@ -213,7 +213,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any, page
                 </div>
 
                 <div className="relative">
-                  <label htmlFor="quote-email" className="block text-xs font-bold uppercase tracking-wider mb-1.5">
+                  <label htmlFor="quote-email" className="text-white block text-xs font-bold uppercase tracking-wider mb-1.5">
                     Email Address
                   </label>
                   <input
@@ -234,7 +234,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any, page
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                 <div className="relative">
-                  <label htmlFor="quote-package" className="block text-xs font-bold uppercase tracking-wider mb-1.5">
+                  <label htmlFor="quote-package" className="text-white block text-xs font-bold uppercase tracking-wider mb-1.5">
                     Select Your Package
                   </label>
                   <select
@@ -253,7 +253,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any, page
 
 
                 <div className="relative">
-                  <label htmlFor="quote-pilgrims" className="block text-xs font-bold uppercase tracking-wider mb-1.5">
+                  <label htmlFor="quote-pilgrims" className="text-white block text-xs font-bold uppercase tracking-wider mb-1.5">
                     Number of Pilgrims
                   </label>
                   <input
@@ -269,7 +269,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any, page
                 <div className="">
                   <button
                     type="submit"
-                    className="w-full bg-gold text-ink font-extrabold py-3.5 px-6 rounded-sm shadow-md hover:bg-gold-lt active:scale-[0.99] transition-all duration-300 tracking-wider uppercase text-sm flex items-center justify-center cursor-pointer"
+                    className="w-full btnff font-extrabold py-3.5 px-6 rounded-sm shadow-md active:scale-[0.99] transition-all duration-300 tracking-wider uppercase text-sm flex items-center justify-center cursor-pointer"
                   >
                     <span>SUBMIT</span>
                   </button>

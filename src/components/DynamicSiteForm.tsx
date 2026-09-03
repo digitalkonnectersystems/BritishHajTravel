@@ -266,7 +266,7 @@ export default function DynamicSiteForm({
   if (fieldsList.length === 0) {
     return (
       <div className="text-center py-20 text-slate-500">
-        <div className="inline-block w-6 h-6 border-2 border-slate-300 border-t-[#004B39] rounded-full animate-spin mb-3" />
+        <div className="inline-block w-6 h-6 border-2 border-slate-300 border-t-primary rounded-full animate-spin mb-3" />
         <p className="text-sm">Loading form...</p>
       </div>
     );
@@ -286,11 +286,11 @@ export default function DynamicSiteForm({
     <>
       <div className="text-center mb-10">
         {eyebrow && (
-          <div className="text-[#004B39] font-bold text-sm tracking-widest uppercase mb-3">
+          <div className="text-primary font-bold text-sm tracking-widest uppercase mb-3">
             {eyebrow}
           </div>
         )}
-        <h2 className="text-3xl md:text-4xl font-extrabold text-[#004B39] mb-4 uppercase">
+        <h2 className="text-3xl md:text-4xl font-extrabold text-primary mb-4 uppercase">
           {displayTitle}
         </h2>
         <p className="text-slate-700 font-sans text-sm max-w-2xl mx-auto uppercase tracking-wider">
@@ -397,7 +397,7 @@ export default function DynamicSiteForm({
                       {["Hajj", "Umrah"].map(tab => {
                         const isSelected = formData[field.id]?.toLowerCase() === tab.toLowerCase();
                         return (
-                          <label key={tab} className={`flex-1 text-center py-2.5 rounded-full text-sm font-bold cursor-pointer transition-all ${isSelected ? "bg-[#004B39] text-white shadow-md" : "text-slate-600 hover:text-slate-800 hover:bg-slate-200"}`}>
+                          <label key={tab} className={`flex-1 text-center py-2.5 rounded-full text-sm font-bold cursor-pointer transition-all ${isSelected ? "bg-primary text-white shadow-md" : "text-slate-600 hover:text-slate-800 hover:bg-slate-200"}`}>
                             <input type="radio" name={field.id} value={tab.toLowerCase()} onChange={handleChange} className="hidden" required={field.required && !formData[field.id]} />
                             {tab}
                           </label>
@@ -522,7 +522,7 @@ export default function DynamicSiteForm({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-gold text-ink font-extrabold py-3.5 px-6 rounded-sm shadow-md hover:bg-gold-lt active:scale-[0.99] transition-all duration-300 tracking-wider uppercase text-sm flex items-center justify-center cursor-pointer"
+          className="w-full bg-gold text-white font-extrabold py-3.5 px-6 rounded-sm shadow-md hover:bg-gold-lt hover:text-white active:scale-[0.99] transition-all duration-300 tracking-wider uppercase text-sm flex items-center justify-center cursor-pointer"
         >
           {isSubmitting
             ? "Submitting Request..."
