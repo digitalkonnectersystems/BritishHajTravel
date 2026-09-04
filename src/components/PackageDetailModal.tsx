@@ -148,7 +148,7 @@ export default function PackageDetailModal({ isOpen, onClose, pkg }: PackageDeta
   const bannerPrice = minFormattedPrice;
   const priceSubtext = `PER PERSON - ${minPriceItem.packageType.toUpperCase()}`;
   const exclusiveBadge = detailData.exclusiveBadge || cardData.exclusiveBadge || pkg.exclusiveBadge || "STARTING FROM";
-  const currencyCode = detailData.currencyCode || pkg.currencyCode || "CAD";
+  const currencyCode = detailData.currencyCode || pkg.currencyCode || "£";
 
   // Selected package type price for booking calculation
   const selectedPriceItem = packagePrices.find((p) => p.packageType === effectivePackageType);
@@ -244,8 +244,8 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
       answer: "Yes! Upgrades to Double or Triple occupancy are available upon request. Please select your occupancy preference or contact our support team during booking."
     },
     {
-      question: "Are flights included in the CAD 12,995 price?",
-      answer: "Yes, round-trip flights from Canada to Saudi Arabia are fully included in the package pricing."
+      question: "Are flights included in the £ 12,995 price?",
+      answer: "Yes, round-trip flights from UK to Saudi Arabia are fully included in the package pricing."
     }
   ];
   const faqs = (detailData.faqs && detailData.faqs.length > 0) ? detailData.faqs : ((pkg.faqs && pkg.faqs.length > 0) ? pkg.faqs : defaultFaqs);
@@ -735,7 +735,7 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
                       >
                         {packagePrices.map((item, idx) => (
                           <option key={idx} value={item.packageType} className="bg-white text-slate-900">
-                            CAD {item.price ? item.price.toLocaleString("en-CA") : ""} - {item.packageType}
+                            £ {item.price ? item.price.toLocaleString("en-CA") : ""} - {item.packageType}
                           </option>
                         ))}
                       </select>

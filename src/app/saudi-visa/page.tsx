@@ -88,11 +88,11 @@ export default async function SaudiVisaPage() {
         title={
           pageData?.bannerTitle ||
           pageData?.title ||
-          "Apply for a Saudi Visa from Canada <br /><span>with Trusted Expert Support</span>"
+          "Apply for a Saudi Visa from UK <br /><span>with Trusted Expert Support</span>"
         }
         description={
           pageData?.bannerDescription ||
-          "Apply for a Saudi visa from Canada with trusted support from King Travel. We help individuals and families understand the process for tourist, Umrah, family visit, business, work, and Saudi resident Iqama visas, with clear guidance on requirements, documents, and application steps."
+          "Apply for a Saudi visa from UK with trusted support from King Travel. We help individuals and families understand the process for tourist, Umrah, family visit, business, work, and Saudi resident Iqama visas, with clear guidance on requirements, documents, and application steps."
         }
         bgImage={pageData?.bannerBgImage}
         position={pageData?.bannerPosition}

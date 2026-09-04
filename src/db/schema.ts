@@ -50,7 +50,7 @@ export const packages = mysqlTable('packages', {
   departureCity: varchar('departure_city', { length: 100 }).default('Toronto'),
   destination: varchar('destination', { length: 100 }).default('Makkah & Madinah'),
   startingPrice: decimal('starting_price', { precision: 10, scale: 2 }).notNull(),
-  currency: varchar('currency', { length: 10 }).default('CAD'),
+  currency: varchar('currency', { length: 10 }).default('£'),
   starRating: varchar('star_rating', { length: 20 }).default('5 Star'),
   status: mysqlEnum('status', ['available', 'sold_out', 'coming_soon', 'draft'])
     .notNull()

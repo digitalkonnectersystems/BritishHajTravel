@@ -62,7 +62,7 @@ async function runMigrationAndSeed() {
         \`departure_city\` varchar(100) DEFAULT 'Toronto',
         \`destination\` varchar(100) DEFAULT 'Makkah & Madinah',
         \`starting_price\` decimal(10,2) NOT NULL,
-        \`currency\` varchar(10) DEFAULT 'CAD',
+        \`currency\` varchar(10) DEFAULT '£',
         \`star_rating\` varchar(20) DEFAULT '5 Star',
         \`status\` enum('available','sold_out','coming_soon','draft') NOT NULL DEFAULT 'available',
         \`is_featured\` boolean NOT NULL DEFAULT false,

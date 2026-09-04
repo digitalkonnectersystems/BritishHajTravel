@@ -8,7 +8,7 @@ export default function WhatWeProvideSection({ data }: { data: any }) {
   const defaultItems = [
     { title: 'Lowest Fares', desc: 'We offer the lowest rates on the market, sourced across every route into Jeddah.' },
     { title: 'Special Deals', desc: 'Fixed-price Umrah packages with hotels, meals and transport included.' },
-    { title: 'Trusted & Certified', desc: 'A fully accredited travel agency you can rely on, licensed across Canada.' },
+    { title: 'Trusted & Certified', desc: 'A fully accredited travel agency you can rely on, licensed across UK.' },
     { title: 'Pilgrimage Services', desc: 'Visa processing, group support — the full spiritual journey, arranged.' },
   ];
 

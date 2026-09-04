@@ -80,7 +80,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
       }
       const num = Number(row.price);
       if (isNaN(num) || num <= 0) {
-        alert(`Please enter a valid positive CAD price for "${row.packageType}".`);
+        alert(`Please enter a valid positive £ price for "${row.packageType}".`);
         return;
       }
     }
@@ -235,15 +235,15 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
                 placeholder="Select Month & Year"
               />
             </div>
-            {/* Package Type & Price (CAD) */}
+            {/* Package Type & Price (£) */}
             <div className="md:col-span-3 space-y-3 p-4 border border-slate-200 bg-slate-50/70 rounded-2xl">
               <div className="flex items-center justify-between">
                 <div>
                   <label className="text-xs font-bold text-slate-800 block">
-                    Package Type & Price (CAD) *
+                    Package Type & Price (£) *
                   </label>
                   <span className="text-[10px] text-slate-500 font-medium">
-                    Configure multiple occupancy or package tiers with individual CAD prices.
+                    Configure multiple occupancy or package tiers with individual £ prices.
                   </span>
                 </div>
                 <button
@@ -269,7 +269,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
                       />
                     </div>
                     <div className="w-40 sm:w-48">
-                      <label className="text-[9px] font-bold text-ink-lt mb-0.5 block">PRICE (CAD)</label>
+                      <label className="text-[9px] font-bold text-ink-lt mb-0.5 block">PRICE (£)</label>
                       <input
                         type="text"
                         placeholder="2795.00"
@@ -378,7 +378,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
                       {formatTravelMonth(pkg.month) || 'Flexible'}
                     </td>
                     <td className="py-3.5 px-4 font-black text-slate-900">
-                      CAD ${Number(pkg.startingPrice).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                      £ ${Number(pkg.startingPrice).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                     </td>
                     <td className="py-3.5 px-4">
                       <button
@@ -439,8 +439,8 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
               id: `pkg_${selectedSeoPkg.id}`,
               title: selectedSeoPkg.title,
               slug: `/package/${selectedSeoPkg.id}`,
-              metaTitle: `${selectedSeoPkg.title} | King Travel Canada`,
-              metaDescription: `Book official ${selectedSeoPkg.title} from Canada. Starting at CAD $${selectedSeoPkg.startingPrice}. ${selectedSeoPkg.shortDescription || 'Verified visa, luxury hotel stays, flights included.'}`,
+              metaTitle: `${selectedSeoPkg.title} | King Travel UK`,
+              metaDescription: `Book official ${selectedSeoPkg.title} from UK. Starting at £ $${selectedSeoPkg.startingPrice}. ${selectedSeoPkg.shortDescription || 'Verified visa, luxury hotel stays, flights included.'}`,
             }
             : null
         }

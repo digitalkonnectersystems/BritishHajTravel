@@ -18,7 +18,7 @@ export default function UpcomingUmrahPackages({
 }) {
   const pathname = usePathname();
   const eyebrow = data?.eyebrow || "EXCLUSIVE UPCOMING";
-  const title = data?.title || "Umrah Packages<br />from Canada";
+  const title = data?.title || "Umrah Packages<br />from UK";
   const description =
     data?.description ||
     data?.subtext ||

@@ -83,7 +83,7 @@ export default function AboutPageClient({ initialPageData }: { initialPageData?:
       data: {
         eyebrow: "ABOUT",
         title: "King Travel",
-        description: "For over 20 years, King Travel has been a trusted travel agency in Canada, offering Hajj and Umrah services, airline ticketing, and visa processing with unmatched expertise. We are Canada's No. 1 authorized PIA seller agency and an official agent licensed by the Ministry of Hajj & Umrah, IATA, TICO, OCTA, and ASTA."
+        description: "For over 20 years, King Travel has been a trusted travel agency in UK, offering Hajj and Umrah services, airline ticketing, and visa processing with unmatched expertise. We are UK's No. 1 authorized PIA seller agency and an official agent licensed by the Ministry of Hajj & Umrah, IATA, TICO, OCTA, and ASTA."
       }
     },
     {
@@ -112,7 +112,7 @@ export default function AboutPageClient({ initialPageData }: { initialPageData?:
         items: [
           { icon: "✈️", title: "Lowest Fares", subtitle: "We Offer the Lowest Fair on Air Ticketing around the Globe.", description: "As a partner with major airlines, including PIA, King Travel Can Ltd guarantees the lowest airfares for flights to Pakistan, Saudi Arabia, and beyond. Whether it's for religious travel or international vacations, we offer unbeatable rates to help you save." },
           { icon: "✨", title: "Special Deals", subtitle: "We Provide Best Prices Of All Inclusive Packages.", description: "We offer exclusive special deals on Umrah, Hajj, and international flight packages, tailored to fit your budget. These limited-time offers allow you to experience premium services without overspending, making your travel affordable and stress-free." },
-          { icon: "🛡️", title: "Trusted & Certified", subtitle: "We are The Only Authorized Saudi Visa Providers Canada!", description: "Recognized by IATA, ACTA, TICO, ASTA, ATAC, and the Saudi Ministry of Hajj & Umrah, ensuring every journey meets the highest international standards." },
+          { icon: "🛡️", title: "Trusted & Certified", subtitle: "We are The Only Authorized Saudi Visa Providers UK!", description: "Recognized by IATA, ACTA, TICO, ASTA, ATAC, and the Saudi Ministry of Hajj & Umrah, ensuring every journey meets the highest international standards." },
           { icon: "🕌", title: "Pilgrimage Experts", subtitle: "We Offer Best Accommodations & Transports In Saudia Arabia", description: "From visa processing and ticketing to 5-star accommodations and guided tours, King Travel provides a complete pilgrimage experience. Our services ensure a hassle-free journey, with everything taken care of from start to finish." }
         ]
       }
@@ -217,7 +217,7 @@ export default function AboutPageClient({ initialPageData }: { initialPageData?:
           const svcs = sec.data?.items || [
             { icon: "✈️", title: "Lowest Fares", subtitle: "We Offer the Lowest Fair on Air Ticketing around the Globe.", description: "As a partner with major airlines, including PIA, King Travel Can Ltd guarantees the lowest airfares for flights to Pakistan, Saudi Arabia, and beyond. Whether it's for religious travel or international vacations, we offer unbeatable rates to help you save." },
             { icon: "✨", title: "Special Deals", subtitle: "We Provide Best Prices Of All Inclusive Packages.", description: "We offer exclusive special deals on Umrah, Hajj, and international flight packages, tailored to fit your budget. These limited-time offers allow you to experience premium services without overspending, making your travel affordable and stress-free." },
-            { icon: "🛡️", title: "Trusted & Certified", subtitle: "We are The Only Authorized Saudi Visa Providers Canada!", description: "Recognized by IATA, ACTA, TICO, ASTA, ATAC, and the Saudi Ministry of Hajj & Umrah, ensuring every journey meets the highest international standards." },
+            { icon: "🛡️", title: "Trusted & Certified", subtitle: "We are The Only Authorized Saudi Visa Providers UK!", description: "Recognized by IATA, ACTA, TICO, ASTA, ATAC, and the Saudi Ministry of Hajj & Umrah, ensuring every journey meets the highest international standards." },
             { icon: "🕌", title: "Pilgrimage Experts", subtitle: "We Offer Best Accommodations & Transports In Saudia Arabia", description: "From visa processing and ticketing to 5-star accommodations and guided tours, King Travel provides a complete pilgrimage experience. Our services ensure a hassle-free journey, with everything taken care of from start to finish." }
           ];
           return (
@@ -366,7 +366,7 @@ export default function AboutPageClient({ initialPageData }: { initialPageData?:
         //     { src: "/img/a-3.png", alt: "Air France" },
         //     { src: "/img/a-4.png", alt: "Qatar Airways" },
         //     { src: "/img/a-5.png", alt: "KLM" },
-        //     { src: "/img/a-6.png", alt: "Air Canada" },
+        //     { src: "/img/a-6.png", alt: "Air UK" },
         //     { src: "/img/a-7.png", alt: "Emirates" },
         //     { src: "/img/a-8.png", alt: "Etihad" },
         //     { src: "/img/a-9.png", alt: "Turkish Airlines" },

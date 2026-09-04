@@ -114,7 +114,7 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
   }, []);
 
   const logoSrc = identity?.logo || '/img/logo.png';
-  const logoAlt = identity?.logoAlt || 'King Travel Canada Logo';
+  const logoAlt = identity?.logoAlt || 'King Travel UK Logo';
 
   const userName = user?.name || 'Admin User';
   const userRole = user?.role ? user.role.replace(/_/g, ' ') : 'Super Admin';

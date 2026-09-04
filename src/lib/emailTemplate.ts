@@ -50,7 +50,7 @@ export function formatFieldLabel(key: string): string {
     bookingNumber: 'Booking Reference #',
     ticketNumber: 'Ticket Reference #',
 
-    totalPrice: 'Estimated Total Price (CAD)',
+    totalPrice: 'Estimated Total Price (£)',
     status: 'Submission Status',
   };
 
@@ -117,7 +117,7 @@ export function getResponsiveEmailTemplateHtml(
     : 'NEW INQUIRY NOTIFICATION';
 
   const introTextHtml = isForUser
-    ? `Thank you for contacting King Travel Canada. We have received your inquiry submitted via <strong>${safeFormName}</strong>. Submission details are listed below:`
+    ? `Thank you for contacting King Travel UK. We have received your inquiry submitted via <strong>${safeFormName}</strong>. Submission details are listed below:`
     : `A new inquiry has been submitted via <strong>${safeFormName}</strong>. Submission details are listed below:`;
 
   /**
@@ -181,7 +181,7 @@ export function getResponsiveEmailTemplateHtml(
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>${escapeHtml(formName)} - King Travel Canada</title>
+  <title>${escapeHtml(formName)} - King Travel UK</title>
   <style type="text/css">
     body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
     table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
@@ -213,7 +213,7 @@ export function getResponsiveEmailTemplateHtml(
                     </div>
                     <div style="margin: 8px 0 4px 0;">
                       <a href="https://kingtravelcan.com" target="_blank" style="text-decoration: none; display: inline-block;">
-                        <img src="https://kingtravelcan.com/images_KTC/logos/2026-08/logo.png" alt="King Travel Canada" width="220" style="display: block; width: 220px; max-width: 100%; height: auto; border: 0; outline: none; text-decoration: none; margin: 0 auto;" />
+                        <img src="https://kingtravelcan.com/images_KTC/logos/2026-08/logo.png" alt="King Travel UK" width="220" style="display: block; width: 220px; max-width: 100%; height: auto; border: 0; outline: none; text-decoration: none; margin: 0 auto;" />
                       </a>
                     </div>
                     <p style="color: #a7f3d0; font-size: 12px; margin: 6px 0 0 0; font-weight: 600;">
@@ -277,10 +277,10 @@ export function getResponsiveEmailTemplateHtml(
                 <tr>
                   <td align="center" style="padding-bottom: 12px;">
                     <p style="color:#ffffff; font-weight: 800; font-size: 14px; margin: 0 0 4px 0;">
-                      King Travel Canada Ltd.
+                      King Travel UK Ltd.
                     </p>
                     <p style="color: #ffffff; font-size: 11px; margin: 0; line-height: 1.5;">
-                      1325 Eglinton Ave E Suite Number 218, Mississauga, ON L4W 4L9, Canada<br>
+                      1325 Eglinton Ave E Suite Number 218, Mississauga, ON L4W 4L9, UK<br>
                       TICO &amp; IATA Licensed Pilgrimage &amp; Flight Operator
                     </p>
                   </td>
@@ -294,7 +294,7 @@ export function getResponsiveEmailTemplateHtml(
                 </tr>
                 <tr>
                   <td align="center" style="border-top: 1px solid #1e293b; padding-top: 16px; font-size: 11px; color: #ffffff;">
-                    © ${new Date().getFullYear()} King Travel Canada Ltd. All Rights Reserved.
+                    © ${new Date().getFullYear()} King Travel UK Ltd. All Rights Reserved.
                   </td>
                 </tr>
               </table>

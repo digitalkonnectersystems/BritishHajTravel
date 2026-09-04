@@ -14,7 +14,7 @@ export default function WhoWeAreSection({ data }: { data: any }) {
   const rawItems = (data?.items && Array.isArray(data.items) && data.items.length > 0)
     ? data.items
     : [
-      { value: '25+', label: 'Years Serving Canada' },
+      { value: '25+', label: 'Years Serving UK' },
       { value: '1k+', label: 'Pilgrims Guided' },
       { value: '5★', label: 'Hotels, Every Package' }
     ];

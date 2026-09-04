@@ -73,8 +73,8 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
           const flights = (sec.data?.items && Array.isArray(sec.data.items) && sec.data.items.length > 0)
             ? sec.data.items
             : [
-              { code: "PIA", name: "Pakistan International Airlines", operatedBy: "Operated By PIA", originCode: "LHR", originCity: "London", destCode: "JED", destCity: "Jeddah", time: "14:20", price: "CAD 1,250.00" },
-              { code: "SA", name: "Saudia Airlines", operatedBy: "Operated By Saudia", originCode: "LHR", originCity: "London", destCode: "MED", destCity: "Madinah", time: "18:45", price: "CAD 1,380.00" }
+              { code: "PIA", name: "Pakistan International Airlines", operatedBy: "Operated By PIA", originCode: "LHR", originCity: "London", destCode: "JED", destCity: "Jeddah", time: "14:20", price: "£ 1,250.00" },
+              { code: "SA", name: "Saudia Airlines", operatedBy: "Operated By Saudia", originCode: "LHR", originCity: "London", destCode: "MED", destCity: "Madinah", time: "18:45", price: "£ 1,380.00" }
             ];
 
           return (
@@ -90,8 +90,8 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                 </div>
                 <div className="space-y-6">
                   {(sec.data?.items || [
-                    { code: "PIA", name: "Pakistan International Airlines", operatedBy: "Operated By PIA", originCode: "LHR", originCity: "London", destCode: "JED", destCity: "Jeddah", time: "14:20", price: "CAD 1,250.00" },
-                    { code: "SA", name: "Saudia Airlines", operatedBy: "Operated By Saudia", originCode: "LHR", originCity: "London", destCode: "MED", destCity: "Madinah", time: "18:45", price: "CAD 1,380.00" }
+                    { code: "PIA", name: "Pakistan International Airlines", operatedBy: "Operated By PIA", originCode: "LHR", originCity: "London", destCode: "JED", destCity: "Jeddah", time: "14:20", price: "£ 1,250.00" },
+                    { code: "SA", name: "Saudia Airlines", operatedBy: "Operated By Saudia", originCode: "LHR", originCity: "London", destCode: "MED", destCity: "Madinah", time: "18:45", price: "£ 1,380.00" }
                   ]).map((flight: any, fIdx: number) => (
                     <div
                       key={fIdx}
@@ -146,7 +146,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                         <div className="text-right flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-4 border-t md:border-0 pt-4 md:pt-0 border-gray-200">
                           <div>
                             <span className="text-xs font-semibold text-gray-500 block md:hidden">Price</span>
-                            <span suppressHydrationWarning className="whitespace-nowrap text-[16px] md:whitespace-normal md:text-2xl font-bold text-gray-900">{flight.price || "CAD 1,250.00"}</span>
+                            <span suppressHydrationWarning className="whitespace-nowrap text-[16px] md:whitespace-normal md:text-2xl font-bold text-gray-900">{flight.price || "£ 1,250.00"}</span>
                           </div>
                           <a
                             href={flight.bookingUrl || `https://wa.me/19056248344?text=Hi,%20I'm%20interested%20in%20booking%20this%20flight%20(${encodeURIComponent(flight.name || "PIA")})`}
@@ -248,9 +248,9 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                 <div className="flex flex-col lg:flex-row gap-8 items-center lg:items-stretch">
                   <div className="reviews-owner-details">
                     <img
-                      src="/img/round-logo.png"
-                      className="w-16 h-16 rounded-full border border-white/20 object-cover"
-                      alt="King Travel logo"
+                      src="/images_KTC/bht-fav-logo.png"
+                      className="w-16 h-16 rounded-full p-2 bg-white object-cover"
+                      alt="British Hajj Travel logo"
                     />
                     <div className="reviews-owner">
                       <b>British Hajj Travel Ltd - United Kingdom</b>
@@ -372,7 +372,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
               { src: '/img/a-6.png', alt: 'EgyptAir' },
               { src: '/img/a-7.png', alt: 'Royal Jordanian' },
               { src: '/img/a-8.png', alt: 'Gulf Air' },
-              { src: '/img/a-9.png', alt: 'Air Canada' },
+              { src: '/img/a-9.png', alt: 'Air UK' },
             ];
           }
           return (
@@ -509,7 +509,7 @@ function GoogleReviewsSlider() {
       avatarImg: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&w=120&h=120&q=80",
       rating: 5,
       date: "3 months ago",
-      review: "I am grateful Elhamdullilahi for this wonderful opportunity to preform Umrah on March 2026 with King Travel, also with huge support from our Imam. Everything was organized with great care, respect, and utmost professionalism from our initial flight departure up to our blessed return home to Canada.",
+      review: "I am grateful Elhamdullilahi for this wonderful opportunity to preform Umrah on March 2026 with King Travel, also with huge support from our Imam. Everything was organized with great care, respect, and utmost professionalism from our initial flight departure up to our blessed return home to UK.",
     },
     {
       id: 2,
@@ -533,7 +533,7 @@ function GoogleReviewsSlider() {
       avatarImg: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80",
       rating: 5,
       date: "2 weeks ago",
-      review: "Alhamdulillah! Booked our 15-day Deluxe Umrah package with King Travel Canada. Everything from the 5-star hotel near Haram to the luxury private transport was top-notch. Highly recommended for families looking for a stress-free experience!",
+      review: "Alhamdulillah! Booked our 15-day Deluxe Umrah package with King Travel UK. Everything from the 5-star hotel near Haram to the luxury private transport was top-notch. Highly recommended for families looking for a stress-free experience!",
     },
     {
       id: 5,

@@ -199,12 +199,12 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                     target={data.headOfficeNewTab ?? true ? "_blank" : "_self"}
                     rel={data.headOfficeNewTab ?? true ? "noopener noreferrer" : undefined}
                     className="leading-relaxed block hover:text-primary transition-colors no-underline text-inherit"
-                    dangerouslySetInnerHTML={{ __html: (data.headOffice || "1325 Eglinton Ave E Suite Number 218,\nMississauga, ON L4W 4L9, Canada").replace(/\n/g, '<br />') }}
+                    dangerouslySetInnerHTML={{ __html: (data.headOffice || "1325 Eglinton Ave E Suite Number 218,\nMississauga, ON L4W 4L9, UK").replace(/\n/g, '<br />') }}
                   />
                 ) : (
                   <div
                     className="leading-relaxed"
-                    dangerouslySetInnerHTML={{ __html: (data.headOffice || "1325 Eglinton Ave E Suite Number 218,\nMississauga, ON L4W 4L9, Canada").replace(/\n/g, '<br />') }}
+                    dangerouslySetInnerHTML={{ __html: (data.headOffice || "1325 Eglinton Ave E Suite Number 218,\nMississauga, ON L4W 4L9, UK").replace(/\n/g, '<br />') }}
                   />
                 )}
               </div>
@@ -218,12 +218,12 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                     target={data.branchOfficeNewTab ?? true ? "_blank" : "_self"}
                     rel={data.branchOfficeNewTab ?? true ? "noopener noreferrer" : undefined}
                     className="leading-relaxed block hover:text-primary transition-colors no-underline text-inherit"
-                    dangerouslySetInnerHTML={{ __html: (data.branchOffice || "22 Ontario St S,\nMilton, ON L9T 2M6, Canada").replace(/\n/g, '<br />') }}
+                    dangerouslySetInnerHTML={{ __html: (data.branchOffice || "22 Ontario St S,\nMilton, ON L9T 2M6, UK").replace(/\n/g, '<br />') }}
                   />
                 ) : (
                   <div
                     className="leading-relaxed"
-                    dangerouslySetInnerHTML={{ __html: (data.branchOffice || "22 Ontario St S,\nMilton, ON L9T 2M6, Canada").replace(/\n/g, '<br />') }}
+                    dangerouslySetInnerHTML={{ __html: (data.branchOffice || "22 Ontario St S,\nMilton, ON L9T 2M6, UK").replace(/\n/g, '<br />') }}
                   />
                 )}
               </div>

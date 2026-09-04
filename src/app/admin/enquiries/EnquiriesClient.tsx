@@ -186,7 +186,7 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
                       <td className="py-3.5 px-4">
                         <div className="font-bold text-slate-900">{item.fullName}</div>
                         <div className="text-[10px] text-slate-400">
-                          {item.city || 'Canada'} {item.province}
+                          {item.city || 'UK'} {item.province}
                         </div>
                       </td>
                       <td className="py-3.5 px-4">

@@ -16,7 +16,7 @@ const airlineLogos = [
   { src: "/img/a-6.png", alt: "EgyptAir" },
   { src: "/img/a-7.png", alt: "Royal Jordanian" },
   { src: "/img/a-8.png", alt: "Gulf Air" },
-  { src: "/img/a-9.png", alt: "Air Canada" },
+  { src: "/img/a-9.png", alt: "Air UK" },
 ];
 
 const defaultFlights = [
@@ -29,7 +29,7 @@ const defaultFlights = [
     destCode: "JED",
     destCity: "Jeddah",
     time: "14:20",
-    price: "CAD 1,250.00",
+    price: "£ 1,250.00",
   },
   {
     code: "PIA",
@@ -40,7 +40,7 @@ const defaultFlights = [
     destCode: "JED",
     destCity: "Jeddah",
     time: "14:20",
-    price: "CAD 1,250.00",
+    price: "£ 1,250.00",
   },
   {
     code: "PIA",
@@ -51,7 +51,7 @@ const defaultFlights = [
     destCode: "JED",
     destCity: "Jeddah",
     time: "14:20",
-    price: "CAD 1,250.00",
+    price: "£ 1,250.00",
   },
 ];
 
@@ -81,7 +81,7 @@ export default function AirlinesPage() {
     <main className="bg-sage min-h-screen">
       {/* ================= DYNAMIC HERO BANNER ================= */}
       <PageBanner
-        title={pageData?.bannerTitle || pageData?.title || "Find <span>Lowest Fare</span> Flights & Book Airline Tickets Across Canada"}
+        title={pageData?.bannerTitle || pageData?.title || "Find <span>Lowest Fare</span> Flights & Book Airline Tickets Across UK"}
         description={pageData?.bannerDescription || "Compare flight prices, discover exclusive travel deals, and book domestic & international air tickets with ease. Fast booking, trusted fares, and 24/7 travel support."}
         bgImage={pageData?.bannerBgImage}
         position={pageData?.bannerPosition}
@@ -163,7 +163,7 @@ export default function AirlinesPage() {
                                 <div className="text-right flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-4 border-t md:border-0 pt-4 md:pt-0 border-gray-200">
                                   <div>
                                     <span className="text-xs font-semibold text-gray-500 block md:hidden">Price</span>
-                                    <span suppressHydrationWarning className="text-2xl font-bold text-gray-900">{flight.price || "CAD 1,250.00"}</span>
+                                    <span suppressHydrationWarning className="text-2xl font-bold text-gray-900">{flight.price || "£ 1,250.00"}</span>
                                   </div>
                                   <a
                                     href={`https://wa.me/19056248344?text=Hi,%20I'm%20interested%20in%20booking%20this%20flight%20(${encodeURIComponent(flight.name)})`}

@@ -389,12 +389,12 @@ export async function deletePageAction(id: number) {
 
 export async function getDefaultSiteIdentity() {
   return {
-    siteName: 'King Travel Canada',
-    tagline: 'Trusted Hajj & Umrah Pilgrimage Travel Agency in Canada',
-    logo: '/img/logo.png',
-    logoAlt: 'King Travel Canada Logo',
-    favicon: '/img/favicon.png',
-    faviconAlt: 'King Travel Favicon',
+    siteName: 'British Hajj Travel',
+    tagline: 'Trusted Hajj & Umrah Pilgrimage Travel Agency in UK',
+    logo: '/images_KTC/bht-logo.png',
+    logoAlt: 'British Hajj Travel Logo',
+    favicon: '/images_KTC/bht-fav-logo.png',
+    faviconAlt: 'British Hajj Travel Favicon',
   };
 }
 
@@ -753,7 +753,7 @@ const DEFAULT_FORM_FIELDS_STATE: Record<string, Array<{ id: string; label: strin
     { id: '5', label: 'Children', type: 'select', placeholder: '0', required: false },
     { id: '6', label: 'Infants', type: 'select', placeholder: '0', required: false },
     { id: '7', label: 'Select Start Date', type: 'date', placeholder: 'e.g. March 25, 2025', required: true },
-    { id: '8', label: 'Package Type', type: 'select', placeholder: 'CAD 2,695 - Quad Occupancy', required: true },
+    { id: '8', label: 'Package Type', type: 'select', placeholder: '£ 2,695 - Quad Occupancy', required: true },
   ],
   hajjPackageDetailForm: [
     { id: '1', label: 'Full Name', type: 'text', placeholder: 'Full Name', required: true },
@@ -762,7 +762,7 @@ const DEFAULT_FORM_FIELDS_STATE: Record<string, Array<{ id: string; label: strin
     { id: '4', label: 'Adults', type: 'select', placeholder: '1', required: true },
     { id: '5', label: 'Children', type: 'select', placeholder: '0', required: false },
     { id: '6', label: 'Infants', type: 'select', placeholder: '0', required: false },
-    { id: '7', label: 'Package Type', type: 'select', placeholder: 'CAD 12,995 - Quad Occupancy', required: true },
+    { id: '7', label: 'Package Type', type: 'select', placeholder: '£ 12,995 - Quad Occupancy', required: true },
   ],
   hajjCustomizeForm: [
     { id: '1', label: 'Full Name', type: 'text', placeholder: 'Full Name', required: true },
@@ -920,11 +920,11 @@ const DEFAULT_FORMS_DATA: Record<string, any> = {
 const DEFAULT_EMAIL_CONFIGS: any = {
   sendToEmail: 'saudivisa@kingtravelcan.com',
   emailSubjectLine: 'New Pilgrimage Form Submission',
-  fromName: 'King Travel Canada',
+  fromName: 'King Travel UK',
   fromEmail: 'no-reply@kingtravelcan.com',
   replyTo: 'no-reply@kingtravelcan.com',
   successHeading: 'Message Sent Successfully!',
-  successDescription: 'Thank you for contacting King Travel Canada. We will respond within 24 hours.',
+  successDescription: 'Thank you for contacting King Travel UK. We will respond within 24 hours.',
   formRoutes: {},
   formCcRoutes: {},
   formBccRoutes: {},
@@ -1361,7 +1361,7 @@ ${outputSchema}`;
 
 function getLocalTemplateFallback(section: string, context: SeoGenerationContext): any {
   const { pageTitle, pageSlug, schemaType, siteContext } = context;
-  const title = (pageTitle || 'King Travel Canada').trim();
+  const title = (pageTitle || 'King Travel UK').trim();
   const cleanSlug = pageSlug === '/' ? '' : pageSlug.startsWith('/') ? pageSlug : `/${pageSlug}`;
 
   if (section === 'traditional') {
@@ -1385,13 +1385,13 @@ function getLocalTemplateFallback(section: string, context: SeoGenerationContext
   if (section === 'geo') {
     return {
       geoSummary: `${siteContext.brandName} offers full-service ${title} solutions, including verified visa processing, group packages, custom itineraries, and luxury accommodations.`,
-      geoClusters: `${title}, Umrah Packages 2026, Hajj Travel, Canada Saudi Visas, Toronto Umrah Agency`,
+      geoClusters: `${title}, Umrah Packages 2026, Hajj Travel, UK Saudi Visas, Toronto Umrah Agency`,
     };
   }
 
   if (section === 'aeo') {
     return {
-      formattedFaqs: `Q: What is included in ${title} at ${siteContext.brandName}?\nA: This package includes verified visa assistance, round-trip flight bookings, 5-star hotel accommodations in Makkah and Madinah, and reliable ground transfers with guided support throughout your journey.\n\nQ: What is the cost of ${title} packages?\nA: Package pricing varies depending on travel dates, airline choice, and room occupancy. Contact our Toronto office for an itemized and transparent quotation with zero hidden fees.\n\nQ: How can I book or apply for ${title}?\nA: You can easily reserve your spot by submitting an online inquiry on our official website, calling our customer care desk, or visiting our Toronto headquarters.\n\nQ: What are the eligibility and document requirements for ${title}?\nA: Canadian travelers require a valid passport with at least six months validity, passport-sized photographs, and required immunization records as mandated by Saudi authorities.\n\nQ: Why choose ${siteContext.brandName} for ${title}?\nA: We are an authorized and licensed pilgrimage provider offering decade-long experience, dedicated 24/7 on-ground assistance, and curated five-star hospitality for Canadian pilgrims.`,
+      formattedFaqs: `Q: What is included in ${title} at ${siteContext.brandName}?\nA: This package includes verified visa assistance, round-trip flight bookings, 5-star hotel accommodations in Makkah and Madinah, and reliable ground transfers with guided support throughout your journey.\n\nQ: What is the cost of ${title} packages?\nA: Package pricing varies depending on travel dates, airline choice, and room occupancy. Contact our Toronto office for an itemized and transparent quotation with zero hidden fees.\n\nQ: How can I book or apply for ${title}?\nA: You can easily reserve your spot by submitting an online inquiry on our official website, calling our customer care desk, or visiting our Toronto headquarters.\n\nQ: What are the eligibility and document requirements for ${title}?\nA: Canadian travelers require a valid passport with at least six months validity, passport-sized photographs, and required immunization records as mandated by Saudi authorities.\n\nQ: Why choose ${siteContext.brandName} for ${title}?\nA: We are an authorized and licensed pilgrimage provider offering de£e-long experience, dedicated 24/7 on-ground assistance, and curated five-star hospitality for Canadian pilgrims.`,
     };
   }
 

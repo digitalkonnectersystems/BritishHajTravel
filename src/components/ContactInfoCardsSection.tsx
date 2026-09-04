@@ -21,7 +21,7 @@ export default function ContactInfoCardsSection({ data }: { data?: any }) {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {data?.headAddress || "1325 Eglinton Ave E Suite Number 218, Mississauga, ON L4W 4L9, Canada"}
+                {data?.headAddress || "1325 Eglinton Ave E Suite Number 218, Mississauga, ON L4W 4L9, UK"}
               </a>
             </div>
 
@@ -34,7 +34,7 @@ export default function ContactInfoCardsSection({ data }: { data?: any }) {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {data?.branchAddress || "22 Ontario St S, Milton, ON L9T 2M6, Canada"}
+                {data?.branchAddress || "22 Ontario St S, Milton, ON L9T 2M6, UK"}
               </a>
             </div>
           </div>

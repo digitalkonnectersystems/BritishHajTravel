@@ -81,11 +81,11 @@ export function sanitizeMediaUrl(url: string): string {
 export function generateAutoAltText(fileOrName: File | string, contextTitle?: string): string {
   if (contextTitle && contextTitle.trim()) {
     const cleanContext = contextTitle.replace(/[^a-zA-Z0-9\s-]/g, '').trim();
-    return `Official ${cleanContext} - King Travel Canada`;
+    return `Official ${cleanContext} - King Travel UK`;
   }
 
   const filename = typeof fileOrName === 'string' ? fileOrName : fileOrName.name;
-  if (!filename) return 'King Travel Canada Image';
+  if (!filename) return 'King Travel UK Image';
 
   // Strip path and extension
   const basename = filename.split('/').pop()?.split('\\').pop() || filename;
@@ -98,5 +98,5 @@ export function generateAutoAltText(fileOrName: File | string, contextTitle?: st
     .replace(/^\w/, (c) => c.toUpperCase())
     .trim();
 
-  return `${cleanName} - King Travel Canada`;
+  return `${cleanName} - King Travel UK`;
 }

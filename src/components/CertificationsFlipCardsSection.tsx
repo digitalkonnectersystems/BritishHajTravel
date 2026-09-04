@@ -60,13 +60,13 @@ export default function CertificationsFlipCardsSection({
           logo: "/img/atac.svg",
           title: "ATAC",
           description:
-            "ATAC represents air transport excellence and safe aviation ticketing protocols across Canada.",
+            "ATAC represents air transport excellence and safe aviation ticketing protocols across UK.",
         },
         {
           logo: "",
           title: "Saudi Ministry of Foreign Affairs",
           description:
-            "Official Saudi Ministry authorization for processing Umrah, Hajj, business, and tourist visas directly from Canada.",
+            "Official Saudi Ministry authorization for processing Umrah, Hajj, business, and tourist visas directly from UK.",
         },
       ];
 

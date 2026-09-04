@@ -44,11 +44,11 @@ function toSafeISOString(value: any): string | undefined {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const blog = await getBlogBySlug(slug);
-  if (!blog) return { title: 'Blog Not Found | King Travel Canada' };
+  if (!blog) return { title: 'Blog Not Found | King Travel UK' };
 
   const seoData: any = await getBlogSeoAction(blog.id);
-  const metaTitle = seoData?.metaTitle || `${blog.title} | King Travel Canada`;
-  const metaDesc = seoData?.metaDescription || blog.excerpt || `Read ${blog.title} on King Travel Canada blog.`;
+  const metaTitle = seoData?.metaTitle || `${blog.title} | King Travel UK`;
+  const metaDesc = seoData?.metaDescription || blog.excerpt || `Read ${blog.title} on King Travel UK blog.`;
   const ogImage = seoData?.ogImageUrl || blog.featuredImage || FALLBACK_THUMB;
 
   return {
@@ -104,7 +104,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
     author: { '@type': 'Person', name: blog.authorName || 'King Travel Editorial' },
     publisher: {
       '@type': 'Organization',
-      name: 'King Travel Canada',
+      name: 'King Travel UK',
       logo: { '@type': 'ImageObject', url: '/img/logo.png' },
     },
     datePublished:
@@ -184,7 +184,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
               {/* Tags footer */}
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <span className="text-sm font-bold text-ink">Tags:</span>
-                {[blog.category, 'King Travel Canada', 'Pilgrimage'].filter(Boolean).map((tag) => (
+                {[blog.category, 'King Travel UK', 'Pilgrimage'].filter(Boolean).map((tag) => (
                   <span key={tag} className="text-sm px-3 py-1 rounded-full border-1 border-[var(--ink-light)]  text-[var(--ink-light)] font-medium">{tag}</span>
                 ))}
               </div>
@@ -344,7 +344,7 @@ function SidebarPackageSection({
                         From
                       </span>
                       <div className="text-sm font-black text-primary">
-                        {price ? `CAD ${price}` : 'Contact for price'}
+                        {price ? `£ ${price}` : 'Contact for price'}
                       </div>
                     </div>
                   </div>

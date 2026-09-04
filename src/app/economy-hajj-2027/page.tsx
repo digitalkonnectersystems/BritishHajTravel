@@ -30,7 +30,7 @@ export default function EconomyHajj2027Page() {
             </div>
             <div className="route-meta flex gap-6 text-sm">
               <span>
-                <i className="fa-solid fa-plane-departure text-[#d4af37] mr-2"></i> Departure: <b>Canada</b>
+                <i className="fa-solid fa-plane-departure text-[#d4af37] mr-2"></i> Departure: <b>UK</b>
               </span>
               <span>
                 <i className="fa-solid fa-plane-arrival text-[#d4af37] mr-2"></i> Destination: <b>Saudia</b>
@@ -43,7 +43,7 @@ export default function EconomyHajj2027Page() {
               EXCLUSIVE PACKAGE
             </span>
             <div className="flex items-baseline justify-center gap-1">
-              <span className="font-serif text-4xl font-bold leading-none">CAD 12,995</span>
+              <span className="font-serif text-4xl font-bold leading-none">£ 12,995</span>
             </div>
             <span className="text-xs block mt-2 text-slate-200">per person, quad occupancy</span>
           </div>
@@ -230,7 +230,7 @@ export default function EconomyHajj2027Page() {
                     className="font-bold text-slate-900 flex justify-between items-center cursor-pointer"
                     onClick={() => toggleFaq(2)}
                   >
-                    <span>Are flights included in the CAD 12,995 price?</span>
+                    <span>Are flights included in the £ 12,995 price?</span>
                     <i className={`fa-solid fa-chevron-down text-slate-400 transition-transform ${openFaq === 2 ? "rotate-180" : ""}`}></i>
                   </div>
                   {openFaq === 2 && (

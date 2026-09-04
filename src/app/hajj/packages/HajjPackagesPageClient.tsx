@@ -18,7 +18,7 @@ const hajjCardsData = [
     duration: "14Days",
     heroImage:
       "uploads\sections\hajj_1.jpg",
-    price: "CAD 12,995",
+    price: "£ 12,995",
     makkahHotel: {
       name: "5 Star Hotel in Makkah",
       location: "Near to Haram",
@@ -60,7 +60,7 @@ const hajjCardsData = [
     duration: "15 Days",
     heroImage:
       "uploads\sections\hajj_1.jpg",
-    price: "CAD 17,995",
+    price: "£ 17,995",
     makkahHotel: {
       name: "5 Star Hotel Fairmont Makkah",
       location: "Near to Haram",
@@ -102,7 +102,7 @@ const hajjCardsData = [
     duration: "10 Days",
     heroImage:
       "https://images.unsplash.com/photos/kaaba-mecca-IAwnp88Fz8Y",
-    price: "CAD 14,995",
+    price: "£ 14,995",
     makkahHotel: {
       name: "Hyatt Regency Makkah",
       location: "Jabal Omar (Short Walk)",
@@ -162,11 +162,11 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
         title={
           pageData?.bannerTitle ||
           pageData?.title ||
-          "Hajj Packages from Canada 2027 <br /><span>Travel with Confidence</span> by King Travel"
+          "Hajj Packages from UK 2027 <br /><span>Travel with Confidence</span> by King Travel"
         }
         description={
           pageData?.bannerDescription ||
-          "Perform your sacred obligation of Hajj in 2027 with comfort, organization, and spiritual focus. King Travel proudly offers premium Hajj Packages from Canada 2027, designed to provide Canadian Muslims with a smooth and well-managed pilgrimage experience."
+          "Perform your sacred obligation of Hajj in 2027 with comfort, organization, and spiritual focus. King Travel proudly offers premium Hajj Packages from UK 2027, designed to provide Canadian Muslims with a smooth and well-managed pilgrimage experience."
         }
         bgImage={pageData?.bannerBgImage}
         position={pageData?.bannerPosition}
@@ -228,8 +228,8 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
               const heroImage = card.thumbnail || card.heroImage || "https://antiquewhite-stinkbug-399384.hostingersite.com/wp-content/uploads/2026/05/Umrah_packages_202605092201.jpeg";
               const title = card.title || "Hajj Package 2027";
               const rawPrice = (card.startingPrice || card.price || "12,995").toString();
-              const price = rawPrice.startsWith("CAD") ? rawPrice : `CAD ${rawPrice.replace("$", "").trim()}`;
-              const priceSubtext = card.priceSubtext || "CAD / QUAD OCCUPANCY";
+              const price = rawPrice.startsWith("£") ? rawPrice : `£ ${rawPrice.replace("$", "").trim()}`;
+              const priceSubtext = card.priceSubtext || "£ / QUAD OCCUPANCY";
               const operatorName = card.operatorName || "King Travel";
               const operatorRating = card.operatorRating || "4.4/5";
               const btnLabel = card.btnLabel || "Book Hajj 2027";

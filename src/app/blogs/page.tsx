@@ -6,10 +6,10 @@ import { getPageBySlug } from '@/actions/pageActions';
 import PageSectionsRenderer from '@/components/PageSectionsRenderer';
 
 export const metadata: Metadata = {
-  title: 'Blog & Travel Guides | King Travel Canada',
-  description: 'Explore pilgrimage tips, Hajj & Umrah guides, Saudi Visa info, and travel inspiration from King Travel Canada\'s expert editorial team.',
+  title: 'Blog & Travel Guides | King Travel UK',
+  description: 'Explore pilgrimage tips, Hajj & Umrah guides, Saudi Visa info, and travel inspiration from King Travel UK\'s expert editorial team.',
   openGraph: {
-    title: 'Blog & Travel Guides | King Travel Canada',
+    title: 'Blog & Travel Guides | King Travel UK',
     description: 'Explore pilgrimage tips, Hajj & Umrah guides, Saudi Visa info, and travel inspiration.',
     url: '/blogs',
     type: 'website',
@@ -52,7 +52,7 @@ export default async function BlogsListingPage() {
     <>
       <PageBanner
         title={pageData?.bannerTitle || pageData?.title || 'Our <em>Blog</em> & Travel Guides'}
-        description={pageData?.bannerDescription || "Insights, tips, and inspiration for your pilgrimage journey — written by the King Travel Canada team."}
+        description={pageData?.bannerDescription || "Insights, tips, and inspiration for your pilgrimage journey — written by the King Travel UK team."}
         bgImage={pageData?.bannerBgImage}
         position={pageData?.bannerPosition}
         size={pageData?.bannerSize}

@@ -110,8 +110,8 @@ export async function dispatchFormEmails(
     const userHtml = isValidUserEmail ? getResponsiveEmailTemplateHtml(formName, submittedData, true) : '';
 
     // Auto-Selected Generic Subjects
-    const adminSubject = `[King Travel Canada] ${formName}`;
-    const userSubject = `Thank you for Contacting King Travel Canada — ${formName} Received`;
+    const adminSubject = `[King Travel UK] ${formName}`;
+    const userSubject = `Thank you for Contacting King Travel UK — ${formName} Received`;
 
     // 2. Check if SMTP Credentials exist
     if (!smtpHost || !smtpUser || !smtpPass) {
@@ -164,7 +164,7 @@ export async function dispatchFormEmails(
     // Prepare Email #2 (User, if email is valid)
     const userPromise = (isValidUserEmail && userHtml)
       ? transporter.sendMail({
-        from: `"King Travel Canada" <${fromEmail}>`,
+        from: `"King Travel UK" <${fromEmail}>`,
         to: userEmail.trim(),
         subject: userSubject,
         html: userHtml,

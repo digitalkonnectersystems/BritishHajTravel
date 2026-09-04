@@ -31,7 +31,7 @@ export default function DeluxeHajj2027Page() {
             </div>
             <div className="route-meta flex gap-6 text-sm">
               <span>
-                <i className="fa-solid fa-plane-departure text-[#d4af37] mr-2"></i> Departure: <b>Canada</b>
+                <i className="fa-solid fa-plane-departure text-[#d4af37] mr-2"></i> Departure: <b>UK</b>
               </span>
               <span>
                 <i className="fa-solid fa-plane-arrival text-[#d4af37] mr-2"></i> Destination: <b>Saudia</b>
@@ -44,7 +44,7 @@ export default function DeluxeHajj2027Page() {
               EXCLUSIVE PACKAGE
             </span>
             <div className="flex items-baseline justify-center gap-1">
-              <span className="font-serif text-4xl font-bold leading-none">CAD 17,995</span>
+              <span className="font-serif text-4xl font-bold leading-none">£ 17,995</span>
             </div>
             <span className="text-xs block mt-2 text-slate-200">per person, quad occupancy</span>
           </div>
@@ -241,7 +241,7 @@ export default function DeluxeHajj2027Page() {
                     className="font-bold text-slate-900 flex justify-between items-center cursor-pointer"
                     onClick={() => toggleFaq(2)}
                   >
-                    <span>Are flights included in the CAD 17,995 price?</span>
+                    <span>Are flights included in the £ 17,995 price?</span>
                     <i className={`fa-solid fa-chevron-down text-slate-400 transition-transform ${openFaq === 2 ? "rotate-180" : ""}`}></i>
                   </div>
                   {openFaq === 2 && (
@@ -302,7 +302,7 @@ export default function DeluxeHajj2027Page() {
 
                 <div className="flex justify-between items-center py-1">
                   <span className="text-sm text-slate-500 font-medium">Estimated Total</span>
-                  <span className="text-2xl font-bold text-emerald-900">CAD {getEstimatedTotal()}</span>
+                  <span className="text-2xl font-bold text-emerald-900">£ {getEstimatedTotal()}</span>
                 </div>
 
                 <Link

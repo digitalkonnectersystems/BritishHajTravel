@@ -16,7 +16,7 @@ export function getOrganizationJsonLd() {
       postalCode: 'L5B 3Z6',
       addressCountry: 'CA',
     },
-    areaServed: ['Mississauga', 'Milton', 'Toronto', 'Ontario', 'Canada'],
+    areaServed: ['Mississauga', 'Milton', 'Toronto', 'Ontario', 'UK'],
     priceRange: '$$$',
   };
 }
@@ -34,7 +34,7 @@ export function getPackageJsonLd(pkg: { title: string; description: string; pric
     offers: {
       '@type': 'Offer',
       price: pkg.price,
-      priceCurrency: pkg.currency || 'CAD',
+      priceCurrency: pkg.currency || '£',
       availability: 'https://schema.org/InStock',
     },
   };

@@ -152,7 +152,7 @@ function PageBuilderContent() {
   const [bannerDescription, setBannerDescription] = useState<string>('');
 
   // Homepage Hero Banner Specific Fields
-  const [heroEyebrow, setHeroEyebrow] = useState('Est. in Canada · Licensed Pilgrimage Operator');
+  const [heroEyebrow, setHeroEyebrow] = useState('Est. in UK · Licensed Pilgrimage Operator');
   const [primaryBtnLabel, setPrimaryBtnLabel] = useState('View Umrah Packages →');
   const [primaryBtnLink, setPrimaryBtnLink] = useState('/umrah-packages');
   const [secondaryBtnLabel, setSecondaryBtnLabel] = useState('Speak With an Advisor');
@@ -212,9 +212,9 @@ function PageBuilderContent() {
   const getFlightsOrDefault = (items: any) => {
     if (items && Array.isArray(items) && items.length > 0) return items;
     return [
-      { code: "PIA", name: "Pakistan International Airlines", operatedBy: "Operated By PIA", originCode: "LHR", originCity: "London", destCode: "JED", destCity: "Jeddah", time: "14:20", price: "CAD 1,250.00" },
-      { code: "PIA", name: "Pakistan International Airlines", operatedBy: "Operated By PIA", originCode: "LHR", originCity: "London", destCode: "JED", destCity: "Jeddah", time: "14:20", price: "CAD 1,250.00" },
-      { code: "PIA", name: "Pakistan International Airlines", operatedBy: "Operated By PIA", originCode: "LHR", originCity: "London", destCode: "JED", destCity: "Jeddah", time: "14:20", price: "CAD 1,250.00" }
+      { code: "PIA", name: "Pakistan International Airlines", operatedBy: "Operated By PIA", originCode: "LHR", originCity: "London", destCode: "JED", destCity: "Jeddah", time: "14:20", price: "£ 1,250.00" },
+      { code: "PIA", name: "Pakistan International Airlines", operatedBy: "Operated By PIA", originCode: "LHR", originCity: "London", destCode: "JED", destCity: "Jeddah", time: "14:20", price: "£ 1,250.00" },
+      { code: "PIA", name: "Pakistan International Airlines", operatedBy: "Operated By PIA", originCode: "LHR", originCity: "London", destCode: "JED", destCity: "Jeddah", time: "14:20", price: "£ 1,250.00" }
     ];
   };
 
@@ -346,8 +346,8 @@ function PageBuilderContent() {
                     type: 'Contact Info Cards',
                     title: 'Contact Info & Office Locations',
                     data: {
-                      headAddress: '1325 Eglinton Ave E Suite Number 218, Mississauga, ON L4W 4L9, Canada',
-                      branchAddress: '22 Ontario St S, Milton, ON L9T 2M6, Canada',
+                      headAddress: '1325 Eglinton Ave E Suite Number 218, Mississauga, ON L4W 4L9, UK',
+                      branchAddress: '22 Ontario St S, Milton, ON L9T 2M6, UK',
                       phone1: '+1 800-844-5464',
                       phone2: '+1 905-624-8555',
                       phone3: '+1 905-624-8344',
@@ -369,7 +369,7 @@ function PageBuilderContent() {
                     title: 'Dual Office Google Maps',
                     data: {
                       headMapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2888.1637775952674!2d-79.62528662340336!3d43.63487945347209!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x882b3897316b3bdb%3A0xc6758691a49d5a8e!2sKing%20Travel%20Can%20Ltd%20-%20Mississauga!5e0!3m2!1sen!2sca!4v1710000000000!5m2!1sen!2sca',
-                      branchMapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2893.6521568283307!2d-79.87981462340915!3d43.5177187791263!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x882b6fa0d880eae9%3A0xc57548acb421436c!2s22%20Ontario%20St%20S%2C%20Milton%2C%20ON%20L9T%202M6%2C%20Canada!5e0!3m2!1sen!2sca!4v1710000000001!5m2!1sen!2sca'
+                      branchMapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2893.6521568283307!2d-79.87981462340915!3d43.5177187791263!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x882b6fa0d880eae9%3A0xc57548acb421436c!2s22%20Ontario%20St%20S%2C%20Milton%2C%20ON%20L9T%202M6%2C%20UK!5e0!3m2!1sen!2sca!4v1710000000001!5m2!1sen!2sca'
                     }
                   }
                 ]);
@@ -383,7 +383,7 @@ function PageBuilderContent() {
                     data: {
                       eyebrow: 'ABOUT',
                       title: 'King Travel',
-                      description: "For over 20 years, King Travel has been a trusted travel agency in Canada, offering Hajj and Umrah services, airline ticketing, and visa processing with unmatched expertise. We are Canada's No. 1 authorized PIA seller agency and an official agent licensed by the Ministry of Hajj & Umrah, IATA, TICO, OCTA, and ASTA."
+                      description: "For over 20 years, King Travel has been a trusted travel agency in UK, offering Hajj and Umrah services, airline ticketing, and visa processing with unmatched expertise. We are UK's No. 1 authorized PIA seller agency and an official agent licensed by the Ministry of Hajj & Umrah, IATA, TICO, OCTA, and ASTA."
                     }
                   },
                   {
@@ -430,7 +430,7 @@ function PageBuilderContent() {
                 data: {
                   eyebrow: 'ABOUT',
                   title: 'King Travel',
-                  description: "For over 20 years, King Travel has been a trusted travel agency in Canada, offering Hajj and Umrah services, airline ticketing, and visa processing with unmatched expertise."
+                  description: "For over 20 years, King Travel has been a trusted travel agency in UK, offering Hajj and Umrah services, airline ticketing, and visa processing with unmatched expertise."
                 }
               },
               {
@@ -482,8 +482,8 @@ function PageBuilderContent() {
     if (type === 'Umrah Packages') {
       defaultData = {
         eyebrow: 'EXCLUSIVE UPCOMING',
-        title: 'Umrah Packages from Canada',
-        subtext: 'Departures from CAD 2,595 per person. Availability and accommodations are confirmed with every booking — contact us before reserving.',
+        title: 'Umrah Packages from UK',
+        subtext: 'Departures from £ 2,595 per person. Availability and accommodations are confirmed with every booking — contact us before reserving.',
         btnText: 'SEE ALL PACKAGES →',
         btnLink: '/umrah-packages',
       };
@@ -491,7 +491,7 @@ function PageBuilderContent() {
       defaultData = {
         eyebrow: 'Luxury Hajj Packages',
         title: 'Packages Officially<br />Sold Out',
-        description: 'Departures from CAD 2,595 per person. Availability and accommodations are confirmed with every booking – contact us before reserving.',
+        description: 'Departures from £ 2,595 per person. Availability and accommodations are confirmed with every booking – contact us before reserving.',
         items: [
           {
             title: 'Hajj Package',
@@ -532,7 +532,7 @@ function PageBuilderContent() {
         items: [
           { num: '01', title: 'Lowest Fares', description: 'We offer the lowest rates on the market, sourced across every route into Jeddah.' },
           { num: '02', title: 'Special Deals', description: 'Fixed-price Umrah packages with hotels, meals and transport included.' },
-          { num: '03', title: 'Trusted & Certified', description: 'A fully accredited travel agency you can rely on, licensed across Canada.' },
+          { num: '03', title: 'Trusted & Certified', description: 'A fully accredited travel agency you can rely on, licensed across UK.' },
           { num: '04', title: 'Pilgrimage Services', description: 'Visa processing, group support — the full spiritual journey, arranged.' },
         ],
       };
@@ -600,7 +600,7 @@ function PageBuilderContent() {
     } else if (type === 'Stats Grid') {
       defaultData = {
         items: [
-          { value: '25+', label: 'Years Serving Canada' },
+          { value: '25+', label: 'Years Serving UK' },
           { value: '10k+', label: 'Pilgrims Guided' },
           { value: '5★', label: 'Hotels, Every Package' },
         ]
@@ -609,7 +609,7 @@ function PageBuilderContent() {
       defaultData = {
         eyebrow: 'ABOUT',
         title: 'King Travel',
-        description: "For over 20 years, King Travel has been a trusted travel agency in Canada..."
+        description: "For over 20 years, King Travel has been a trusted travel agency in UK..."
       };
     } else if (type === 'Image+Text') {
       defaultData = {
@@ -720,8 +720,8 @@ function PageBuilderContent() {
           { logo: '/img/iata.svg', title: 'IATA', description: 'Being an IATA accredited agency allows us to work directly with airlines, offering competitive airfares, seamless ticketing, and exclusive deals.' },
           { logo: '/img/acta.svg', title: 'ACTA', description: 'ACTA membership advocates for ethical travel practices and professional excellence across the Canadian travel industry.' },
           { logo: '/img/asta.svg', title: 'ASTA', description: 'ASTA certification connects us with global travel standards and verified international destination management networks.' },
-          { logo: '/img/atac.svg', title: 'ATAC', description: 'ATAC represents air transport excellence and safe aviation ticketing protocols across Canada.' },
-          { logo: '', title: 'Saudi Ministry of Foreign Affairs', description: 'Official Saudi Ministry authorization for processing Umrah, Hajj, business, and tourist visas directly from Canada.' }
+          { logo: '/img/atac.svg', title: 'ATAC', description: 'ATAC represents air transport excellence and safe aviation ticketing protocols across UK.' },
+          { logo: '', title: 'Saudi Ministry of Foreign Affairs', description: 'Official Saudi Ministry authorization for processing Umrah, Hajj, business, and tourist visas directly from UK.' }
         ]
       };
     }
@@ -768,7 +768,7 @@ function PageBuilderContent() {
           const heroSecData = {
             heroEyebrow,
             title: bannerTitle || title || 'Your journey to <span>Makkah & Madinah</span>, guided with care.',
-            description: bannerDescription || "King Travel plans Hajj and Umrah journeys from Canada down to the smallest detail...",
+            description: bannerDescription || "King Travel plans Hajj and Umrah journeys from UK down to the smallest detail...",
             primaryBtnLabel,
             primaryBtnLink,
             secondaryBtnLabel,
@@ -1013,14 +1013,14 @@ function PageBuilderContent() {
               {/* Main Content Area */}
               <div className="relative z-10 max-w-md space-y-3 my-auto">
                 <div className="text-[11px] font-extrabold uppercase tracking-widest text-gold">
-                  {heroEyebrow || 'Est. in Canada · Licensed Pilgrimage Operator'}
+                  {heroEyebrow || 'Est. in UK · Licensed Pilgrimage Operator'}
                 </div>
                 <h1
                   className="text-xl md:text-3xl font-serif text-white m-0 font-normal tracking-tight leading-tight [&>span]:text-gold [&>em]:text-gold [&>em]:not-italic"
                   dangerouslySetInnerHTML={{ __html: bannerTitle || title || 'Your journey to <span>Makkah & Madinah</span>, guided with care.' }}
                 />
                 <p className="text-xs text-white/80 leading-relaxed font-light">
-                  {bannerDescription || "King Travel plans Hajj and Umrah journeys from Canada down to the smallest detail — flights, five-star stays walking distance from the Haram, visas, and guides..."}
+                  {bannerDescription || "King Travel plans Hajj and Umrah journeys from UK down to the smallest detail — flights, five-star stays walking distance from the Haram, visas, and guides..."}
                 </p>
 
                 {/* Primary & Secondary Buttons Matching Frontend */}
@@ -1046,7 +1046,7 @@ function PageBuilderContent() {
                 type="text"
                 value={heroEyebrow}
                 onChange={(e) => setHeroEyebrow(e.target.value)}
-                placeholder="e.g. Est. in Canada · Licensed Pilgrimage Operator"
+                placeholder="e.g. Est. in UK · Licensed Pilgrimage Operator"
                 className="w-full px-3 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs font-medium outline-none focus:border-primary"
               />
             </div>
@@ -1631,7 +1631,7 @@ function PageBuilderContent() {
                                       type="text"
                                       value={sec.data?.title || sec.title || ''}
                                       onChange={(e) => updateSectionData(sec.id, 'title', e.target.value)}
-                                      placeholder="e.g. Umrah Packages from Canada"
+                                      placeholder="e.g. Umrah Packages from UK"
                                       className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold text-slate-900 bg-white"
                                     />
                                   </div>
@@ -1803,7 +1803,7 @@ function PageBuilderContent() {
                               <div className="bg-white border border-slate-200 rounded-xl p-3 flex flex-col gap-2.5">
                                 <span className="text-[11px] font-extrabold text-primary uppercase">📊 KPI Stat Items (Value & Label)</span>
                                 {((sec.data?.items && Array.isArray(sec.data.items) && sec.data.items.length > 0) ? sec.data.items : [
-                                  { value: '25+', label: 'Years Serving Canada' },
+                                  { value: '25+', label: 'Years Serving UK' },
                                   { value: '10,000+', label: 'Pilgrims Guided' },
                                   { value: '5★', label: 'Hotels, Every Package' }
                                 ]).map((stat: any, sIdx: number) => (
@@ -1814,7 +1814,7 @@ function PageBuilderContent() {
                                       placeholder="Value (e.g. 25+)"
                                       onChange={(e) => {
                                         const currentItems = [...((sec.data?.items && Array.isArray(sec.data.items)) ? sec.data.items : [
-                                          { value: '25+', label: 'Years Serving Canada' },
+                                          { value: '25+', label: 'Years Serving UK' },
                                           { value: '10,000+', label: 'Pilgrims Guided' },
                                           { value: '5★', label: 'Hotels, Every Package' }
                                         ])];
@@ -1826,10 +1826,10 @@ function PageBuilderContent() {
                                     <input
                                       type="text"
                                       value={stat.label || ''}
-                                      placeholder="Label (e.g. Years Serving Canada)"
+                                      placeholder="Label (e.g. Years Serving UK)"
                                       onChange={(e) => {
                                         const currentItems = [...((sec.data?.items && Array.isArray(sec.data.items)) ? sec.data.items : [
-                                          { value: '25+', label: 'Years Serving Canada' },
+                                          { value: '25+', label: 'Years Serving UK' },
                                           { value: '10,000+', label: 'Pilgrims Guided' },
                                           { value: '5★', label: 'Hotels, Every Package' }
                                         ])];
@@ -1971,7 +1971,7 @@ function PageBuilderContent() {
                                         type="button"
                                         onClick={() => {
                                           const currentItems = [...((sec.data?.items && Array.isArray(sec.data.items)) ? sec.data.items : [
-                                            { value: '25+', label: 'Years Serving Canada' },
+                                            { value: '25+', label: 'Years Serving UK' },
                                             { value: '10,000+', label: 'Pilgrims Guided' },
                                             { value: '5★', label: 'Hotels, Every Package' }
                                           ])];
@@ -1984,7 +1984,7 @@ function PageBuilderContent() {
                                       </button>
                                     </div>
                                     {((sec.data?.items && Array.isArray(sec.data.items) && sec.data.items.length > 0) ? sec.data.items : [
-                                      { value: '25+', label: 'Years Serving Canada' },
+                                      { value: '25+', label: 'Years Serving UK' },
                                       { value: '10,000+', label: 'Pilgrims Guided' },
                                       { value: '5★', label: 'Hotels, Every Package' }
                                     ]).map((stat: any, sIdx: number, arr: any[]) => {
@@ -2046,7 +2046,7 @@ function PageBuilderContent() {
                                             <input
                                               type="text"
                                               value={stat.label || ''}
-                                              placeholder="Label (e.g. Years Serving Canada)"
+                                              placeholder="Label (e.g. Years Serving UK)"
                                               onChange={(e) => {
                                                 const currentItems = [...arr];
                                                 currentItems[sIdx] = { ...currentItems[sIdx], label: e.target.value };
@@ -2336,7 +2336,7 @@ function PageBuilderContent() {
                                         <div className="flex-1 overflow-hidden">
                                           <div className="text-xs font-bold text-slate-800 truncate">{pkg.title}</div>
                                           <div className="text-[10px] text-slate-500 truncate">
-                                            CAD ${pkg.startingPrice} • {formatTravelMonth(pkg.month) || pkg.month}
+                                            £ ${pkg.startingPrice} • {formatTravelMonth(pkg.month) || pkg.month}
                                           </div>
                                         </div>
                                         <button
@@ -2373,7 +2373,7 @@ function PageBuilderContent() {
                                       const currentServices = [...((sec.data?.items && Array.isArray(sec.data.items)) ? sec.data.items : [
                                         { icon: "✈️", title: "Lowest Fares", subtitle: "We Offer the Lowest Fair on Air Ticketing around the Globe.", description: "As a partner with major airlines, including PIA, King Travel Can Ltd guarantees the lowest airfares for flights to Pakistan, Saudi Arabia, and beyond." },
                                         { icon: "✨", title: "Special Deals", subtitle: "We Provide Best Prices Of All Inclusive Packages.", description: "We offer exclusive special deals on Umrah, Hajj, and international flight packages, tailored to fit your budget." },
-                                        { icon: "🛡️", title: "Trusted & Certified", subtitle: "We are The Only Authorized Saudi Visa Providers Canada!", description: "Recognized by IATA, ACTA, TICO, ASTA, ATAC, and the Saudi Ministry of Hajj & Umrah." },
+                                        { icon: "🛡️", title: "Trusted & Certified", subtitle: "We are The Only Authorized Saudi Visa Providers UK!", description: "Recognized by IATA, ACTA, TICO, ASTA, ATAC, and the Saudi Ministry of Hajj & Umrah." },
                                         { icon: "🕌", title: "Pilgrimage Experts", subtitle: "We Offer Best Accommodations & Transports In Saudia Arabia", description: "From visa processing and ticketing to 5-star accommodations and guided tours, King Travel provides a complete pilgrimage experience." }
                                       ])];
                                       currentServices.push({ icon: "🌟", title: "New Service Card", subtitle: "Service Subtitle", description: "Service details description..." });
@@ -2387,7 +2387,7 @@ function PageBuilderContent() {
                                 {((sec.data?.items && Array.isArray(sec.data.items) && sec.data.items.length > 0) ? sec.data.items : [
                                   { icon: "✈️", title: "Lowest Fares", subtitle: "We Offer the Lowest Fair on Air Ticketing around the Globe.", description: "As a partner with major airlines, including PIA, King Travel Can Ltd guarantees the lowest airfares for flights to Pakistan, Saudi Arabia, and beyond." },
                                   { icon: "✨", title: "Special Deals", subtitle: "We Provide Best Prices Of All Inclusive Packages.", description: "We offer exclusive special deals on Umrah, Hajj, and international flight packages, tailored to fit your budget." },
-                                  { icon: "🛡️", title: "Trusted & Certified", subtitle: "We are The Only Authorized Saudi Visa Providers Canada!", description: "Recognized by IATA, ACTA, TICO, ASTA, ATAC, and the Saudi Ministry of Hajj & Umrah." },
+                                  { icon: "🛡️", title: "Trusted & Certified", subtitle: "We are The Only Authorized Saudi Visa Providers UK!", description: "Recognized by IATA, ACTA, TICO, ASTA, ATAC, and the Saudi Ministry of Hajj & Umrah." },
                                   { icon: "🕌", title: "Pilgrimage Experts", subtitle: "We Offer Best Accommodations & Transports In Saudia Arabia", description: "From visa processing and ticketing to 5-star accommodations and guided tours, King Travel provides a complete pilgrimage experience." }
                                 ]).map((svc: any, sIdx: number) => (
                                   <div key={sIdx} className="bg-slate-50 border border-slate-300 rounded-lg p-2.5 flex flex-col gap-2 relative">
@@ -3164,7 +3164,7 @@ function PageBuilderContent() {
                                         destCode: "JED",
                                         destCity: "Jeddah",
                                         time: "16:45",
-                                        price: "CAD 1,450.00"
+                                        price: "£ 1,450.00"
                                       });
                                       updateSectionData(sec.id, 'items', currentFlights);
                                     }}
@@ -3339,7 +3339,7 @@ function PageBuilderContent() {
                                             updateSectionData(sec.id, 'items', currentFlights);
                                           }}
                                           className="font-bold text-lg md:text-xl text-slate-900 text-right w-full border-b border-transparent hover:border-slate-300 focus:border-primary outline-none bg-transparent p-0 placeholder:text-slate-300"
-                                          placeholder="CAD 1,250.00"
+                                          placeholder="£ 1,250.00"
                                           title="Price"
                                         />
                                         <input
@@ -3434,7 +3434,7 @@ function PageBuilderContent() {
                                               { src: '/img/a-6.png', alt: 'EgyptAir' },
                                               { src: '/img/a-7.png', alt: 'Royal Jordanian' },
                                               { src: '/img/a-8.png', alt: 'Gulf Air' },
-                                              { src: '/img/a-9.png', alt: 'Air Canada' },
+                                              { src: '/img/a-9.png', alt: 'Air UK' },
                                             ];
 
                                             (async () => {
@@ -3461,7 +3461,7 @@ function PageBuilderContent() {
                                             { src: '/img/a-6.png', alt: 'EgyptAir' },
                                             { src: '/img/a-7.png', alt: 'Royal Jordanian' },
                                             { src: '/img/a-8.png', alt: 'Gulf Air' },
-                                            { src: '/img/a-9.png', alt: 'Air Canada' },
+                                            { src: '/img/a-9.png', alt: 'Air UK' },
                                           ];
                                           currentLogos.push({ src: '', alt: 'New Partner' });
                                           updateSectionData(sec.id, 'logos', currentLogos);
@@ -3484,7 +3484,7 @@ function PageBuilderContent() {
                                       { src: '/img/a-6.png', alt: 'EgyptAir' },
                                       { src: '/img/a-7.png', alt: 'Royal Jordanian' },
                                       { src: '/img/a-8.png', alt: 'Gulf Air' },
-                                      { src: '/img/a-9.png', alt: 'Air Canada' },
+                                      { src: '/img/a-9.png', alt: 'Air UK' },
                                     ]).map((logoItem: any, lIdx: number, allLogos: any[]) => (
                                       <div
                                         key={lIdx}
@@ -3644,8 +3644,8 @@ function PageBuilderContent() {
                                       { logo: '/img/iata-logo.png', title: 'IATA - International Air Transport Association', description: 'Being an IATA accredited agency allows us to work directly with airlines, offering competitive airfares, seamless ticketing, and exclusive deals.' },
                                       { logo: '/img/acta-logo.png', title: 'ACTA - Association of Canadian Travel Agencies', description: 'ACTA membership advocates for ethical travel practices and professional excellence across the Canadian travel industry.' },
                                       { logo: '/img/asta-logo.png', title: 'ASTA - American Society of Travel Advisors', description: 'ASTA certification connects us with global travel standards and verified international destination management networks.' },
-                                      { logo: '/img/atac-logo.png', title: 'ATAC - Air Transportation Association of Canada', description: 'ATAC represents air transport excellence and safe aviation ticketing protocols across Canada.' },
-                                      { logo: '/img/mofa-logo.png', title: 'Saudi Ministry of Foreign Affairs', description: 'Official Saudi Ministry authorization for processing Umrah, Hajj, business, and tourist visas directly from Canada.' }
+                                      { logo: '/img/atac-logo.png', title: 'ATAC - Air Transportation Association of UK', description: 'ATAC represents air transport excellence and safe aviation ticketing protocols across UK.' },
+                                      { logo: '/img/mofa-logo.png', title: 'Saudi Ministry of Foreign Affairs', description: 'Official Saudi Ministry authorization for processing Umrah, Hajj, business, and tourist visas directly from UK.' }
                                     ]).map((item: any, cIdx: number, allCards: any[]) => (
                                       <div
                                         key={cIdx}
@@ -3814,7 +3814,7 @@ function PageBuilderContent() {
                                         </label>
                                         <textarea
                                           rows={2}
-                                          value={sec.data?.headAddress || '1325 Eglinton Ave E Suite Number 218, Mississauga, ON L4W 4L9, Canada'}
+                                          value={sec.data?.headAddress || '1325 Eglinton Ave E Suite Number 218, Mississauga, ON L4W 4L9, UK'}
                                           onChange={(e) => updateSectionData(sec.id, 'headAddress', e.target.value)}
                                           placeholder="Enter head office full address..."
                                           className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs text-slate-700 outline-none focus:border-primary focus:ring-1 focus:ring-primary resize-none"
@@ -3827,7 +3827,7 @@ function PageBuilderContent() {
                                         </label>
                                         <textarea
                                           rows={2}
-                                          value={sec.data?.branchAddress || '22 Ontario St S, Milton, ON L9T 2M6, Canada'}
+                                          value={sec.data?.branchAddress || '22 Ontario St S, Milton, ON L9T 2M6, UK'}
                                           onChange={(e) => updateSectionData(sec.id, 'branchAddress', e.target.value)}
                                           placeholder="Enter branch office full address..."
                                           className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs text-slate-700 outline-none focus:border-primary focus:ring-1 focus:ring-primary resize-none"
@@ -4247,7 +4247,7 @@ function PageBuilderContent() {
                                       <label className="block text-[9px] font-bold text-slate-500 mb-0.5">LOCATION ADDRESS</label>
                                       <input
                                         type="text"
-                                        value={sec.data?.headAddress || '1325 Eglinton Ave E Suite Number 218, Mississauga, ON L4W 4L9, Canada'}
+                                        value={sec.data?.headAddress || '1325 Eglinton Ave E Suite Number 218, Mississauga, ON L4W 4L9, UK'}
                                         onChange={(e) => updateSectionData(sec.id, 'headAddress', e.target.value)}
                                         className="w-full px-2.5 py-1.5 rounded-md border border-slate-300 text-[11px]"
                                       />
@@ -4280,7 +4280,7 @@ function PageBuilderContent() {
                                       <label className="block text-[9px] font-bold text-slate-500 mb-0.5">LOCATION ADDRESS</label>
                                       <input
                                         type="text"
-                                        value={sec.data?.branchAddress || '22 Ontario St S, Milton, ON L9T 2M6, Canada'}
+                                        value={sec.data?.branchAddress || '22 Ontario St S, Milton, ON L9T 2M6, UK'}
                                         onChange={(e) => updateSectionData(sec.id, 'branchAddress', e.target.value)}
                                         className="w-full px-2.5 py-1.5 rounded-md border border-slate-300 text-[11px]"
                                       />
@@ -4623,9 +4623,9 @@ function PageBuilderContent() {
                                         </div>
                                       </div>
                                       <textarea
-                                        value={sec.data?.headOffice !== undefined ? sec.data.headOffice : '1325 Eglinton Ave E Suite Number 218,\nMississauga, ON L4W 4L9, Canada'}
+                                        value={sec.data?.headOffice !== undefined ? sec.data.headOffice : '1325 Eglinton Ave E Suite Number 218,\nMississauga, ON L4W 4L9, UK'}
                                         onChange={(e) => updateSectionData(sec.id, 'headOffice', e.target.value)}
-                                        placeholder="1325 Eglinton Ave E Suite Number 218, Mississauga, ON L4W 4L9, Canada"
+                                        placeholder="1325 Eglinton Ave E Suite Number 218, Mississauga, ON L4W 4L9, UK"
                                         rows={2}
                                         className="w-full px-3 py-1.5 rounded-md border border-slate-300 text-xs leading-relaxed text-slate-800 outline-none bg-white focus:border-primary"
                                       />
@@ -4653,9 +4653,9 @@ function PageBuilderContent() {
                                         </div>
                                       </div>
                                       <textarea
-                                        value={sec.data?.branchOffice !== undefined ? sec.data.branchOffice : '22 Ontario St S,\nMilton, ON L9T 2M6, Canada'}
+                                        value={sec.data?.branchOffice !== undefined ? sec.data.branchOffice : '22 Ontario St S,\nMilton, ON L9T 2M6, UK'}
                                         onChange={(e) => updateSectionData(sec.id, 'branchOffice', e.target.value)}
-                                        placeholder="22 Ontario St S, Milton, ON L9T 2M6, Canada"
+                                        placeholder="22 Ontario St S, Milton, ON L9T 2M6, UK"
                                         rows={2}
                                         className="w-full px-3 py-1.5 rounded-md border border-slate-300 text-xs leading-relaxed text-slate-800 outline-none bg-white focus:border-primary"
                                       />

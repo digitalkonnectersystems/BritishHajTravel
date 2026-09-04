@@ -11,7 +11,7 @@ export async function seedDatabase() {
       { key: 'phone', value: '+1 (905) 624-8344' },
       { key: 'whatsapp_general', value: '19056248344' },
       { key: 'email', value: 'info@kingtravel.ca' },
-      { key: 'address_mississauga', value: '3050 Confederation Pkwy, Unit 301, Mississauga, ON L5B 3Z6, Canada' },
+      { key: 'address_mississauga', value: '3050 Confederation Pkwy, Unit 301, Mississauga, ON L5B 3Z6, UK' },
       { key: 'announcement_enabled', value: 'true' },
       { key: 'announcement_text', value: 'Hajj 2027 Priority Registration Now Open! Limited seats available.' },
       { key: 'announcement_link', value: '/hajj/priority-list' },

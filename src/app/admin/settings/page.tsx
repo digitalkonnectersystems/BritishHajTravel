@@ -112,8 +112,8 @@ export default function AdminSettingsPage() {
   };
 
   // Form states
-  const [siteName, setSiteName] = useState('King Travel Canada');
-  const [altText, setAltText] = useState('Official King Travel Canada Logo');
+  const [siteName, setSiteName] = useState('King Travel UK');
+  const [altText, setAltText] = useState('Official King Travel UK Logo');
   const [showSearchBar, setShowSearchBar] = useState(true);
   const [customCss, setCustomCss] = useState('/* Add custom CSS rules here */');
 
@@ -137,10 +137,10 @@ export default function AdminSettingsPage() {
 
   // Site Identity State
   const [identityData, setIdentityData] = useState<any>({
-    siteName: 'King Travel Canada',
+    siteName: 'King Travel UK',
     tagline: '',
     logo: '/img/logo.png',
-    logoAlt: 'King Travel Canada Logo',
+    logoAlt: 'King Travel UK Logo',
     favicon: '/img/favicon.ico',
     faviconAlt: 'King Travel Favicon',
   });
@@ -362,7 +362,7 @@ export default function AdminSettingsPage() {
       { id: '5', label: 'Children', type: 'select', placeholder: '0', required: false },
       { id: '6', label: 'Infants', type: 'select', placeholder: '0', required: false },
       { id: '7', label: 'Select Start Date', type: 'date', placeholder: 'e.g. March 25, 2025', required: true },
-      { id: '8', label: 'Package Type', type: 'select', placeholder: 'CAD 2,695 - Quad Occupancy', required: true },
+      { id: '8', label: 'Package Type', type: 'select', placeholder: '£ 2,695 - Quad Occupancy', required: true },
     ],
     // ── Merged Hajj Package Form (Detail Page + Popup Modal) ──
     hajjPackageDetailForm: [
@@ -372,7 +372,7 @@ export default function AdminSettingsPage() {
       { id: '4', label: 'Adults', type: 'select', placeholder: '1', required: true },
       { id: '5', label: 'Children', type: 'select', placeholder: '0', required: false },
       { id: '6', label: 'Infants', type: 'select', placeholder: '0', required: false },
-      { id: '7', label: 'Package Type', type: 'select', placeholder: 'CAD 12,995 - Quad Occupancy', required: true },
+      { id: '7', label: 'Package Type', type: 'select', placeholder: '£ 12,995 - Quad Occupancy', required: true },
     ],
     hajjCustomizeForm: [
       { id: '1', label: 'Full Name', type: 'text', placeholder: 'Full Name', required: true },
@@ -454,11 +454,11 @@ export default function AdminSettingsPage() {
   }>({
     sendToEmail: 'saudivisa@kingtravelcan.com',
     emailSubjectLine: 'New Pilgrimage Form Submission',
-    fromName: 'King Travel Canada',
+    fromName: 'King Travel UK',
     fromEmail: 'no-reply@kingtravelcan.com',
     replyTo: 'no-reply@kingtravelcan.com',
     successHeading: 'Message Sent Successfully!',
-    successDescription: 'Thank you for contacting King Travel Canada. We will respond within 24 hours.',
+    successDescription: 'Thank you for contacting King Travel UK. We will respond within 24 hours.',
     smtpHost: '',
     smtpPort: '587',
     smtpUsername: '',
@@ -5140,7 +5140,7 @@ export default function AdminSettingsPage() {
                   type="text"
                   value={editingItem.url || ''}
                   onChange={(e) => setEditingItem({ ...editingItem, url: e.target.value })}
-                  placeholder="e.g. /about, /certified-travel-agency-in-canada"
+                  placeholder="e.g. /about, /certified-travel-agency-in-uk"
                   className="w-full p-3 rounded-xl border border-slate-200 text-xs outline-none focus:border-primary font-mono"
                 />
               </div>
@@ -5225,7 +5225,7 @@ export default function AdminSettingsPage() {
                   <div className="mb-2">
                     <img
                       src="/images_KTC/logos/2026-08/logo.png"
-                      alt="King Travel Canada"
+                      alt="King Travel UK"
                       className="h-8 md:h-10 w-auto object-contain mx-auto"
                     />
                   </div>
@@ -5313,16 +5313,16 @@ export default function AdminSettingsPage() {
 
                 {/* Email Footer */}
                 <div className="bg-[#111827] px-8 py-10 flex flex-col items-center text-center">
-                  <h3 className="text-white font-bold m-0 mb-3 text-sm">King Travel Canada Ltd.</h3>
+                  <h3 className="text-white font-bold m-0 mb-3 text-sm">King Travel UK Ltd.</h3>
                   <p className="text-ink-lt text-[11px] leading-relaxed m-0 mb-6 max-w-sm">
-                    1325 Eglinton Ave E Suite Number 218, Mississauga, ON L4W 4L9, Canada<br />
+                    1325 Eglinton Ave E Suite Number 218, Mississauga, ON L4W 4L9, UK<br />
                     TICO &amp; IATA Licensed Pilgrimage &amp; Flight Operator
                   </p>
                   <a href="#" className="text-[#E7BE6E] text-xs font-bold hover:underline mb-8">
                     Visit Official Website →
                   </a>
                   <p className="text-slate-500 text-[10px] m-0">
-                    © {new Date().getFullYear()} King Travel Canada Ltd. All Rights Reserved.
+                    © {new Date().getFullYear()} King Travel UK Ltd. All Rights Reserved.
                   </p>
                 </div>
               </div>

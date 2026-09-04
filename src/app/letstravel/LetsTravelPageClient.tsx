@@ -148,13 +148,13 @@ export default function LetsTravelPageClient({ initialIdentity, initialLoginAuth
             <span className="star w-2.5 h-2.5 !bg-white"></span>
             Management Portal
           </div>
-          <h1 className="text-2xl font-serif font-normal text-ink tracking-wide">
+          <h1 className="text-2xl font-serif font-normal text-primary tracking-wide">
             {flowType === 'login' && 'Admin Portal Sign In'}
             {flowType === 'forgot_password' && 'Reset Password'}
             {flowType === 'reset_password' && 'Create New Password'}
           </h1>
           <p className="text-xs text-ink-soft mt-1 font-light">
-            {flowType === 'login' && 'Authorized access to King Travel Canada Operations'}
+            {flowType === 'login' && 'Authorized access to King Travel UK Operations'}
             {flowType === 'forgot_password' && 'Enter your registered email address to continue'}
             {flowType === 'reset_password' && 'Enter your new secure password below'}
           </p>

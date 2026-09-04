@@ -21,7 +21,7 @@ const defaultHajjCardData = {
   operatorRating: '4.4/5',
   btnLabel: 'Book Hajj 2027',
   btnLink: '/contact',
-  priceSubtext: 'FROM CAD / QUAD OCCUPANCY',
+  priceSubtext: 'FROM £ / QUAD OCCUPANCY',
   makkahHotel: { image: '', name: '5 STAR HOTEL', location: 'Near to Haram', badge: 'Breakfast Included', nights: '13 Nights' },
   madinahHotel: { image: '', name: '5 STAR HOTEL', location: 'Near to Masjid Nabawi', badge: 'Breakfast Included', nights: '4 Nights' },
   aziziyaHotel: { image: '', name: 'HOTEL NEAR', location: 'Aziziya – Near to Mina', badge: 'Breakfast Included', nights: '3 Nights' },
@@ -695,7 +695,7 @@ export default function EditPackageClient({ packageData }: EditPackageClientProp
       }
       const num = Number(row.price);
       if (isNaN(num) || num <= 0) {
-        alert(`Please enter a valid positive CAD price for "${row.packageType}".`);
+        alert(`Please enter a valid positive £ price for "${row.packageType}".`);
         return;
       }
     }
@@ -851,15 +851,15 @@ export default function EditPackageClient({ packageData }: EditPackageClientProp
                 />
               </div>
 
-              {/* Package Type & Price (CAD) */}
+              {/* Package Type & Price (£) */}
               <div className="col-span-full space-y-3 p-4 border border-slate-200 bg-slate-50/70 rounded-2xl">
                 <div className="flex items-center justify-between">
                   <div>
                     <label className="text-xs font-bold text-slate-800 block">
-                      Package Type & Price (CAD) *
+                      Package Type & Price (£) *
                     </label>
                     <span className="text-[10px] text-slate-500 font-medium">
-                      Configure multiple occupancy or package tiers with individual CAD prices.
+                      Configure multiple occupancy or package tiers with individual £ prices.
                     </span>
                   </div>
                   <button
@@ -885,7 +885,7 @@ export default function EditPackageClient({ packageData }: EditPackageClientProp
                         />
                       </div>
                       <div className="w-40 sm:w-48">
-                        <label className="text-[9px] font-bold text-ink-lt mb-0.5 block">PRICE (CAD)</label>
+                        <label className="text-[9px] font-bold text-ink-lt mb-0.5 block">PRICE (£)</label>
                         <input
                           type="text"
                           placeholder="2795.00"

@@ -35,12 +35,12 @@ export default function PageSeoHead({
 
   if (!finalTitle && pageTitle) {
     // Priority 2: Use Dynamic Page Title directly
-    finalTitle = pageTitle.includes('King Travel') ? pageTitle : `${pageTitle} | King Travel Canada`;
+    finalTitle = pageTitle.includes('King Travel') ? pageTitle : `${pageTitle} | King Travel UK`;
   }
 
   if (!finalTitle) {
     // Priority 3: Fallback ONLY if no dynamic title exists
-    finalTitle = 'King Travel Canada';
+    finalTitle = 'King Travel UK';
   }
 
   // Determine Meta Description according to strict Priority Order
@@ -48,7 +48,7 @@ export default function PageSeoHead({
 
   if (!finalDescription) {
     // Priority 3: Fallback description ONLY if dynamic SEO description is missing
-    finalDescription = 'Licensed Hajj & Umrah pilgrimage operator in Canada offering 5-star packages, visa consultation, and direct flights.';
+    finalDescription = 'Licensed Hajj & Umrah pilgrimage operator in UK offering 5-star packages, visa consultation, and direct flights.';
   }
 
   const finalCanonicalUrl = canonicalUrl || seoData?.canonicalUrl || 'https://kingtravelcan.com';

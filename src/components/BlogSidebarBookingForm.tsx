@@ -189,7 +189,7 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
     setBookingStatus("Submitting your inquiry...");
 
     const selectedPriceItem = packagePrices.find((p) => p.packageType === effectivePackageType);
-    const formattedTotalPrice = selectedPriceItem ? `CAD ${selectedPriceItem.price.toLocaleString("en-CA")}` : "";
+    const formattedTotalPrice = selectedPriceItem ? `£ ${selectedPriceItem.price.toLocaleString("en-CA")}` : "";
 
     const basePackageName = selectedPackage?.title || `${packageType === "hajj" ? "Hajj" : "Umrah"} Package`;
     const travelMonthSuffix = packageType === "umrah" && selectedPackage?.month
@@ -521,7 +521,7 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
               >
                 {packagePrices.map((item, idx) => (
                   <option key={idx} value={item.packageType} className="bg-white text-ink">
-                    CAD {item.price ? item.price.toLocaleString("en-CA") : ""} - {item.packageType}
+                    £ {item.price ? item.price.toLocaleString("en-CA") : ""} - {item.packageType}
                   </option>
                 ))}
               </select>

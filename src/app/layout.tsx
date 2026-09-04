@@ -59,8 +59,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const isIndexingEnabled = seoSettings?.siteIndexingEnabled ?? true;
 
   return {
-    title: identity?.siteName || "King Travel Canada",
-    description: identity?.tagline || "Licensed Hajj & Umrah pilgrimage operator in Canada offering 5-star packages, visa consultation, and direct flights.",
+    title: identity?.siteName || "King Travel UK",
+    description: identity?.tagline || "Licensed Hajj & Umrah pilgrimage operator in UK offering 5-star packages, visa consultation, and direct flights.",
     icons: {
       icon: faviconUrl,
       shortcut: faviconUrl,

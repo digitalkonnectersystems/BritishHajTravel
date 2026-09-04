@@ -35,7 +35,7 @@ export default function AdminPackageDetailModal({
       setDeparture(pkg.departure || "CANADA");
       setDestination(pkg.destination || "SAUDIA");
       setExclusiveBadge(pkg.exclusiveBadge || "EXCLUSIVE PACKAGE");
-      setCurrencyCode(pkg.currencyCode || "CAD");
+      setCurrencyCode(pkg.currencyCode || "£");
       setDurationText(pkg.durationText || `${pkg.duration || "14 DAYS"} / 13 NIGHTS`);
       setOverview(
         pkg.overview ||
@@ -84,9 +84,9 @@ Side trips to Pakistan or any other destination available with an additional cos
                 "Yes! Upgrades to Double or Triple occupancy are available upon request during booking.",
             },
             {
-              question: "Are flights included in the CAD 12,995 price?",
+              question: "Are flights included in the £ 12,995 price?",
               answer:
-                "Yes, round-trip flights from Canada to Saudi Arabia are fully included in the package pricing.",
+                "Yes, round-trip flights from UK to Saudi Arabia are fully included in the package pricing.",
             },
           ]
       );
@@ -223,7 +223,7 @@ Side trips to Pakistan or any other destination available with an additional cos
                       {exclusiveBadge || "EXCLUSIVE PACKAGE"}
                     </span>
                     <div className="text-xl font-black text-white font-serif mt-0.5">
-                      {currencyCode || "CAD"} {pkg.price || "12,995"}
+                      {currencyCode || "£"} {pkg.price || "12,995"}
                     </div>
                     <span className="text-[8px] font-semibold text-emerald-200 uppercase block mt-0.5">
                       {pkg.priceSubtext || "PER PERSON, QUAD OCCUPANCY"}
@@ -281,7 +281,7 @@ Side trips to Pakistan or any other destination available with an additional cos
                     type="text"
                     value={currencyCode}
                     onChange={(e) => setCurrencyCode(e.target.value)}
-                    placeholder="e.g. CAD"
+                    placeholder="e.g. £"
                     className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-800"
                   />
                 </div>

@@ -296,7 +296,7 @@ export default function PackageDetailPageClient({
         "Departure in Ahram towards Makkah via high-speed Haramain train / luxury air-conditioned coach",
         "Perform Umrah rituals under the step-by-step guidance of qualified guides",
         "Guided Ziyarat in Makkah: Cave of Hira (Jabal al-Nour), Jabal Thawr, Mina, and Arafat",
-        "Tawaf al-Wada (Farewell Tawaf) and scheduled airport transfer for departure back to Canada"
+        "Tawaf al-Wada (Farewell Tawaf) and scheduled airport transfer for departure back to UK"
       ]
     }
   ];
@@ -464,10 +464,10 @@ export default function PackageDetailPageClient({
     <div className="bg-[#faf7f2] min-h-screen text-slate-800">
       <PageSeoHead
         pageTitle={title}
-        metaTitle={pkgSeo?.metaTitle || `${title} Canada | King Travel`}
+        metaTitle={pkgSeo?.metaTitle || `${title} UK | King Travel`}
         metaDescription={
           pkgSeo?.metaDescription ||
-          `Book official ${title} packages with King Travel Canada. ${durationText}, departure from ${departure}, starting price £ $${price}. Authorized visa, 5-star hotels & flight options.`
+          `Book official ${title} packages with King Travel UK. ${durationText}, departure from ${departure}, starting price £ $${price}. Authorized visa, 5-star hotels & flight options.`
         }
         canonicalUrl={pkgSeo?.canonicalUrl || `/package/${rawSlug}`}
         ogImageUrl={pkgSeo?.ogImageUrl || pkg.heroImage || 'https://media.kingtravelcan.com/uploads/branding/logo.png'}
@@ -479,10 +479,10 @@ export default function PackageDetailPageClient({
               '@type': 'Product',
               name: title,
               image: pkg.heroImage || 'https://media.kingtravelcan.com/uploads/branding/logo.png',
-              description: `Official ${title} travel package provided by King Travel Canada. Includes flights, 5-star accommodations, and verified visa processing.`,
+              description: `Official ${title} travel package provided by King Travel UK. Includes flights, 5-star accommodations, and verified visa processing.`,
               brand: {
                 '@type': 'Brand',
-                name: 'King Travel Canada',
+                name: 'King Travel UK',
               },
               offers: {
                 '@type': 'Offer',
@@ -493,7 +493,7 @@ export default function PackageDetailPageClient({
                 availability: 'https://schema.org/InStock',
                 seller: {
                   '@type': 'Organization',
-                  name: 'King Travel Canada',
+                  name: 'King Travel UK',
                 },
               },
             },

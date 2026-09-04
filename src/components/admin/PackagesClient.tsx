@@ -29,7 +29,7 @@ const defaultHajjCardData = {
   operatorRating: '4.4/5',
   btnLabel: 'Book Hajj 2027',
   btnLink: '/contact',
-  priceSubtext: 'FROM CAD / QUAD OCCUPANCY',
+  priceSubtext: 'FROM £ / QUAD OCCUPANCY',
   makkahHotel: { image: '', name: '5 STAR HOTEL', location: 'Near to Haram', badge: 'Breakfast Included', nights: '13 Nights' },
   madinahHotel: { image: '', name: '5 STAR HOTEL', location: 'Near to Masjid Nabawi', badge: 'Breakfast Included', nights: '4 Nights' },
   aziziyaHotel: { image: '', name: 'HOTEL NEAR', location: 'Aziziya – Near to Mina', badge: 'Breakfast Included', nights: '3 Nights' },
@@ -754,7 +754,7 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
               )}
 
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Starting Price (CAD) *</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">Starting Price (£) *</label>
                 <input
                   type="text"
                   placeholder="2695.00"
@@ -883,7 +883,7 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
                         {formatTravelMonth(pkg.month) || 'Flexible'}
                       </td>
                       <td className={`py-3.5 px-4 font-black ${isSoldOut ? 'text-red-500' : 'text-slate-900'}`}>
-                        CAD ${Number(pkg.startingPrice).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                        £ ${Number(pkg.startingPrice).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </td>
                       <td className="py-3.5 px-4">
                         <span
@@ -945,8 +945,8 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
               id: `pkg_${selectedSeoPkg.id}`,
               title: selectedSeoPkg.title,
               slug: `/package/${selectedSeoPkg.id}`,
-              metaTitle: `${selectedSeoPkg.title} | King Travel Canada`,
-              metaDescription: `Book official ${selectedSeoPkg.title} from Canada. Starting at CAD $${selectedSeoPkg.startingPrice}. ${selectedSeoPkg.shortDescription || 'Verified visa, luxury hotel stays, flights included.'}`,
+              metaTitle: `${selectedSeoPkg.title} | King Travel UK`,
+              metaDescription: `Book official ${selectedSeoPkg.title} from UK. Starting at £ $${selectedSeoPkg.startingPrice}. ${selectedSeoPkg.shortDescription || 'Verified visa, luxury hotel stays, flights included.'}`,
             }
             : null
         }
