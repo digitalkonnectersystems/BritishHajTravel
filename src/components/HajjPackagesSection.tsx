@@ -257,7 +257,7 @@ export default function HajjPackagesSection({
 
                     {/* Bottom text */}
                     <div className="absolute bottom-4 left-5 right-5">
-                      <div className="text-gold text-[11px] font-black tracking-widest mb-1 flex items-center gap-1.5">
+                      <div className="text-white text-[11px] font-black tracking-widest mb-1 flex items-center gap-1.5">
                         <LucideIcons.Plane className="w-3.5 h-3.5" /> {flightRoute}
                       </div>
                       <h3 className="text-white font-serif text-2xl leading-tight font-bold">
