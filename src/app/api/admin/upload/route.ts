@@ -10,6 +10,7 @@ const ALLOWED_SUBFOLDERS = new Set([
   'blogs',
   'branding',
   'brochures',
+  'destinations',
   'flights',
   'hotels',
   'logos',

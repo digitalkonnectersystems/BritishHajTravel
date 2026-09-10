@@ -132,7 +132,7 @@ export default function HajjPackagesSection({
                 cd.bannerImage ||
                 pkg.featuredImage ||
                 "/uploads/sections/hajj_1.jpg";
-              const badgeTag = cd.badgeTag || "HAJJ 2027";
+              const badgeTag = cd.badgeTag || data?.badgeTag || (data?.destinationName ? data.destinationName.toUpperCase() : "HAJJ 2027");
               const duration = cd.duration || `${pkg.durationDays || 14}Days`;
               const flightRoute =
                 cd.flightRoute || "FROM CANADA ➔ TO SAUDIA";
@@ -402,7 +402,7 @@ export default function HajjPackagesSection({
                         }}
                         className="flex-1 py-3.5 bg-gold hover:bg-white hover:border hover:border-gold text-white hover:text-gold text-xs font-black rounded-xl uppercase tracking-wider transition-colors flex justify-center items-center gap-2 shadow-sm"
                       >
-                        <LucideIcons.BookOpen className="w-4 h-4" /> Book Hajj 2027
+                        <LucideIcons.BookOpen className="w-4 h-4" /> {data?.buttonLabel || "Book Hajj 2027"}
                       </button>
                     </div>
                   </div>

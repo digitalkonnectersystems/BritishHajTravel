@@ -126,6 +126,22 @@ async function runMigrationAndSeed() {
         CONSTRAINT \`site_settings_id\` PRIMARY KEY(\`id\`),
         CONSTRAINT \`site_settings_key_unique\` UNIQUE(\`key\`)
       );`,
+
+      `CREATE TABLE IF NOT EXISTS \`destinations\` (
+        \`id\` int AUTO_INCREMENT NOT NULL,
+        \`title\` varchar(255) NOT NULL,
+        \`slug\` varchar(128) NOT NULL,
+        \`description\` text,
+        \`section_title\` varchar(255) DEFAULT 'Packages for this destination',
+        \`banner_images\` json,
+        \`package_ids\` json,
+        \`status\` enum('published','draft') NOT NULL DEFAULT 'published',
+        \`display_order\` int NOT NULL DEFAULT 0,
+        \`created_at\` timestamp DEFAULT (now()),
+        \`updated_at\` timestamp DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+        CONSTRAINT \`destinations_id\` PRIMARY KEY(\`id\`),
+        CONSTRAINT \`destinations_slug_unique\` UNIQUE(\`slug\`)
+      );`,
     ];
 
     console.log('Executing table creation SQL statements...');

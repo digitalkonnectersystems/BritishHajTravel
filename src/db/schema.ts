@@ -67,6 +67,21 @@ export const packages = mysqlTable('packages', {
   updatedAt: timestamp('updated_at').defaultNow().onUpdateNow(),
 });
 
+// 3a. Destination landing pages and their selected package cards
+export const destinations = mysqlTable('destinations', {
+  id: int('id').autoincrement().primaryKey(),
+  title: varchar('title', { length: 255 }).notNull(),
+  slug: varchar('slug', { length: 128 }).notNull().unique(),
+  description: text('description'),
+  sectionTitle: varchar('section_title', { length: 255 }).default('Packages for this destination'),
+  bannerImages: json('banner_images'),
+  packageIds: json('package_ids'),
+  status: mysqlEnum('status', ['published', 'draft']).notNull().default('published'),
+  displayOrder: int('display_order').notNull().default(0),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow().onUpdateNow(),
+});
+
 // 4. Package Multi-Tier Pricing
 export const packagePrices = mysqlTable('package_prices', {
   id: int('id').autoincrement().primaryKey(),

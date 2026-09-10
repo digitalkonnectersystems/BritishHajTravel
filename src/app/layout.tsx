@@ -18,6 +18,7 @@ import {
   getSeoIntelligenceSettings,
 } from "@/actions/pageActions";
 import { getHotelDirectory } from "@/actions/hotelActions";
+import { getDestinations } from "@/actions/destinationActions";
 import "./globals.css";
 
 const marcellus = Marcellus({
@@ -79,17 +80,34 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [identity, loginAuth, navItems, footerData, seoSettings, hotelDirectory] = await Promise.all([
+  const [identity, loginAuth, navItems, footerData, seoSettings, hotelDirectory, destinations] = await Promise.all([
     getSiteIdentity(),
     getLoginAuthSettings(),
     getNavItems(),
     getFooterData(),
     getSeoIntelligenceSettings(),
     getHotelDirectory().catch(() => []),
+    getDestinations(),
   ]);
-  const liveNavItems = navItems.map((item: any) => {
+  const destinationsItem = {
+    id: 'destinations-directory',
+    label: 'Destinations',
+    url: '/destinations',
+    level: 1,
+    children: destinations.map((destination: any) => ({
+      id: `destination-${destination.id}`,
+      label: destination.title,
+      url: `/destinations/${destination.slug}`,
+      level: 2,
+      children: [],
+    })),
+  };
+  const navWithDestinations = navItems.some((item: any) => item.label?.toLowerCase() === 'destinations')
+    ? navItems.map((item: any) => item.label?.toLowerCase() === 'destinations' ? { ...item, url: '/destinations', children: destinationsItem.children } : item)
+    : [...navItems, destinationsItem];
+  const liveNavItems = navWithDestinations.map((item: any) => {
     if (item.label?.toLowerCase() !== 'hotels') return item;
-    const categoryChildren = hotelDirectory.map((category) => ({
+    const categoryChildren = hotelDirectory.map((category: any) => ({
       id: `hotel-category-${category.id}`,
       label: `${category.name} Hotels`,
       url: `/hotels/#${category.slug}`,

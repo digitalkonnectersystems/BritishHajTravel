@@ -67,6 +67,11 @@ const navItems = [
     icon: <Building2 className="w-4 h-4" />,
   },
   {
+    label: 'Destinations',
+    href: '/admin/destinations',
+    icon: <Globe className="w-4 h-4" />,
+  },
+  {
     label: 'Pages',
     href: '/admin/pages',
     icon: <Layers className="w-4 h-4" />,

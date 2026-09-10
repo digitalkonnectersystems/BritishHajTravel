@@ -20,15 +20,20 @@ import Banner4GridsSection from '@/components/Banner4GridsSection';
 import PackageBrochuresSection from '@/components/PackageBrochuresSection';
 import DynamicSiteForm from '@/components/DynamicSiteForm';
 import FaqSection from '@/components/FaqSection';
+import DestinationsGrid from '@/components/DestinationsGrid';
 import { RICH_TEXT_PROSE_CLASS } from '@/lib/richTextProseClass';
 import { useEffect, useState } from "react";
-export default function PageSectionsRenderer({ sections, pageData, initialPackageData }: { sections: any[], pageData?: any, initialPackageData?: any }) {
+export default function PageSectionsRenderer({ sections, pageData, initialPackageData, initialDestinationData }: { sections: any[], pageData?: any, initialPackageData?: any, initialDestinationData?: any[] }) {
   if (!sections || !Array.isArray(sections)) return null;
 
   return (
     <div className="w-full">
       {sections.map((sec: any, idx: number) => {
         if (!sec || !sec.type) return null;
+        if (sec.hidden === true || sec.visible === false) return null;
+        if (sec.type === 'Destinations Grid') {
+          return <DestinationsGrid key={idx} destinations={initialDestinationData || []} title={sec.data?.title} />;
+        }
         if (sec.type === 'Package Brochure') {
           return <PackageBrochuresSection key={idx} data={sec.data || {}} pageData={pageData} />;
         }

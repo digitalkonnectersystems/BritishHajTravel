@@ -130,6 +130,13 @@ const SECTION_CATALOG: SectionCategory[] = [
       { type: 'Text Block (Rich Text)', description: 'Free-form rich text editor block for long-form content.', pages: ['Any Page'] },
     ],
   },
+  {
+    category: 'Destinations',
+    icon: '🌍',
+    items: [
+      { type: 'Destinations Grid', description: 'Database-driven destination cards with looping image sliders.', pages: ['Destinations'] },
+    ],
+  },
 ];
 
 // Flat list for search compatibility
@@ -139,6 +146,7 @@ interface SectionItem {
   id: string;
   type: string;
   title: string;
+  hidden?: boolean;
   data?: Record<string, any>;
 }
 
@@ -284,6 +292,15 @@ function PageBuilderContent() {
                   if (heroSec.data.badge2Top !== undefined) setBadge2Top(heroSec.data.badge2Top);
                   if (heroSec.data.badge2Sub !== undefined) setBadge2Sub(heroSec.data.badge2Sub);
                 }
+              } else if (p.slug === '/destinations') {
+                setSections([
+                  {
+                    id: 'destinations-grid-1',
+                    type: 'Destinations Grid',
+                    title: 'Destinations Grid',
+                    data: { title: 'Destinations' },
+                  },
+                ]);
               } else if (p.slug === '/saudi-visa' || pageId === 5) {
                 setSections([
                   {
@@ -1606,6 +1623,13 @@ function PageBuilderContent() {
                           </div>
 
                           <div className="flex gap-2 items-center">
+                            <button
+                              type="button"
+                              onClick={() => setSections(sections.map(s => s.id === sec.id ? { ...s, hidden: sec.hidden !== true } : s))}
+                              className={`border rounded-lg px-2.5 py-1 cursor-pointer text-xs font-semibold transition-colors ${sec.hidden === true ? 'border-amber-300 bg-amber-50 text-amber-700' : 'border-slate-300 bg-white text-slate-900'}`}
+                            >
+                              {sec.hidden === true ? 'Hidden' : 'Visible'}
+                            </button>
                             <button
                               onClick={() => setEditingSectionId(editingSectionId === sec.id ? null : sec.id)}
                               className={`border rounded-lg px-2.5 py-1 cursor-pointer text-xs font-semibold transition-colors ${editingSectionId === sec.id ? 'border-primary bg-primary text-white' : 'border-slate-300 bg-white text-slate-900'}`}

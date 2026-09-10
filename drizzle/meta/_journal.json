@@ -36,6 +36,13 @@
       "when": 1788950401000,
       "tag": "0004_hotels_cms_page",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1788950402000,
+      "tag": "0005_destinations",
+      "breakpoints": true
     }
   ]
 }

@@ -1936,7 +1936,7 @@ section#flights {
   position: absolute;
   top: 100%;
   left: 0;
-  background: #fff;
+  background: var(--color-white);
   border-radius: 8px;
   box-shadow: 0 12px 40px -8px rgba(19, 39, 35, 0.22);
   border: 1px solid #f0ece0;
@@ -1961,7 +1961,7 @@ section#flights {
   padding: 10px 16px;
   font-size: 13px !important;
   font-weight: 700 !important;
-  color: #132723 !important;
+  color: #020e43 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.5px !important;
   border-bottom: 1px solid #f3ede0;
@@ -1973,8 +1973,8 @@ section#flights {
 }
 
 .dropdown-menu a:hover {
-  color: var(--gold) !important;
-  background: rgba(212, 175, 55, 0.1);
+  color: var(--white) !important;
+  background: var(--gold) !important;
 }
 
 .nav-arrow {

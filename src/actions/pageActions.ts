@@ -26,6 +26,27 @@ function safeJsonParse<T>(jsonStr: any, fallback: T): T {
 
 export async function getPagesList() {
   try {
+    const destinationsPage = await db.select({ id: sitePages.id }).from(sitePages).where(eq(sitePages.slug, '/destinations')).limit(1);
+    if (destinationsPage.length === 0) {
+      await db.insert(sitePages).values({
+        title: 'Destinations',
+        slug: '/destinations',
+        status: 'published',
+        showInMenu: true,
+        bannerTitle: 'Destinations',
+        bannerDescription: '',
+        sections: JSON.stringify([
+          {
+            id: 'destinations-grid-1',
+            type: 'Destinations Grid',
+            title: 'Destinations Grid',
+            data: { title: 'Destinations' },
+          },
+        ]),
+        metaTitle: 'Destinations | British Hajj Travel',
+        metaDescription: 'Explore British Hajj Travel destinations and available packages.',
+      });
+    }
     let pages = await db.select().from(sitePages);
 
     // Apply stored reordering sequence if available
