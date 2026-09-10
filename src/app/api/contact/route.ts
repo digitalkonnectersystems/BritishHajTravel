@@ -34,7 +34,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       enquiryNumber,
-      message: 'Thank you for contacting King Travel. We will reach out shortly!',
+      message: 'Thank you for contacting British Hajj Travel. We will reach out shortly!',
     });
   } catch (error) {
     console.error('Contact submission error:', error);

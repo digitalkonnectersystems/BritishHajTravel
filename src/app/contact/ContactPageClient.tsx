@@ -11,30 +11,31 @@ function ContactInfoCardsSection({ data }: { data?: any }) {
     <div className="w-full max-w-7xl mx-auto px-5 relative z-20 -mt-20 md:-mt-24">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
         {/* Card 1: Locations */}
-        <div className="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-slate-100/80 flex flex-col items-center text-center">
-          <div className="w-12 h-12 rounded-2xl bg-gold-soft text-gold flex items-center justify-center text-xl mb-4">
-            <i className="fa-solid fa-location-dot"></i>
-          </div>
-          <h3 className="text-md font-extrabold uppercase tracking-widest text-primary mb-4">
-            {data?.card1Title || "OUR LOCATIONS"}
-          </h3>
+        <div className="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-slate-100/80 flex flex-col items-center text-center h-full">
+  <div className="w-12 h-12 rounded-2xl bg-gold-soft text-gold flex items-center justify-center text-xl mb-4">
+    <i className="fa-solid fa-location-dot"></i>
+  </div>
+  <h3 className="text-md font-extrabold uppercase tracking-widest text-primary mb-4">
+    {data?.card1Title || "OUR LOCATIONS"}
+  </h3>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full text-center sm:text-left border-t border-slate-100 pt-4 mt-auto">
-            {/* Head Office */}
-            <div className="flex flex-col items-center sm:items-start">
-              <span className="text-[12px] font-extrabold text-primary uppercase tracking-wide mb-1">HEAD OFFICE</span>
-              <a
-                className="text-xs font-medium leading-relaxed text-ink hover:text-gold transition no-underline"
-                href="https://maps.app.goo.gl/1BRUoBxtt4wWw58t6"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {data?.headAddress || "1325 Eglinton Ave E Suite Number 218, Mississauga, ON L4W 4L9, UK"}
-              </a>
-            </div>
+  {/* Divider line and centered content directly underneath */}
+  <div className="w-full border-t border-slate-100 pt-4 text-center">
+    {/* Head Office */}
+    <div className="flex flex-col items-center text-center">
+      <span className="text-[12px] font-extrabold text-primary uppercase tracking-wide mb-1">HEAD OFFICE</span>
+      <a
+        className="text-xs font-medium leading-relaxed text-ink hover:text-gold transition no-underline"
+        href="https://maps.app.goo.gl/aNVLgyrMrEMYT1X46?g_st=ac"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {data?.headAddress || "1325 Eglinton Ave E Suite Number 218, Mississauga, ON L4W 4L9, UK"}
+      </a>
+    </div>
 
             {/* Branch Office */}
-            <div className="flex flex-col items-center sm:items-start border-t sm:border-t-0 sm:border-l border-slate-100 pt-3 sm:pt-0 sm:pl-4">
+            {/* <div className="flex flex-col items-center sm:items-start border-t sm:border-t-0 sm:border-l border-slate-100 pt-3 sm:pt-0 sm:pl-4">
               <span className="text-[12px] font-extrabold text-primary uppercase tracking-wide mb-1">BRANCH OFFICE</span>
               <a
                 className="text-xs font-medium leading-relaxed text-ink hover:text-gold transition no-underline"
@@ -44,7 +45,7 @@ function ContactInfoCardsSection({ data }: { data?: any }) {
               >
                 {data?.branchAddress || "22 Ontario St S, Milton, ON L9T 2M6, UK"}
               </a>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -105,8 +106,8 @@ function ContactInfoCardsSection({ data }: { data?: any }) {
             <h3 className="text-md font-extrabold uppercase tracking-widest text-primary mb-2">
               {data?.card3Title || "EMAIL US"}
             </h3>
-            <a href={`mailto:${data?.email || "info@kingtravelcan.com"}`} className="text-sm text-ink hover:text-gold transition break-all font-semibold no-underline">
-              {data?.email || "info@kingtravelcan.com"}
+            <a href={`mailto:${data?.email || "info@britishhajjtravel.com"}`} className="text-sm text-ink hover:text-gold transition break-all font-semibold no-underline">
+              {data?.email || "info@britishhajjtravel.com"}
             </a>
           </div>
 
@@ -117,12 +118,12 @@ function ContactInfoCardsSection({ data }: { data?: any }) {
                 const socialList: any[] = (data?.socialLinks && Array.isArray(data.socialLinks) && data.socialLinks.length > 0)
                   ? data.socialLinks
                   : [
-                    { name: 'Facebook', url: data?.facebookUrl || 'https://www.facebook.com/kingtravelcan', icon: '/img/fb.svg', openInNewTab: true },
-                    { name: 'Instagram', url: data?.instagramUrl || 'https://www.instagram.com/kingtravelcan/', icon: '/img/insta.svg', openInNewTab: true },
-                    { name: 'LinkedIn', url: data?.linkedinUrl || 'https://ca.linkedin.com/company/kingtravelcan', icon: '/img/in.svg', openInNewTab: true },
-                    { name: 'TikTok', url: data?.tiktokUrl || 'https://www.tiktok.com/@kingtravelcan', icon: '/img/tik.svg', openInNewTab: true },
-                    { name: 'Twitter X', url: data?.twitterUrl || 'https://twitter.com/kingtravelcan', icon: '/img/x.svg', openInNewTab: true },
-                    { name: 'Pinterest', url: data?.pinterestUrl || 'https://pinterest.com/kingtravelcan', icon: '/img/pinterest.svg', openInNewTab: true },
+                    { name: 'Facebook', url: data?.facebookUrl || 'https://www.facebook.com/britishhajjtravel', icon: '/img/fb.svg', openInNewTab: true },
+                    { name: 'Instagram', url: data?.instagramUrl || 'https://www.instagram.com/britishhajjtravel/', icon: '/img/insta.svg', openInNewTab: true },
+                    { name: 'LinkedIn', url: data?.linkedinUrl || 'https://ca.linkedin.com/company/britishhajjtravel', icon: '/img/in.svg', openInNewTab: true },
+                    { name: 'TikTok', url: data?.tiktokUrl || 'https://www.tiktok.com/@britishhajjtravel', icon: '/img/tik.svg', openInNewTab: true },
+                    { name: 'Twitter X', url: data?.twitterUrl || 'https://twitter.com/britishhajjtravel', icon: '/img/x.svg', openInNewTab: true },
+                    { name: 'Pinterest', url: data?.pinterestUrl || 'https://pinterest.com/britishhajjtravel', icon: '/img/pinterest.svg', openInNewTab: true },
                   ];
 
                 return socialList
@@ -423,7 +424,7 @@ function ContactMapsSection({ data }: { data?: any }) {
         ></iframe>
       </div>
 
-      <div className="bg-white rounded-3xl shadow-xl border border-slate-100/80 p-4 flex-1 flex flex-col min-h-[250px]">
+      {/* <div className="bg-white rounded-3xl shadow-xl border border-slate-100/80 p-4 flex-1 flex flex-col min-h-[250px]">
         <div className="mb-3 pl-2">
           <h3 className="text-md font-extrabold uppercase tracking-widest text-primary flex items-center gap-2">
             <i className="fa-solid fa-building text-gold"></i> {branchTitle}
@@ -437,7 +438,7 @@ function ContactMapsSection({ data }: { data?: any }) {
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
         ></iframe>
-      </div>
+      </div> */}
     </div>
   );
 }

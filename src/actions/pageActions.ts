@@ -212,6 +212,7 @@ export async function getDefaultNavItems() {
     { id: '3', label: 'Hajj Packages', url: '/hajj-packages', level: 1, children: [] },
     { id: '4', label: 'Saudi Visa', url: '/saudi-visa', level: 1, children: [] },
     { id: '5', label: 'Flights', url: '/airlines', level: 1, children: [] },
+    { id: 'hotels-directory', label: 'Hotels', url: '/hotels', level: 1, children: [] },
     { id: '6', label: 'Contact', url: '/contact', level: 1, children: [] },
   ];
 }
@@ -219,7 +220,11 @@ export async function getDefaultNavItems() {
 async function fetchNavItemsFromDb() {
   const res = await db.select().from(siteSettings).where(eq(siteSettings.key, 'nav_items')).limit(1);
   if (res && res.length > 0) {
-    return safeJsonParse(res[0].value, await getDefaultNavItems());
+    const navItems = safeJsonParse(res[0].value, await getDefaultNavItems());
+    if (Array.isArray(navItems) && !navItems.some((item: any) => item?.label?.toLowerCase() === 'hotels')) {
+      navItems.push({ id: 'hotels-directory', label: 'Hotels', url: '/hotels', level: 1, children: [] });
+    }
+    return navItems;
   }
   return await getDefaultNavItems();
 }
@@ -265,14 +270,14 @@ export async function saveNavItemsAction(navItems: any[]) {
 export async function getDefaultFooterData() {
   return {
     logo: '/img/logo-footer.png',
-    tagline: 'A licensed Canadian agency dedicated to Hajj & Umrah travel — trusted, certified, and built for pilgrims.',
+    tagline: 'A licensed British agency dedicated to Hajj & Umrah travel — trusted, certified, and built for pilgrims.',
     socialLinks: [
-      { name: 'Facebook', url: 'https://www.facebook.com/kingtravelcan', icon: '/img/fb.svg', openInNewTab: true },
-      { name: 'Instagram', url: 'https://www.instagram.com/kingtravelcan/', icon: '/img/insta.svg', openInNewTab: true },
-      { name: 'LinkedIn', url: 'https://ca.linkedin.com/company/kingtravelcan', icon: '/img/in.svg', openInNewTab: true },
-      { name: 'TikTok', url: 'https://www.tiktok.com/@kingtravelcan', icon: '/img/tik.svg', openInNewTab: true },
-      { name: 'X (Twitter)', url: 'https://twitter.com/kingtravelcan', icon: '/img/x.svg', openInNewTab: true },
-      { name: 'Pinterest', url: 'https://pinterest.com/kingtravelcan', icon: '/img/pinterest.svg', openInNewTab: true },
+      { name: 'Facebook', url: 'https://www.facebook.com/britishhajjtravel', icon: '/img/fb.svg', openInNewTab: true },
+      { name: 'Instagram', url: 'https://www.instagram.com/britishhajjtravel/', icon: '/img/insta.svg', openInNewTab: true },
+      { name: 'LinkedIn', url: 'https://ca.linkedin.com/company/britishhajjtravel', icon: '/img/in.svg', openInNewTab: true },
+      { name: 'TikTok', url: 'https://www.tiktok.com/@britishhajjtravel', icon: '/img/tik.svg', openInNewTab: true },
+      { name: 'X (Twitter)', url: 'https://twitter.com/britishhajjtravel', icon: '/img/x.svg', openInNewTab: true },
+      { name: 'Pinterest', url: 'https://pinterest.com/britishhajjtravel', icon: '/img/pinterest.svg', openInNewTab: true },
     ],
     trustBadges: [
       { name: 'ACTA', icon: '/img/acta.svg' },
@@ -301,10 +306,10 @@ export async function getDefaultFooterData() {
       { text: '+1800-844-5464', url: 'tel:+18008445464', openInNewTab: false },
       { text: '+1905-624-8555', url: 'tel:+19056248555', openInNewTab: false },
       { text: '+1905-624-8344', url: 'tel:+19056248344', openInNewTab: false },
-      { text: 'saudivisa@kingtravelcan.com', url: 'mailto:saudivisa@kingtravelcan.com', openInNewTab: false },
+      { text: 'saudivisa@britishhajjtravel.com', url: 'mailto:saudivisa@britishhajjtravel.com', openInNewTab: false },
       { text: 'Mon–Sat, 9am – 7pm EST', url: '', openInNewTab: false },
     ],
-    copyrightText: '© 2026 King Travel Can LTD. All Rights Reserved.',
+    copyrightText: '© 2026 British Hajj Travel LTD. All Rights Reserved.',
     developerText: 'Design & Developed by DKS',
     developerUrl: 'https://www.dks.com.pk',
   };
@@ -391,9 +396,9 @@ export async function getDefaultSiteIdentity() {
   return {
     siteName: 'British Hajj Travel',
     tagline: 'Trusted Hajj & Umrah Pilgrimage Travel Agency in UK',
-    logo: '/images_KTC/bht-logo.png',
+    logo: '/images_BHT/bht-logo.png',
     logoAlt: 'British Hajj Travel Logo',
-    favicon: '/images_KTC/bht-fav-logo.png',
+    favicon: '/images_BHT/bht-fav-logo.png',
     faviconAlt: 'British Hajj Travel Favicon',
   };
 }
@@ -424,10 +429,10 @@ export async function getSiteIdentity() {
 
   if (identityData) {
     if (identityData.favicon) {
-      identityData.favicon = identityData.favicon.replace(/^https?:\/\/media\.kingtravelcan\.com\/?/, '/media/');
+      identityData.favicon = identityData.favicon.replace(/^https?:\/\/media\.britishhajjtravel\.com\/?/, '/media/');
     }
     if (identityData.logo) {
-      identityData.logo = identityData.logo.replace(/^https?:\/\/media\.kingtravelcan\.com\/?/, '/media/');
+      identityData.logo = identityData.logo.replace(/^https?:\/\/media\.britishhajjtravel\.com\/?/, '/media/');
     }
   }
   return identityData;
@@ -626,7 +631,7 @@ export async function getDefaultLoginAuthSettings() {
   return {
     backgroundImage: '',
     backgroundAlt: 'Login screen background image',
-    footerText: '© 2026 King Travel Can Ltd. All Rights Reserved.',
+    footerText: '© 2026 British Hajj Travel LTD. All Rights Reserved.',
     maintenanceMode: false,
   };
 }
@@ -787,7 +792,7 @@ const DEFAULT_FORM_FIELDS_STATE: Record<string, Array<{ id: string; label: strin
   ],
   visaConsultation: [
     { id: '1', label: 'Applicant Name', type: 'text', placeholder: 'Full passport name', required: true },
-    { id: '2', label: 'Nationality', type: 'text', placeholder: 'e.g. Canadian', required: true },
+    { id: '2', label: 'Nationality', type: 'text', placeholder: 'e.g. British', required: true },
     { id: '3', label: 'Passport Type', type: 'select', placeholder: 'Regular / Diplomatic', required: true },
     { id: '4', label: 'Destination', type: 'text', placeholder: 'Saudi Arabia', required: true },
     { id: '5', label: 'Phone Number', type: 'tel', placeholder: '+1 (555) 000-0000', required: true },
@@ -828,7 +833,7 @@ const DEFAULT_FORMS_DATA: Record<string, any> = {
   quoteForm: {
     title: 'Homepage Hero Banner — Get a Free Quote Form',
     subtitle: 'Inline quote form embedded in the Homepage & Umrah landing page hero banner.',
-    recipientEmail: 'saudivisa@kingtravelcan.com',
+    recipientEmail: 'saudivisa@britishhajjtravel.com',
     successMessage: 'Thank you! Your quote request has been received.',
     enabled: true,
     buttonText: 'Submit Quote',
@@ -837,7 +842,7 @@ const DEFAULT_FORMS_DATA: Record<string, any> = {
   packageDetailForm: {
     title: 'Umrah Package Booking Form (Detail Page & Popup Modal)',
     subtitle: 'Primary booking form used across individual Umrah detail pages (/package/[slug]) and the “Book Now” popup modal.',
-    recipientEmail: 'booking@kingtravelcan.com',
+    recipientEmail: 'booking@britishhajjtravel.com',
     successMessage: 'Your package booking request has been submitted.',
     enabled: true,
     buttonText: 'Book Package',
@@ -846,7 +851,7 @@ const DEFAULT_FORMS_DATA: Record<string, any> = {
   hajjPackageDetailForm: {
     title: 'Hajj Package Booking Form (Detail Page & Popup Modal)',
     subtitle: 'Dedicated booking form used across individual Hajj detail pages (/package/[slug]) and the “Book Now” popup modal.',
-    recipientEmail: 'booking@kingtravelcan.com',
+    recipientEmail: 'booking@britishhajjtravel.com',
     successMessage: 'Your Hajj package booking request has been submitted.',
     enabled: true,
     buttonText: 'Book Hajj 2027',
@@ -855,7 +860,7 @@ const DEFAULT_FORMS_DATA: Record<string, any> = {
   hajjCustomizeForm: {
     title: 'Hajj Page — Customize Your Hajj Package Form',
     subtitle: 'Inline quote form on the /hajj page for custom Hajj 2027 package requests.',
-    recipientEmail: 'saudivisa@kingtravelcan.com',
+    recipientEmail: 'saudivisa@britishhajjtravel.com',
     successMessage: 'Thank you! Your Hajj inquiry has been received.',
     enabled: true,
     buttonText: 'Submit Hajj Inquiry',
@@ -864,7 +869,7 @@ const DEFAULT_FORMS_DATA: Record<string, any> = {
   contact: {
     title: 'Contact Page — Enquiry Form',
     subtitle: 'Primary contact form on the /contact page for general enquiries & support.',
-    recipientEmail: 'saudivisa@kingtravelcan.com',
+    recipientEmail: 'saudivisa@britishhajjtravel.com',
     successMessage: 'Thank you! Your message has been received. Our team will contact you shortly.',
     enabled: true,
     buttonText: 'Send Message',
@@ -873,7 +878,7 @@ const DEFAULT_FORMS_DATA: Record<string, any> = {
   packageInquiry: {
     title: 'Pilgrimage Package — Custom Inquiry Form',
     subtitle: 'Dynamic inquiry form placed on Umrah/Hajj package listing pages via Page Builder.',
-    recipientEmail: 'booking@kingtravelcan.com',
+    recipientEmail: 'booking@britishhajjtravel.com',
     successMessage: 'Package inquiry submitted successfully! A representative will call you soon.',
     enabled: true,
     buttonText: 'Submit Package Inquiry',
@@ -882,7 +887,7 @@ const DEFAULT_FORMS_DATA: Record<string, any> = {
   visaConsultation: {
     title: 'Visa Services — Consultation Form',
     subtitle: 'Saudi eVisa & Pilgrimage visa consultation form placed via Page Builder on visa pages.',
-    recipientEmail: 'visas@kingtravelcan.com',
+    recipientEmail: 'visas@britishhajjtravel.com',
     successMessage: 'Visa application submitted! We will process your requirements immediately.',
     enabled: true,
     buttonText: 'Submit Visa Request',
@@ -891,7 +896,7 @@ const DEFAULT_FORMS_DATA: Record<string, any> = {
   flightInquiry: {
     title: 'Flights Page — Booking Inquiry Form',
     subtitle: 'Flight quote & booking assistance form on the flights page.',
-    recipientEmail: 'flights@kingtravelcan.com',
+    recipientEmail: 'flights@britishhajjtravel.com',
     successMessage: 'Flight request received! We will send available flight options to your email.',
     enabled: true,
     buttonText: 'Request Booking',
@@ -900,7 +905,7 @@ const DEFAULT_FORMS_DATA: Record<string, any> = {
   dropUsMessage: {
     title: 'General — Drop Us A Message Form',
     subtitle: 'General purpose contact form used across multiple pages via Page Builder.',
-    recipientEmail: 'saudivisa@kingtravelcan.com',
+    recipientEmail: 'saudivisa@britishhajjtravel.com',
     successMessage: 'Thank you! Your message has been received.',
     enabled: true,
     buttonText: 'Send Enquiry',
@@ -909,7 +914,7 @@ const DEFAULT_FORMS_DATA: Record<string, any> = {
   blogSidebarForm: {
     title: 'Blog Detail Page — Sidebar Booking Form',
     subtitle: 'Sticky sidebar booking widget shown on every blog/article detail page.',
-    recipientEmail: 'booking@kingtravelcan.com',
+    recipientEmail: 'booking@britishhajjtravel.com',
     successMessage: 'Your booking inquiry has been submitted.',
     enabled: true,
     buttonText: 'Book Your Trip',
@@ -918,21 +923,21 @@ const DEFAULT_FORMS_DATA: Record<string, any> = {
 };
 
 const DEFAULT_EMAIL_CONFIGS: any = {
-  sendToEmail: 'saudivisa@kingtravelcan.com',
+  sendToEmail: 'saudivisa@britishhajjtravel.com',
   emailSubjectLine: 'New Pilgrimage Form Submission',
-  fromName: 'King Travel UK',
-  fromEmail: 'no-reply@kingtravelcan.com',
-  replyTo: 'no-reply@kingtravelcan.com',
+  fromName: 'British Hajj Travel UK',
+  fromEmail: 'no-reply@britishhajjtravel.com',
+  replyTo: 'no-reply@britishhajjtravel.com',
   successHeading: 'Message Sent Successfully!',
-  successDescription: 'Thank you for contacting King Travel UK. We will respond within 24 hours.',
+  successDescription: 'Thank you for contacting British Hajj Travel UK. We will respond within 24 hours.',
   formRoutes: {},
   formCcRoutes: {},
   formBccRoutes: {},
   formRoutingRules: [
-    { id: 'rule_1', forms: ['quoteForm', 'hajjCustomizeForm', 'contact', 'dropUsMessage'], sendTo: 'saudivisa@kingtravelcan.com', cc: '', bcc: '' },
-    { id: 'rule_2', forms: ['packageDetailForm', 'hajjPackageDetailForm', 'packageInquiry', 'blogSidebarForm'], sendTo: 'booking@kingtravelcan.com', cc: '', bcc: '' },
-    { id: 'rule_3', forms: ['visaConsultation'], sendTo: 'visas@kingtravelcan.com', cc: '', bcc: '' },
-    { id: 'rule_4', forms: ['flightInquiry'], sendTo: 'flights@kingtravelcan.com', cc: '', bcc: '' },
+    { id: 'rule_1', forms: ['quoteForm', 'hajjCustomizeForm', 'contact', 'dropUsMessage'], sendTo: 'saudivisa@britishhajjtravel.com', cc: '', bcc: '' },
+    { id: 'rule_2', forms: ['packageDetailForm', 'hajjPackageDetailForm', 'packageInquiry', 'blogSidebarForm'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
+    { id: 'rule_3', forms: ['visaConsultation'], sendTo: 'visas@britishhajjtravel.com', cc: '', bcc: '' },
+    { id: 'rule_4', forms: ['flightInquiry'], sendTo: 'flights@britishhajjtravel.com', cc: '', bcc: '' },
   ],
 };
 
@@ -1361,7 +1366,7 @@ ${outputSchema}`;
 
 function getLocalTemplateFallback(section: string, context: SeoGenerationContext): any {
   const { pageTitle, pageSlug, schemaType, siteContext } = context;
-  const title = (pageTitle || 'King Travel UK').trim();
+  const title = (pageTitle || 'British Hajj Travel UK').trim();
   const cleanSlug = pageSlug === '/' ? '' : pageSlug.startsWith('/') ? pageSlug : `/${pageSlug}`;
 
   if (section === 'traditional') {
@@ -1391,7 +1396,7 @@ function getLocalTemplateFallback(section: string, context: SeoGenerationContext
 
   if (section === 'aeo') {
     return {
-      formattedFaqs: `Q: What is included in ${title} at ${siteContext.brandName}?\nA: This package includes verified visa assistance, round-trip flight bookings, 5-star hotel accommodations in Makkah and Madinah, and reliable ground transfers with guided support throughout your journey.\n\nQ: What is the cost of ${title} packages?\nA: Package pricing varies depending on travel dates, airline choice, and room occupancy. Contact our Toronto office for an itemized and transparent quotation with zero hidden fees.\n\nQ: How can I book or apply for ${title}?\nA: You can easily reserve your spot by submitting an online inquiry on our official website, calling our customer care desk, or visiting our Toronto headquarters.\n\nQ: What are the eligibility and document requirements for ${title}?\nA: Canadian travelers require a valid passport with at least six months validity, passport-sized photographs, and required immunization records as mandated by Saudi authorities.\n\nQ: Why choose ${siteContext.brandName} for ${title}?\nA: We are an authorized and licensed pilgrimage provider offering de£e-long experience, dedicated 24/7 on-ground assistance, and curated five-star hospitality for Canadian pilgrims.`,
+      formattedFaqs: `Q: What is included in ${title} at ${siteContext.brandName}?\nA: This package includes verified visa assistance, round-trip flight bookings, 5-star hotel accommodations in Makkah and Madinah, and reliable ground transfers with guided support throughout your journey.\n\nQ: What is the cost of ${title} packages?\nA: Package pricing varies depending on travel dates, airline choice, and room occupancy. Contact our Toronto office for an itemized and transparent quotation with zero hidden fees.\n\nQ: How can I book or apply for ${title}?\nA: You can easily reserve your spot by submitting an online inquiry on our official website, calling our customer care desk, or visiting our Toronto headquarters.\n\nQ: What are the eligibility and document requirements for ${title}?\nA: British travelers require a valid passport with at least six months validity, passport-sized photographs, and required immunization records as mandated by Saudi authorities.\n\nQ: Why choose ${siteContext.brandName} for ${title}?\nA: We are an authorized and licensed pilgrimage provider offering de£e-long experience, dedicated 24/7 on-ground assistance, and curated five-star hospitality for British pilgrims.`,
     };
   }
 
@@ -1403,7 +1408,8 @@ function getLocalTemplateFallback(section: string, context: SeoGenerationContext
       name: `${title} - ${siteContext.brandName}`,
       description: `Official ${title} travel solutions, hotel bookings, and visa services by ${siteContext.brandName}.`,
       url: `${siteContext.domain}${cleanSlug}`,
-      telephone: '+1-800-KING-TRAVEL',
+      // TODO: Replace the former brand phone number with the real British Hajj Travel number.
+      telephone: '',
       address: {
         '@type': 'PostalAddress',
         addressLocality: 'Toronto',

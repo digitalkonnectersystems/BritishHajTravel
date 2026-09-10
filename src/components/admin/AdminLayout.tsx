@@ -27,6 +27,7 @@ import {
   Sparkles,
   LayoutDashboard,
   BookOpen,
+  Building2,
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -59,6 +60,11 @@ const navItems = [
     label: 'Saudi Visas',
     href: '/admin/visas',
     icon: <FileText className="w-4 h-4" />,
+  },
+  {
+    label: 'Hotels',
+    href: '/admin/hotels',
+    icon: <Building2 className="w-4 h-4" />,
   },
   {
     label: 'Pages',
@@ -114,7 +120,7 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
   }, []);
 
   const logoSrc = identity?.logo || '/img/logo.png';
-  const logoAlt = identity?.logoAlt || 'King Travel UK Logo';
+  const logoAlt = identity?.logoAlt || 'British Hajj Travel UK Logo';
 
   const userName = user?.name || 'Admin User';
   const userRole = user?.role ? user.role.replace(/_/g, ' ') : 'Super Admin';
@@ -278,7 +284,7 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
                       </div>
                       <div className="min-w-0">
                         <div className="text-sm font-extrabold truncate text-white">{userName}</div>
-                        <div className="text-[10px] text-emerald-200 font-medium truncate">{user?.email || 'admin@kingtravelcan.com'}</div>
+                        <div className="text-[10px] text-emerald-200 font-medium truncate">{user?.email || 'admin@britishhajjtravel.com'}</div>
                         <span className="inline-block mt-1 text-[9px] font-extrabold uppercase tracking-wider text-gold bg-gold/20 border border-[#DB9E30]/40 px-2 py-0.5 rounded-md">
                           {userRole}
                         </span>

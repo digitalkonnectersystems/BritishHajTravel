@@ -65,7 +65,7 @@ async function testAllCrudsAndForms() {
     const testEnquiryNum = `TEST-QT-${Date.now().toString().slice(-4)}`;
     await conn.query(`
       INSERT INTO quote_enquiries (enquiry_number, full_name, email, phone, package_type, departure_date, adults, status)
-      VALUES (?, 'Automated Test User', 'test.quote@kingtravelcan.com', '+1 905-555-0199', 'Deluxe Hajj 2027', 'June 2027', 2, 'new')
+      VALUES (?, 'Automated Test User', 'test.quote@britishhajjtravel.com', '+1 905-555-0199', 'Deluxe Hajj 2027', 'June 2027', 2, 'new')
     `, [testEnquiryNum]);
     console.log('  ✅ 1/5 Quote Enquiry Submission Insert: SUCCESS (Ref: ' + testEnquiryNum + ')');
 
@@ -73,7 +73,7 @@ async function testAllCrudsAndForms() {
     const testBookingNum = `TEST-BK-${Date.now().toString().slice(-4)}`;
     await conn.query(`
       INSERT INTO package_booking_enquiries (booking_number, package_name, full_name, email, phone, adults, total_price, status)
-      VALUES (?, '5 Star Executive Umrah Package', 'Automated Test Pilgrim', 'test.booking@kingtravelcan.com', '+1 416-555-0188', 2, '$3,450 CAD', 'new')
+      VALUES (?, '5 Star Executive Umrah Package', 'Automated Test Pilgrim', 'test.booking@britishhajjtravel.com', '+1 416-555-0188', 2, '$3,450 CAD', 'new')
     `, [testBookingNum]);
     console.log('  ✅ 2/5 Package Booking Submission Insert: SUCCESS (Ref: ' + testBookingNum + ')');
 
@@ -81,7 +81,7 @@ async function testAllCrudsAndForms() {
     const testTicketNum = `TEST-TKT-${Date.now().toString().slice(-4)}`;
     await conn.query(`
       INSERT INTO contact_enquiries (ticket_number, full_name, email, phone, message, status)
-      VALUES (?, 'Automated Contact Tester', 'test.contact@kingtravelcan.com', '+1 647-555-0177', 'Testing automated form submission.', 'new')
+      VALUES (?, 'Automated Contact Tester', 'test.contact@britishhajjtravel.com', '+1 647-555-0177', 'Testing automated form submission.', 'new')
     `, [testTicketNum]);
     console.log('  ✅ 3/5 Contact Us Submission Insert: SUCCESS (Ref: ' + testTicketNum + ')');
 
@@ -89,7 +89,7 @@ async function testAllCrudsAndForms() {
     const testVisaNum = `TEST-VSA-${Date.now().toString().slice(-4)}`;
     await conn.query(`
       INSERT INTO visa_enquiries (enquiry_number, visa_title, full_name, email, phone, travelers_count, nationality, status)
-      VALUES (?, 'Saudi Tourist eVisa', 'Automated Visa Applicant', 'test.visa@kingtravelcan.com', '+1 416-555-0166', 3, 'Canadian', 'new')
+      VALUES (?, 'Saudi Tourist eVisa', 'Automated Visa Applicant', 'test.visa@britishhajjtravel.com', '+1 416-555-0166', 3, 'British', 'new')
     `, [testVisaNum]);
     console.log('  ✅ 4/5 Visa Consultation Submission Insert: SUCCESS (Ref: ' + testVisaNum + ')');
 
@@ -97,7 +97,7 @@ async function testAllCrudsAndForms() {
     const testFlightNum = `TEST-FLT-${Date.now().toString().slice(-4)}`;
     await conn.query(`
       INSERT INTO flight_enquiries (enquiry_number, full_name, email, phone, origin_city, destination_city, passengers, status)
-      VALUES (?, 'Automated Traveler', 'test.flight@kingtravelcan.com', '+1 905-555-0155', 'Toronto (YYZ)', 'Jeddah (JED)', 2, 'new')
+      VALUES (?, 'Automated Traveler', 'test.flight@britishhajjtravel.com', '+1 905-555-0155', 'Toronto (YYZ)', 'Jeddah (JED)', 2, 'new')
     `, [testFlightNum]);
     console.log('  ✅ 5/5 Flight Booking Submission Insert: SUCCESS (Ref: ' + testFlightNum + ')');
 

@@ -10,10 +10,10 @@ const defaultVisaServicesSeed = [
   {
     title: 'Saudi Tourist eVisa',
     slug: 'saudi-tourist-evisa',
-    shortDescription: '1-Year Multiple Entry Tourist eVisa for Canadian passport holders.',
+    shortDescription: '1-Year Multiple Entry Tourist eVisa for British passport holders.',
     fullDescription: 'Authorized 1-year multiple entry Tourist eVisa allowing up to 90 days stay per visit. Valid for tourism and Umrah.',
     processingTime: '24-48 Hours',
-    requirements: 'Canadian Passport (min 6 months validity), Digital Photo',
+    requirements: 'British Passport (min 6 months validity), Digital Photo',
     imageUrl: '/img/saudi-visa-1.webp',
     isPublished: true,
     displayOrder: 1,

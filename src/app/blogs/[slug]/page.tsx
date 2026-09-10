@@ -44,11 +44,11 @@ function toSafeISOString(value: any): string | undefined {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const blog = await getBlogBySlug(slug);
-  if (!blog) return { title: 'Blog Not Found | King Travel UK' };
+  if (!blog) return { title: 'Blog Not Found | British Hajj Travel UK' };
 
   const seoData: any = await getBlogSeoAction(blog.id);
-  const metaTitle = seoData?.metaTitle || `${blog.title} | King Travel UK`;
-  const metaDesc = seoData?.metaDescription || blog.excerpt || `Read ${blog.title} on King Travel UK blog.`;
+  const metaTitle = seoData?.metaTitle || `${blog.title} | British Hajj Travel UK`;
+  const metaDesc = seoData?.metaDescription || blog.excerpt || `Read ${blog.title} on British Hajj Travel UK blog.`;
   const ogImage = seoData?.ogImageUrl || blog.featuredImage || FALLBACK_THUMB;
 
   return {
@@ -101,10 +101,10 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
     headline: blog.title,
     description: blog.excerpt || '',
     image: blog.featuredImage || FALLBACK_THUMB,
-    author: { '@type': 'Person', name: blog.authorName || 'King Travel Editorial' },
+    author: { '@type': 'Person', name: blog.authorName || 'British Hajj Travel Editorial' },
     publisher: {
       '@type': 'Organization',
-      name: 'King Travel UK',
+      name: 'British Hajj Travel UK',
       logo: { '@type': 'ImageObject', url: '/img/logo.png' },
     },
     datePublished:
@@ -139,7 +139,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
               <span className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xs border-2 border-white/30">
                 {blog.authorName?.charAt(0) || 'K'}
               </span>
-              <span className="font-semibold text-white">{blog.authorName || 'King Travel Editorial'}</span>
+              <span className="font-semibold text-white">{blog.authorName || 'British Hajj Travel Editorial'}</span>
             </div>
             {displayDate && (
               <>
@@ -184,7 +184,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
               {/* Tags footer */}
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <span className="text-sm font-bold text-ink">Tags:</span>
-                {[blog.category, 'King Travel UK', 'Pilgrimage'].filter(Boolean).map((tag) => (
+                {[blog.category, 'British Hajj Travel UK', 'Pilgrimage'].filter(Boolean).map((tag) => (
                   <span key={tag} className="text-sm px-3 py-1 rounded-full border-1 border-[var(--ink-light)]  text-[var(--ink-light)] font-medium">{tag}</span>
                 ))}
               </div>

@@ -51,7 +51,7 @@ export function isValidPublicOrigin(urlString?: string | null): boolean {
 }
 
 /**
- * Normalizes a URL to a clean public origin: e.g. "https://www.kingtravel.ca"
+ * Normalizes a URL to a clean public origin: e.g. "https://www.britishhajjtravel.com"
  */
 export function normalizePublicOrigin(urlString?: string | null): string | null {
   if (!isValidPublicOrigin(urlString)) return null;

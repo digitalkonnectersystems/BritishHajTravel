@@ -71,7 +71,7 @@ export default function HajjPackagesSection({
   }, [data?.packageIds, initialPackages]);
 
   const sectionClass = isHomepage
-    ? "pb-12 md:pb-16 bg-white"
+    ? "pb-12 md:pb-16 md:pt-16 bg-primary"
     : "pt-12 md:pb-16 bg-sage";
 
   return (
@@ -81,9 +81,9 @@ export default function HajjPackagesSection({
         <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-12 gap-6 text-center md:text-left">
           <div className="flex flex-col items-center md:items-start">
             <h3 className="eyebrow">{eyebrow}</h3>
-            <h2 className="section-heading text-primary">{title}</h2>
+            <h2 className="section-heading text-white">{title}</h2>
           </div>
-          <div className="max-w-sm text-ink-soft text-sm leading-relaxed border-t-2 md:border-t-0 md:border-l-2 border-gray-200 pt-4 md:pt-0 pl-0 md:pl-4">
+          <div className="max-w-sm text-white text-sm leading-relaxed border-t-2 md:border-t-0 md:border-l-2 border-gray-200 pt-4 md:pt-0 pl-0 md:pl-4">
             {description}
           </div>
         </div>
@@ -111,7 +111,7 @@ export default function HajjPackagesSection({
 
         {/* No packages configured */}
         {!loading && pkgs.length === 0 && (
-          <p className="text-center text-slate-400 py-12">
+          <p className="text-center text-white">
             No Hajj packages added to this section yet.
           </p>
         )}
@@ -136,7 +136,7 @@ export default function HajjPackagesSection({
               const duration = cd.duration || `${pkg.durationDays || 14}Days`;
               const flightRoute =
                 cd.flightRoute || "FROM CANADA ➔ TO SAUDIA";
-              const operatorName = cd.operatorName || "King Travel";
+              const operatorName = cd.operatorName || "British Hajj Travel";
               const operatorRating = cd.operatorRating || "4.4/5";
               const priceSubtext =
                 cd.priceSubtext || "From £ / QUAD OCCUPANCY";
@@ -227,8 +227,8 @@ export default function HajjPackagesSection({
               const eligibilityList = Array.isArray(cd.eligibility) && cd.eligibility.length > 0
                 ? cd.eligibility
                 : [
-                  'Canadian & U.S. citizens with Pakistani passports.',
-                  'Pakistani passport holders with Canadian PR or American Green Card.',
+                  'British & U.S. citizens with Pakistani passports.',
+                  'Pakistani passport holders with British PR or American Green Card.',
                   'All foreign passport holders with Pakistan passport.',
                   'Side trip to Pakistan or any other destination available with an additional cost.',
                 ];

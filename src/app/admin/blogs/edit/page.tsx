@@ -34,7 +34,7 @@ function BlogEditorInner() {
     content: '',
     featuredImage: '',
     category: 'Pilgrimage Guide',
-    authorName: 'King Travel Editorial',
+    authorName: 'British Hajj Travel Editorial',
     isPublished: true,
     publishedAt: '',
   });
@@ -54,7 +54,7 @@ function BlogEditorInner() {
         content: b.content || '',
         featuredImage: b.featuredImage || '',
         category: b.category || 'Pilgrimage Guide',
-        authorName: b.authorName || 'King Travel Editorial',
+        authorName: b.authorName || 'British Hajj Travel Editorial',
         isPublished: b.isPublished ?? true,
         publishedAt: b.publishedAt ? new Date(b.publishedAt).toISOString().split('T')[0] : '',
       });
@@ -156,7 +156,7 @@ function BlogEditorInner() {
             <button
               type="submit"
               disabled={saving}
-              className="inline-flex items-center gap-1.5 bg-primary text-white px-5 py-2 rounded-xl text-xs font-bold border-none cursor-pointer hover:bg-[#00382B] disabled:opacity-50 transition-colors shadow-md shadow-emerald-900/20"
+              className="inline-flex items-center gap-1.5 bg-primary text-white px-5 py-2 rounded-xl text-xs font-bold border-none cursor-pointer hover:bg-white hover:text-primary disabled:opacity-50 transition-colors shadow-md shadow-emerald-900/20"
             >
               <Save className="w-3.5 h-3.5 text-emerald-300" />
               {saving ? 'Saving...' : isEdit ? 'Save Changes' : 'Publish Blog'}

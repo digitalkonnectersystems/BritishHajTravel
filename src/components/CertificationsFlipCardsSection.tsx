@@ -36,7 +36,7 @@ export default function CertificationsFlipCardsSection({
           logo: "/img/tico.svg",
           title: "TICO",
           description:
-            "TICO regulates travel agencies in Ontario, protecting consumer prepaid funds and ensuring compliance with strict Canadian travel industry regulations.",
+            "TICO regulates travel agencies in Ontario, protecting consumer prepaid funds and ensuring compliance with strict British travel industry regulations.",
         },
         {
           logo: "/img/iata.svg",
@@ -48,7 +48,7 @@ export default function CertificationsFlipCardsSection({
           logo: "/img/acta.svg",
           title: "ACTA",
           description:
-            "ACTA membership advocates for ethical travel practices and professional excellence across the Canadian travel industry.",
+            "ACTA membership advocates for ethical travel practices and professional excellence across the British travel industry.",
         },
         {
           logo: "/img/asta.svg",

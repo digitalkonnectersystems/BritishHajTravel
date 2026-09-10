@@ -267,7 +267,7 @@ export async function submitVisaEnquiryAction(data: {
       email,
       phone,
       travelersCount = 1,
-      nationality = 'Canadian',
+      nationality = 'British',
       message = '',
     } = data;
 

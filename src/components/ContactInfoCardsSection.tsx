@@ -97,8 +97,8 @@ export default function ContactInfoCardsSection({ data }: { data?: any }) {
             <h3 className="text-xs font-extrabold uppercase tracking-widest text-primary mb-2">
               {data?.card3Title || "EMAIL US"}
             </h3>
-            <a href={`mailto:${data?.email || "saudivisa@kingtravelcan.com"}`} className="text-sm text-slate-700 hover:text-emerald-800 transition break-all font-semibold no-underline">
-              {data?.email || "saudivisa@kingtravelcan.com"}
+            <a href={`mailto:${data?.email || "saudivisa@britishhajjtravel.com"}`} className="text-sm text-slate-700 hover:text-emerald-800 transition break-all font-semibold no-underline">
+              {data?.email || "saudivisa@britishhajjtravel.com"}
             </a>
           </div>
 
@@ -109,12 +109,12 @@ export default function ContactInfoCardsSection({ data }: { data?: any }) {
                 const socialList: any[] = (data?.socialLinks && Array.isArray(data.socialLinks) && data.socialLinks.length > 0)
                   ? data.socialLinks
                   : [
-                    { name: 'Facebook', url: data?.facebookUrl || 'https://www.facebook.com/kingtravelcan', icon: '/img/fb.svg', openInNewTab: true },
-                    { name: 'Instagram', url: data?.instagramUrl || 'https://www.instagram.com/kingtravelcan/', icon: '/img/insta.svg', openInNewTab: true },
-                    { name: 'LinkedIn', url: data?.linkedinUrl || 'https://ca.linkedin.com/company/kingtravelcan', icon: '/img/in.svg', openInNewTab: true },
-                    { name: 'TikTok', url: data?.tiktokUrl || 'https://www.tiktok.com/@kingtravelcan', icon: '/img/tik.svg', openInNewTab: true },
-                    { name: 'Twitter X', url: data?.twitterUrl || 'https://twitter.com/kingtravelcan', icon: '/img/x.svg', openInNewTab: true },
-                    { name: 'Pinterest', url: data?.pinterestUrl || 'https://pinterest.com/kingtravelcan', icon: '/img/pinterest.svg', openInNewTab: true },
+                    { name: 'Facebook', url: data?.facebookUrl || 'https://www.facebook.com/britishhajjtravel', icon: '/img/fb.svg', openInNewTab: true },
+                    { name: 'Instagram', url: data?.instagramUrl || 'https://www.instagram.com/britishhajjtravel/', icon: '/img/insta.svg', openInNewTab: true },
+                    { name: 'LinkedIn', url: data?.linkedinUrl || 'https://ca.linkedin.com/company/britishhajjtravel', icon: '/img/in.svg', openInNewTab: true },
+                    { name: 'TikTok', url: data?.tiktokUrl || 'https://www.tiktok.com/@britishhajjtravel', icon: '/img/tik.svg', openInNewTab: true },
+                    { name: 'Twitter X', url: data?.twitterUrl || 'https://twitter.com/britishhajjtravel', icon: '/img/x.svg', openInNewTab: true },
+                    { name: 'Pinterest', url: data?.pinterestUrl || 'https://pinterest.com/britishhajjtravel', icon: '/img/pinterest.svg', openInNewTab: true },
                   ];
 
                 return socialList

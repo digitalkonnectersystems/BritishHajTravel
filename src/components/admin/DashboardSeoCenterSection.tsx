@@ -328,7 +328,7 @@ export default function DashboardSeoCenterSection({ pages }: DashboardSeoCenterS
                   setSelectedSeoPage(p);
                   setSeoModalOpen(true);
                 }}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-emerald-50 text-primary border border-emerald-300 text-xs font-extrabold hover:bg-primary hover:text-white transition-all cursor-pointer shadow-xs shrink-0 self-start sm:self-center"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-blue-100 text-primary border border-primary text-xs font-extrabold hover:bg-primary hover:text-white transition-all cursor-pointer shadow-xs shrink-0 self-start sm:self-center"
               >
                 <Sliders className="w-3.5 h-3.5" />
                 <span>Open SEO Center →</span>

@@ -65,14 +65,14 @@ Qurbani Not Included`
       );
       setEligibility(
         pkg.eligibility ||
-        `Canadian & U.S. citizens with Pakistan Passports.
-Pakistani Passport holders with Canadian PR or American Green Cards.
+        `British & U.S. citizens with Pakistan Passports.
+Pakistani Passport holders with British PR or American Green Cards.
 All Foreign Passport holders with Pakistan Passports.
 Side trips to Pakistan or any other destination available with an additional cost.`
       );
       setImportantNotice(
         pkg.importantNotice ||
-        "To secure your Hajj visa slot, please make sure your Canadian passport is valid for at least 6 months beyond travel dates, and you have completed all mandatory immunizations required by the Saudi Ministry of Hajj."
+        "To secure your Hajj visa slot, please make sure your British passport is valid for at least 6 months beyond travel dates, and you have completed all mandatory immunizations required by the Saudi Ministry of Hajj."
       );
       setFaqs(
         pkg.faqs && pkg.faqs.length > 0
@@ -445,7 +445,7 @@ Side trips to Pakistan or any other destination available with an additional cos
           <button
             type="button"
             onClick={handleSave}
-            className="bg-primary hover:bg-[#00382B] text-white font-extrabold px-6 py-2.5 rounded-xl text-xs shadow-lg transition-all cursor-pointer"
+            className="bg-primary hover:bg-white hover:text-primary text-white font-extrabold px-6 py-2.5 rounded-xl text-xs shadow-lg transition-all cursor-pointer"
           >
             Save & Apply Changes
           </button>

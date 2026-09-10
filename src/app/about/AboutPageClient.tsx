@@ -82,8 +82,8 @@ export default function AboutPageClient({ initialPageData }: { initialPageData?:
       type: "Intro",
       data: {
         eyebrow: "ABOUT",
-        title: "King Travel",
-        description: "For over 20 years, King Travel has been a trusted travel agency in UK, offering Hajj and Umrah services, airline ticketing, and visa processing with unmatched expertise. We are UK's No. 1 authorized PIA seller agency and an official agent licensed by the Ministry of Hajj & Umrah, IATA, TICO, OCTA, and ASTA."
+        title: "British Hajj Travel",
+        description: "For over 20 years, British Hajj Travel has been a trusted travel agency in UK, offering Hajj and Umrah services, airline ticketing, and visa processing with unmatched expertise. We are UK's No. 1 authorized PIA seller agency and an official agent licensed by the Ministry of Hajj & Umrah, IATA, TICO, OCTA, and ASTA."
       }
     },
     {
@@ -91,7 +91,7 @@ export default function AboutPageClient({ initialPageData }: { initialPageData?:
       data: {
         eyebrow: "WHY CHOOSE US",
         title: "Your Trusted Partner for Pilgrimage & Global Travel",
-        description: "Serving Ontario travelers for years, King Travel Can Ltd is certified by IATA, ACTA, TICO, ASTA, ATAC, and the Saudi Ministry of Hajj & Umrah. We've arranged thousands of successful journeys with fast response times and secure ID checks for every booking.",
+        description: "Serving Ontario travelers for years, British Hajj Travel LTD is certified by IATA, ACTA, TICO, ASTA, ATAC, and the Saudi Ministry of Hajj & Umrah. We've arranged thousands of successful journeys with fast response times and secure ID checks for every booking.",
         subheading: "Common Travel Needs We Solve",
         features: [
           "Securing all types of Saudi visas quickly.",
@@ -110,10 +110,10 @@ export default function AboutPageClient({ initialPageData }: { initialPageData?:
         eyebrow: "WHAT WE PROVIDE",
         title: "Our Premium Travel Services",
         items: [
-          { icon: "✈️", title: "Lowest Fares", subtitle: "We Offer the Lowest Fair on Air Ticketing around the Globe.", description: "As a partner with major airlines, including PIA, King Travel Can Ltd guarantees the lowest airfares for flights to Pakistan, Saudi Arabia, and beyond. Whether it's for religious travel or international vacations, we offer unbeatable rates to help you save." },
+          { icon: "✈️", title: "Lowest Fares", subtitle: "We Offer the Lowest Fair on Air Ticketing around the Globe.", description: "As a partner with major airlines, including PIA, British Hajj Travel LTD guarantees the lowest airfares for flights to Pakistan, Saudi Arabia, and beyond. Whether it's for religious travel or international vacations, we offer unbeatable rates to help you save." },
           { icon: "✨", title: "Special Deals", subtitle: "We Provide Best Prices Of All Inclusive Packages.", description: "We offer exclusive special deals on Umrah, Hajj, and international flight packages, tailored to fit your budget. These limited-time offers allow you to experience premium services without overspending, making your travel affordable and stress-free." },
           { icon: "🛡️", title: "Trusted & Certified", subtitle: "We are The Only Authorized Saudi Visa Providers UK!", description: "Recognized by IATA, ACTA, TICO, ASTA, ATAC, and the Saudi Ministry of Hajj & Umrah, ensuring every journey meets the highest international standards." },
-          { icon: "🕌", title: "Pilgrimage Experts", subtitle: "We Offer Best Accommodations & Transports In Saudia Arabia", description: "From visa processing and ticketing to 5-star accommodations and guided tours, King Travel provides a complete pilgrimage experience. Our services ensure a hassle-free journey, with everything taken care of from start to finish." }
+          { icon: "🕌", title: "Pilgrimage Experts", subtitle: "We Offer Best Accommodations & Transports In Saudia Arabia", description: "From visa processing and ticketing to 5-star accommodations and guided tours, British Hajj Travel provides a complete pilgrimage experience. Our services ensure a hassle-free journey, with everything taken care of from start to finish." }
         ]
       }
     }
@@ -158,7 +158,7 @@ export default function AboutPageClient({ initialPageData }: { initialPageData?:
                   {sec.data?.eyebrow || "ABOUT"}
                 </span>
                 <h2 className="font-serif mb-3 text-white">
-                  {sec.data?.title || "King Travel"}
+                  {sec.data?.title || "British Hajj Travel"}
                 </h2>
                 <p className="text-white/90 text-sm leading-relaxed font-normal m-0">
                   {sec.data?.description}
@@ -215,10 +215,10 @@ export default function AboutPageClient({ initialPageData }: { initialPageData?:
         // Section Type 4: Services Grid (What We Provide)
         if (sec.type === "Services Grid" || sec.type === "What We Provide") {
           const svcs = sec.data?.items || [
-            { icon: "✈️", title: "Lowest Fares", subtitle: "We Offer the Lowest Fair on Air Ticketing around the Globe.", description: "As a partner with major airlines, including PIA, King Travel Can Ltd guarantees the lowest airfares for flights to Pakistan, Saudi Arabia, and beyond. Whether it's for religious travel or international vacations, we offer unbeatable rates to help you save." },
+            { icon: "✈️", title: "Lowest Fares", subtitle: "We Offer the Lowest Fair on Air Ticketing around the Globe.", description: "As a partner with major airlines, including PIA, British Hajj Travel LTD guarantees the lowest airfares for flights to Pakistan, Saudi Arabia, and beyond. Whether it's for religious travel or international vacations, we offer unbeatable rates to help you save." },
             { icon: "✨", title: "Special Deals", subtitle: "We Provide Best Prices Of All Inclusive Packages.", description: "We offer exclusive special deals on Umrah, Hajj, and international flight packages, tailored to fit your budget. These limited-time offers allow you to experience premium services without overspending, making your travel affordable and stress-free." },
             { icon: "🛡️", title: "Trusted & Certified", subtitle: "We are The Only Authorized Saudi Visa Providers UK!", description: "Recognized by IATA, ACTA, TICO, ASTA, ATAC, and the Saudi Ministry of Hajj & Umrah, ensuring every journey meets the highest international standards." },
-            { icon: "🕌", title: "Pilgrimage Experts", subtitle: "We Offer Best Accommodations & Transports In Saudia Arabia", description: "From visa processing and ticketing to 5-star accommodations and guided tours, King Travel provides a complete pilgrimage experience. Our services ensure a hassle-free journey, with everything taken care of from start to finish." }
+            { icon: "🕌", title: "Pilgrimage Experts", subtitle: "We Offer Best Accommodations & Transports In Saudia Arabia", description: "From visa processing and ticketing to 5-star accommodations and guided tours, British Hajj Travel provides a complete pilgrimage experience. Our services ensure a hassle-free journey, with everything taken care of from start to finish." }
           ];
           return (
             <section key={idx} className="services-section py-10">

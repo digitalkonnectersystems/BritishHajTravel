@@ -99,9 +99,9 @@ export default function SeoCenterModal({
   };
 
   const generateOptimalTitle = (rawTitle: string): string => {
-    const title = (rawTitle || 'King Travel UK').trim();
-    const brandSuffix = ' | King Travel';
-    const fullBrandSuffix = ' | King Travel UK';
+    const title = (rawTitle || 'British Hajj Travel UK').trim();
+    const brandSuffix = ' | British Hajj Travel';
+    const fullBrandSuffix = ' | British Hajj Travel UK';
 
     // If title alone + brand fits in 60
     if (`${title}${fullBrandSuffix}`.length <= 60) {
@@ -117,22 +117,22 @@ export default function SeoCenterModal({
   };
 
   const generateOptimalDescription = (rawTitle: string): string => {
-    const title = (rawTitle || 'King Travel UK').trim();
-    const candidate = `Book certified ${title} with King Travel UK. Official visa processing, flights, luxury hotels & 24/7 dedicated support.`;
+    const title = (rawTitle || 'British Hajj Travel UK').trim();
+    const candidate = `Book certified ${title} with British Hajj Travel UK. Official visa processing, flights, luxury hotels & 24/7 dedicated support.`;
     if (candidate.length <= 160) {
       return candidate;
     }
-    const shorter = `Explore official ${title} packages by King Travel UK. Verified visa support, top hotel bookings & flights.`;
+    const shorter = `Explore official ${title} packages by British Hajj Travel UK. Verified visa support, top hotel bookings & flights.`;
     if (shorter.length <= 160) {
       return shorter;
     }
-    return fitText(`Explore official ${title} packages by King Travel UK. Verified visas, luxury hotel bookings & 24/7 support.`, 160);
+    return fitText(`Explore official ${title} packages by British Hajj Travel UK. Verified visas, luxury hotel bookings & 24/7 support.`, 160);
   };
 
   // Populate data on pageData change
   useEffect(() => {
     if (pageData) {
-      const pageTitle = pageData.title || 'King Travel UK';
+      const pageTitle = pageData.title || 'British Hajj Travel UK';
       const pageSlug = pageData.slug || '/';
       const cleanSlug = pageSlug === '/' ? '' : pageSlug.startsWith('/') ? pageSlug : `/${pageSlug}`;
 
@@ -152,27 +152,27 @@ export default function SeoCenterModal({
 
       setHeroAlt(
         existingSeo.heroAlt ||
-        `Official visual illustration and hero presentation for ${pageTitle} at King Travel UK`
+        `Official visual illustration and hero presentation for ${pageTitle} at British Hajj Travel UK`
       );
 
       setOgCardAlt(
         existingSeo.ogCardAlt ||
-        `Official social share card banner for ${pageTitle} at King Travel UK`
+        `Official social share card banner for ${pageTitle} at British Hajj Travel UK`
       );
 
       setGeoSummary(
         existingSeo.geoSummary ||
-        `Comprehensive official overview of ${pageTitle} services, Umrah packages, hotel reservations, and visa processing presented by King Travel UK.`
+        `Comprehensive official overview of ${pageTitle} services, Umrah packages, hotel reservations, and visa processing presented by British Hajj Travel UK.`
       );
 
       setGeoClusters(
         existingSeo.geoClusters ||
-        `King Travel UK, Umrah Packages, Hajj Packages, Saudi Visa, Flights, Luxury Hotels, Toronto Travel Agency`
+        `British Hajj Travel UK, Umrah Packages, Hajj Packages, Saudi Visa, Flights, Luxury Hotels, Toronto Travel Agency`
       );
 
       setAeoFaqs(
         existingSeo.aeoFaqs ||
-        `Q: What is the main focus of ${pageTitle} at King Travel UK?\nA: This page provides official guidance, pricing, and booking details regarding ${pageTitle}.\n\nQ: How can I book packages for ${pageTitle}?\nA: Visit our official website contact section or request a free quote online.`
+        `Q: What is the main focus of ${pageTitle} at British Hajj Travel UK?\nA: This page provides official guidance, pricing, and booking details regarding ${pageTitle}.\n\nQ: How can I book packages for ${pageTitle}?\nA: Visit our official website contact section or request a free quote online.`
       );
 
       setSchemaType(existingSeo.schemaType || 'TravelAgency');
@@ -180,16 +180,16 @@ export default function SeoCenterModal({
       const initialSchema = {
         '@context': 'https://schema.org',
         '@type': existingSeo.schemaType || 'TravelAgency',
-        name: `${pageTitle} | King Travel UK`,
+        name: `${pageTitle} | British Hajj Travel UK`,
         description:
           pageData.metaDescription ||
-          `Official ${pageTitle} packages and travel services provided by King Travel UK.`,
-        url: `https://kingtravelcan.com${cleanSlug}`,
+          `Official ${pageTitle} packages and travel services provided by British Hajj Travel UK.`,
+        url: `https://britishhajjtravel.com${cleanSlug}`,
         publisher: {
           '@type': 'Organization',
-          name: 'King Travel UK',
-          url: 'https://kingtravelcan.com',
-          logo: 'https://media.kingtravelcan.com/uploads/branding/logo.png',
+          name: 'British Hajj Travel UK',
+          url: 'https://britishhajjtravel.com',
+          logo: 'https://media.britishhajjtravel.com/uploads/branding/logo.png',
         },
       };
 
@@ -197,19 +197,19 @@ export default function SeoCenterModal({
         existingSeo.jsonLdPayload || JSON.stringify(initialSchema, null, 2)
       );
 
-      setCanonicalUrl(existingSeo.canonicalUrl || `https://kingtravelcan.com${cleanSlug}`);
+      setCanonicalUrl(existingSeo.canonicalUrl || `https://britishhajjtravel.com${cleanSlug}`);
       setNoIndex(existingSeo.noIndex || false);
       setOgImageUrl(
         existingSeo.ogImageUrl ||
         pageData.bannerBgImage ||
-        'https://media.kingtravelcan.com/uploads/branding/logo.png'
+        'https://media.britishhajjtravel.com/uploads/branding/logo.png'
       );
     }
   }, [pageData]);
 
   // Common generation context builder
   const buildGenerationContext = (customExisting?: Record<string, string>): SeoGenerationContext => {
-    const pageTitle = pageData?.title || 'King Travel UK';
+    const pageTitle = pageData?.title || 'British Hajj Travel UK';
     const pageSlug = pageData?.slug || '/';
     return {
       pageTitle,
@@ -229,10 +229,10 @@ export default function SeoCenterModal({
         aeoFaqs,
       },
       siteContext: {
-        brandName: 'King Travel UK',
-        domain: 'https://kingtravelcan.com',
+        brandName: 'British Hajj Travel UK',
+        domain: 'https://britishhajjtravel.com',
         industry: 'Licensed Umrah & Hajj pilgrimage operator, flights, and Saudi visa services in Toronto, UK',
-        logoUrl: 'https://media.kingtravelcan.com/uploads/branding/logo.png',
+        logoUrl: 'https://media.britishhajjtravel.com/uploads/branding/logo.png',
       },
     };
   };
@@ -254,7 +254,7 @@ export default function SeoCenterModal({
       }
     } catch (err) {
       console.warn('Traditional SEO generation error:', err);
-      const title = pageData.title || 'King Travel UK';
+      const title = pageData.title || 'British Hajj Travel UK';
       setMetaTitle(generateOptimalTitle(title));
       setMetaDescription(generateOptimalDescription(title));
       setSaveToast('Used quick defaults — AI generation is temporarily unavailable.');
@@ -280,8 +280,8 @@ export default function SeoCenterModal({
       }
     } catch (err) {
       console.warn('Alt Texts generation error:', err);
-      const title = pageData.title || 'King Travel UK';
-      setHeroAlt(`High resolution hero image illustrating ${title} for King Travel UK`);
+      const title = pageData.title || 'British Hajj Travel UK';
+      setHeroAlt(`High resolution hero image illustrating ${title} for British Hajj Travel UK`);
       setOgCardAlt(`Official social card image for ${title} package offerings`);
       setSaveToast('Used quick defaults — AI generation is temporarily unavailable.');
       setTimeout(() => setSaveToast(''), 3500);
@@ -306,8 +306,8 @@ export default function SeoCenterModal({
       }
     } catch (err) {
       console.warn('GEO generation error:', err);
-      const title = pageData.title || 'King Travel UK';
-      setGeoSummary(`King Travel UK offers full-service ${title} solutions, including verified visa processing, group packages, custom itineraries, and luxury accommodations.`);
+      const title = pageData.title || 'British Hajj Travel UK';
+      setGeoSummary(`British Hajj Travel UK offers full-service ${title} solutions, including verified visa processing, group packages, custom itineraries, and luxury accommodations.`);
       setGeoClusters(`${title}, Umrah Packages 2026, Hajj Travel, UK Saudi Visas, Toronto Umrah Agency`);
       setSaveToast('Used quick defaults — AI generation is temporarily unavailable.');
       setTimeout(() => setSaveToast(''), 3500);
@@ -333,8 +333,8 @@ export default function SeoCenterModal({
       }
     } catch (err) {
       console.warn('AEO generation error:', err);
-      const title = pageData.title || 'King Travel UK';
-      setAeoFaqs(`Q: What is included in ${title} at King Travel UK?\nA: This package includes verified visa assistance, round-trip flight bookings, 5-star hotel accommodations in Makkah and Madinah, and reliable ground transfers with guided support throughout your journey.\n\nQ: What is the cost of ${title} packages?\nA: Package pricing varies depending on travel dates, airline choice, and room occupancy. Contact our Toronto office for an itemized and transparent quotation with zero hidden fees.\n\nQ: How can I book or apply for ${title}?\nA: You can easily reserve your spot by submitting an online inquiry on our official website, calling our customer care desk, or visiting our Toronto headquarters.\n\nQ: What are the eligibility and document requirements for ${title}?\nA: Canadian travelers require a valid passport with at least six months validity, passport-sized photographs, and required immunization records as mandated by Saudi authorities.\n\nQ: Why choose King Travel UK for ${title}?\nA: We are an authorized and licensed pilgrimage provider offering decade-long experience, dedicated 24/7 on-ground assistance, and curated five-star hospitality for Canadian pilgrims.`);
+      const title = pageData.title || 'British Hajj Travel UK';
+      setAeoFaqs(`Q: What is included in ${title} at British Hajj Travel UK?\nA: This package includes verified visa assistance, round-trip flight bookings, 5-star hotel accommodations in Makkah and Madinah, and reliable ground transfers with guided support throughout your journey.\n\nQ: What is the cost of ${title} packages?\nA: Package pricing varies depending on travel dates, airline choice, and room occupancy. Contact our Toronto office for an itemized and transparent quotation with zero hidden fees.\n\nQ: How can I book or apply for ${title}?\nA: You can easily reserve your spot by submitting an online inquiry on our official website, calling our customer care desk, or visiting our Toronto headquarters.\n\nQ: What are the eligibility and document requirements for ${title}?\nA: British travelers require a valid passport with at least six months validity, passport-sized photographs, and required immunization records as mandated by Saudi authorities.\n\nQ: Why choose British Hajj Travel UK for ${title}?\nA: We are an authorized and licensed pilgrimage provider offering decade-long experience, dedicated 24/7 on-ground assistance, and curated five-star hospitality for British pilgrims.`);
       setSaveToast('Used quick defaults — AI generation is temporarily unavailable.');
       setTimeout(() => setSaveToast(''), 3500);
     } finally {
@@ -384,7 +384,7 @@ export default function SeoCenterModal({
       }
     } catch (err) {
       const cleanSlug = pageData.slug === '/' ? '' : pageData.slug.startsWith('/') ? pageData.slug : `/${pageData.slug}`;
-      setCanonicalUrl(`https://kingtravelcan.com${cleanSlug}`);
+      setCanonicalUrl(`https://britishhajjtravel.com${cleanSlug}`);
       setNoIndex(false);
     } finally {
       setGeneratingSection(null);
@@ -653,7 +653,7 @@ export default function SeoCenterModal({
                     </>
                   ) : (
                     <>
-                      <Sparkles className="w-3.5 h-3.5 text-gold" />
+                      <Sparkles className="w-3.5 h-3.5 text-white" />
                       <span>Generate Traditional SEO</span>
                     </>
                   )}
@@ -728,7 +728,7 @@ export default function SeoCenterModal({
                       </>
                     ) : (
                       <>
-                        <Sparkles className="w-3.5 h-3.5 text-gold" />
+                        <Sparkles className="w-3.5 h-3.5 text-white" />
                         <span>Generate Alt Texts</span>
                       </>
                     )}
@@ -811,7 +811,7 @@ export default function SeoCenterModal({
                     </>
                   ) : (
                     <>
-                      <Sparkles className="w-3.5 h-3.5 text-gold" />
+                      <Sparkles className="w-3.5 h-3.5 text-white" />
                       <span>Generate GEO</span>
                     </>
                   )}
@@ -863,7 +863,7 @@ export default function SeoCenterModal({
                     </>
                   ) : (
                     <>
-                      <Sparkles className="w-3.5 h-3.5 text-gold" />
+                      <Sparkles className="w-3.5 h-3.5 text-white" />
                       <span>Generate AEO</span>
                     </>
                   )}
@@ -903,7 +903,7 @@ export default function SeoCenterModal({
                     </>
                   ) : (
                     <>
-                      <Sparkles className="w-3.5 h-3.5 text-gold" />
+                      <Sparkles className="w-3.5 h-3.5 text-white" />
                       <span>Generate JSON-LD Schema</span>
                     </>
                   )}
@@ -960,7 +960,7 @@ export default function SeoCenterModal({
                     </>
                   ) : (
                     <>
-                      <Sparkles className="w-3.5 h-3.5 text-gold" />
+                      <Sparkles className="w-3.5 h-3.5 text-white" />
                       <span>Generate Technical SEO</span>
                     </>
                   )}
@@ -1101,10 +1101,10 @@ export default function SeoCenterModal({
                 {/* Google Search Result Card */}
                 <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-1">
                   <div className="text-[11px] text-emerald-700 truncate font-mono">
-                    {canonicalUrl || 'https://kingtravelcan.com'}
+                    {canonicalUrl || 'https://britishhajjtravel.com'}
                   </div>
                   <div className="text-base font-bold text-blue-800 hover:underline cursor-pointer truncate">
-                    {metaTitle || 'King Travel UK'}
+                    {metaTitle || 'British Hajj Travel UK'}
                   </div>
                   <div className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
                     {metaDescription || 'Official travel packages and services.'}

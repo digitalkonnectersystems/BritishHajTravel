@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
   //   return [
   //     {
   //       source: '/media/:path*',
-  //       destination: 'https://kingtravelcan.com/media/:path*',
+  //       destination: 'https://britishhajjtravel.com/media/:path*',
   //     },
   //   ];
   // },
@@ -35,11 +35,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "kingtravelcan.com",
+        hostname: "britishhajjtravel.com",
       },
       {
         protocol: "https",
-        hostname: "media.kingtravelcan.com",
+        hostname: "media.britishhajjtravel.com",
       },
       {
         protocol: "https",
@@ -59,7 +59,7 @@ const nextConfig: NextConfig = {
       },
       // {
       //   protocol: "https",
-      //   hostname: "staging.kingtravelcan.com",
+      //   hostname: "staging.britishhajjtravel.com",
       // },
     ],
   },

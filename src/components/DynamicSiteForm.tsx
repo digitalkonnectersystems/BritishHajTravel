@@ -219,7 +219,7 @@ export default function DynamicSiteForm({
           email,
           phone,
           travelersCount: parseNumberSafe(getVal(["travelersCount", "passengers", "adults"], "1"), 1),
-          nationality: getVal(["nationality"], "Canadian"),
+          nationality: getVal(["nationality"], "British"),
           message,
         });
       } else if (formKey === "contact" || formKey === "dropUsMessage") {

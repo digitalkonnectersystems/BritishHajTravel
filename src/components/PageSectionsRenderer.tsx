@@ -19,6 +19,7 @@ import SoldOutPackagesSection from '@/components/SoldOutPackagesSection';
 import Banner4GridsSection from '@/components/Banner4GridsSection';
 import PackageBrochuresSection from '@/components/PackageBrochuresSection';
 import DynamicSiteForm from '@/components/DynamicSiteForm';
+import FaqSection from '@/components/FaqSection';
 import { RICH_TEXT_PROSE_CLASS } from '@/lib/richTextProseClass';
 import { useEffect, useState } from "react";
 export default function PageSectionsRenderer({ sections, pageData, initialPackageData }: { sections: any[], pageData?: any, initialPackageData?: any }) {
@@ -30,6 +31,9 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         if (!sec || !sec.type) return null;
         if (sec.type === 'Package Brochure') {
           return <PackageBrochuresSection key={idx} data={sec.data || {}} pageData={pageData} />;
+        }
+        if (sec.type === 'FAQ') {
+          return <FaqSection key={idx} data={sec.data || {}} />;
         }
         if (sec.type === 'Certifications Flip Cards' || sec.type === 'Our Certifications') {
           return <CertificationsFlipCardsSection key={idx} data={sec.data || {}} />;
@@ -248,7 +252,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                 <div className="flex flex-col lg:flex-row gap-8 items-center lg:items-stretch">
                   <div className="reviews-owner-details">
                     <img
-                      src="/images_KTC/bht-fav-logo.png"
+                      src="/images_BHT/bht-fav-logo.png"
                       className="w-16 h-16 rounded-full p-2 bg-white object-cover"
                       alt="British Hajj Travel logo"
                     />
@@ -509,7 +513,7 @@ function GoogleReviewsSlider() {
       avatarImg: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&w=120&h=120&q=80",
       rating: 5,
       date: "3 months ago",
-      review: "I am grateful Elhamdullilahi for this wonderful opportunity to preform Umrah on March 2026 with King Travel, also with huge support from our Imam. Everything was organized with great care, respect, and utmost professionalism from our initial flight departure up to our blessed return home to UK.",
+      review: "I am grateful Elhamdullilahi for this wonderful opportunity to preform Umrah on March 2026 with British Hajj Travel, also with huge support from our Imam. Everything was organized with great care, respect, and utmost professionalism from our initial flight departure up to our blessed return home to UK.",
     },
     {
       id: 2,
@@ -517,7 +521,7 @@ function GoogleReviewsSlider() {
       avatarImg: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80",
       rating: 5,
       date: "3 months ago",
-      review: "We're so glad we booked our Umrah trip from King Travel. Mr. Jamil Latif provided exceptional service, prompt responses, and great hotel options near Haram. He went above and beyond to make sure our family had everything sorted from visa approvals to 24/7 on-ground assistance.",
+      review: "We're so glad we booked our Umrah trip from British Hajj Travel. Mr. Jamil Latif provided exceptional service, prompt responses, and great hotel options near Haram. He went above and beyond to make sure our family had everything sorted from visa approvals to 24/7 on-ground assistance.",
     },
     {
       id: 3,
@@ -525,7 +529,7 @@ function GoogleReviewsSlider() {
       avatarImg: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&h=120&q=80",
       rating: 5,
       date: "3 months ago",
-      review: "Assalamu alaikum ❤️ I would like to sincerely thank King Travel for organizing such a smooth and blessed pilgrimage for my entire family. Our hotel rooms in Makkah and Madinah were spotless and right opposite the Haram gate, which made our daily prayers very convenient.",
+      review: "Assalamu alaikum ❤️ I would like to sincerely thank British Hajj Travel for organizing such a smooth and blessed pilgrimage for my entire family. Our hotel rooms in Makkah and Madinah were spotless and right opposite the Haram gate, which made our daily prayers very convenient.",
     },
     {
       id: 4,
@@ -533,7 +537,7 @@ function GoogleReviewsSlider() {
       avatarImg: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80",
       rating: 5,
       date: "2 weeks ago",
-      review: "Alhamdulillah! Booked our 15-day Deluxe Umrah package with King Travel UK. Everything from the 5-star hotel near Haram to the luxury private transport was top-notch. Highly recommended for families looking for a stress-free experience!",
+      review: "Alhamdulillah! Booked our 15-day Deluxe Umrah package with British Hajj Travel UK. Everything from the 5-star hotel near Haram to the luxury private transport was top-notch. Highly recommended for families looking for a stress-free experience!",
     },
     {
       id: 5,
@@ -541,7 +545,7 @@ function GoogleReviewsSlider() {
       avatarImg: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&h=120&q=80",
       rating: 5,
       date: "a month ago",
-      review: "The staff at King Travel Mississauga went above and beyond for our Saudi tourist visas and flight booking. Brother Imran answered all our late night questions patiently. May Allah bless your team for making our journey seamless.",
+      review: "The staff at British Hajj Travel Mississauga went above and beyond for our Saudi tourist visas and flight booking. Brother Imran answered all our late night questions patiently. May Allah bless your team for making our journey seamless.",
     },
     {
       id: 6,
@@ -557,7 +561,7 @@ function GoogleReviewsSlider() {
       avatarImg: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=120&h=120&q=80",
       rating: 5,
       date: "1 month ago",
-      review: "Transparent pricing with no hidden charges. Visa processing was done within 24 hours. The entire King Travel team in Mississauga is trustworthy and professional. 5 stars all the way for their honesty and dedication!",
+      review: "Transparent pricing with no hidden charges. Visa processing was done within 24 hours. The entire British Hajj Travel team in Mississauga is trustworthy and professional. 5 stars all the way for their honesty and dedication!",
     },
     {
       id: 8,
@@ -573,7 +577,7 @@ function GoogleReviewsSlider() {
       avatarImg: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=120&h=120&q=80",
       rating: 5,
       date: "2 months ago",
-      review: "I have booked my Umrah with King Travel twice now. Both times the hotel vouchers, flights, and ground transportation were ready ahead of time. Reliable, honest, and caring team that treats you like family.",
+      review: "I have booked my Umrah with British Hajj Travel twice now. Both times the hotel vouchers, flights, and ground transportation were ready ahead of time. Reliable, honest, and caring team that treats you like family.",
     },
   ];
 

@@ -150,7 +150,7 @@ async function runMigrationAndSeed() {
 
     // Seed default admin user
     console.log('Ensuring default admin user exists...');
-    const seedEmail = (process.env.INITIAL_ADMIN_EMAIL || 'hassan@kingtravelcan.com').trim().toLowerCase();
+    const seedEmail = (process.env.INITIAL_ADMIN_EMAIL || 'hassan@britishhajjtravel.com').trim().toLowerCase();
     const seedPwd = process.env.INITIAL_ADMIN_PASSWORD || 'KingTravel2026!';
     const seedHash = hashPassword(seedPwd);
 

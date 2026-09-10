@@ -80,6 +80,10 @@ temp-fetch.js
 temp-fetch.ts
 test-insert.ts
 drizzle/meta/_journal.json
+!/drizzle/
+/drizzle/*
+!/drizzle/0003_hotel_directory.sql
+!/drizzle/0004_hotels_cms_page.sql
 fix.js
 alter_table.mjs
 *.cjs

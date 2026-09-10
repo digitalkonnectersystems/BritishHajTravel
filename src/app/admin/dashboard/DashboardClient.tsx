@@ -355,7 +355,7 @@ export default function DashboardClient({
               Welcome Back, {session?.name || 'Super Admin'} 👋
             </h1>
             <p className="text-xs text-emerald-100/70 mt-1 mb-0 font-medium">
-              King Travel Real-Time Pilgrimage CRM &amp; Dynamic Content Engine
+              British Hajj Travel Real-Time Pilgrimage CRM &amp; Dynamic Content Engine
             </p>
           </div>
         </div>
@@ -628,7 +628,7 @@ export default function DashboardClient({
               </div>
               <Link
                 href="/admin/activity"
-                className="bg-primary hover:bg-[#00382B] text-white text-xs font-extrabold px-3 py-1.5 rounded-full no-underline transition-colors flex items-center gap-1 shadow-xs"
+                className="bg-primary hover:bg-blue-100 hover:text-primary text-white text-xs font-extrabold px-3 py-1.5 rounded-full no-underline transition-colors flex items-center gap-1 shadow-xs"
               >
                 View all →
               </Link>

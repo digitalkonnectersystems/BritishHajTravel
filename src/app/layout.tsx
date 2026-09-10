@@ -17,6 +17,7 @@ import {
   getFooterData,
   getSeoIntelligenceSettings,
 } from "@/actions/pageActions";
+import { getHotelDirectory } from "@/actions/hotelActions";
 import "./globals.css";
 
 const marcellus = Marcellus({
@@ -59,7 +60,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const isIndexingEnabled = seoSettings?.siteIndexingEnabled ?? true;
 
   return {
-    title: identity?.siteName || "King Travel UK",
+    title: identity?.siteName || "British Hajj Travel UK",
     description: identity?.tagline || "Licensed Hajj & Umrah pilgrimage operator in UK offering 5-star packages, visa consultation, and direct flights.",
     icons: {
       icon: faviconUrl,
@@ -78,13 +79,26 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [identity, loginAuth, navItems, footerData, seoSettings] = await Promise.all([
+  const [identity, loginAuth, navItems, footerData, seoSettings, hotelDirectory] = await Promise.all([
     getSiteIdentity(),
     getLoginAuthSettings(),
     getNavItems(),
     getFooterData(),
     getSeoIntelligenceSettings(),
+    getHotelDirectory().catch(() => []),
   ]);
+  const liveNavItems = navItems.map((item: any) => {
+    if (item.label?.toLowerCase() !== 'hotels') return item;
+    const categoryChildren = hotelDirectory.map((category) => ({
+      id: `hotel-category-${category.id}`,
+      label: `${category.name} Hotels`,
+      url: `/hotels/#${category.slug}`,
+      level: 2,
+      children: [],
+    }));
+    const manualChildren = Array.isArray(item.children) ? item.children.filter((child: any) => !String(child.id).startsWith('hotel-category-')) : [];
+    return { ...item, children: [...categoryChildren, ...manualChildren] };
+  });
   const faviconUrl = identity?.favicon || "/img/favicon.ico";
   const initialMaintenanceMode = loginAuth?.maintenanceMode ?? false;
 
@@ -138,7 +152,7 @@ export default async function RootLayout({
       <body suppressHydrationWarning>
         <FaviconSync faviconUrl={faviconUrl} />
         <FrontendMaintenanceWrapper initialMaintenanceMode={initialMaintenanceMode}>
-          <Header initialNavItems={navItems} initialIdentity={identity} />
+          <Header initialNavItems={liveNavItems} initialIdentity={identity} />
           {children}
           <Footer initialFooterData={footerData} />
           <WhatsAppFloat initialIdentity={identity} />

@@ -16,14 +16,14 @@ export async function dispatchFormEmails(
 ): Promise<{ adminSent: boolean; userSent: boolean; error?: string }> {
   try {
     // 1. Fetch saved email settings from DB or defaults
-    let adminRecipientEmail = process.env.SMTP_TO || 'saudivisa@kingtravelcan.com';
+    let adminRecipientEmail = process.env.SMTP_TO || 'saudivisa@britishhajjtravel.com';
     let adminCcEmail = '';
     let adminBccEmail = '';
     let smtpHost = process.env.SMTP_HOST || '';
     let smtpPort = parseInt(process.env.SMTP_PORT || '587', 10);
     let smtpUser = process.env.SMTP_USER || '';
     let smtpPass = process.env.SMTP_PASS || '';
-    let fromEmail = process.env.SMTP_FROM || 'no-reply@kingtravelcan.com';
+    let fromEmail = process.env.SMTP_FROM || 'no-reply@britishhajjtravel.com';
 
     try {
       const res = await db.select().from(siteSettings).where(eq(siteSettings.key, 'forms_settings')).limit(1);
@@ -110,8 +110,8 @@ export async function dispatchFormEmails(
     const userHtml = isValidUserEmail ? getResponsiveEmailTemplateHtml(formName, submittedData, true) : '';
 
     // Auto-Selected Generic Subjects
-    const adminSubject = `[King Travel UK] ${formName}`;
-    const userSubject = `Thank you for Contacting King Travel UK — ${formName} Received`;
+    const adminSubject = `[British Hajj Travel UK] ${formName}`;
+    const userSubject = `Thank you for Contacting British Hajj Travel UK — ${formName} Received`;
 
     // 2. Check if SMTP Credentials exist
     if (!smtpHost || !smtpUser || !smtpPass) {
@@ -148,7 +148,7 @@ export async function dispatchFormEmails(
 
     // Prepare Email #1 (Admin) with optional CC and BCC
     const adminMailOptions: Record<string, any> = {
-      from: `"${formName} - King Travel" <${fromEmail}>`,
+      from: `"${formName} - British Hajj Travel" <${fromEmail}>`,
       to: adminRecipientEmail,
       subject: adminSubject,
       html: adminHtml,
@@ -164,7 +164,7 @@ export async function dispatchFormEmails(
     // Prepare Email #2 (User, if email is valid)
     const userPromise = (isValidUserEmail && userHtml)
       ? transporter.sendMail({
-        from: `"King Travel UK" <${fromEmail}>`,
+        from: `"British Hajj Travel UK" <${fromEmail}>`,
         to: userEmail.trim(),
         subject: userSubject,
         html: userHtml,

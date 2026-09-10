@@ -162,7 +162,7 @@ export default function PackageDetailModal({ isOpen, onClose, pkg }: PackageDeta
 
   const price = bannerPrice;
 
-  const operatorName = cardData.operatorName || pkg.operatorName || "King Travel";
+  const operatorName = cardData.operatorName || pkg.operatorName || "British Hajj Travel";
   const operatorRating = cardData.operatorRating || pkg.operatorRating || "4.4/5";
   const operatorReviews = cardData.operatorReviews || pkg.operatorReviews || "942 verified reviews";
 
@@ -229,14 +229,14 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
   const activeHighlights = (detailData.highlights && detailData.highlights.length > 0) ? detailData.highlights : defaultHighlights;
 
   const defaultEligibility = [
-    "Canadian & U.S. citizens with Pakistan Passports.",
-    "Pakistani Passport holders with Canadian PR or American Green Cards.",
+    "British & U.S. citizens with Pakistan Passports.",
+    "Pakistani Passport holders with British PR or American Green Cards.",
     "All Foreign Passport holders with Pakistan Passports.",
     "Side trips to Pakistan or any other destination available with an additional cost."
   ];
   const activeEligibility = (detailData.eligibility && detailData.eligibility.length > 0) ? detailData.eligibility : defaultEligibility;
 
-  const importantNotice = detailData.importantBooking || pkg.importantNotice || "To secure your Hajj visa slot, please make sure your Canadian passport is valid for at least 6 months beyond travel dates, and you have completed all mandatory immunizations required by the Saudi Ministry of Hajj.";
+  const importantNotice = detailData.importantBooking || pkg.importantNotice || "To secure your Hajj visa slot, please make sure your British passport is valid for at least 6 months beyond travel dates, and you have completed all mandatory immunizations required by the Saudi Ministry of Hajj.";
 
   const defaultFaqs = [
     {
@@ -253,7 +253,7 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
   const handleBookingSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const formattedPriceStr = estimatedTotalFormatted ? `${currencyCode} ${estimatedTotalFormatted}` : `${currencyCode} ${price}`;
-    const msg = `Hi King Travel! I want to book: ${title} (${formattedPriceStr}). Departure: ${departure}, Date: ${selectedDate || "Flexible"}, Package Type: ${effectivePackageType || "Standard"}.`;
+    const msg = `Hi British Hajj Travel! I want to book: ${title} (${formattedPriceStr}). Departure: ${departure}, Date: ${selectedDate || "Flexible"}, Package Type: ${effectivePackageType || "Standard"}.`;
     window.open(`https://wa.me/19056248344?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
@@ -269,7 +269,7 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
           <span>← BACK TO PACKAGES</span>
         </button>
         <div className="text-xs font-extrabold text-gold uppercase tracking-widest hidden sm:block">
-          KING TRAVEL • PACKAGE DETAILS VIEW
+          BRITISH HAJJ TRAVEL • PACKAGE DETAILS VIEW
         </div>
         <button
           onClick={onClose}

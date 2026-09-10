@@ -2,15 +2,15 @@ import { db } from './index';
 import * as schema from './schema';
 
 export async function seedDatabase() {
-  console.log('Seeding King Travel Can Ltd database...');
+  console.log('Seeding British Hajj Travel LTD database...');
 
   try {
     // 1. Seed Site Settings
     const defaultSettings = [
-      { key: 'site_name', value: 'King Travel Can Ltd' },
+      { key: 'site_name', value: 'British Hajj Travel LTD' },
       { key: 'phone', value: '+1 (905) 624-8344' },
       { key: 'whatsapp_general', value: '19056248344' },
-      { key: 'email', value: 'info@kingtravel.ca' },
+      { key: 'email', value: 'info@britishhajjtravel.com' },
       { key: 'address_mississauga', value: '3050 Confederation Pkwy, Unit 301, Mississauga, ON L5B 3Z6, UK' },
       { key: 'announcement_enabled', value: 'true' },
       { key: 'announcement_text', value: 'Hajj 2027 Priority Registration Now Open! Limited seats available.' },
@@ -40,7 +40,7 @@ export async function seedDatabase() {
           'Saudi Tourist / Umrah Visa Assistance',
           'Luxury Air-Conditioned Transfers',
           'Guided Ziyarat in Makkah & Madinah',
-          '24/7 Canadian Ground Support Staff',
+          '24/7 British Ground Support Staff',
         ]),
       },
       {
@@ -76,7 +76,7 @@ export async function seedDatabase() {
           'Complete Visa Endorsement & Health Insurance',
           'VIP Private GMC Airport & Intercity Transport',
           'Historical Ziyarat Tours (Uhud, Quba, Badar)',
-          'Multilingual Canadian Tour Operations Manager',
+          'Multilingual British Tour Operations Manager',
         ]),
       },
       {
@@ -111,9 +111,9 @@ export async function seedDatabase() {
         title: 'Tourist Visa',
         slug: 'tourist-visa',
         shortDescription: 'Only passport required. Explore the beauty and culture of Saudi Arabia effortlessly.',
-        fullDescription: 'The Saudi Tourist eVisa allows Canadian citizens and residents to visit Saudi Arabia for leisure, family visits, or performing Umrah. Multiple entry visa valid for 1 year with stays up to 90 days.',
+        fullDescription: 'The Saudi Tourist eVisa allows British citizens and residents to visit Saudi Arabia for leisure, family visits, or performing Umrah. Multiple entry visa valid for 1 year with stays up to 90 days.',
         processingTime: '24-48 Hours',
-        requirements: JSON.stringify(['Valid Passport (min. 6 months validity)', 'Passport Size Photo (White Background)', 'Canadian PR / Citizenship Proof']),
+        requirements: JSON.stringify(['Valid Passport (min. 6 months validity)', 'Passport Size Photo (White Background)', 'British PR / Citizenship Proof']),
         imageUrl: '/img/saudi-visa-1.webp',
         isPublished: true,
         displayOrder: 1,
@@ -124,7 +124,7 @@ export async function seedDatabase() {
         shortDescription: 'Requires passport and PR Card or proof of residence. Official Umrah visa processing with ground service options.',
         fullDescription: 'Dedicated Umrah visa issued specifically for spiritual pilgrimage to Makkah and Madinah with full Nusuk authorization and medical insurance included.',
         processingTime: '2-4 Business Days',
-        requirements: JSON.stringify(['Passport Copy', 'Canadian Status Document', 'Vaccination Records', 'Confirmed Flight Itinerary']),
+        requirements: JSON.stringify(['Passport Copy', 'British Status Document', 'Vaccination Records', 'Confirmed Flight Itinerary']),
         imageUrl: '/img/saudi-visa-2.webp',
         isPublished: true,
         displayOrder: 2,
@@ -143,8 +143,8 @@ export async function seedDatabase() {
       {
         title: 'Resident Iqama Visa',
         slug: 'resident-iqama-visa',
-        shortDescription: 'Simplify your residency process with expert guidance from King Travel.',
-        fullDescription: 'Comprehensive assistance for Canadian residents holding Saudi employment or family residency permits (Iqama endorsement and stamping).',
+        shortDescription: 'Simplify your residency process with expert guidance from British Hajj Travel.',
+        fullDescription: 'Comprehensive assistance for British residents holding Saudi employment or family residency permits (Iqama endorsement and stamping).',
         processingTime: '5-7 Business Days',
         requirements: JSON.stringify(['Official MOFA Stamped Visa Block', 'Medical Examination Report', 'Police Clearance Certificate']),
         imageUrl: '/img/saudi-visa-4.webp',
@@ -157,7 +157,7 @@ export async function seedDatabase() {
         shortDescription: 'Expand your business horizons in Saudi Arabia with authorized commercial visa processing.',
         fullDescription: 'Fast-track business visas for corporate representatives, investors, and consultants travelling to Saudi Arabia for commercial meetings or exhibitions.',
         processingTime: '2-3 Business Days',
-        requirements: JSON.stringify(['Saudi Chamber Invitation Letter', 'Canadian Employer Support Letter', 'Valid Passport']),
+        requirements: JSON.stringify(['Saudi Chamber Invitation Letter', 'British Employer Support Letter', 'Valid Passport']),
         imageUrl: '/img/saudi-visa-5.webp',
         isPublished: true,
         displayOrder: 5,

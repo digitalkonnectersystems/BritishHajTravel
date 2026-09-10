@@ -25,7 +25,7 @@ const defaultHajjCardData = {
   badgeTag: 'HAJJ 2027',
   duration: '14Days',
   flightRoute: 'FROM CANADA ➔ TO SAUDIA',
-  operatorName: 'King Travel',
+  operatorName: 'British Hajj Travel',
   operatorRating: '4.4/5',
   btnLabel: 'Book Hajj 2027',
   btnLink: '/contact',
@@ -43,8 +43,8 @@ const defaultHajjCardData = {
     { icon: 'MessageCircle', text: 'Guidance & Support' },
   ],
   eligibility: [
-    'Canadian & U.S. citizens with Pakistani passports.',
-    'Pakistani passport holders with Canadian PR or American Green Card.',
+    'British & U.S. citizens with Pakistani passports.',
+    'Pakistani passport holders with British PR or American Green Card.',
     'All foreign passport holders with Pakistan passport.',
     'Side trip to Pakistan or any other destination available with an additional cost.',
   ],
@@ -338,7 +338,7 @@ function HajjCardFields({ pkgData, setPkgData }: { pkgData: any; setPkgData: (v:
                 type="text"
                 value={point}
                 onChange={e => updateEligibility(idx, e.target.value)}
-                placeholder="e.g. Canadian & U.S. citizens with Pakistani passports."
+                placeholder="e.g. British & U.S. citizens with Pakistani passports."
                 className="flex-1 px-2.5 py-2 rounded-xl border border-slate-200 text-xs outline-none focus:border-primary"
               />
               <button
@@ -679,7 +679,7 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
               if (!isCreating) setNewPkg(blankPkg(activeTab));
               setIsCreating(!isCreating);
             }}
-            className="bg-gold hover:bg-[#c38927] text-slate-950 px-5 py-2.5 rounded-full text-xs font-extrabold transition-colors cursor-pointer border-none shadow-md flex items-center gap-2"
+            className="bg-gold hover:bg-gold-lt text-white px-5 py-2.5 rounded-full text-xs font-extrabold transition-colors cursor-pointer border-none shadow-md flex items-center gap-2"
           >
             <Plus className="w-4 h-4" />
             {isCreating ? 'Close Form' : `Create New ${activeTab === 'hajj' ? 'Hajj' : 'Umrah'} Package`}
@@ -945,7 +945,7 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
               id: `pkg_${selectedSeoPkg.id}`,
               title: selectedSeoPkg.title,
               slug: `/package/${selectedSeoPkg.id}`,
-              metaTitle: `${selectedSeoPkg.title} | King Travel UK`,
+              metaTitle: `${selectedSeoPkg.title} | British Hajj Travel UK`,
               metaDescription: `Book official ${selectedSeoPkg.title} from UK. Starting at £ $${selectedSeoPkg.startingPrice}. ${selectedSeoPkg.shortDescription || 'Verified visa, luxury hotel stays, flights included.'}`,
             }
             : null

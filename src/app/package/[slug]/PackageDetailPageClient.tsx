@@ -214,7 +214,7 @@ export default function PackageDetailPageClient({
 
   const price = bannerPrice;
 
-  const operatorName = cardData.operatorName || pkg.operatorName || "King Travel";
+  const operatorName = cardData.operatorName || pkg.operatorName || "British Hajj Travel";
   const operatorRating = cardData.operatorRating || pkg.operatorRating || "4.4/5";
   const operatorReviews = cardData.operatorReviews || pkg.operatorReviews || "942 verified reviews";
 
@@ -277,7 +277,7 @@ export default function PackageDetailPageClient({
     {
       groupTitle: "DAY 01 - ARRIVAL IN SAUDIA (JEDDAH / MADINAH)",
       items: [
-        "Meet and assist service at the airport by King Travel representative",
+        "Meet and assist service at the airport by British Hajj Travel representative",
         "Comfortable transfer by air-conditioned private/executive coach to your luxury hotel",
         "Hotel check-in and leisure time to relax and perform initial prayers"
       ]
@@ -348,7 +348,7 @@ export default function PackageDetailPageClient({
       { text: "Qurbani Not Included (Available upon request)", isCross: true }
     ]
     : [
-      { text: "Round-trip Flights from Major Canadian Gateways (YYZ, YVR, YUL)", isCross: false },
+      { text: "Round-trip Flights from Major British Gateways (YYZ, YVR, YUL)", isCross: false },
       { text: "Official Saudi Umrah Tourist/EVisa Processing Included", isCross: false },
       { text: "5-Star Accommodations with Daily Buffet Breakfast & Dinner Options", isCross: false },
       { text: "Comprehensive Guided Ziyarat Tours in Makkah & Madinah", isCross: false },
@@ -369,9 +369,9 @@ export default function PackageDetailPageClient({
   }
 
   const defaultEligibility = [
-    "Canadian & U.S. Citizens with Valid Passport (Minimum 6 Months Validity).",
-    "Canadian Permanent Residents (PR Card Holders) and Work/Study Permit Holders.",
-    "Pakistani & International Passport holders with valid Canadian residency or visas.",
+    "British & U.S. Citizens with Valid Passport (Minimum 6 Months Validity).",
+    "British Permanent Residents (PR Card Holders) and Work/Study Permit Holders.",
+    "Pakistani & International Passport holders with valid British residency or visas.",
     "Custom extensions, side trips, and stopovers available upon request."
   ];
 
@@ -388,8 +388,8 @@ export default function PackageDetailPageClient({
 
   const importantNotice = detailData.importantNotice || detailData.importantBooking || pkg.importantNotice ||
     (isHajjPkg
-      ? "To secure your Hajj visa slot, please make sure your Canadian passport is valid for at least 6 months beyond travel dates, and you have completed all mandatory immunizations required by the Saudi Ministry of Hajj."
-      : "Umrah packages and seat availability are subject to confirmation at the time of booking. Ensure your passport has minimum 6 months validity. Contact King Travel for custom flight dates and family room occupancy options.");
+      ? "To secure your Hajj visa slot, please make sure your British passport is valid for at least 6 months beyond travel dates, and you have completed all mandatory immunizations required by the Saudi Ministry of Hajj."
+      : "Umrah packages and seat availability are subject to confirmation at the time of booking. Ensure your passport has minimum 6 months validity. Contact British Hajj Travel for custom flight dates and family room occupancy options.");
 
   // Gallery is intentionally Umrah-only. Existing Hajj pages are unchanged.
   const rawPackagesGallery = pkg.packagesGallery ?? [];
@@ -429,7 +429,7 @@ export default function PackageDetailPageClient({
       },
       {
         question: "Are flights included in the package price?",
-        answer: "Yes, round-trip international flights from major Canadian cities to Saudi Arabia are fully included in the package pricing."
+        answer: "Yes, round-trip international flights from major British cities to Saudi Arabia are fully included in the package pricing."
       },
       {
         question: "How does the visa application process work?",
@@ -464,13 +464,13 @@ export default function PackageDetailPageClient({
     <div className="bg-[#faf7f2] min-h-screen text-slate-800">
       <PageSeoHead
         pageTitle={title}
-        metaTitle={pkgSeo?.metaTitle || `${title} UK | King Travel`}
+        metaTitle={pkgSeo?.metaTitle || `${title} UK | British Hajj Travel`}
         metaDescription={
           pkgSeo?.metaDescription ||
-          `Book official ${title} packages with King Travel UK. ${durationText}, departure from ${departure}, starting price £ $${price}. Authorized visa, 5-star hotels & flight options.`
+          `Book official ${title} packages with British Hajj Travel UK. ${durationText}, departure from ${departure}, starting price £ $${price}. Authorized visa, 5-star hotels & flight options.`
         }
         canonicalUrl={pkgSeo?.canonicalUrl || `/package/${rawSlug}`}
-        ogImageUrl={pkgSeo?.ogImageUrl || pkg.heroImage || 'https://media.kingtravelcan.com/uploads/branding/logo.png'}
+        ogImageUrl={pkgSeo?.ogImageUrl || pkg.heroImage || 'https://media.britishhajjtravel.com/uploads/branding/logo.png'}
         jsonLdPayload={
           pkgSeo?.jsonLdPayload ||
           JSON.stringify(
@@ -478,11 +478,11 @@ export default function PackageDetailPageClient({
               '@context': 'https://schema.org/',
               '@type': 'Product',
               name: title,
-              image: pkg.heroImage || 'https://media.kingtravelcan.com/uploads/branding/logo.png',
-              description: `Official ${title} travel package provided by King Travel UK. Includes flights, 5-star accommodations, and verified visa processing.`,
+              image: pkg.heroImage || 'https://media.britishhajjtravel.com/uploads/branding/logo.png',
+              description: `Official ${title} travel package provided by British Hajj Travel UK. Includes flights, 5-star accommodations, and verified visa processing.`,
               brand: {
                 '@type': 'Brand',
-                name: 'King Travel UK',
+                name: 'British Hajj Travel UK',
               },
               offers: {
                 '@type': 'Offer',
@@ -493,7 +493,7 @@ export default function PackageDetailPageClient({
                 availability: 'https://schema.org/InStock',
                 seller: {
                   '@type': 'Organization',
-                  name: 'King Travel UK',
+                  name: 'British Hajj Travel UK',
                 },
               },
             },

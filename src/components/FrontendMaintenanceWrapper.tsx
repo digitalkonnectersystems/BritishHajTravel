@@ -62,8 +62,8 @@ export default function FrontendMaintenanceWrapper({
             <div className="text-center gap-4">
               Urgent Enquiries?<br />
               Email:{' '}
-              <a href="mailto:saudivisa@kingtravelcan.com" className="text-gold underline font-semibold">
-                saudivisa@kingtravelcan.com
+              <a href="mailto:saudivisa@britishhajjtravel.com" className="text-gold underline font-semibold">
+                saudivisa@britishhajjtravel.com
               </a>
             </div>
           </div>

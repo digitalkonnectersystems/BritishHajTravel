@@ -3,7 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { put } from '@vercel/blob';
 
-// Strict allow-list of recognized media subfolders matching public/images_KTC
+// Strict allow-list of recognized media subfolders matching public/images_BHT
 const ALLOWED_SUBFOLDERS = new Set([
   'badges',
   'banners',
@@ -90,7 +90,7 @@ export async function POST(req: NextRequest) {
     // 1. Check if Vercel Blob is configured (for live serverless environments)
     if (process.env.BLOB_READ_WRITE_TOKEN) {
       try {
-        const blobPath = `images_KTC/${subfolder}/${uniqueFilename}`;
+        const blobPath = `images_BHT/${subfolder}/${uniqueFilename}`;
         const blob = await put(blobPath, file, {
           access: 'public',
           addRandomSuffix: false,
@@ -106,16 +106,16 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 2. Local Environment fallback (writes to public/images_KTC/)
+    // 2. Local Environment fallback (writes to public/images_BHT/)
     try {
-      const targetDir = path.join(process.cwd(), 'public', 'images_KTC', subfolder);
+      const targetDir = path.join(process.cwd(), 'public', 'images_BHT', subfolder);
       await fs.mkdir(targetDir, { recursive: true });
 
       const targetFilePath = path.join(targetDir, uniqueFilename);
       await fs.writeFile(targetFilePath, buffer);
 
-      const publicUrl = `/images_KTC/${subfolder}/${uniqueFilename}`;
-      const relativePath = `images_KTC/${subfolder}/${uniqueFilename}`;
+      const publicUrl = `/images_BHT/${subfolder}/${uniqueFilename}`;
+      const relativePath = `images_BHT/${subfolder}/${uniqueFilename}`;
 
       return NextResponse.json({
         success: true,

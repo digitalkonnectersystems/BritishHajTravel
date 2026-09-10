@@ -21,7 +21,7 @@ export default function VisasClient({ initialVisas }: VisasClientProps) {
     processingTime: '24-48 Hours',
     shortDescription: '',
     fullDescription: '',
-    requirements: 'Canadian Passport, Digital Photo',
+    requirements: 'British Passport, Digital Photo',
   });
 
   const handleCreate = async (e: React.FormEvent) => {
@@ -42,7 +42,7 @@ export default function VisasClient({ initialVisas }: VisasClientProps) {
         processingTime: '24-48 Hours',
         shortDescription: '',
         fullDescription: '',
-        requirements: 'Canadian Passport, Digital Photo',
+        requirements: 'British Passport, Digital Photo',
       });
       window.location.reload();
     } else {
@@ -108,7 +108,7 @@ export default function VisasClient({ initialVisas }: VisasClientProps) {
           <button
             type="button"
             onClick={() => setIsCreating(!isCreating)}
-            className="bg-primary hover:bg-[#00382B] text-white px-5 py-2.5 rounded-full text-xs font-extrabold transition-colors cursor-pointer border-none shadow-md flex items-center gap-2"
+            className="bg-primary hover:bg-white hover:text-primary text-white px-5 py-2.5 rounded-full text-xs font-extrabold transition-colors cursor-pointer border-none shadow-md flex items-center gap-2"
           >
             <Plus className="w-4 h-4" />
             {isCreating ? 'Close Form' : 'Add Visa Category'}
@@ -189,7 +189,7 @@ export default function VisasClient({ initialVisas }: VisasClientProps) {
           <div className="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl border border-slate-200 animate-in zoom-in-95">
             <div className="flex justify-between items-center pb-3 border-b border-slate-100 mb-4">
               <h3 className="text-base font-extrabold text-slate-900 m-0 flex items-center gap-2">
-                <Edit2 className="w-4 h-4 text-emerald-700" /> Edit Visa Category
+                <Edit2 className="w-4 h-4 text-gold" /> Edit Visa Category
               </h3>
               <button
                 type="button"
@@ -269,10 +269,10 @@ export default function VisasClient({ initialVisas }: VisasClientProps) {
               key={v.id}
               className="bg-white rounded-3xl p-6 border border-slate-100 shadow-2xs flex flex-col justify-between relative overflow-hidden hover:border-slate-200 transition-all"
             >
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#DB9E30] to-[#E7BE6E]" />
+              <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#92400E] bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full">
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#92400E] bg-gold-soft border border-gold px-2.5 py-1 rounded-full">
                     ⏱ {v.processingTime}
                   </span>
                   <div className="flex items-center gap-1.5">

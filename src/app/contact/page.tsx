@@ -2,8 +2,8 @@ import ContactPageClient from "./ContactPageClient";
 import { getPageBySlug, getFormsSettings } from "@/actions/pageActions";
 
 export const metadata = {
-  title: 'Contact Us | King Travel Can',
-  description: 'Get in touch with King Travel Can for your Hajj & Umrah bookings.',
+  title: 'Contact Us | British Hajj Travel Can',
+  description: 'Get in touch with British Hajj Travel Can for your Hajj & Umrah bookings.',
 };
 
 export default async function ContactPage() {

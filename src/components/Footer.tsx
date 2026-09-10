@@ -28,7 +28,7 @@ export default function Footer({ initialFooterData = {} }: { initialFooterData?:
                   ) : (
                     <Image
                       src={footerData.logo}
-                      alt="King Travel Logo"
+                      alt="British Hajj Travel Logo"
                       width={210}
                       height={50}
                       className="w-[210px] h-auto make-white"
@@ -41,7 +41,7 @@ export default function Footer({ initialFooterData = {} }: { initialFooterData?:
               </Link>
             </div>
             <p className="max-w-[310px] sm:max-w-none lg:max-w-[310px] font-light leading-[1.7]">
-              {footerData.tagline || 'A licensed Canadian agency dedicated to Hajj & Umrah travel — trusted, certified, and built for pilgrims.'}
+              {footerData.tagline || 'A licensed British agency dedicated to Hajj & Umrah travel — trusted, certified, and built for pilgrims.'}
             </p>
 
             {/* Social Links */}
@@ -165,7 +165,7 @@ export default function Footer({ initialFooterData = {} }: { initialFooterData?:
         </div>
 
         <div className="mt-[20px] md:mt-[60px] pt-[24px] border-t border-white/20 flex flex-wrap justify-center md:justify-between gap-[12px] text-[12px] md:text-[14px] font-light text-[#bccfc6]">
-          <span>{footerData.copyrightText || `© ${new Date().getFullYear()} King Travel Can LTD. All Rights Reserved.`}</span>
+          <span>{footerData.copyrightText || `© ${new Date().getFullYear()} British Hajj Travel LTD. All Rights Reserved.`}</span>
           <span>
             {footerData.developerText || 'Design & Developed by'}
             {footerData.developerUrl && (

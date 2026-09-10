@@ -93,7 +93,7 @@ export default function AdminBlogsPage() {
           </div>
           <Link
             href="/admin/blogs/edit"
-            className="bg-primary text-white px-5 py-2.5 rounded-xl font-bold text-xs inline-flex items-center gap-2 shadow-lg shadow-emerald-900/20 border-none cursor-pointer hover:bg-[#00382B] transition-colors no-underline"
+            className="bg-primary text-white px-5 py-2.5 rounded-xl font-bold text-xs inline-flex items-center gap-2 shadow-lg border-none cursor-pointer hover:bg-white hover:text-primary transition-colors no-underline"
           >
             <Plus className="w-4 h-4" />
             Create New Blog
@@ -223,7 +223,7 @@ export default function AdminBlogsPage() {
                         </button>
                         <Link
                           href={`/admin/blogs/edit?id=${b.id}`}
-                          className="flex gap-1 px-3 py-1.5 rounded-lg bg-gold/50 text-primary no-underline text-[11px] font-bold hover:bg-gold transition-colors"
+                          className="flex gap-1 px-3 py-1.5 rounded-lg bg-blue-100 text-primary no-underline text-[11px] font-bold hover:bg-primary hover:text-white transition-colors"
                         >
                           <Pencil className="w-3 h-3" />
                         </Link>
@@ -231,7 +231,7 @@ export default function AdminBlogsPage() {
                           type="button"
                           onClick={() => handleDelete(b.id, b.title)}
                           disabled={deletingId === b.id}
-                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-50 text-red-600 border border-red-200 text-[11px] font-bold cursor-pointer disabled:opacity-50"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-gold-soft hover:bg-gold hover:text-white text-red-600 border border-red-200 text-[11px] font-bold cursor-pointer disabled:opacity-50"
                         >
                           <Trash2 className="w-3 h-3" />
                         </button>

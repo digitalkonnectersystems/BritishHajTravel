@@ -25,8 +25,8 @@ function VisaProcessStepsSection({ data }: { data?: any }) {
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                 <polyline points="22,6 12,13 2,6" />
               </svg>
-              <a href={`mailto:${data?.email || "saudivisa@kingtravel.com"}`} className="hover:underline text-slate-200">
-                {data?.email || "saudivisa@kingtravel.com"}
+              <a href={`mailto:${data?.email || "saudivisa@britishhajjtravel.com"}`} className="hover:underline text-slate-200">
+                {data?.email || "saudivisa@britishhajjtravel.com"}
               </a>
             </div>
             <div className="contact-item flex items-center gap-3 text-sm">
@@ -92,7 +92,7 @@ export default async function SaudiVisaPage() {
         }
         description={
           pageData?.bannerDescription ||
-          "Apply for a Saudi visa from UK with trusted support from King Travel. We help individuals and families understand the process for tourist, Umrah, family visit, business, work, and Saudi resident Iqama visas, with clear guidance on requirements, documents, and application steps."
+          "Apply for a Saudi visa from UK with trusted support from British Hajj Travel. We help individuals and families understand the process for tourist, Umrah, family visit, business, work, and Saudi resident Iqama visas, with clear guidance on requirements, documents, and application steps."
         }
         bgImage={pageData?.bannerBgImage}
         position={pageData?.bannerPosition}

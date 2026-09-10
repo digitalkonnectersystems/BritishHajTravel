@@ -172,12 +172,12 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                 <h4 className="">EMAIL</h4>
                 <div className="">
                   <a
-                    href={`mailto:${data.email || "info@kingtravelcan.com"}`}
+                    href={`mailto:${data.email || "info@britishhajjtravel.com"}`}
                     target={data.emailNewTab ?? true ? "_blank" : "_self"}
                     rel={data.emailNewTab ?? true ? "noopener noreferrer" : undefined}
                     className="hover:text-primary transition-colors"
                   >
-                    {data.email || "info@kingtravelcan.com"}
+                    {data.email || "info@britishhajjtravel.com"}
                   </a>
                 </div>
               </div>
@@ -210,7 +210,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
               </div>
 
               {/* Branch Office */}
-              <div>
+              {/* <div>
                 <h4 className="">BRANCH OFFICE</h4>
                 {(data.branchOfficeMapUrl || "https://maps.app.goo.gl/U6B4fci2Jas4sh6S6") ? (
                   <a
@@ -226,7 +226,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                     dangerouslySetInnerHTML={{ __html: (data.branchOffice || "22 Ontario St S,\nMilton, ON L9T 2M6, UK").replace(/\n/g, '<br />') }}
                   />
                 )}
-              </div>
+              </div> */}
             </div>
           </div>
 

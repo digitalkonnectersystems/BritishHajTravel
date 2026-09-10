@@ -6,10 +6,10 @@ import { getPageBySlug } from '@/actions/pageActions';
 import PageSectionsRenderer from '@/components/PageSectionsRenderer';
 
 export const metadata: Metadata = {
-  title: 'Blog & Travel Guides | King Travel UK',
-  description: 'Explore pilgrimage tips, Hajj & Umrah guides, Saudi Visa info, and travel inspiration from King Travel UK\'s expert editorial team.',
+  title: 'Blog & Travel Guides | British Hajj Travel UK',
+  description: 'Explore pilgrimage tips, Hajj & Umrah guides, Saudi Visa info, and travel inspiration from British Hajj Travel UK\'s expert editorial team.',
   openGraph: {
-    title: 'Blog & Travel Guides | King Travel UK',
+    title: 'Blog & Travel Guides | British Hajj Travel UK',
     description: 'Explore pilgrimage tips, Hajj & Umrah guides, Saudi Visa info, and travel inspiration.',
     url: '/blogs',
     type: 'website',
@@ -52,7 +52,7 @@ export default async function BlogsListingPage() {
     <>
       <PageBanner
         title={pageData?.bannerTitle || pageData?.title || 'Our <em>Blog</em> & Travel Guides'}
-        description={pageData?.bannerDescription || "Insights, tips, and inspiration for your pilgrimage journey — written by the King Travel UK team."}
+        description={pageData?.bannerDescription || "Insights, tips, and inspiration for your pilgrimage journey — written by the British Hajj Travel UK team."}
         bgImage={pageData?.bannerBgImage}
         position={pageData?.bannerPosition}
         size={pageData?.bannerSize}
@@ -103,7 +103,7 @@ export default async function BlogsListingPage() {
                     <span className="w-7 h-7 rounded-full bg-primary flex items-center justify-center text-white font-bold text-[10px]">
                       {featured.authorName?.charAt(0) || 'K'}
                     </span>
-                    <span className="font-semibold text-slate-600">{featured.authorName || 'King Travel Editorial'}</span>
+                    <span className="font-semibold text-slate-600">{featured.authorName || 'British Hajj Travel Editorial'}</span>
                     {(featured.publishedAt || featured.createdAt) && (
                       <>
                         <span className="text-slate-300">·</span>
@@ -156,7 +156,7 @@ export default async function BlogsListingPage() {
                             <span className="w-5 h-5 rounded-full bg-primary flex items-center justify-center text-white font-bold text-[9px]">
                               {blog.authorName?.charAt(0) || 'K'}
                             </span>
-                            <span className="font-medium text-slate-500 truncate max-w-[90px]">{blog.authorName?.split(' ')[0] || 'King Travel'}</span>
+                            <span className="font-medium text-slate-500 truncate max-w-[90px]">{blog.authorName?.split(' ')[0] || 'British Hajj Travel'}</span>
                           </div> */}
                           {displayDate && (
                             <span className="date-display">{displayDate}</span>

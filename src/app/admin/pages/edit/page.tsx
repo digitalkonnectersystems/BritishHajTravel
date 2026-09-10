@@ -124,6 +124,7 @@ const SECTION_CATALOG: SectionCategory[] = [
     category: 'Content & Layout',
     icon: '📄',
     items: [
+        { type: 'FAQ', description: 'Responsive accordion FAQ block with editable questions and answers.', pages: ['Any Page'] },
       { type: 'Services Grid', description: 'Icon + heading + description service tiles in a responsive grid.', pages: ['About', 'Any Page'] },
       { type: 'Image+Text', description: 'Split image-and-text block with eyebrow, heading, body, and optional CTA.', pages: ['Any Page'] },
       { type: 'Text Block (Rich Text)', description: 'Free-form rich text editor block for long-form content.', pages: ['Any Page'] },
@@ -301,7 +302,7 @@ function PageBuilderContent() {
                     data: {
                       eyebrow: 'IN 3 EASY STEPS',
                       title: 'Get Your Saudi Visa',
-                      email: 'saudivisa@kingtravel.com',
+                      email: 'saudivisa@britishhajjtravel.com',
                       phone: '+1 905-624-8344'
                     }
                   }
@@ -351,7 +352,7 @@ function PageBuilderContent() {
                       phone1: '+1 800-844-5464',
                       phone2: '+1 905-624-8555',
                       phone3: '+1 905-624-8344',
-                      email: 'saudivisa@kingtravelcan.com'
+                      email: 'saudivisa@britishhajjtravel.com'
                     }
                   },
                   {
@@ -379,11 +380,11 @@ function PageBuilderContent() {
                   {
                     id: '2',
                     type: 'Intro',
-                    title: 'Intro (About King Travel)',
+                    title: 'Intro (About British Hajj Travel)',
                     data: {
                       eyebrow: 'ABOUT',
-                      title: 'King Travel',
-                      description: "For over 20 years, King Travel has been a trusted travel agency in UK, offering Hajj and Umrah services, airline ticketing, and visa processing with unmatched expertise. We are UK's No. 1 authorized PIA seller agency and an official agent licensed by the Ministry of Hajj & Umrah, IATA, TICO, OCTA, and ASTA."
+                      title: 'British Hajj Travel',
+                      description: "For over 20 years, British Hajj Travel has been a trusted travel agency in UK, offering Hajj and Umrah services, airline ticketing, and visa processing with unmatched expertise. We are UK's No. 1 authorized PIA seller agency and an official agent licensed by the Ministry of Hajj & Umrah, IATA, TICO, OCTA, and ASTA."
                     }
                   },
                   {
@@ -393,7 +394,7 @@ function PageBuilderContent() {
                     data: {
                       eyebrow: 'WHY CHOOSE US',
                       title: 'Your Trusted Partner for Pilgrimage & Global Travel',
-                      description: "Serving Ontario travelers for years, King Travel Can Ltd is certified by IATA, ACTA, TICO, ASTA, ATAC, and the Saudi Ministry of Hajj & Umrah. We've arranged thousands of successful journeys with fast response times and secure ID checks for every booking.",
+                      description: "Serving Ontario travelers for years, British Hajj Travel LTD is certified by IATA, ACTA, TICO, ASTA, ATAC, and the Saudi Ministry of Hajj & Umrah. We've arranged thousands of successful journeys with fast response times and secure ID checks for every booking.",
                       image: "https://images.unsplash.com/photo-1542856391-010fb87dcfed?auto=format&fit=crop&w=800&q=80"
                     }
                   },
@@ -426,11 +427,11 @@ function PageBuilderContent() {
               {
                 id: '2',
                 type: 'Intro',
-                title: 'Intro (About King Travel)',
+                title: 'Intro (About British Hajj Travel)',
                 data: {
                   eyebrow: 'ABOUT',
-                  title: 'King Travel',
-                  description: "For over 20 years, King Travel has been a trusted travel agency in UK, offering Hajj and Umrah services, airline ticketing, and visa processing with unmatched expertise."
+                  title: 'British Hajj Travel',
+                  description: "For over 20 years, British Hajj Travel has been a trusted travel agency in UK, offering Hajj and Umrah services, airline ticketing, and visa processing with unmatched expertise."
                 }
               },
               {
@@ -440,7 +441,7 @@ function PageBuilderContent() {
                 data: {
                   eyebrow: 'WHY CHOOSE US',
                   title: 'Your Trusted Partner for Pilgrimage & Global Travel',
-                  description: "Serving Ontario travelers for years, King Travel Can Ltd is certified by IATA, ACTA, TICO, ASTA, ATAC, and the Saudi Ministry of Hajj & Umrah.",
+                  description: "Serving Ontario travelers for years, British Hajj Travel LTD is certified by IATA, ACTA, TICO, ASTA, ATAC, and the Saudi Ministry of Hajj & Umrah.",
                   image: "https://images.unsplash.com/photo-1542856391-010fb87dcfed?auto=format&fit=crop&w=800&q=80"
                 }
               },
@@ -555,10 +556,10 @@ function PageBuilderContent() {
         placeId: '',
         items: [
           { id: 1, name: "tamim rahimi", time: "3 months ago", avatar: "/img/tamim.png", text: "I’m a man of few words. It was an amazing experience with the Umrah package in March 2026. Everything went as expected, with no surprises. There will be a huge list if I name everyone, so a big thanks to everyone. JazakAllah khair!" },
-          { id: 2, name: "Hiba M", time: "3 months ago", avatar: "/img/h.png", text: "My daughter and I just came back from a twelve day Umrah trip organized by King Travel. The trip was well planned and structured. We were very fortunate to have Imam Ismail Fetic as our guide who provided a wealth of knowledge and insights. The accomodation and the food were really nice. I highly recommend booking with King Travel." },
-          { id: 3, name: "Yusra Khan", time: "3 months ago", avatar: "/img/y.png", text: "It was a very nice experience going with King travel, imam Ismail Fetic was extremely helpful answering all of our questions and giving us lectures/stories about all the places we were going to. Would highly recommend this agency for Umrah." },
-          { id: 4, name: "Zeba H", time: "3 months ago", avatar: "/img/z.png", text: "We recently traveled with King Travels. Allhamdolilah it was amazing. No complains. They kept all the promises that were made to us. The 3 meals that were provided to us everyday were amazing. Our Imam Ismail Fetic and Br Irfan were amazing. Always available if help needed. Over all great group of people. Inshallah will travel with them again." },
-          { id: 5, name: "Musaibah Doola", time: "3 months ago", avatar: "/img/m.png", text: "I recently booked my Umrah with King Travels. It was an amazing experience. Starting with the price of the package it was very reasonable. They gave the best accommodations and food at both locations. Best was meeting with very good knowledgeable Imams and guided. Everything went well." }
+          { id: 2, name: "Hiba M", time: "3 months ago", avatar: "/img/h.png", text: "My daughter and I just came back from a twelve day Umrah trip organized by British Hajj Travel. The trip was well planned and structured. We were very fortunate to have Imam Ismail Fetic as our guide who provided a wealth of knowledge and insights. The accomodation and the food were really nice. I highly recommend booking with British Hajj Travel." },
+          { id: 3, name: "Yusra Khan", time: "3 months ago", avatar: "/img/y.png", text: "It was a very nice experience going with British Hajj Travel, imam Ismail Fetic was extremely helpful answering all of our questions and giving us lectures/stories about all the places we were going to. Would highly recommend this agency for Umrah." },
+          { id: 4, name: "Zeba H", time: "3 months ago", avatar: "/img/z.png", text: "We recently traveled with British Hajj Travels. Allhamdolilah it was amazing. No complains. They kept all the promises that were made to us. The 3 meals that were provided to us everyday were amazing. Our Imam Ismail Fetic and Br Irfan were amazing. Always available if help needed. Over all great group of people. Inshallah will travel with them again." },
+          { id: 5, name: "Musaibah Doola", time: "3 months ago", avatar: "/img/m.png", text: "I recently booked my Umrah with British Hajj Travels. It was an amazing experience. Starting with the price of the package it was very reasonable. They gave the best accommodations and food at both locations. Best was meeting with very good knowledgeable Imams and guided. Everything went well." }
         ]
       };
     } else if (type === 'Hajj Services Grid') {
@@ -597,6 +598,22 @@ function PageBuilderContent() {
       defaultData = {
         content: '<p>Start writing your content here...</p>',
       };
+    } else if (type === 'FAQ') {
+      defaultData = {
+        eyebrow: 'FREQUENTLY ASKED QUESTIONS',
+        title: 'Hajj Packages 2027 Registration via Nusuk: FAQs',
+        description: 'Everything you need to know about booking your Hajj packages for 2027 through the official Saudi Nusuk platform.',
+        items: [
+          {
+            question: 'How do I book Hajj Packages for 2027 via the Nusuk platform?',
+            answer: 'Step-by-step process for Hajj packages:\n\n1. Visit nusuk.sa and create your account\n2. Complete your profile with passport details and UK residency proof\n3. Select “Hajj 2027” and browse authorised Hajj packages\n4. Choose your preferred Hajj package\n5. Complete payment via the secure Nusuk gateway\n6. Receive your Hajj permit and visa documentation\n\nPro Tip: British Hajj Travel provides free guidance through each step for your Hajj packages. Contact us before registering to ensure you select the best package for your needs.'
+          },
+          {
+            question: 'What documents do I need for Hajj Packages registration on Nusuk?',
+            answer: 'Add the required passport, residency, and vaccination details for your pilgrims here.'
+          }
+        ]
+      };
     } else if (type === 'Stats Grid') {
       defaultData = {
         items: [
@@ -608,8 +625,8 @@ function PageBuilderContent() {
     } else if (type === 'Intro') {
       defaultData = {
         eyebrow: 'ABOUT',
-        title: 'King Travel',
-        description: "For over 20 years, King Travel has been a trusted travel agency in UK..."
+        title: 'British Hajj Travel',
+        description: "For over 20 years, British Hajj Travel has been a trusted travel agency in UK..."
       };
     } else if (type === 'Image+Text') {
       defaultData = {
@@ -716,9 +733,9 @@ function PageBuilderContent() {
         eyebrow: 'WHY THEY MATTER',
         title: 'OUR CERTIFICATIONS',
         items: [
-          { logo: '/img/tico.svg', title: 'TICO', description: 'TICO regulates travel agencies in Ontario, protecting consumer prepaid funds and ensuring compliance with strict Canadian travel industry regulations.' },
+          { logo: '/img/tico.svg', title: 'TICO', description: 'TICO regulates travel agencies in Ontario, protecting consumer prepaid funds and ensuring compliance with strict British travel industry regulations.' },
           { logo: '/img/iata.svg', title: 'IATA', description: 'Being an IATA accredited agency allows us to work directly with airlines, offering competitive airfares, seamless ticketing, and exclusive deals.' },
-          { logo: '/img/acta.svg', title: 'ACTA', description: 'ACTA membership advocates for ethical travel practices and professional excellence across the Canadian travel industry.' },
+          { logo: '/img/acta.svg', title: 'ACTA', description: 'ACTA membership advocates for ethical travel practices and professional excellence across the British travel industry.' },
           { logo: '/img/asta.svg', title: 'ASTA', description: 'ASTA certification connects us with global travel standards and verified international destination management networks.' },
           { logo: '/img/atac.svg', title: 'ATAC', description: 'ATAC represents air transport excellence and safe aviation ticketing protocols across UK.' },
           { logo: '', title: 'Saudi Ministry of Foreign Affairs', description: 'Official Saudi Ministry authorization for processing Umrah, Hajj, business, and tourist visas directly from UK.' }
@@ -768,7 +785,7 @@ function PageBuilderContent() {
           const heroSecData = {
             heroEyebrow,
             title: bannerTitle || title || 'Your journey to <span>Makkah & Madinah</span>, guided with care.',
-            description: bannerDescription || "King Travel plans Hajj and Umrah journeys from UK down to the smallest detail...",
+            description: bannerDescription || "British Hajj Travel plans Hajj and Umrah journeys from UK down to the smallest detail...",
             primaryBtnLabel,
             primaryBtnLink,
             secondaryBtnLabel,
@@ -877,7 +894,7 @@ function PageBuilderContent() {
             type="button"
             onClick={() => handleSave(false)}
             disabled={saving}
-            className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-primary hover:bg-[#00382B] text-white text-xs font-black transition-all cursor-pointer shadow-md border-none disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-primary hover:bg-white hover:text-primary text-white text-xs font-black transition-all cursor-pointer shadow-md border-none disabled:opacity-50"
           >
             {saving ? 'Saving...' : '✓ Update'}
           </button>
@@ -1012,7 +1029,7 @@ function PageBuilderContent() {
 
               {/* Main Content Area */}
               <div className="relative z-10 max-w-md space-y-3 my-auto">
-                <div className="text-[11px] font-extrabold uppercase tracking-widest text-gold">
+                <div className="text-[11px] font-extrabold uppercase tracking-widest text-white">
                   {heroEyebrow || 'Est. in UK · Licensed Pilgrimage Operator'}
                 </div>
                 <h1
@@ -1020,15 +1037,15 @@ function PageBuilderContent() {
                   dangerouslySetInnerHTML={{ __html: bannerTitle || title || 'Your journey to <span>Makkah & Madinah</span>, guided with care.' }}
                 />
                 <p className="text-xs text-white/80 leading-relaxed font-light">
-                  {bannerDescription || "King Travel plans Hajj and Umrah journeys from UK down to the smallest detail — flights, five-star stays walking distance from the Haram, visas, and guides..."}
+                  {bannerDescription || "British Hajj Travel plans Hajj and Umrah journeys from UK down to the smallest detail — flights, five-star stays walking distance from the Haram, visas, and guides..."}
                 </p>
 
                 {/* Primary & Secondary Buttons Matching Frontend */}
                 <div className="flex flex-wrap items-center gap-3 pt-2">
-                  <span className="bg-gold hover:bg-[#c68e27] text-primary font-black text-xs px-5 py-2.5 rounded-full shadow-md transition-all cursor-pointer">
+                  <span className="bg-gold hover:bg-white text-white border-gold hover:text-gold hover:border-gold font-black text-xs px-5 py-2.5 rounded-full shadow-md transition-all cursor-pointer">
                     {primaryBtnLabel || 'View Umrah Packages'}
                   </span>
-                  <span className="bg-white text-slate-900 hover:bg-slate-100 font-extrabold text-xs px-5 py-2.5 rounded-full shadow-md transition-all cursor-pointer border border-white">
+                  <span className="bg-white text-primary hover:bg-primary hover:text-white font-extrabold text-xs px-5 py-2.5 rounded-full shadow-md transition-all cursor-pointer border border-primary">
                     {secondaryBtnLabel || 'Speak With an Advisor'}
                   </span>
                 </div>
@@ -1077,9 +1094,9 @@ function PageBuilderContent() {
                     }
                   }}
                   className="text-[10px] font-bold text-gold hover:bg-amber-100 bg-amber-50 px-2 py-0.5 rounded cursor-pointer border border-[#DB9E30]/30 transition-colors"
-                  title="Highlight text and click to make it Gold"
+                  title="Highlight text and click to make it Red"
                 >
-                  ✨ Gold Words
+                  ✨ Red Words
                 </button>
               </div>
               <input
@@ -1356,9 +1373,9 @@ function PageBuilderContent() {
                     }
                   }}
                   className="text-[10px] font-bold text-gold hover:bg-amber-100 bg-amber-50 px-2 py-0.5 rounded cursor-pointer border border-[#DB9E30]/30 transition-colors"
-                  title="Highlight text and click to make it Gold"
+                  title="Highlight text and click to make it Red"
                 >
-                  ✨ Gold Words
+                  ✨ Red Words
                 </button>
               </div>
               <input
@@ -1471,7 +1488,7 @@ function PageBuilderContent() {
                           setDropdownOpen(!dropdownOpen);
                           setSectionSearch('');
                         }}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary hover:bg-[#00382B] text-white text-xs font-extrabold transition-all cursor-pointer shadow-sm border-none"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary hover:bg-white hover:text-primary text-white text-xs font-extrabold transition-all cursor-pointer shadow-sm border-none"
                       >
                         <span>+ Add Section</span>
                         <span className="text-[10px]">{dropdownOpen ? '▲' : '▼'}</span>
@@ -1658,7 +1675,7 @@ function PageBuilderContent() {
                                   <Link
                                     href="/admin/blogs/edit"
                                     target="_blank"
-                                    className="bg-primary text-white rounded-md px-3 py-1 text-xs font-bold no-underline hover:bg-[#00382B] transition-colors"
+                                    className="bg-primary text-white rounded-md px-3 py-1 text-xs font-bold no-underline hover:bg-white hover:text-primary transition-colors"
                                   >
                                     Create New Blog
                                   </Link>
@@ -1705,7 +1722,7 @@ function PageBuilderContent() {
                                   <Link
                                     href="/admin/blogs"
                                     target="_blank"
-                                    className="bg-primary text-white px-3.5 py-1.5 rounded-lg text-xs font-bold no-underline hover:bg-[#00382B] transition-colors"
+                                    className="bg-primary text-white px-3.5 py-1.5 rounded-lg text-xs font-bold no-underline hover:bg-white hover:text-primary transition-colors"
                                   >
                                     Open Blog Manager ⚙️
                                   </Link>
@@ -1978,7 +1995,7 @@ function PageBuilderContent() {
                                           currentItems.push({ value: '100%', label: 'Client Satisfaction' });
                                           updateSectionData(sec.id, 'items', currentItems);
                                         }}
-                                        className="bg-primary text-white border-none rounded-md px-2.5 py-1 text-[11px] font-bold cursor-pointer hover:bg-[#00382B]"
+                                        className="bg-primary text-white border-none rounded-md px-2.5 py-1 text-[11px] font-bold cursor-pointer hover:bg-white hover:text-primary"
                                       >
                                         + Add New KPI
                                       </button>
@@ -2371,10 +2388,10 @@ function PageBuilderContent() {
                                   <button
                                     onClick={() => {
                                       const currentServices = [...((sec.data?.items && Array.isArray(sec.data.items)) ? sec.data.items : [
-                                        { icon: "✈️", title: "Lowest Fares", subtitle: "We Offer the Lowest Fair on Air Ticketing around the Globe.", description: "As a partner with major airlines, including PIA, King Travel Can Ltd guarantees the lowest airfares for flights to Pakistan, Saudi Arabia, and beyond." },
+                                        { icon: "✈️", title: "Lowest Fares", subtitle: "We Offer the Lowest Fair on Air Ticketing around the Globe.", description: "As a partner with major airlines, including PIA, British Hajj Travel LTD guarantees the lowest airfares for flights to Pakistan, Saudi Arabia, and beyond." },
                                         { icon: "✨", title: "Special Deals", subtitle: "We Provide Best Prices Of All Inclusive Packages.", description: "We offer exclusive special deals on Umrah, Hajj, and international flight packages, tailored to fit your budget." },
                                         { icon: "🛡️", title: "Trusted & Certified", subtitle: "We are The Only Authorized Saudi Visa Providers UK!", description: "Recognized by IATA, ACTA, TICO, ASTA, ATAC, and the Saudi Ministry of Hajj & Umrah." },
-                                        { icon: "🕌", title: "Pilgrimage Experts", subtitle: "We Offer Best Accommodations & Transports In Saudia Arabia", description: "From visa processing and ticketing to 5-star accommodations and guided tours, King Travel provides a complete pilgrimage experience." }
+                                        { icon: "🕌", title: "Pilgrimage Experts", subtitle: "We Offer Best Accommodations & Transports In Saudia Arabia", description: "From visa processing and ticketing to 5-star accommodations and guided tours, British Hajj Travel provides a complete pilgrimage experience." }
                                       ])];
                                       currentServices.push({ icon: "🌟", title: "New Service Card", subtitle: "Service Subtitle", description: "Service details description..." });
                                       updateSectionData(sec.id, 'items', currentServices);
@@ -2385,10 +2402,10 @@ function PageBuilderContent() {
                                   </button>
                                 </div>
                                 {((sec.data?.items && Array.isArray(sec.data.items) && sec.data.items.length > 0) ? sec.data.items : [
-                                  { icon: "✈️", title: "Lowest Fares", subtitle: "We Offer the Lowest Fair on Air Ticketing around the Globe.", description: "As a partner with major airlines, including PIA, King Travel Can Ltd guarantees the lowest airfares for flights to Pakistan, Saudi Arabia, and beyond." },
+                                  { icon: "✈️", title: "Lowest Fares", subtitle: "We Offer the Lowest Fair on Air Ticketing around the Globe.", description: "As a partner with major airlines, including PIA, British Hajj Travel LTD guarantees the lowest airfares for flights to Pakistan, Saudi Arabia, and beyond." },
                                   { icon: "✨", title: "Special Deals", subtitle: "We Provide Best Prices Of All Inclusive Packages.", description: "We offer exclusive special deals on Umrah, Hajj, and international flight packages, tailored to fit your budget." },
                                   { icon: "🛡️", title: "Trusted & Certified", subtitle: "We are The Only Authorized Saudi Visa Providers UK!", description: "Recognized by IATA, ACTA, TICO, ASTA, ATAC, and the Saudi Ministry of Hajj & Umrah." },
-                                  { icon: "🕌", title: "Pilgrimage Experts", subtitle: "We Offer Best Accommodations & Transports In Saudia Arabia", description: "From visa processing and ticketing to 5-star accommodations and guided tours, King Travel provides a complete pilgrimage experience." }
+                                  { icon: "🕌", title: "Pilgrimage Experts", subtitle: "We Offer Best Accommodations & Transports In Saudia Arabia", description: "From visa processing and ticketing to 5-star accommodations and guided tours, British Hajj Travel provides a complete pilgrimage experience." }
                                 ]).map((svc: any, sIdx: number) => (
                                   <div key={sIdx} className="bg-slate-50 border border-slate-300 rounded-lg p-2.5 flex flex-col gap-2 relative">
                                     <div className="flex justify-between items-center">
@@ -2602,7 +2619,7 @@ function PageBuilderContent() {
                                     </p>
                                   </div>
                                   <div className="flex items-center gap-2">
-                                    <label className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary hover:bg-[#00382B] text-white text-xs font-bold cursor-pointer transition-colors shadow-sm">
+                                    <label className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary hover:bg-white hover:text-primary text-white text-xs font-bold cursor-pointer transition-colors shadow-sm">
                                       <Upload className="w-3.5 h-3.5" />
                                       <span>Bulk Upload</span>
                                       <input
@@ -2654,7 +2671,7 @@ function PageBuilderContent() {
                                     </div>
                                     <p className="text-sm font-bold text-slate-700 mb-1">No brochure images uploaded yet</p>
                                     <p className="text-xs text-slate-500 mb-4">Select multiple image files at once to upload them instantly</p>
-                                    <label className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-[#00382B] text-white text-xs font-bold cursor-pointer transition-colors shadow-sm">
+                                    <label className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-white hover:text-primary text-white text-xs font-bold cursor-pointer transition-colors shadow-sm">
                                       <Upload className="w-4 h-4" />
                                       <span>Choose Brochure Files</span>
                                       <input
@@ -2847,6 +2864,49 @@ function PageBuilderContent() {
                                     })}
                                   </div>
                                 )}
+                              </div>
+                            )}
+
+                            {sec.type === 'FAQ' && (
+                              <div className="bg-white border border-slate-200 rounded-xl p-3.5 flex flex-col gap-3 mt-1">
+                                <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+                                  <span className="text-[11px] font-extrabold uppercase text-primary">FAQ ACCORDION ITEMS</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => updateSectionData(sec.id, 'items', [...(Array.isArray(sec.data?.items) ? sec.data.items : []), { question: 'New frequently asked question', answer: 'Add the answer for this question.' }])}
+                                    className="rounded-md bg-primary px-2.5 py-1 text-[11px] font-bold text-white"
+                                  >
+                                    + Add Question
+                                  </button>
+                                </div>
+                                {(Array.isArray(sec.data?.items) ? sec.data.items : []).map((item: any, itemIndex: number) => (
+                                  <div key={itemIndex} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+                                    <div className="mb-2 flex items-center justify-between gap-2">
+                                      <span className="text-[10px] font-bold uppercase text-slate-500">Question {itemIndex + 1}</span>
+                                      <button
+                                        type="button"
+                                        onClick={() => updateSectionData(sec.id, 'items', (sec.data?.items || []).filter((_: any, index: number) => index !== itemIndex))}
+                                        className="text-[10px] font-bold text-red-600"
+                                      >
+                                        Remove
+                                      </button>
+                                    </div>
+                                    <input
+                                      type="text"
+                                      value={item.question || ''}
+                                      onChange={(e) => updateSectionData(sec.id, 'items', (sec.data?.items || []).map((faq: any, index: number) => index === itemIndex ? { ...faq, question: e.target.value } : faq))}
+                                      placeholder="Question"
+                                      className="mb-2 w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-900"
+                                    />
+                                    <textarea
+                                      rows={5}
+                                      value={item.answer || ''}
+                                      onChange={(e) => updateSectionData(sec.id, 'items', (sec.data?.items || []).map((faq: any, index: number) => index === itemIndex ? { ...faq, answer: e.target.value } : faq))}
+                                      placeholder="Answer"
+                                      className="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-900"
+                                    />
+                                  </div>
+                                ))}
                               </div>
                             )}
 
@@ -3078,7 +3138,7 @@ function PageBuilderContent() {
                                     <label className="block text-[9px] font-bold text-slate-500 mb-0.5">EMAIL CONTACT</label>
                                     <input
                                       type="text"
-                                      value={sec.data?.email || 'saudivisa@kingtravel.com'}
+                                      value={sec.data?.email || 'saudivisa@britishhajjtravel.com'}
                                       onChange={(e) => updateSectionData(sec.id, 'email', e.target.value)}
                                       className="w-full px-2.5 py-1.5 rounded-md border border-slate-300 text-[11px]"
                                     />
@@ -3415,7 +3475,7 @@ function PageBuilderContent() {
                                       🖼️ Upload & Manage Logos (Drag to reorder)
                                     </span>
                                     <div className="flex gap-2">
-                                      <label className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-primary hover:bg-[#00382B] text-white text-[10px] font-bold cursor-pointer transition-colors">
+                                      <label className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-primary hover:bg-white hover:text-primary text-white text-[10px] font-bold cursor-pointer transition-colors">
                                         <Upload className="w-3.5 h-3.5" /> Upload Multiple Logos
                                         <input
                                           type="file"
@@ -3640,9 +3700,9 @@ function PageBuilderContent() {
 
                                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                     {((sec.data?.items && Array.isArray(sec.data.items) && sec.data.items.length > 0) ? sec.data.items : [
-                                      { logo: '/img/tico-logo.png', title: 'TICO - Travel Industry Council of Ontario', description: 'TICO regulates travel agencies in Ontario, protecting consumer prepaid funds and ensuring compliance with strict Canadian travel industry regulations.' },
+                                      { logo: '/img/tico-logo.png', title: 'TICO - Travel Industry Council of Ontario', description: 'TICO regulates travel agencies in Ontario, protecting consumer prepaid funds and ensuring compliance with strict British travel industry regulations.' },
                                       { logo: '/img/iata-logo.png', title: 'IATA - International Air Transport Association', description: 'Being an IATA accredited agency allows us to work directly with airlines, offering competitive airfares, seamless ticketing, and exclusive deals.' },
-                                      { logo: '/img/acta-logo.png', title: 'ACTA - Association of Canadian Travel Agencies', description: 'ACTA membership advocates for ethical travel practices and professional excellence across the Canadian travel industry.' },
+                                      { logo: '/img/acta-logo.png', title: 'ACTA - Association of British Travel Agencies', description: 'ACTA membership advocates for ethical travel practices and professional excellence across the British travel industry.' },
                                       { logo: '/img/asta-logo.png', title: 'ASTA - American Society of Travel Advisors', description: 'ASTA certification connects us with global travel standards and verified international destination management networks.' },
                                       { logo: '/img/atac-logo.png', title: 'ATAC - Air Transportation Association of UK', description: 'ATAC represents air transport excellence and safe aviation ticketing protocols across UK.' },
                                       { logo: '/img/mofa-logo.png', title: 'Saudi Ministry of Foreign Affairs', description: 'Official Saudi Ministry authorization for processing Umrah, Hajj, business, and tourist visas directly from UK.' }
@@ -4039,9 +4099,9 @@ function PageBuilderContent() {
                                         </label>
                                         <input
                                           type="email"
-                                          value={sec.data?.email || 'saudivisa@kingtravelcan.com'}
+                                          value={sec.data?.email || 'saudivisa@britishhajjtravel.com'}
                                           onChange={(e) => updateSectionData(sec.id, 'email', e.target.value)}
-                                          placeholder="info@kingtravelcan.com"
+                                          placeholder="info@britishhajjtravel.com"
                                           className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs text-slate-800 font-mono outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                                         />
                                       </div>
@@ -4063,15 +4123,15 @@ function PageBuilderContent() {
                                         const currentSocials = sec.data?.socialLinks && Array.isArray(sec.data.socialLinks)
                                           ? [...sec.data.socialLinks]
                                           : [
-                                            { name: 'Facebook', url: sec.data?.facebookUrl || 'https://www.facebook.com/kingtravelcan', icon: '/img/fb.svg', openInNewTab: true },
-                                            { name: 'Instagram', url: sec.data?.instagramUrl || 'https://www.instagram.com/kingtravelcan/', icon: '/img/insta.svg', openInNewTab: true },
-                                            { name: 'LinkedIn', url: sec.data?.linkedinUrl || 'https://ca.linkedin.com/company/kingtravelcan', icon: '/img/in.svg', openInNewTab: true },
-                                            { name: 'TikTok', url: sec.data?.tiktokUrl || 'https://www.tiktok.com/@kingtravelcan', icon: '/img/tik.svg', openInNewTab: true },
+                                            { name: 'Facebook', url: sec.data?.facebookUrl || 'https://www.facebook.com/britishhajjtravel', icon: '/img/fb.svg', openInNewTab: true },
+                                            { name: 'Instagram', url: sec.data?.instagramUrl || 'https://www.instagram.com/britishhajjtravel/', icon: '/img/insta.svg', openInNewTab: true },
+                                            { name: 'LinkedIn', url: sec.data?.linkedinUrl || 'https://ca.linkedin.com/company/britishhajjtravel', icon: '/img/in.svg', openInNewTab: true },
+                                            { name: 'TikTok', url: sec.data?.tiktokUrl || 'https://www.tiktok.com/@britishhajjtravel', icon: '/img/tik.svg', openInNewTab: true },
                                           ];
                                         currentSocials.push({ name: 'New Network', url: 'https://', icon: '', openInNewTab: true });
                                         updateSectionData(sec.id, 'socialLinks', currentSocials);
                                       }}
-                                      className="bg-primary hover:bg-[#00382B] text-white px-3 py-1.5 rounded-lg text-xs font-bold border-none cursor-pointer flex items-center gap-1.5 transition-colors"
+                                      className="bg-primary hover:bg-white hover:text-primary text-white px-3 py-1.5 rounded-lg text-xs font-bold border-none cursor-pointer flex items-center gap-1.5 transition-colors"
                                     >
                                       <i className="fa-solid fa-plus text-[10px]"></i> Add Social Icon
                                     </button>
@@ -4081,12 +4141,12 @@ function PageBuilderContent() {
                                     const socialList: any[] = (sec.data?.socialLinks && Array.isArray(sec.data.socialLinks) && sec.data.socialLinks.length > 0)
                                       ? sec.data.socialLinks
                                       : [
-                                        { name: 'Facebook', url: sec.data?.facebookUrl || 'https://www.facebook.com/kingtravelcan', icon: sec.data?.facebookIcon || '/img/fb.svg', openInNewTab: true },
-                                        { name: 'Instagram', url: sec.data?.instagramUrl || 'https://www.instagram.com/kingtravelcan/', icon: sec.data?.instagramIcon || '/img/insta.svg', openInNewTab: true },
-                                        { name: 'LinkedIn', url: sec.data?.linkedinUrl || 'https://ca.linkedin.com/company/kingtravelcan', icon: sec.data?.linkedinIcon || '/img/in.svg', openInNewTab: true },
-                                        { name: 'TikTok', url: sec.data?.tiktokUrl || 'https://www.tiktok.com/@kingtravelcan', icon: sec.data?.tiktokIcon || '/img/tik.svg', openInNewTab: true },
-                                        { name: 'Twitter X', url: sec.data?.twitterUrl || 'https://twitter.com/kingtravelcan', icon: sec.data?.twitterIcon || '/img/x.svg', openInNewTab: true },
-                                        { name: 'Pinterest', url: sec.data?.pinterestUrl || 'https://pinterest.com/kingtravelcan', icon: sec.data?.pinterestIcon || '/img/pinterest.svg', openInNewTab: true },
+                                        { name: 'Facebook', url: sec.data?.facebookUrl || 'https://www.facebook.com/britishhajjtravel', icon: sec.data?.facebookIcon || '/img/fb.svg', openInNewTab: true },
+                                        { name: 'Instagram', url: sec.data?.instagramUrl || 'https://www.instagram.com/britishhajjtravel/', icon: sec.data?.instagramIcon || '/img/insta.svg', openInNewTab: true },
+                                        { name: 'LinkedIn', url: sec.data?.linkedinUrl || 'https://ca.linkedin.com/company/britishhajjtravel', icon: sec.data?.linkedinIcon || '/img/in.svg', openInNewTab: true },
+                                        { name: 'TikTok', url: sec.data?.tiktokUrl || 'https://www.tiktok.com/@britishhajjtravel', icon: sec.data?.tiktokIcon || '/img/tik.svg', openInNewTab: true },
+                                        { name: 'Twitter X', url: sec.data?.twitterUrl || 'https://twitter.com/britishhajjtravel', icon: sec.data?.twitterIcon || '/img/x.svg', openInNewTab: true },
+                                        { name: 'Pinterest', url: sec.data?.pinterestUrl || 'https://pinterest.com/britishhajjtravel', icon: sec.data?.pinterestIcon || '/img/pinterest.svg', openInNewTab: true },
                                       ];
 
                                     return (
@@ -4372,9 +4432,9 @@ function PageBuilderContent() {
                                       </div>
                                       <input
                                         type="email"
-                                        value={sec.data?.email !== undefined ? sec.data.email : 'info@kingtravelcan.com'}
+                                        value={sec.data?.email !== undefined ? sec.data.email : 'info@britishhajjtravel.com'}
                                         onChange={(e) => updateSectionData(sec.id, 'email', e.target.value)}
-                                        placeholder="info@kingtravelcan.com"
+                                        placeholder="info@britishhajjtravel.com"
                                         className="w-full px-3 py-1.5 rounded-md border border-slate-300 text-xs font-mono text-slate-800 outline-none bg-white focus:border-primary"
                                       />
                                     </div>
@@ -4420,7 +4480,7 @@ function PageBuilderContent() {
                                             currentList.push({ number: '', label: '', openInNewTab: true });
                                             updateSectionData(sec.id, 'landlines', currentList);
                                           }}
-                                          className="text-[10px] font-bold bg-primary hover:bg-[#00382B] text-white px-2.5 py-1 rounded-md border-none cursor-pointer flex items-center gap-1 transition-colors"
+                                          className="text-[10px] font-bold bg-primary hover:bg-white hover:text-primary text-white px-2.5 py-1 rounded-md border-none cursor-pointer flex items-center gap-1 transition-colors"
                                         >
                                           <i className="fa-solid fa-plus text-[9px]"></i> Add Landline
                                         </button>
@@ -4518,7 +4578,7 @@ function PageBuilderContent() {
                                             currentList.push({ number: '', label: '', openInNewTab: true });
                                             updateSectionData(sec.id, 'whatsappList', currentList);
                                           }}
-                                          className="text-[10px] font-bold bg-primary hover:bg-[#00382B] text-white px-2.5 py-1 rounded-md border-none cursor-pointer flex items-center gap-1 transition-colors"
+                                          className="text-[10px] font-bold bg-primary hover:bg-white hover:text-primary text-white px-2.5 py-1 rounded-md border-none cursor-pointer flex items-center gap-1 transition-colors"
                                         >
                                           <i className="fa-solid fa-plus text-[9px]"></i> Add WhatsApp
                                         </button>

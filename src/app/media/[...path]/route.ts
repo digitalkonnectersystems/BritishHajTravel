@@ -22,8 +22,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     };
     const contentType = mimeTypes[ext] || 'application/octet-stream';
 
-    // 1. Check in public/images_KTC/
-    const candidatePath1 = path.join(process.cwd(), 'public', 'images_KTC', filePath);
+    // 1. Check in public/images_BHT/
+    const candidatePath1 = path.join(process.cwd(), 'public', 'images_BHT', filePath);
     if (fsSync.existsSync(candidatePath1)) {
       const fileBuffer = await fs.readFile(candidatePath1);
       return new NextResponse(new Uint8Array(fileBuffer), {

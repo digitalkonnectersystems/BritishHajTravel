@@ -123,7 +123,7 @@ CREATE TABLE `visa_enquiries` (
 	`email` varchar(255) NOT NULL,
 	`phone` varchar(50) NOT NULL,
 	`travelers_count` int DEFAULT 1,
-	`nationality` varchar(100) DEFAULT 'Canadian',
+	`nationality` varchar(100) DEFAULT 'British',
 	`message` text,
 	`status` varchar(50) DEFAULT 'new',
 	`created_at` timestamp DEFAULT (now()),

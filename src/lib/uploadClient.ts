@@ -41,24 +41,24 @@ export const uploadFileToFtp = uploadFile;
 
 /**
  * Ensures any uploaded media URL is clean, rewrites legacy /media or /uploads paths,
- * and standardizes everything to /images_KTC.
+ * and standardizes everything to /images_BHT.
  */
 export function sanitizeMediaUrl(url: string): string {
   if (!url) return '';
-  const mediaBase = (process.env.NEXT_PUBLIC_MEDIA_URL || '/images_KTC').replace(/\/$/, '');
+  const mediaBase = (process.env.NEXT_PUBLIC_MEDIA_URL || '/images_BHT').replace(/\/$/, '');
 
   // Strip full remote host URLs
-  if (url.startsWith('https://media.kingtravelcan.com')) {
-    return url.replace(/^https?:\/\/media\.kingtravelcan\.com\/?/, `${mediaBase}/`);
+  if (url.startsWith('https://media.britishhajjtravel.com')) {
+    return url.replace(/^https?:\/\/media\.britishhajjtravel\.com\/?/, `${mediaBase}/`);
   }
-  if (url.startsWith('https://kingtravelcan.com/media/')) {
-    return url.replace(/^https?:\/\/kingtravelcan\.com\/media\//, `${mediaBase}/`);
+  if (url.startsWith('https://britishhajjtravel.com/media/')) {
+    return url.replace(/^https?:\/\/britishhajjtravel\.com\/media\//, `${mediaBase}/`);
   }
-  if (url.startsWith('https://www.kingtravelcan.com/media/')) {
-    return url.replace(/^https?:\/\/www\.kingtravelcan\.com\/media\//, `${mediaBase}/`);
+  if (url.startsWith('https://www.britishhajjtravel.com/media/')) {
+    return url.replace(/^https?:\/\/www\.britishhajjtravel\.com\/media\//, `${mediaBase}/`);
   }
 
-  // Rewrite legacy relative paths to /images_KTC/
+  // Rewrite legacy relative paths to /images_BHT/
   if (url.startsWith('/media/')) {
     return url.replace(/^\/media\//, `${mediaBase}/`);
   }
@@ -68,7 +68,7 @@ export function sanitizeMediaUrl(url: string): string {
   if (url.startsWith('uploads/')) {
     return `${mediaBase}/${url}`;
   }
-  if (url.startsWith('images_KTC/')) {
+  if (url.startsWith('images_BHT/')) {
     return `/${url}`;
   }
 
@@ -81,11 +81,11 @@ export function sanitizeMediaUrl(url: string): string {
 export function generateAutoAltText(fileOrName: File | string, contextTitle?: string): string {
   if (contextTitle && contextTitle.trim()) {
     const cleanContext = contextTitle.replace(/[^a-zA-Z0-9\s-]/g, '').trim();
-    return `Official ${cleanContext} - King Travel UK`;
+    return `Official ${cleanContext} - British Hajj Travel UK`;
   }
 
   const filename = typeof fileOrName === 'string' ? fileOrName : fileOrName.name;
-  if (!filename) return 'King Travel UK Image';
+  if (!filename) return 'British Hajj Travel UK Image';
 
   // Strip path and extension
   const basename = filename.split('/').pop()?.split('\\').pop() || filename;
@@ -98,5 +98,5 @@ export function generateAutoAltText(fileOrName: File | string, contextTitle?: st
     .replace(/^\w/, (c) => c.toUpperCase())
     .trim();
 
-  return `${cleanName} - King Travel UK`;
+  return `${cleanName} - British Hajj Travel UK`;
 }

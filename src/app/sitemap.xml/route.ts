@@ -10,7 +10,7 @@ export async function GET() {
   try {
     const seoSettings = await getSeoIntelligenceSettings();
     const canonicalOrigin = resolveCanonicalPublicOrigin(seoSettings);
-    const baseUrl = canonicalOrigin || 'https://www.kingtravelcan.com';
+    const baseUrl = canonicalOrigin || 'https://www.britishhajjtravel.com';
     const sitemapXml = await generateSitemapXml(baseUrl);
 
     return new NextResponse(sitemapXml, {

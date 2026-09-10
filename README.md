@@ -1,6 +1,6 @@
 # British Hajj Travel UK — Next.js Application
 
-A modern, full-stack Next.js application built for **British Hajj Travel UK** — a licensed Canadian travel agency specializing in Hajj & Umrah pilgrimages, Saudi visa processing, and global airline ticketing.
+A modern, full-stack Next.js application built for **British Hajj Travel UK** — a licensed British travel agency specializing in Hajj & Umrah pilgrimages, Saudi visa processing, and global airline ticketing.
 
 ---
 

@@ -40,7 +40,7 @@ const hajjCardsData = [
     aziziyaHotel: {
       name: "Aziziya Hotel",
       location: "Near Jamarat",
-      image: "/images_KTC/packages/aziziya-hotel-makkah-1788162953272.jpg",
+      image: "/images_BHT/packages/aziziya-hotel-makkah-1788162953272.jpg",
       badge: "Full Board",
       badgeIcon: "ClipboardCheck",
       nights: "3 Nights",
@@ -48,7 +48,7 @@ const hajjCardsData = [
     minaHotel: {
       name: "Mina Camp",
       location: "Maktab - A Category",
-      image: "/images_KTC/packages/mina-maktab-a-ktc-1788162957394.png",
+      image: "/images_BHT/packages/mina-maktab-a-bht-1788162957394.png",
       badge: "Full Board",
       badgeIcon: "ClipboardCheck",
       nights: "3 Nights",
@@ -82,7 +82,7 @@ const hajjCardsData = [
     aziziyaHotel: {
       name: "Aziziya Hotel",
       location: "Near Jamarat",
-      image: "/images_KTC/packages/aziziya-hotel-makkah-1788162953272.jpg",
+      image: "/images_BHT/packages/aziziya-hotel-makkah-1788162953272.jpg",
       badge: "Full Board",
       badgeIcon: "ClipboardCheck",
       nights: "3 Nights",
@@ -90,7 +90,7 @@ const hajjCardsData = [
     minaHotel: {
       name: "Mina Camp",
       location: "Maktab - A Category",
-      image: "/images_KTC/packages/mina-maktab-a-ktc-1788162957394.png",
+      image: "/images_BHT/packages/mina-maktab-a-bht-1788162957394.png",
       badge: "Full Board",
       badgeIcon: "ClipboardCheck",
       nights: "3 Nights",
@@ -123,7 +123,7 @@ const hajjCardsData = [
     aziziyaHotel: {
       name: "Aziziya Hotel",
       location: "Near Jamarat",
-      image: "/images_KTC/packages/aziziya-hotel-makkah-1788162953272.jpg",
+      image: "/images_BHT/packages/aziziya-hotel-makkah-1788162953272.jpg",
       badge: "Full Board",
       badgeIcon: "ClipboardCheck",
       nights: "3 Nights",
@@ -131,7 +131,7 @@ const hajjCardsData = [
     minaHotel: {
       name: "Mina Camp",
       location: "Maktab - A Category",
-      image: "/images_KTC/packages/mina-maktab-a-ktc-1788162957394.png",
+      image: "/images_BHT/packages/mina-maktab-a-bht-1788162957394.png",
       badge: "Full Board",
       badgeIcon: "ClipboardCheck",
       nights: "3 Nights",
@@ -162,11 +162,11 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
         title={
           pageData?.bannerTitle ||
           pageData?.title ||
-          "Hajj Packages from UK 2027 <br /><span>Travel with Confidence</span> by King Travel"
+          "Hajj Packages from UK 2027 <br /><span>Travel with Confidence</span> by British Hajj Travel"
         }
         description={
           pageData?.bannerDescription ||
-          "Perform your sacred obligation of Hajj in 2027 with comfort, organization, and spiritual focus. King Travel proudly offers premium Hajj Packages from UK 2027, designed to provide Canadian Muslims with a smooth and well-managed pilgrimage experience."
+          "Perform your sacred obligation of Hajj in 2027 with comfort, organization, and spiritual focus. British Hajj Travel proudly offers premium Hajj Packages from UK 2027, designed to provide British Muslims with a smooth and well-managed pilgrimage experience."
         }
         bgImage={pageData?.bannerBgImage}
         position={pageData?.bannerPosition}
@@ -230,7 +230,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
               const rawPrice = (card.startingPrice || card.price || "12,995").toString();
               const price = rawPrice.startsWith("£") ? rawPrice : `£ ${rawPrice.replace("$", "").trim()}`;
               const priceSubtext = card.priceSubtext || "£ / QUAD OCCUPANCY";
-              const operatorName = card.operatorName || "King Travel";
+              const operatorName = card.operatorName || "British Hajj Travel";
               const operatorRating = card.operatorRating || "4.4/5";
               const btnLabel = card.btnLabel || "Book Hajj 2027";
               const btnLink = card.btnLink || `https://wa.me/19056248344?text=Hi,%20I'm%20interested%20in%20${encodeURIComponent(title)}`;
@@ -322,8 +322,8 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
               const eligibilityList = Array.isArray(card.eligibility) && card.eligibility.length > 0
                 ? card.eligibility
                 : [
-                  'Canadian & U.S. citizens with Pakistani passports.',
-                  'Pakistani passport holders with Canadian PR or American Green Card.',
+                  'British & U.S. citizens with Pakistani passports.',
+                  'Pakistani passport holders with British PR or American Green Card.',
                   'All foreign passport holders with Pakistan passport.',
                   'Side trip to Pakistan or any other destination available with an additional cost.',
                 ];
@@ -675,10 +675,10 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
                     <img
                       src="/img/round-logo.png"
                       className="w-12 h-12 rounded-full border border-white/20 object-cover"
-                      alt="King Travel logo"
+                      alt="British Hajj Travel logo"
                     />
                     <div className="text-sm font-bold text-white">
-                      King Travel Can Ltd - Mississauga
+                      British Hajj Travel LTD - Mississauga
                     </div>
                   </div>
                   <div className="flex items-center gap-1 text-amber-400 text-lg">

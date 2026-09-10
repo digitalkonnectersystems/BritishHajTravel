@@ -66,9 +66,9 @@ const HEADING_FONT_STYLES: Record<string, { fontSize: string; fontWeight: string
 
 const COLOR_OPTIONS = [
   { id: 'default', label: 'Default Ink', value: '', previewBg: '#132723' },
-  { id: 'primary', label: 'Primary', value: '#004B39', previewBg: '#004B39' },
-  { id: 'gold', label: 'Gold', value: '#DB9E30', previewBg: '#DB9E30' },
-  { id: 'gold-lt', label: 'Gold Light', value: '#E7BE6E', previewBg: '#E7BE6E' },
+  { id: 'primary', label: 'Primary', value: '#020e43', previewBg: '#020e43' },
+  { id: 'gold', label: 'Gold', value: '#b50007', previewBg: '#b50007' },
+  { id: 'gold-lt', label: 'Gold Light', value: '#910006', previewBg: '#910006' },
   { id: 'ink-lt', label: 'Ink Light', value: '#899391', previewBg: '#899391' },
 ];
 
@@ -287,10 +287,12 @@ export default function TiptapEditor({
   const getActiveColor = () => {
     const rawColor = (editor.getAttributes('textStyle').color as string)?.toLowerCase() || '';
     if (!rawColor) return 'default';
-    if (rawColor === '#004b39' || rawColor.includes('var(--primary)') || rawColor === 'rgb(0, 75, 57)') return 'primary';
-    if (rawColor === '#db9e30' || rawColor.includes('var(--gold)') || rawColor === 'rgb(219, 158, 48)') return 'gold';
+    if (rawColor === '#020e43' || rawColor.includes('var(--primary)') || rawColor === 'rgb(2, 14, 67)') return 'primary';
+    if (rawColor === '#b50007' || rawColor.includes('var(--gold)') || rawColor === 'rgb(181, 0, 7)') 
+    return 'gold';
     if (rawColor === '#e7be6e' || rawColor.includes('var(--gold-lt)') || rawColor === 'rgb(231, 190, 110)') return 'gold-lt';
-    if (rawColor === '#132723' || rawColor.includes('var(--ink)') || rawColor === 'rgb(19, 39, 35)') return 'ink';
+    if (rawColor === '#132723' || rawColor.includes('var(--ink)') || rawColor === 'rgb(19, 39, 35)') 
+    return 'ink';
     if (rawColor === '#899391' || rawColor.includes('var(--ink-light)') || rawColor.includes('var(--ink-lt)')) return 'ink-lt';
     return rawColor;
   };

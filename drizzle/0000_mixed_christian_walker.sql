@@ -6,7 +6,7 @@ CREATE TABLE `blog_posts` (
 	`content` text NOT NULL,
 	`featured_image` text,
 	`category` varchar(100) DEFAULT 'Pilgrimage Guide',
-	`author_name` varchar(100) DEFAULT 'King Travel Editorial',
+	`author_name` varchar(100) DEFAULT 'British Hajj Travel Editorial',
 	`is_published` boolean NOT NULL DEFAULT true,
 	`created_at` timestamp DEFAULT (now()),
 	`updated_at` timestamp DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,

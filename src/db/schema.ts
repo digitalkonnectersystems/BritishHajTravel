@@ -8,6 +8,7 @@ import {
   mysqlEnum,
   decimal,
   json,
+  index,
 } from 'drizzle-orm/mysql-core';
 
 // 1. Users & Administrator Accounts
@@ -213,7 +214,7 @@ export const visaEnquiries = mysqlTable('visa_enquiries', {
   email: varchar('email', { length: 255 }).notNull(),
   phone: varchar('phone', { length: 50 }).notNull(),
   travelersCount: int('travelers_count').default(1),
-  nationality: varchar('nationality', { length: 100 }).default('Canadian'),
+  nationality: varchar('nationality', { length: 100 }).default('British'),
   message: text('message'),
   status: varchar('status', { length: 50 }).default('new'),
   createdAt: timestamp('created_at').defaultNow(),
@@ -249,7 +250,7 @@ export const blogPosts = mysqlTable('blog_posts', {
   content: text('content').notNull(),
   featuredImage: text('featured_image'),
   category: varchar('category', { length: 100 }).default('Pilgrimage Guide'),
-  authorName: varchar('author_name', { length: 100 }).default('King Travel Editorial'),
+  authorName: varchar('author_name', { length: 100 }).default('British Hajj Travel Editorial'),
   isPublished: boolean('is_published').notNull().default(true),
   publishedAt: timestamp('published_at'),
   seoSettings: json('seo_settings'),
@@ -286,6 +287,38 @@ export const sitePages = mysqlTable('site_pages', {
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow().onUpdateNow(),
 });
+
+// 10a. Hotel Directory
+export const hotelCategories = mysqlTable('hotel_categories', {
+  id: int('id').autoincrement().primaryKey(),
+  name: varchar('name', { length: 120 }).notNull(),
+  slug: varchar('slug', { length: 120 }).notNull().unique(),
+  displayOrder: int('display_order').notNull().default(0),
+  isPublished: boolean('is_published').notNull().default(true),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow().onUpdateNow(),
+});
+
+export const hotels = mysqlTable('hotels', {
+  id: int('id').autoincrement().primaryKey(),
+  categoryId: int('category_id')
+    .notNull()
+    .references(() => hotelCategories.id, { onDelete: 'cascade' }),
+  name: varchar('name', { length: 255 }).notNull(),
+  city: varchar('city', { length: 120 }).notNull(),
+  imageUrl: text('image_url'),
+  rating: decimal('rating', { precision: 2, scale: 1 }).default('5.0'),
+  description: text('description'),
+  priceLabel: varchar('price_label', { length: 100 }).default('TBC'),
+  pricePeriod: varchar('price_period', { length: 50 }).default('per Night'),
+  websiteUrl: text('website_url').notNull(),
+  displayOrder: int('display_order').notNull().default(0),
+  isPublished: boolean('is_published').notNull().default(true),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow().onUpdateNow(),
+}, (table) => ({
+  categoryOrderIdx: index('hotels_category_order_idx').on(table.categoryId, table.displayOrder),
+}));
 
 // 11. Sitemap Configs
 export const sitemapConfigs = mysqlTable('sitemap_configs', {

@@ -162,7 +162,7 @@ export default function IconPicker({
         <div className="flex items-center gap-2 overflow-hidden truncate">
           {selectedIconName ? (
             <>
-              <div className="w-5 h-5 rounded-md bg-emerald-50 text-primary flex items-center justify-center shrink-0">
+              <div className="w-5 h-5 rounded-md bg-blue-100 text-primary flex items-center justify-center shrink-0">
                 <DynamicIcon name={selectedIconName} className="w-3.5 h-3.5" />
               </div>
               <span className="font-semibold text-slate-800 truncate">{selectedLabel}</span>
@@ -196,7 +196,7 @@ export default function IconPicker({
               type="button"
               onClick={() => setActiveProviderTab('lucide')}
               className={`flex-1 py-1.5 rounded-lg transition-all ${activeProviderTab === 'lucide'
-                ? 'bg-gold text-ink shadow-xs'
+                ? 'bg-gold text-white shadow-xs'
                 : 'hover:bg-ink/30 text-ink-lt hover:text-ink'
                 }`}
             >
@@ -206,7 +206,7 @@ export default function IconPicker({
               type="button"
               onClick={() => setActiveProviderTab('dynamic')}
               className={`flex-1 py-1.5 rounded-lg transition-all ${activeProviderTab === 'dynamic'
-                ? 'bg-gold text-ink shadow-xs'
+                ? 'bg-gold text-white shadow-xs'
                 : 'hover:bg-ink/30 text-ink-lt hover:text-ink'
                 }`}
             >

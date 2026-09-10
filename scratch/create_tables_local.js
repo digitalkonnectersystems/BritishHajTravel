@@ -72,7 +72,7 @@ async function createLocalTables() {
       email VARCHAR(255) NOT NULL,
       phone VARCHAR(50) NOT NULL,
       travelers_count INT DEFAULT 1,
-      nationality VARCHAR(100) DEFAULT 'Canadian',
+      nationality VARCHAR(100) DEFAULT 'British',
       message TEXT,
       status VARCHAR(50) DEFAULT 'new',
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

@@ -168,7 +168,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
           <button
             type="button"
             onClick={() => setIsCreating(!isCreating)}
-            className="bg-gold hover:bg-[#c38927] text-slate-950 px-5 py-2.5 rounded-full text-xs font-extrabold transition-colors cursor-pointer border-none shadow-md flex items-center gap-2"
+            className="bg-gold hover:bg-gold-lt text-white px-5 py-2.5 rounded-full text-xs font-extrabold transition-colors cursor-pointer border-none shadow-md flex items-center gap-2"
           >
             <Plus className="w-4 h-4" />
             {isCreating ? 'Close Form' : 'Create New Package'}
@@ -249,7 +249,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
                 <button
                   type="button"
                   onClick={addPackagePriceRow}
-                  className="text-[11px] font-extrabold text-primary border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-full transition-colors cursor-pointer flex items-center gap-1"
+                  className="text-[11px] font-extrabold text-primary border border-primary bg-blue-100 hover:text-white hover:bg-primary px-3 py-1.5 rounded-full transition-colors cursor-pointer flex items-center gap-1"
                 >
                   + Add Package Type
                 </button>
@@ -439,7 +439,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
               id: `pkg_${selectedSeoPkg.id}`,
               title: selectedSeoPkg.title,
               slug: `/package/${selectedSeoPkg.id}`,
-              metaTitle: `${selectedSeoPkg.title} | King Travel UK`,
+              metaTitle: `${selectedSeoPkg.title} | British Hajj Travel UK`,
               metaDescription: `Book official ${selectedSeoPkg.title} from UK. Starting at £ $${selectedSeoPkg.startingPrice}. ${selectedSeoPkg.shortDescription || 'Verified visa, luxury hotel stays, flights included.'}`,
             }
             : null

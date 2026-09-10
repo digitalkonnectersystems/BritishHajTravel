@@ -112,8 +112,8 @@ export default function AdminSettingsPage() {
   };
 
   // Form states
-  const [siteName, setSiteName] = useState('King Travel UK');
-  const [altText, setAltText] = useState('Official King Travel UK Logo');
+  const [siteName, setSiteName] = useState('British Hajj Travel UK');
+  const [altText, setAltText] = useState('Official British Hajj Travel UK Logo');
   const [showSearchBar, setShowSearchBar] = useState(true);
   const [customCss, setCustomCss] = useState('/* Add custom CSS rules here */');
 
@@ -137,12 +137,12 @@ export default function AdminSettingsPage() {
 
   // Site Identity State
   const [identityData, setIdentityData] = useState<any>({
-    siteName: 'King Travel UK',
+    siteName: 'British Hajj Travel UK',
     tagline: '',
     logo: '/img/logo.png',
-    logoAlt: 'King Travel UK Logo',
+    logoAlt: 'British Hajj Travel UK Logo',
     favicon: '/img/favicon.ico',
-    faviconAlt: 'King Travel Favicon',
+    faviconAlt: 'British Hajj Travel Favicon',
   });
   const [identitySaveMsg, setIdentitySaveMsg] = useState<string | null>(null);
 
@@ -227,7 +227,7 @@ export default function AdminSettingsPage() {
   const [loginAuthData, setLoginAuthData] = useState<any>({
     backgroundImage: '',
     backgroundAlt: '',
-    footerText: '© 2026 King Travel Can Ltd. All Rights Reserved.',
+    footerText: '© 2026 British Hajj Travel LTD. All Rights Reserved.',
     maintenanceMode: false,
   });
   const [loginSaveMsg, setLoginSaveMsg] = useState<string | null>(null);
@@ -397,7 +397,7 @@ export default function AdminSettingsPage() {
     ],
     visaConsultation: [
       { id: '1', label: 'Applicant Name', type: 'text', placeholder: 'Full passport name', required: true },
-      { id: '2', label: 'Nationality', type: 'text', placeholder: 'e.g. Canadian', required: true },
+      { id: '2', label: 'Nationality', type: 'text', placeholder: 'e.g. British', required: true },
       { id: '3', label: 'Passport Type', type: 'select', placeholder: 'Regular / Diplomatic', required: true },
       { id: '4', label: 'Destination', type: 'text', placeholder: 'Saudi Arabia', required: true },
       { id: '5', label: 'Phone Number', type: 'tel', placeholder: '+1 (555) 000-0000', required: true },
@@ -452,13 +452,13 @@ export default function AdminSettingsPage() {
     formBccRoutes?: Record<string, string>;
     formRoutingRules?: Array<{ id: string; forms: string[]; sendTo: string; cc: string; bcc: string }>;
   }>({
-    sendToEmail: 'saudivisa@kingtravelcan.com',
+    sendToEmail: 'saudivisa@britishhajjtravel.com',
     emailSubjectLine: 'New Pilgrimage Form Submission',
-    fromName: 'King Travel UK',
-    fromEmail: 'no-reply@kingtravelcan.com',
-    replyTo: 'no-reply@kingtravelcan.com',
+    fromName: 'British Hajj Travel UK',
+    fromEmail: 'no-reply@britishhajjtravel.com',
+    replyTo: 'no-reply@britishhajjtravel.com',
     successHeading: 'Message Sent Successfully!',
-    successDescription: 'Thank you for contacting King Travel UK. We will respond within 24 hours.',
+    successDescription: 'Thank you for contacting British Hajj Travel UK. We will respond within 24 hours.',
     smtpHost: '',
     smtpPort: '587',
     smtpUsername: '',
@@ -468,10 +468,10 @@ export default function AdminSettingsPage() {
     formCcRoutes: {},
     formBccRoutes: {},
     formRoutingRules: [
-      { id: 'rule_1', forms: ['quoteForm', 'hajjCustomizeForm', 'contact', 'dropUsMessage'], sendTo: 'saudivisa@kingtravelcan.com', cc: '', bcc: '' },
-      { id: 'rule_2', forms: ['packageDetailForm', 'hajjPackageDetailForm', 'packageInquiry', 'blogSidebarForm'], sendTo: 'booking@kingtravelcan.com', cc: '', bcc: '' },
-      { id: 'rule_3', forms: ['visaConsultation'], sendTo: 'visas@kingtravelcan.com', cc: '', bcc: '' },
-      { id: 'rule_4', forms: ['flightInquiry'], sendTo: 'flights@kingtravelcan.com', cc: '', bcc: '' },
+      { id: 'rule_1', forms: ['quoteForm', 'hajjCustomizeForm', 'contact', 'dropUsMessage'], sendTo: 'saudivisa@britishhajjtravel.com', cc: '', bcc: '' },
+      { id: 'rule_2', forms: ['packageDetailForm', 'hajjPackageDetailForm', 'packageInquiry', 'blogSidebarForm'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
+      { id: 'rule_3', forms: ['visaConsultation'], sendTo: 'visas@britishhajjtravel.com', cc: '', bcc: '' },
+      { id: 'rule_4', forms: ['flightInquiry'], sendTo: 'flights@britishhajjtravel.com', cc: '', bcc: '' },
     ],
   });
 
@@ -486,16 +486,16 @@ export default function AdminSettingsPage() {
   );
 
   const [formsData, setFormsData] = useState<any>({
-    quoteForm: { title: 'Homepage Hero Banner — Get a Free Quote Form', subtitle: 'Inline quote form embedded in the Homepage & Umrah landing page hero banner.', recipientEmail: 'saudivisa@kingtravelcan.com', successMessage: 'Thank you! Your quote request has been received.', enabled: true, buttonText: 'Submit Quote' },
-    packageDetailForm: { title: 'Umrah Package Booking Form (Detail Page & Popup Modal)', subtitle: 'Primary booking form used across individual Umrah detail pages (/package/[slug]) and the “Book Now” popup modal.', recipientEmail: 'booking@kingtravelcan.com', successMessage: 'Your package booking request has been submitted.', enabled: true, buttonText: 'Book Package' },
-    hajjPackageDetailForm: { title: 'Hajj Package Booking Form (Detail Page & Popup Modal)', subtitle: 'Dedicated booking form used across individual Hajj detail pages (/package/[slug]) and the “Book Now” popup modal.', recipientEmail: 'booking@kingtravelcan.com', successMessage: 'Your Hajj package booking request has been submitted.', enabled: true, buttonText: 'Book Hajj 2027' },
-    hajjCustomizeForm: { title: 'Hajj Page — Customize Your Hajj Package Form', subtitle: 'Inline quote form on the /hajj page for custom Hajj 2027 package requests.', recipientEmail: 'saudivisa@kingtravelcan.com', successMessage: 'Thank you! Your Hajj inquiry has been received.', enabled: true, buttonText: 'Submit Hajj Inquiry' },
-    contact: { title: 'Contact Page — Enquiry Form', subtitle: 'Primary contact form on the /contact page for general enquiries & support.', recipientEmail: 'saudivisa@kingtravelcan.com', successMessage: 'Thank you! Your message has been received.', enabled: true, buttonText: 'Send Message' },
-    packageInquiry: { title: 'Pilgrimage Package — Custom Inquiry Form', subtitle: 'Dynamic inquiry form placed on Umrah/Hajj package listing pages via Page Builder.', recipientEmail: 'booking@kingtravelcan.com', successMessage: 'Package inquiry submitted successfully!', enabled: true, buttonText: 'Submit Package Inquiry' },
-    visaConsultation: { title: 'Visa Services — Consultation Form', subtitle: 'Saudi eVisa & Pilgrimage visa consultation form placed via Page Builder on visa pages.', recipientEmail: 'visas@kingtravelcan.com', successMessage: 'Visa application submitted!', enabled: true, buttonText: 'Submit Visa Request' },
-    flightInquiry: { title: 'Flights Page — Booking Inquiry Form', subtitle: 'Flight quote & booking assistance form on the flights page.', recipientEmail: 'flights@kingtravelcan.com', successMessage: 'Flight request received!', enabled: true, buttonText: 'Request Booking' },
-    dropUsMessage: { title: 'General — Drop Us A Message Form', subtitle: 'General purpose contact form used across multiple pages via Page Builder.', recipientEmail: 'saudivisa@kingtravelcan.com', successMessage: 'Thank you! Your message has been received.', enabled: true, buttonText: 'Send Enquiry' },
-    blogSidebarForm: { title: 'Blog Detail Page — Sidebar Booking Form', subtitle: 'Sticky sidebar booking widget shown on every blog/article detail page.', recipientEmail: 'booking@kingtravelcan.com', successMessage: 'Your booking inquiry has been submitted.', enabled: true, buttonText: 'Book Your Trip' },
+    quoteForm: { title: 'Homepage Hero Banner — Get a Free Quote Form', subtitle: 'Inline quote form embedded in the Homepage & Umrah landing page hero banner.', recipientEmail: 'saudivisa@britishhajjtravel.com', successMessage: 'Thank you! Your quote request has been received.', enabled: true, buttonText: 'Submit Quote' },
+    packageDetailForm: { title: 'Umrah Package Booking Form (Detail Page & Popup Modal)', subtitle: 'Primary booking form used across individual Umrah detail pages (/package/[slug]) and the “Book Now” popup modal.', recipientEmail: 'booking@britishhajjtravel.com', successMessage: 'Your package booking request has been submitted.', enabled: true, buttonText: 'Book Package' },
+    hajjPackageDetailForm: { title: 'Hajj Package Booking Form (Detail Page & Popup Modal)', subtitle: 'Dedicated booking form used across individual Hajj detail pages (/package/[slug]) and the “Book Now” popup modal.', recipientEmail: 'booking@britishhajjtravel.com', successMessage: 'Your Hajj package booking request has been submitted.', enabled: true, buttonText: 'Book Hajj 2027' },
+    hajjCustomizeForm: { title: 'Hajj Page — Customize Your Hajj Package Form', subtitle: 'Inline quote form on the /hajj page for custom Hajj 2027 package requests.', recipientEmail: 'saudivisa@britishhajjtravel.com', successMessage: 'Thank you! Your Hajj inquiry has been received.', enabled: true, buttonText: 'Submit Hajj Inquiry' },
+    contact: { title: 'Contact Page — Enquiry Form', subtitle: 'Primary contact form on the /contact page for general enquiries & support.', recipientEmail: 'saudivisa@britishhajjtravel.com', successMessage: 'Thank you! Your message has been received.', enabled: true, buttonText: 'Send Message' },
+    packageInquiry: { title: 'Pilgrimage Package — Custom Inquiry Form', subtitle: 'Dynamic inquiry form placed on Umrah/Hajj package listing pages via Page Builder.', recipientEmail: 'booking@britishhajjtravel.com', successMessage: 'Package inquiry submitted successfully!', enabled: true, buttonText: 'Submit Package Inquiry' },
+    visaConsultation: { title: 'Visa Services — Consultation Form', subtitle: 'Saudi eVisa & Pilgrimage visa consultation form placed via Page Builder on visa pages.', recipientEmail: 'visas@britishhajjtravel.com', successMessage: 'Visa application submitted!', enabled: true, buttonText: 'Submit Visa Request' },
+    flightInquiry: { title: 'Flights Page — Booking Inquiry Form', subtitle: 'Flight quote & booking assistance form on the flights page.', recipientEmail: 'flights@britishhajjtravel.com', successMessage: 'Flight request received!', enabled: true, buttonText: 'Request Booking' },
+    dropUsMessage: { title: 'General — Drop Us A Message Form', subtitle: 'General purpose contact form used across multiple pages via Page Builder.', recipientEmail: 'saudivisa@britishhajjtravel.com', successMessage: 'Thank you! Your message has been received.', enabled: true, buttonText: 'Send Enquiry' },
+    blogSidebarForm: { title: 'Blog Detail Page — Sidebar Booking Form', subtitle: 'Sticky sidebar booking widget shown on every blog/article detail page.', recipientEmail: 'booking@britishhajjtravel.com', successMessage: 'Your booking inquiry has been submitted.', enabled: true, buttonText: 'Book Your Trip' },
   });
   const [formsSaveMsg, setFormsSaveMsg] = useState<string | null>(null);
   const [savingForms, setSavingForms] = useState(false);
@@ -1085,13 +1085,13 @@ export default function AdminSettingsPage() {
             <div className="flex gap-2.5">
               <button
                 onClick={() => setSubTab('header')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold cursor-pointer transition-all border ${subTab === 'header' ? 'border-primary bg-[#e6f4f1] text-primary' : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300'}`}
+                className={`px-4 py-2 rounded-xl text-xs font-bold cursor-pointer transition-all border ${subTab === 'header' ? 'border-primary bg-blue-100 text-primary' : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300'}`}
               >
                 📋 Header Builder
               </button>
               <button
                 onClick={() => setSubTab('footer')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold cursor-pointer transition-all border ${subTab === 'footer' ? 'border-primary bg-[#e6f4f1] text-primary' : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300'}`}
+                className={`px-4 py-2 rounded-xl text-xs font-bold cursor-pointer transition-all border ${subTab === 'footer' ? 'border-primary bg-blue-100 text-primary' : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300'}`}
               >
                 👣 Footer Builder
               </button>
@@ -1100,7 +1100,7 @@ export default function AdminSettingsPage() {
               <button
                 type="button"
                 onClick={handleSaveHeaderAll}
-                className="bg-primary text-white hover:bg-[#00382B] px-5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer border-none"
+                className="bg-primary text-white hover:bg-white hover:text-primary px-5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer border-none"
               >
                 <Save className="w-4 h-4 text-emerald-300" /> Save Header Settings
               </button>
@@ -1123,7 +1123,7 @@ export default function AdminSettingsPage() {
                   <button
                     type="button"
                     onClick={handleSaveIdentity}
-                    className="bg-primary text-white hover:bg-[#00382B] px-4 py-1.5 rounded-lg text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer border-none"
+                    className="bg-primary text-white hover:bg-white hover:text-primary px-4 py-1.5 rounded-lg text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer border-none"
                   >
                     <Save className="w-3.5 h-3.5 text-emerald-300" /> Save Logo &amp; Identity
                   </button>
@@ -1200,7 +1200,7 @@ export default function AdminSettingsPage() {
                       setEditingItem({ id: String(Date.now()), label: '', url: '', level: 1, parentId: null, children: [] });
                       setIsModalOpen(true);
                     }}
-                    className="bg-primary text-white hover:bg-[#00382B] px-3 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer border-none shadow-sm flex items-center gap-1"
+                    className="bg-primary text-white hover:bg-white hover:text-primary px-3 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer border-none shadow-sm flex items-center gap-1"
                   >
                     + Add Item
                   </button>
@@ -1243,20 +1243,20 @@ export default function AdminSettingsPage() {
                     >
                       {/* Level 1: White/Emerald Card */}
                       <div
-                        className="flex items-center justify-between p-3 rounded-xl border border-emerald-800/20 bg-gradient-to-r from-emerald-50/70 to-white shadow-xs transition-all"
+                        className="flex items-center justify-between p-3 rounded-xl border border-blue-200 bg-blue-50 shadow-xs transition-all"
                         style={dragOverL1 === item.id ? { borderLeft: '3px solid #004B39', background: 'linear-gradient(to right, #d1fae5, white)' } : {}}
                       >
                         <div className="flex items-center gap-2.5">
                           <span className="text-ink-lt font-bold text-xs cursor-grab active:cursor-grabbing select-none" title="Drag to reorder">⋮⋮</span>
                           <span className="font-bold text-xs text-slate-800">{item.label}</span>
                           {item.children && item.children.length > 0 && (
-                            <span className="text-[10px] font-extrabold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
+                            <span className="text-[10px] font-extrabold bg-blue-300 text-blue-700 px-2 py-0.5 rounded-full">
                               {item.children.length} sub
                             </span>
                           )}
                         </div>
                         <div className="flex items-center gap-3">
-                          <span className="text-xs text-slate-500 font-mono">{item.url}</span>
+                          <span className="text-xs text-blue-700 font-mono">{item.url}</span>
                           <button
                             type="button"
                             title="Add Sub Item"
@@ -1264,7 +1264,7 @@ export default function AdminSettingsPage() {
                               setEditingItem({ id: String(Date.now()), label: '', url: '', level: 2, parentId: item.id, children: [] });
                               setIsModalOpen(true);
                             }}
-                            className="text-xs text-emerald-700 hover:text-emerald-900 font-bold cursor-pointer bg-emerald-100 hover:bg-emerald-200 px-2 py-0.5 rounded border-none"
+                            className="text-xs text-blue-700 hover:text-blue-900 font-bold cursor-pointer bg-blue-100 hover:bg-blue-200 px-2 py-0.5 rounded border-none"
                           >
                             + Sub
                           </button>
@@ -1274,7 +1274,7 @@ export default function AdminSettingsPage() {
                               setEditingItem({ ...item });
                               setIsModalOpen(true);
                             }}
-                            className="flex gap-1 px-3 py-1.5 rounded-lg bg-gold/50 text-primary no-underline text-[11px] font-bold hover:bg-gold transition-colors"
+                            className="flex gap-1 px-3 py-1.5 rounded-lg bg-emerald-200 text-emerald-700 no-underline text-[11px] font-bold hover:bg-emerald-300 transition-colors"
                           >
                             <Pencil className="w-3 h-3" />
                           </button>
@@ -1284,7 +1284,7 @@ export default function AdminSettingsPage() {
                               const newTree = navTree.filter(t => t.id !== item.id);
                               handleSaveNav(newTree);
                             }}
-                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-50 text-red-600 border border-red-200 text-[11px] font-bold cursor-pointer disabled:opacity-50"
+                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-50 text-red-600 hover:text-white hover:bg-red-600 border border-red-200 text-[11px] font-bold cursor-pointer disabled:opacity-50"
                           >
                             <Trash2 className="w-3 h-3" />
                           </button>
@@ -1338,27 +1338,27 @@ export default function AdminSettingsPage() {
                             style={{ opacity: dragL2Key.current === l2key ? 0.4 : 1 }}
                           >
                             <div
-                              className="flex items-center justify-between p-2.5 rounded-xl border border-teal-200 bg-teal-50/70 shadow-xs transition-all"
+                              className="flex items-center justify-between p-2.5 rounded-xl border border-blue-200 bg-blue-50/70 shadow-xs transition-all"
                               style={dragOverL2 === l2key ? { borderLeft: '3px solid #0d9488', background: '#ccfbf1' } : {}}
                             >
                               <div className="flex items-center gap-2">
-                                <span className="text-teal-400 font-bold text-xs cursor-grab active:cursor-grabbing select-none" title="Drag to reorder">↳ ⋮⋮</span>
-                                <span className="font-bold text-xs text-teal-900">{sub.label}</span>
+                                <span className="text-blue-400 font-bold text-xs cursor-grab active:cursor-grabbing select-none" title="Drag to reorder">↳ ⋮⋮</span>
+                                <span className="font-bold text-xs text-blue-900">{sub.label}</span>
                                 {sub.children && sub.children.length > 0 && (
-                                  <span className="text-[10px] font-extrabold bg-sky-200 text-sky-900 px-2 py-0.5 rounded-full">
+                                  <span className="text-[10px] font-extrabold bg-blue-200 text-blue-800 px-2 py-0.5 rounded-full">
                                     {sub.children.length} sub
                                   </span>
                                 )}
                               </div>
                               <div className="flex items-center gap-2">
-                                <span className="text-xs text-teal-700 font-mono">{sub.url}</span>
+                                <span className="text-xs text-blue-700 font-mono">{sub.url}</span>
                                 <button
                                   type="button"
                                   onClick={() => {
                                     setEditingItem({ ...sub, parentId: item.id });
                                     setIsModalOpen(true);
                                   }}
-                                  className="flex gap-1 px-3 py-1.5 rounded-lg bg-gold/50 text-primary no-underline text-[11px] font-bold hover:bg-gold transition-colors"
+                                  className="flex gap-1 px-3 py-1.5 rounded-lg bg-emerald-200 text-emerald-700 no-underline text-[11px] font-bold hover:bg-emerald-300 transition-colors"
                                 >
                                   <Pencil className="w-3 h-3" />
                                 </button>
@@ -1373,7 +1373,7 @@ export default function AdminSettingsPage() {
                                     });
                                     handleSaveNav(newTree);
                                   }}
-                                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-50 text-red-600 border border-red-200 text-[11px] font-bold cursor-pointer disabled:opacity-50"
+                                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-50 text-red-600 hover:text-white hover:bg-red-600 border border-red-200 text-[11px] font-bold cursor-pointer disabled:opacity-50"
                                 >
                                   <Trash2 className="w-3 h-3" />
                                 </button>
@@ -1459,7 +1459,7 @@ export default function AdminSettingsPage() {
                 <button
                   type="button"
                   onClick={handleSaveHeaderAll}
-                  className="bg-primary text-white hover:bg-[#00382B] px-6 py-2.5 rounded-xl text-sm font-bold transition-all shadow-md flex items-center gap-2 cursor-pointer border-none"
+                  className="bg-primary text-white hover:bg-white hover:text-primary px-6 py-2.5 rounded-xl text-sm font-bold transition-all shadow-md flex items-center gap-2 cursor-pointer border-none"
                 >
                   <Save className="w-4 h-4 text-emerald-300" /> Save Header Settings
                 </button>
@@ -2108,7 +2108,7 @@ export default function AdminSettingsPage() {
                 <button
                   type="button"
                   onClick={handleSaveFooter}
-                  className="bg-primary text-white px-7 py-2.5 rounded-xl font-extrabold text-xs border-none cursor-pointer shadow-md hover:bg-[#00382B] transition-colors"
+                  className="bg-primary text-white px-7 py-2.5 rounded-xl font-extrabold text-xs border-none cursor-pointer shadow-md hover:bg-white hover:text-primary transition-colors"
                 >
                   💾 Save Footer Settings
                 </button>
@@ -2139,7 +2139,7 @@ export default function AdminSettingsPage() {
                     type="button"
                     disabled={savingSeo}
                     onClick={handleSaveSeoSettings}
-                    className="bg-primary text-white px-5 py-2.5 rounded-xl text-xs font-extrabold hover:bg-[#00382B] transition-all border-none cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95 disabled:opacity-50"
+                    className="bg-primary text-white px-5 py-2.5 rounded-xl text-xs font-extrabold hover:bg-white hover:text-primary transition-all border-none cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95 disabled:opacity-50"
                   >
                     <Save className="w-3.5 h-3.5" /> {savingSeo ? 'Saving...' : 'Save SEO Settings'}
                   </button>
@@ -2224,7 +2224,7 @@ export default function AdminSettingsPage() {
                     type="url"
                     value={seoData.canonicalSiteUrl || ''}
                     onChange={(e) => setSeoData({ ...seoData, canonicalSiteUrl: e.target.value.trim() })}
-                    placeholder="https://www.kingtravelcan.com"
+                    placeholder="https://www.britishhajjtravel.com"
                     className="w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs font-mono font-bold text-slate-800 outline-none focus:border-primary focus:bg-white transition-colors"
                   />
                 </div>
@@ -2281,14 +2281,14 @@ export default function AdminSettingsPage() {
                           ? `${seoData.canonicalSiteUrl.replace(/\/+$/, '')}/sitemap.xml`
                           : (typeof window !== 'undefined' && !window.location.hostname.includes('localhost')
                             ? `${window.location.origin}/sitemap.xml`
-                            : 'https://www.kingtravelcan.com/sitemap.xml')}
+                            : 'https://www.britishhajjtravel.com/sitemap.xml')}
                       </div>
                       <button
                         type="button"
                         onClick={() => {
                           const url = seoData.canonicalSiteUrl
                             ? `${seoData.canonicalSiteUrl.replace(/\/+$/, '')}/sitemap.xml`
-                            : (typeof window !== 'undefined' ? `${window.location.origin}/sitemap.xml` : 'https://www.kingtravelcan.com/sitemap.xml');
+                            : (typeof window !== 'undefined' ? `${window.location.origin}/sitemap.xml` : 'https://www.britishhajjtravel.com/sitemap.xml');
                           navigator.clipboard.writeText(url);
                           showNotification('Copied', 'Sitemap URL copied to clipboard!', 'success');
                         }}
@@ -2301,7 +2301,7 @@ export default function AdminSettingsPage() {
                         href="/sitemap.xml"
                         target="_blank"
                         rel="noreferrer"
-                        className="p-2.5 bg-primary hover:bg-[#00382B] text-white rounded-xl text-xs font-bold transition-colors flex items-center justify-center cursor-pointer shadow-2xs"
+                        className="p-2.5 bg-primary hover:bg-white hover:text-primary text-white rounded-xl text-xs font-bold transition-colors flex items-center justify-center cursor-pointer shadow-2xs"
                         title="Open Sitemap in new tab"
                       >
                         <ExternalLink className="w-4 h-4" />
@@ -2355,7 +2355,7 @@ export default function AdminSettingsPage() {
                         onClick={() => {
                           const url = seoData.canonicalSiteUrl
                             ? `${seoData.canonicalSiteUrl.replace(/\/+$/, '')}/robots.txt`
-                            : (typeof window !== 'undefined' ? `${window.location.origin}/robots.txt` : 'https://www.kingtravelcan.com/robots.txt');
+                            : (typeof window !== 'undefined' ? `${window.location.origin}/robots.txt` : 'https://www.britishhajjtravel.com/robots.txt');
                           navigator.clipboard.writeText(url);
                           showNotification('Copied', 'robots.txt URL copied to clipboard!', 'success');
                         }}
@@ -2397,7 +2397,7 @@ export default function AdminSettingsPage() {
                             ? `${seoData.canonicalSiteUrl.replace(/\/+$/, '')}/sitemap.xml`
                             : (typeof window !== 'undefined' && !window.location.hostname.includes('localhost')
                               ? `${window.location.origin}/sitemap.xml`
-                              : 'https://www.kingtravelcan.com/sitemap.xml')}
+                              : 'https://www.britishhajjtravel.com/sitemap.xml')}
                         </div>
                       </div>
                     ) : (
@@ -2664,7 +2664,7 @@ export default function AdminSettingsPage() {
                   type="button"
                   disabled={savingSeo}
                   onClick={handleSaveSeoSettings}
-                  className="bg-primary text-white px-8 py-3 rounded-xl font-extrabold text-xs border-none cursor-pointer shadow-md hover:bg-[#00382B] transition-all flex items-center gap-2 active:scale-95 disabled:opacity-50"
+                  className="bg-primary text-white px-8 py-3 rounded-xl font-extrabold text-xs border-none cursor-pointer shadow-md hover:bg-white hover:text-primary transition-all flex items-center gap-2 active:scale-95 disabled:opacity-50"
                 >
                   <Save className="w-4 h-4" /> {savingSeo ? 'Saving Settings...' : 'Save SEO Intelligence Settings'}
                 </button>
@@ -2685,7 +2685,7 @@ export default function AdminSettingsPage() {
                   <button
                     type="button"
                     onClick={handleSaveIdentity}
-                    className="bg-primary text-white px-5 py-2.5 rounded-xl text-xs font-extrabold hover:bg-[#00382B] transition-colors border-none cursor-pointer flex items-center gap-1.5 shadow-sm"
+                    className="bg-primary text-white px-5 py-2.5 rounded-xl text-xs font-extrabold hover:bg-white hover:text-primary transition-colors border-none cursor-pointer flex items-center gap-1.5 shadow-sm"
                   >
                     <Save className="w-3 h-3" /> Save Changes
                   </button>
@@ -2872,7 +2872,7 @@ export default function AdminSettingsPage() {
                     type="button"
                     disabled={savingShare}
                     onClick={handleSaveShareTools}
-                    className="bg-primary text-white px-6 py-2.5 rounded-full text-xs font-extrabold hover:bg-[#00382B] transition-colors border-none cursor-pointer flex items-center gap-1.5 shadow-sm disabled:opacity-50"
+                    className="bg-primary text-white px-6 py-2.5 rounded-full text-xs font-extrabold hover:bg-white hover:text-primary transition-colors border-none cursor-pointer flex items-center gap-1.5 shadow-sm disabled:opacity-50"
                   >
                     {savingShare ? 'Saving...' : 'Save Configuration'}
                   </button>
@@ -3345,7 +3345,7 @@ export default function AdminSettingsPage() {
                   <button
                     type="button"
                     onClick={handleOpenAddUser}
-                    className="bg-primary text-white px-5 py-2.5 rounded-xl text-xs font-extrabold hover:bg-[#00382B] transition-colors border-none cursor-pointer flex items-center gap-1.5 shadow-sm"
+                    className="bg-primary text-white px-5 py-2.5 rounded-xl text-xs font-extrabold hover:bg-white hover:text-primary transition-colors border-none cursor-pointer flex items-center gap-1.5 shadow-sm"
                   >
                     <Plus className="w-4 h-4" /> Add User
                   </button>
@@ -3496,7 +3496,7 @@ export default function AdminSettingsPage() {
                           value={userFormData.email}
                           onChange={(e) => setUserFormData({ ...userFormData, email: e.target.value })}
                           className="w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs font-semibold"
-                          placeholder="user@kingtravelcan.com"
+                          placeholder="user@britishhajjtravel.com"
                         />
                       </div>
 
@@ -3674,7 +3674,7 @@ export default function AdminSettingsPage() {
                         </button>
                         <button
                           type="submit"
-                          className="px-5 py-2 rounded-full bg-primary text-white text-xs font-bold hover:bg-[#00382B] cursor-pointer"
+                          className="px-5 py-2 rounded-full bg-primary text-white text-xs font-bold hover:bg-white hover:text-primary cursor-pointer"
                         >
                           {userModalMode === 'create' ? 'Create User' : 'Update User'}
                         </button>
@@ -3702,7 +3702,7 @@ export default function AdminSettingsPage() {
                     type="button"
                     disabled={savingLogin}
                     onClick={handleSaveLoginAuth}
-                    className="bg-primary text-white px-6 py-2.5 rounded-full text-xs font-extrabold hover:bg-[#00382B] transition-colors border-none cursor-pointer flex items-center gap-1.5 shadow-sm disabled:opacity-50"
+                    className="bg-primary text-white px-6 py-2.5 rounded-full text-xs font-extrabold hover:bg-white hover:text-primary transition-colors border-none cursor-pointer flex items-center gap-1.5 shadow-sm disabled:opacity-50"
                   >
                     {savingLogin ? 'Saving...' : 'Save Login Settings'}
                   </button>
@@ -3777,7 +3777,7 @@ export default function AdminSettingsPage() {
                       value={loginAuthData.footerText || ''}
                       onChange={(e) => setLoginAuthData({ ...loginAuthData, footerText: e.target.value })}
                       className="w-full p-3 rounded-xl border border-slate-300 bg-emerald-50/20 text-xs font-semibold outline-none focus:border-primary"
-                      placeholder="© 2026 King Travel Can Ltd. All Rights Reserved."
+                      placeholder="© 2026 British Hajj Travel LTD. All Rights Reserved."
                     />
                   </div>
                 </div>
@@ -3895,7 +3895,7 @@ export default function AdminSettingsPage() {
                   type="button"
                   disabled={savingDisclaimer}
                   onClick={handleSaveDisclaimer}
-                  className="bg-primary text-white px-8 py-3 rounded-full text-xs font-extrabold hover:bg-[#00382B] transition-colors border-none cursor-pointer shadow-md disabled:opacity-50"
+                  className="bg-primary text-white px-8 py-3 rounded-full text-xs font-extrabold hover:bg-white hover:text-primary transition-colors border-none cursor-pointer shadow-md disabled:opacity-50"
                 >
                   {savingDisclaimer ? 'Saving...' : 'Save Disclaimer Settings'}
                 </button>
@@ -3932,7 +3932,7 @@ export default function AdminSettingsPage() {
                 <button
                   type="button"
                   onClick={handleSaveCss}
-                  className="bg-primary text-white px-8 py-3 rounded-full text-xs font-extrabold hover:bg-[#00382B] transition-colors border-none cursor-pointer shadow-md"
+                  className="bg-primary text-white px-8 py-3 rounded-full text-xs font-extrabold hover:bg-white hover:text-primary transition-colors border-none cursor-pointer shadow-md"
                 >
                   Save CSS Overrides
                 </button>
@@ -3950,7 +3950,7 @@ export default function AdminSettingsPage() {
                     FORMS MANAGEMENT
                   </span>
                   <p className="text-xs text-ink-lt mt-1 mb-0">
-                    Configure titles, email routing, notification templates, submission inbox, and form field inputs across King Travel.
+                    Configure titles, email routing, notification templates, submission inbox, and form field inputs across British Hajj Travel.
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
@@ -3963,7 +3963,7 @@ export default function AdminSettingsPage() {
                     type="button"
                     onClick={handleSaveFormsSettings}
                     disabled={savingForms}
-                    className="bg-primary hover:bg-[#00382B] text-white px-6 py-2.5 rounded-full text-xs font-extrabold transition-colors cursor-pointer border-none shadow-md flex items-center gap-2"
+                    className="bg-primary hover:bg-white hover:text-primary text-white px-6 py-2.5 rounded-full text-xs font-extrabold transition-colors cursor-pointer border-none shadow-md flex items-center gap-2"
                   >
                     <Save className="w-4 h-4 text-emerald-300" />
                     {savingForms
@@ -4168,7 +4168,7 @@ export default function AdminSettingsPage() {
                                       [f.key]: [...(prev[f.key] || []), newField],
                                     }));
                                   }}
-                                  className="bg-primary hover:bg-[#00382B] text-white px-4 py-2 rounded-xl text-xs font-extrabold border-none cursor-pointer flex items-center gap-1.5 shadow-xs transition-all hover:shadow-md shrink-0"
+                                  className="bg-primary hover:bg-white hover:text-primary text-white px-4 py-2 rounded-xl text-xs font-extrabold border-none cursor-pointer flex items-center gap-1.5 shadow-xs transition-all hover:shadow-md shrink-0"
                                 >
                                   <Plus className="w-3.5 h-3.5" />
                                   Add Field Input
@@ -4377,7 +4377,7 @@ export default function AdminSettingsPage() {
                           type="button"
                           onClick={handleSaveFormsSettings}
                           disabled={savingForms}
-                          className="bg-primary hover:bg-[#00382B] text-white px-5 py-2.5 rounded-xl text-xs font-extrabold transition-colors cursor-pointer border-none shadow-md flex items-center gap-2"
+                          className="bg-primary hover:bg-white hover:text-primary text-white px-5 py-2.5 rounded-xl text-xs font-extrabold transition-colors cursor-pointer border-none shadow-md flex items-center gap-2"
                         >
                           <Save className="w-4 h-4 text-emerald-300" />
                           {savingForms ? 'Saving Email Configs...' : 'Save Email Configs'}
@@ -4449,7 +4449,7 @@ export default function AdminSettingsPage() {
                             <button
                               type="button"
                               onClick={addRule}
-                              className="flex items-center gap-1.5 bg-primary hover:bg-[#00382B] text-white px-4 py-2.5 rounded-xl text-xs font-extrabold border-none cursor-pointer shadow-md transition-all whitespace-nowrap shrink-0"
+                              className="flex items-center gap-1.5 bg-primary hover:bg-white hover:text-primary text-white px-4 py-2.5 rounded-xl text-xs font-extrabold border-none cursor-pointer shadow-md transition-all whitespace-nowrap shrink-0"
                             >
                               <Plus className="w-3.5 h-3.5" /> Add Routing Rule
                             </button>
@@ -4579,7 +4579,7 @@ export default function AdminSettingsPage() {
                                         </div>
                                         <input
                                           type="email"
-                                          placeholder="e.g. booking@kingtravelcan.com"
+                                          placeholder="e.g. booking@britishhajjtravel.com"
                                           value={rule.sendTo}
                                           onChange={(e) => updateRule(rule.id, { sendTo: e.target.value })}
                                           className="w-full px-3 py-2 bg-white border border-emerald-200 rounded-xl text-xs outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 font-mono font-semibold text-slate-800 shadow-2xs placeholder:text-ink-lt"
@@ -4718,7 +4718,7 @@ export default function AdminSettingsPage() {
                             SMTP SERVER HOST
                           </span>
                           <span className="text-xs font-mono font-bold text-white block truncate">
-                            smtp.kingtravelcan.com
+                            smtp.britishhajjtravel.com
                           </span>
                           <span className="text-[10px] text-ink-lt mt-0.5 block">Configured in process.env.SMTP_HOST</span>
                         </div>
@@ -4738,7 +4738,7 @@ export default function AdminSettingsPage() {
                             AUTHENTICATED ACCOUNT
                           </span>
                           <span className="text-xs font-mono font-bold text-white block truncate">
-                            no-reply@kingtravelcan.com
+                            no-reply@britishhajjtravel.com
                           </span>
                           <span className="text-[10px] text-ink-lt mt-0.5 block">Configured in process.env.SMTP_USER</span>
                         </div>
@@ -4799,7 +4799,7 @@ export default function AdminSettingsPage() {
                         type="button"
                         onClick={handleSaveFormsSettings}
                         disabled={savingForms}
-                        className="bg-primary hover:bg-[#00382B] text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all shadow-md flex items-center gap-2 cursor-pointer border-none"
+                        className="bg-primary hover:bg-white hover:text-primary text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all shadow-md flex items-center gap-2 cursor-pointer border-none"
                       >
                         <Save className="w-4 h-4 text-emerald-300" />
                         {savingForms ? 'Saving Email Configs...' : 'Save Email Configs'}
@@ -4819,7 +4819,7 @@ export default function AdminSettingsPage() {
                         ✉️ EMAIL TEMPLATE CONFIGURATION
                       </h3>
                       <p className="text-xs text-slate-500 mt-0.5 mb-0">
-                        Select and preview responsive HTML notification templates for each of King Travel&apos;s 7 dynamic form subjects.
+                        Select and preview responsive HTML notification templates for each of British Hajj Travel&apos;s 7 dynamic form subjects.
                       </p>
                     </div>
 
@@ -4840,7 +4840,7 @@ export default function AdminSettingsPage() {
                         type="button"
                         onClick={handleSaveFormsSettings}
                         disabled={savingForms}
-                        className="bg-primary hover:bg-[#00382B] text-white px-5 py-2 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer border-none"
+                        className="bg-primary hover:bg-white hover:text-primary text-white px-5 py-2 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer border-none"
                       >
                         <Save className="w-3.5 h-3.5 text-emerald-300" />
                         {savingForms ? 'Saving...' : 'Save Template'}
@@ -5178,7 +5178,7 @@ export default function AdminSettingsPage() {
               <button
                 type="button"
                 onClick={() => handleSaveNavItem(editingItem)}
-                className="px-6 py-2.5 rounded-xl bg-primary hover:bg-[#00382B] text-white text-xs font-extrabold border-none cursor-pointer shadow-md"
+                className="px-6 py-2.5 rounded-xl bg-primary hover:bg-white hover:text-primary text-white text-xs font-extrabold border-none cursor-pointer shadow-md"
               >
                 Save &amp; Apply
               </button>
@@ -5224,8 +5224,8 @@ export default function AdminSettingsPage() {
                   </span>
                   <div className="mb-2">
                     <img
-                      src="/images_KTC/logos/2026-08/logo.png"
-                      alt="King Travel UK"
+                      src="/images_BHT/logos/2026-08/logo.png"
+                      alt="British Hajj Travel UK"
                       className="h-8 md:h-10 w-auto object-contain mx-auto"
                     />
                   </div>
@@ -5313,7 +5313,7 @@ export default function AdminSettingsPage() {
 
                 {/* Email Footer */}
                 <div className="bg-[#111827] px-8 py-10 flex flex-col items-center text-center">
-                  <h3 className="text-white font-bold m-0 mb-3 text-sm">King Travel UK Ltd.</h3>
+                  <h3 className="text-white font-bold m-0 mb-3 text-sm">British Hajj Travel UK Ltd.</h3>
                   <p className="text-ink-lt text-[11px] leading-relaxed m-0 mb-6 max-w-sm">
                     1325 Eglinton Ave E Suite Number 218, Mississauga, ON L4W 4L9, UK<br />
                     TICO &amp; IATA Licensed Pilgrimage &amp; Flight Operator
@@ -5322,7 +5322,7 @@ export default function AdminSettingsPage() {
                     Visit Official Website →
                   </a>
                   <p className="text-slate-500 text-[10px] m-0">
-                    © {new Date().getFullYear()} King Travel UK Ltd. All Rights Reserved.
+                    © {new Date().getFullYear()} British Hajj Travel UK Ltd. All Rights Reserved.
                   </p>
                 </div>
               </div>

@@ -126,7 +126,7 @@ export default function FloatingShareBar() {
     try {
       const urlObj = new URL(
         targetUrl,
-        typeof window !== 'undefined' ? window.location.origin : 'https://kingtravelcan.com'
+        typeof window !== 'undefined' ? window.location.origin : 'https://britishhajjtravel.com'
       );
       urlObj.searchParams.set('utm_source', 'share_sidebar');
       urlObj.searchParams.set('utm_medium', 'social');
@@ -144,7 +144,7 @@ export default function FloatingShareBar() {
 
     let shareLink = '';
     const encodedUrl = encodeURIComponent(targetUrl);
-    const title = encodeURIComponent(typeof document !== 'undefined' ? document.title : 'King Travel');
+    const title = encodeURIComponent(typeof document !== 'undefined' ? document.title : 'British Hajj Travel');
 
     switch (platformId) {
       case 'facebook':

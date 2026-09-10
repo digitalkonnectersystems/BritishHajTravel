@@ -19,9 +19,9 @@ export default function LetsTravelPageClient({ initialIdentity, initialLoginAuth
   const loginAuth = initialLoginAuth || null;
 
   const logoSrc = identity?.logo || '/img/logo.png';
-  const logoAlt = identity?.logoAlt || 'King Travel Logo';
+  const logoAlt = identity?.logoAlt || 'British Hajj Travel Logo';
   const bgImage = loginAuth?.backgroundImage;
-  const footerText = loginAuth?.footerText || '© 2026 King Travel Can Ltd. All Rights Reserved.';
+  const footerText = loginAuth?.footerText || '© 2026 British Hajj Travel LTD. All Rights Reserved.';
 
   const calculateStrength = (password: string) => {
     let strength = 0;
@@ -154,7 +154,7 @@ export default function LetsTravelPageClient({ initialIdentity, initialLoginAuth
             {flowType === 'reset_password' && 'Create New Password'}
           </h1>
           <p className="text-xs text-ink-soft mt-1 font-light">
-            {flowType === 'login' && 'Authorized access to King Travel UK Operations'}
+            {flowType === 'login' && 'Authorized access to British Hajj Travel UK Operations'}
             {flowType === 'forgot_password' && 'Enter your registered email address to continue'}
             {flowType === 'reset_password' && 'Enter your new secure password below'}
           </p>

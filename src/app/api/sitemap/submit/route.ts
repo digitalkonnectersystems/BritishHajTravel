@@ -8,7 +8,7 @@ export async function POST() {
   try {
     const seoSettings = await getSeoIntelligenceSettings();
     const canonicalOrigin = resolveCanonicalPublicOrigin(seoSettings);
-    const baseUrl = canonicalOrigin || 'https://www.kingtravelcan.com';
+    const baseUrl = canonicalOrigin || 'https://www.britishhajjtravel.com';
     const sitemapUrl = `${baseUrl}/sitemap.xml`;
 
     // Ping Google

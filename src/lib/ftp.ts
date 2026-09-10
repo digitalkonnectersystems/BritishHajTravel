@@ -1,5 +1,5 @@
 /**
- * @deprecated Media storage has migrated from remote FTP to local filesystem storage in /public/images_KTC/.
+ * @deprecated Media storage has migrated from remote FTP to local filesystem storage in /public/images_BHT/.
  * Use `uploadFile` in `@/lib/uploadClient` or `/api/admin/upload` route instead.
  */
 

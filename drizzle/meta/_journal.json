@@ -22,6 +22,20 @@
       "when": 1786086922133,
       "tag": "0002_pale_morgan_stark",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1788950400000,
+      "tag": "0003_hotel_directory",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1788950401000,
+      "tag": "0004_hotels_cms_page",
+      "breakpoints": true
     }
   ]
 }

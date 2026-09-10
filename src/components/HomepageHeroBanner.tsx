@@ -185,7 +185,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any, page
                   <input
                     type="tel"
                     id="quote-phone"
-                    placeholder="+1(___) ___-____"
+                    placeholder="+44(___) ___-____"
                     value={quoteForm.phone}
                     inputMode="numeric"
                     maxLength={11}

@@ -117,7 +117,7 @@ export function getResponsiveEmailTemplateHtml(
     : 'NEW INQUIRY NOTIFICATION';
 
   const introTextHtml = isForUser
-    ? `Thank you for contacting King Travel UK. We have received your inquiry submitted via <strong>${safeFormName}</strong>. Submission details are listed below:`
+    ? `Thank you for contacting British Hajj Travel UK. We have received your inquiry submitted via <strong>${safeFormName}</strong>. Submission details are listed below:`
     : `A new inquiry has been submitted via <strong>${safeFormName}</strong>. Submission details are listed below:`;
 
   /**
@@ -181,7 +181,7 @@ export function getResponsiveEmailTemplateHtml(
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>${escapeHtml(formName)} - King Travel UK</title>
+  <title>${escapeHtml(formName)} - British Hajj Travel UK</title>
   <style type="text/css">
     body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
     table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
@@ -212,8 +212,8 @@ export function getResponsiveEmailTemplateHtml(
                       ${badgeText}
                     </div>
                     <div style="margin: 8px 0 4px 0;">
-                      <a href="https://kingtravelcan.com" target="_blank" style="text-decoration: none; display: inline-block;">
-                        <img src="https://kingtravelcan.com/images_KTC/logos/2026-08/logo.png" alt="King Travel UK" width="220" style="display: block; width: 220px; max-width: 100%; height: auto; border: 0; outline: none; text-decoration: none; margin: 0 auto;" />
+                      <a href="https://britishhajjtravel.com" target="_blank" style="text-decoration: none; display: inline-block;">
+                        <img src="https://britishhajjtravel.com/images_BHT/logos/2026-08/logo.png" alt="British Hajj Travel UK" width="220" style="display: block; width: 220px; max-width: 100%; height: auto; border: 0; outline: none; text-decoration: none; margin: 0 auto;" />
                       </a>
                     </div>
                     <p style="color: #a7f3d0; font-size: 12px; margin: 6px 0 0 0; font-weight: 600;">
@@ -277,7 +277,7 @@ export function getResponsiveEmailTemplateHtml(
                 <tr>
                   <td align="center" style="padding-bottom: 12px;">
                     <p style="color:#ffffff; font-weight: 800; font-size: 14px; margin: 0 0 4px 0;">
-                      King Travel UK Ltd.
+                      British Hajj Travel UK Ltd.
                     </p>
                     <p style="color: #ffffff; font-size: 11px; margin: 0; line-height: 1.5;">
                       1325 Eglinton Ave E Suite Number 218, Mississauga, ON L4W 4L9, UK<br>
@@ -287,14 +287,14 @@ export function getResponsiveEmailTemplateHtml(
                 </tr>
                 <tr>
                   <td align="center" style="padding-bottom: 16px;">
-                    <a href="https://kingtravelcan.com" target="_blank" style="color: #DB9E30; text-decoration: none; font-weight: 700; font-size: 12px; margin: 0 8px;">
+                    <a href="https://britishhajjtravel.com" target="_blank" style="color: #DB9E30; text-decoration: none; font-weight: 700; font-size: 12px; margin: 0 8px;">
                       Visit Official Website →
                     </a>
                   </td>
                 </tr>
                 <tr>
                   <td align="center" style="border-top: 1px solid #1e293b; padding-top: 16px; font-size: 11px; color: #ffffff;">
-                    © ${new Date().getFullYear()} King Travel UK Ltd. All Rights Reserved.
+                    © ${new Date().getFullYear()} British Hajj Travel UK Ltd. All Rights Reserved.
                   </td>
                 </tr>
               </table>
@@ -346,7 +346,7 @@ export const FORM_SAMPLE_DATA: Record<CanonicalFormSubject, Record<string, unkno
     phone: '+1 905 555 0167',
     packageName: 'Hajj 2027 Package',
     numberOfPilgrims: 4,
-    nationality: 'Canadian',
+    nationality: 'British',
   },
   'Contact Inquiry Form': {
     name: 'Sarah Ahmed',

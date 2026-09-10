@@ -25,20 +25,20 @@ export async function getBlogsList(publishedOnly = false) {
 
     const DEFAULT_BLOGS = [
       {
-        title: 'Complete Step-by-Step Umrah Guide for Canadian Pilgrims (2026)',
+        title: 'Complete Step-by-Step Umrah Guide for British Pilgrims (2026)',
         slug: 'complete-step-by-step-umrah-guide-canadian-pilgrims',
         excerpt: 'Planning your sacred journey from Toronto, Montreal, or Vancouver? Here is your complete spiritual and practical guide to performing Umrah in 2026.',
-        content: `<h2>Embarking on the Sacred Journey of Umrah</h2><p>For Muslims across UK, embarking on Umrah is a transformative spiritual milestone. Whether it is your first time or a return to the holy cities of Makkah and Madinah, thorough preparation ensures peace of mind and spiritual focus.</p><h3>1. Essential Preparation Before Leaving UK</h3><p>Before boarding your flight from Toronto Pearson (YYZ) or Montreal (YUL), ensure the following prerequisites are complete:</p><ul><li><strong>Saudi Tourist / Umrah eVisa:</strong> Canadian passport holders can easily obtain a one-year multiple-entry Tourist eVisa or dedicated Umrah Visa.</li><li><strong>Nusuk App Registration:</strong> Book your Rawdah appointment in Madinah and Umrah permit slots through the official Nusuk application.</li><li><strong>Ihram & Essentials:</strong> Pack two sets of unstitched white cloth for men and modest, breathable abayas for women.</li></ul><h3>2. The Four Pillars of Umrah</h3><p>Umrah consists of four core rituals: <strong>Ihram</strong>, <strong>Tawaf</strong>, <strong>Sa'i</strong>, and <strong>Halq/Taqsir</strong>.</p><h3>3. Tips for a Smooth Pilgrimage Experience</h3><p>Staying at walking-distance 5-star hotels like the Makkah Clock Royal Tower saves valuable prayer time. Always stay hydrated and keep digital copies of your travel documents.</p>`,
+        content: `<h2>Embarking on the Sacred Journey of Umrah</h2><p>For Muslims across UK, embarking on Umrah is a transformative spiritual milestone. Whether it is your first time or a return to the holy cities of Makkah and Madinah, thorough preparation ensures peace of mind and spiritual focus.</p><h3>1. Essential Preparation Before Leaving UK</h3><p>Before boarding your flight from Toronto Pearson (YYZ) or Montreal (YUL), ensure the following prerequisites are complete:</p><ul><li><strong>Saudi Tourist / Umrah eVisa:</strong> British passport holders can easily obtain a one-year multiple-entry Tourist eVisa or dedicated Umrah Visa.</li><li><strong>Nusuk App Registration:</strong> Book your Rawdah appointment in Madinah and Umrah permit slots through the official Nusuk application.</li><li><strong>Ihram & Essentials:</strong> Pack two sets of unstitched white cloth for men and modest, breathable abayas for women.</li></ul><h3>2. The Four Pillars of Umrah</h3><p>Umrah consists of four core rituals: <strong>Ihram</strong>, <strong>Tawaf</strong>, <strong>Sa'i</strong>, and <strong>Halq/Taqsir</strong>.</p><h3>3. Tips for a Smooth Pilgrimage Experience</h3><p>Staying at walking-distance 5-star hotels like the Makkah Clock Royal Tower saves valuable prayer time. Always stay hydrated and keep digital copies of your travel documents.</p>`,
         featuredImage: 'https://antiquewhite-stinkbug-399384.hostingersite.com/wp-content/uploads/2026/05/Umrah_packages_202605092201.jpeg',
         category: 'Umrah Guide',
-        authorName: 'King Travel Editorial',
+        authorName: 'British Hajj Travel Editorial',
         isPublished: true,
       },
       {
         title: 'How to Apply for a Saudi Tourist & Umrah eVisa from UK',
         slug: 'how-to-apply-saudi-tourist-umrah-evisa-uk',
-        excerpt: 'Everything Canadian citizens and PR holders need to know about Saudi eVisa requirements, processing times, and eligibility rules in 2026.',
-        content: `<h2>Understanding Saudi Visa Options for Canadian Travelers</h2><p>With Saudi Arabia's Vision 2030 modernization, visiting the Kingdom for Umrah, business, or tourism has never been faster or more accessible for Canadian travelers.</p><h3>Eligibility & Visa Types</h3><ul><li><strong>Tourist eVisa (Multiple Entry - 1 Year):</strong> Valid for 365 days, allowing up to 90 days per stay. Canadian passport holders are eligible for instant online approval.</li><li><strong>Umrah Specific Visa:</strong> Provides additional pilgrim protections, transport access, and zamzam water export permissions.</li><li><strong>Transit / Stopover Visa:</strong> Free 96-hour visa when flying Saudia or Flynas with a stopover in Jeddah or Riyadh.</li></ul><h3>Required Documents for Canadians</h3><ol><li>Valid Canadian passport with at least 6 months validity from entry date.</li><li>Recent digital passport-style photograph with white background.</li><li>Confirmed return flight itinerary and hotel accommodation booking.</li><li>Mandatory medical insurance covering hospital treatment in Saudi Arabia.</li></ol><p>Need expert assistance? Contact King Travel UK's authorized visa desk at Mississauga for seamless verification and express submissions.</p>`,
+        excerpt: 'Everything British citizens and PR holders need to know about Saudi eVisa requirements, processing times, and eligibility rules in 2026.',
+        content: `<h2>Understanding Saudi Visa Options for British Travelers</h2><p>With Saudi Arabia's Vision 2030 modernization, visiting the Kingdom for Umrah, business, or tourism has never been faster or more accessible for British travelers.</p><h3>Eligibility & Visa Types</h3><ul><li><strong>Tourist eVisa (Multiple Entry - 1 Year):</strong> Valid for 365 days, allowing up to 90 days per stay. British passport holders are eligible for instant online approval.</li><li><strong>Umrah Specific Visa:</strong> Provides additional pilgrim protections, transport access, and zamzam water export permissions.</li><li><strong>Transit / Stopover Visa:</strong> Free 96-hour visa when flying Saudia or Flynas with a stopover in Jeddah or Riyadh.</li></ul><h3>Required Documents for Canadians</h3><ol><li>Valid British passport with at least 6 months validity from entry date.</li><li>Recent digital passport-style photograph with white background.</li><li>Confirmed return flight itinerary and hotel accommodation booking.</li><li>Mandatory medical insurance covering hospital treatment in Saudi Arabia.</li></ol><p>Need expert assistance? Contact British Hajj Travel UK's authorized visa desk at Mississauga for seamless verification and express submissions.</p>`,
         featuredImage: 'https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=1200&q=80',
         category: 'Saudi Visa',
         authorName: 'Visa Specialist Team',
@@ -48,20 +48,20 @@ export async function getBlogsList(publishedOnly = false) {
         title: 'Top 7 Best 5-Star Luxury Hotels Near Haram in Makkah & Madinah',
         slug: 'top-7-luxury-hotels-near-haram-makkah-madinah',
         excerpt: 'Discover the premier 5-star accommodations offering direct courtyard access, Kaaba views, and world-class hospitality during your pilgrimage.',
-        content: `<h2>Choosing the Right Accommodation for Your Spiritual Journey</h2><p>Minimizing transit fatigue and staying steps away from the Grand Mosque allows pilgrims to spend maximum time in Ibadah. Here are the top rated 5-star hotels trusted by King Travel pilgrims.</p><h3>Best Hotels in Makkah (Clock Tower & Abraj Al Bait)</h3><ul><li><strong>Makkah Clock Royal Tower (Fairmont):</strong> Unrivaled panoramic views of the Holy Kaaba with direct elevator access to the Haram courtyard.</li><li><strong>Swissôtel Makkah:</strong> Elegant rooms with dedicated prayer halls connected directly to the King Abdulaziz Gate entrance.</li><li><strong>Pullman Zamzam Makkah:</strong> Highly popular among Canadian families offering spacious multi-bedroom suites and fine international dining.</li><li><strong>Jabal Omar Hyatt Regency:</strong> Located just steps from the western courtyard with ultra-modern amenities and seamless accessibility.</li></ul><h3>Best Hotels in Madinah (Near Prophet's Mosque)</h3><ul><li><strong>The Oberoi Madinah:</strong> Legendary hospitality situated right at the women's and men's main entrances to the Prophet's Mosque.</li><li><strong>Dar Al Taqwa Hotel:</strong> Steps away from the King Fahad gate, ideal for older pilgrims seeking easy access.</li><li><strong>Anwar Al Madinah Mövenpick:</strong> The largest hotel in Madinah directly linked to the shopping mall and northern courtyard.</li></ul>`,
+        content: `<h2>Choosing the Right Accommodation for Your Spiritual Journey</h2><p>Minimizing transit fatigue and staying steps away from the Grand Mosque allows pilgrims to spend maximum time in Ibadah. Here are the top rated 5-star hotels trusted by British Hajj Travel pilgrims.</p><h3>Best Hotels in Makkah (Clock Tower & Abraj Al Bait)</h3><ul><li><strong>Makkah Clock Royal Tower (Fairmont):</strong> Unrivaled panoramic views of the Holy Kaaba with direct elevator access to the Haram courtyard.</li><li><strong>Swissôtel Makkah:</strong> Elegant rooms with dedicated prayer halls connected directly to the King Abdulaziz Gate entrance.</li><li><strong>Pullman Zamzam Makkah:</strong> Highly popular among British families offering spacious multi-bedroom suites and fine international dining.</li><li><strong>Jabal Omar Hyatt Regency:</strong> Located just steps from the western courtyard with ultra-modern amenities and seamless accessibility.</li></ul><h3>Best Hotels in Madinah (Near Prophet's Mosque)</h3><ul><li><strong>The Oberoi Madinah:</strong> Legendary hospitality situated right at the women's and men's main entrances to the Prophet's Mosque.</li><li><strong>Dar Al Taqwa Hotel:</strong> Steps away from the King Fahad gate, ideal for older pilgrims seeking easy access.</li><li><strong>Anwar Al Madinah Mövenpick:</strong> The largest hotel in Madinah directly linked to the shopping mall and northern courtyard.</li></ul>`,
         featuredImage: 'https://images.unsplash.com/photo-1542856391-010fb87dcfed?auto=format&fit=crop&w=1200&q=80',
         category: 'Travel Tips',
-        authorName: 'King Travel Editorial',
+        authorName: 'British Hajj Travel Editorial',
         isPublished: true,
       },
       {
         title: 'Essential Packing Checklist for Hajj & Umrah: What to Bring from UK',
         slug: 'essential-packing-checklist-hajj-umrah-uk',
-        excerpt: 'A comprehensive checklist covering Ihram garments, footwear, medical supplies, electronics, and prayer essentials tailored for Canadian pilgrims.',
+        excerpt: 'A comprehensive checklist covering Ihram garments, footwear, medical supplies, electronics, and prayer essentials tailored for British pilgrims.',
         content: `<h2>Packing Smart for Your Spiritual Pilgrimage</h2><p>Preparing luggage for high-temperature climates while keeping baggage light and portable is crucial for smooth transit between Jeddah, Makkah, and Madinah.</p><h3>1. Spiritual & Worship Essentials</h3><ul><li>Two sets of seamless white Ihram towels (Men) and safety pins / Ihram belt.</li><li>Pocket prayer mat and digital Tasbeeh counter.</li><li>Pocket-sized Dua book and Quran with English translation.</li><li>Small drawstring bag for footwear during prayer visits.</li></ul><h3>2. Clothing & Footwear</h3><ul><li>Lightweight, moisture-wicking breathable cotton clothes.</li><li>Supportive, broken-in walking sandals (unstitched over ankles for men during Ihram).</li><li>Thick cushioned socks for walking on hot marble courtyards outside prayer times.</li></ul><h3>3. Health, Toiletries & Hygiene (Fragrance-Free)</h3><ul><li>Unscented soap, shampoo, and sunscreen (essential during Ihram).</li><li>Hydration electrolyte powders (Gatorade/Liquid I.V.) to combat desert heat.</li><li>Personal first-aid kit: pain relievers, blister plasters, throat lozenges, and personal prescription medications.</li></ul><h3>4. Electronics & Travel Adapters</h3><ul><li>Universal UK/Saudi Type G power plug adapter.</li><li>High-capacity portable power bank (10,000 to 20,000 mAh).</li><li>Unlocked smartphone for local Saudi SIM card (STC, Mobily, or Zain).</li></ul>`,
         featuredImage: 'https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=1200&q=80',
         category: 'Pilgrimage Guide',
-        authorName: 'King Travel Editorial',
+        authorName: 'British Hajj Travel Editorial',
         isPublished: true,
       },
       {
@@ -71,17 +71,17 @@ export async function getBlogsList(publishedOnly = false) {
         content: `<h2>The Official Gate to the Two Holy Mosques</h2><p>The <strong>Nusuk platform</strong> is the official digital portal managed by the Saudi Ministry of Hajj and Umrah. Every international visitor must utilize Nusuk to schedule their Rawdah Shareef prayers and Umrah permits.</p><h3>Step 1: Download & Registration</h3><p>Download the official Nusuk application from Apple App Store or Google Play Store. Select <em>'Visitor'</em> and enter your Visa Number, Passport Number, Nationality, and Date of Birth.</p><h3>Step 2: Reserving Rawdah Shareef (Noble Garden)</h3><p>Due to high spiritual demand, permits for praying in the Rawdah in Al-Masjid an-Nabawi are regulated:</p><ol><li>Open Nusuk &gt; Select <em>'Praying in the Noble Rawdah'</em>.</li><li>Choose gender (Men or Women separate time slots).</li><li>Select your preferred date and available 30-minute time slot.</li><li>Confirm booking and save the generated QR code permit on your mobile device.</li></ol><p><em>Pro Tip:</em> New slots are frequently released on Fridays around 12:00 PM Saudi time. Book your slot as soon as your visa is issued!</p>`,
         featuredImage: 'https://images.unsplash.com/photo-1580418827493-f2b22c0a76cb?auto=format&fit=crop&w=1200&q=80',
         category: 'Hajj Tips',
-        authorName: 'King Travel Tech Team',
+        authorName: 'British Hajj Travel Tech Team',
         isPublished: true,
       },
       {
         title: 'Historical Ziyarah Sites in Makkah and Madinah Every Pilgrim Should Visit',
         slug: 'historical-ziyarah-sites-makkah-madinah-every-pilgrim-should-visit',
         excerpt: 'Explore the momentous sacred landmarks of Islamic history, from Cave Hira and Mount Arafat to Masjid Quba and Mount Uhud.',
-        content: `<h2>Walking in the Footsteps of the Prophet (PBUH)</h2><p>Beyond the primary rituals of Umrah, taking time to visit historical Islamic landmarks (Ziyarah) enriches your pilgrimage with deep spiritual reflection and historical connection.</p><h3>Key Sacred Sites in Makkah Mukarramah</h3><ul><li><strong>Jabal al-Nour (Cave Hira):</strong> The mountain where the first revelation of the Holy Quran was received through Angel Jibreel (AS).</li><li><strong>Mount Arafat & Jabal al-Rahmah:</strong> The mount of mercy, the central station of the Hajj pilgrimage where the Prophet (PBUH) delivered his Farewell Sermon.</li><li><strong>Cave Thawr:</strong> The mountain refuge where the Prophet (PBUH) and Abu Bakr (RA) took sanctuary during the historic Hijrah to Madinah.</li><li><strong>Masjid al-Jinn:</strong> The historic mosque marking where a group of Jinn gathered to listen to the recitation of the Holy Quran and embraced Islam.</li></ul><h3>Key Sacred Sites in Madinah Munawwarah</h3><ul><li><strong>Masjid Quba:</strong> The very first mosque built in Islamic history. Performing two Rakat in Masjid Quba carries the reward of an Umrah.</li><li><strong>Masjid al-Qiblatayn:</strong> The historic mosque with two Qiblas, commemorating the divine command to change the prayer direction towards Makkah.</li><li><strong>Mount Uhud & Martyrs' Cemetery:</strong> The site of the historic Battle of Uhud and resting place of Sayyidna Hamza (RA) and the beloved companions.</li><li><strong>The Seven Mosques (Khandaq):</strong> The location of the Battle of the Trench (Ghazwa al-Ahzab).</li></ul><p>All King Travel UK luxury packages include guided private air-conditioned VIP Ziyarah tours with knowledgeable English- and Urdu-speaking guides.</p>`,
+        content: `<h2>Walking in the Footsteps of the Prophet (PBUH)</h2><p>Beyond the primary rituals of Umrah, taking time to visit historical Islamic landmarks (Ziyarah) enriches your pilgrimage with deep spiritual reflection and historical connection.</p><h3>Key Sacred Sites in Makkah Mukarramah</h3><ul><li><strong>Jabal al-Nour (Cave Hira):</strong> The mountain where the first revelation of the Holy Quran was received through Angel Jibreel (AS).</li><li><strong>Mount Arafat & Jabal al-Rahmah:</strong> The mount of mercy, the central station of the Hajj pilgrimage where the Prophet (PBUH) delivered his Farewell Sermon.</li><li><strong>Cave Thawr:</strong> The mountain refuge where the Prophet (PBUH) and Abu Bakr (RA) took sanctuary during the historic Hijrah to Madinah.</li><li><strong>Masjid al-Jinn:</strong> The historic mosque marking where a group of Jinn gathered to listen to the recitation of the Holy Quran and embraced Islam.</li></ul><h3>Key Sacred Sites in Madinah Munawwarah</h3><ul><li><strong>Masjid Quba:</strong> The very first mosque built in Islamic history. Performing two Rakat in Masjid Quba carries the reward of an Umrah.</li><li><strong>Masjid al-Qiblatayn:</strong> The historic mosque with two Qiblas, commemorating the divine command to change the prayer direction towards Makkah.</li><li><strong>Mount Uhud & Martyrs' Cemetery:</strong> The site of the historic Battle of Uhud and resting place of Sayyidna Hamza (RA) and the beloved companions.</li><li><strong>The Seven Mosques (Khandaq):</strong> The location of the Battle of the Trench (Ghazwa al-Ahzab).</li></ul><p>All British Hajj Travel UK luxury packages include guided private air-conditioned VIP Ziyarah tours with knowledgeable English- and Urdu-speaking guides.</p>`,
         featuredImage: 'https://images.unsplash.com/photo-1542856391-010fb87dcfed?auto=format&fit=crop&w=1200&q=80',
         category: 'Spiritual Journey',
-        authorName: 'King Travel Editorial',
+        authorName: 'British Hajj Travel Editorial',
         isPublished: true,
       }
     ];
@@ -92,13 +92,13 @@ export async function getBlogsList(publishedOnly = false) {
           ...blog,
           publishedAt: new Date(),
           seoSettings: {
-            metaTitle: `${blog.title} | King Travel UK`,
+            metaTitle: `${blog.title} | British Hajj Travel UK`,
             metaDescription: blog.excerpt,
             ogTitle: blog.title,
             ogDescription: blog.excerpt,
             ogImageUrl: blog.featuredImage,
             canonicalUrl: `/blogs/${blog.slug}`,
-            keywords: `${blog.category}, Hajj, Umrah, King Travel UK, Canadian Pilgrims`,
+            keywords: `${blog.category}, Hajj, Umrah, British Hajj Travel UK, British Pilgrims`,
           }
         });
       }
@@ -240,7 +240,7 @@ export async function saveBlogAction(data: BlogSavePayload) {
     content,
     featuredImage,
     category = 'Pilgrimage Guide',
-    authorName = 'King Travel Editorial',
+    authorName = 'British Hajj Travel Editorial',
     isPublished = true,
     publishedAt,
   } = data;

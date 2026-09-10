@@ -1,7 +1,9 @@
 {
-  "name": "king-travel-can-nxt",
+  "name": "british-hajj-travel",
   "version": "1.0.0",
   "private": true,
+  "description": "British Hajj Travel pilgrimage, visa, and airline travel services",
+  "author": "British Hajj Travel LTD",
   "scripts": {
     "dev": "next dev",
     "build": "drizzle-kit push && next build",

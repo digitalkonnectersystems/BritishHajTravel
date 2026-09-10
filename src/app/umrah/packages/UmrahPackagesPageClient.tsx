@@ -123,8 +123,8 @@ export default function UmrahPackagesPageClient({ initialPageData, packages = []
       />
       {/* ================= DYNAMIC HERO BANNER ================= */}
       <PageBanner
-        title={pageData?.bannerTitle || pageData?.title || "Umrah Packages from United Kingdom 2026 <br /><span>Travel with Confidence</span> by King Travel"}
-        description={pageData?.bannerDescription || "Perform your sacred obligation of Umrah in 2026 with comfort, organization, and spiritual focus. King Travel proudly offers premium Umrah Packages from United Kingdom 2026, designed to provide Canadian Muslims with a smooth and well-managed pilgrimage experience."}
+        title={pageData?.bannerTitle || pageData?.title || "Umrah Packages from United Kingdom 2026 <br /><span>Travel with Confidence</span> by British Hajj Travel"}
+        description={pageData?.bannerDescription || "Perform your sacred obligation of Umrah in 2026 with comfort, organization, and spiritual focus. British Hajj Travel proudly offers premium Umrah Packages from United Kingdom 2026, designed to provide British Muslims with a smooth and well-managed pilgrimage experience."}
         bgImage={pageData?.bannerBgImage}
         position={pageData?.bannerPosition}
         size={pageData?.bannerSize}
@@ -308,7 +308,7 @@ export default function UmrahPackagesPageClient({ initialPageData, packages = []
                         <div>
                           <div className="operator-title">Operator</div>
                           <div className="operator-val">
-                            <span className="operator-name">King Travel</span>
+                            <span className="operator-name">British Hajj Travel</span>
                             <span className="rating-badge">4.4/5</span>
                           </div>
                         </div>

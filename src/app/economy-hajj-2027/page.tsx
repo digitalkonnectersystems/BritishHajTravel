@@ -187,8 +187,8 @@ export default function EconomyHajj2027Page() {
                     📋 Eligibility Requirements
                   </h4>
                   <ul className="space-y-2 text-sm text-slate-600">
-                    <li>✦ Canadian &amp; U.S. citizens with Pakistani Passports.</li>
-                    <li>✦ Pakistani Passport holders with Canadian PR or American Green Cards.</li>
+                    <li>✦ British &amp; U.S. citizens with Pakistani Passports.</li>
+                    <li>✦ Pakistani Passport holders with British PR or American Green Cards.</li>
                     <li>✦ All Foreign Passport holders with Pakistan Passports.</li>
                     <li>✦ Side trips to Pakistan or any other destination available with an additional cost.</li>
                   </ul>
@@ -202,7 +202,7 @@ export default function EconomyHajj2027Page() {
                 <i className="fa-solid fa-file-shield text-[#d4af37]"></i> Important Booking
               </b>
               <p className="text-sm text-slate-700 leading-relaxed">
-                To secure your Hajj visa slot, please make sure your Canadian passport is valid for at least 6 months beyond travel dates, and you have completed all mandatory immunizations required by the Saudi Ministry of Hajj.
+                To secure your Hajj visa slot, please make sure your British passport is valid for at least 6 months beyond travel dates, and you have completed all mandatory immunizations required by the Saudi Ministry of Hajj.
               </p>
             </div>
 
@@ -235,7 +235,7 @@ export default function EconomyHajj2027Page() {
                   </div>
                   {openFaq === 2 && (
                     <p className="text-sm text-slate-600 mt-3 pt-3 border-t border-slate-100 leading-relaxed">
-                      No, the base rate includes ground logistics, 5-star lodging, visa assistance, and internal transit. Our team can find custom flights departing from any major Canadian airport for you.
+                      No, the base rate includes ground logistics, 5-star lodging, visa assistance, and internal transit. Our team can find custom flights departing from any major British airport for you.
                     </p>
                   )}
                 </div>
@@ -248,7 +248,7 @@ export default function EconomyHajj2027Page() {
             <div className="sticky top-28 bg-white rounded-3xl p-6 shadow-xl border border-slate-100 space-y-6">
               <div className="flex items-center justify-between pb-4 border-b border-slate-100">
                 <div>
-                  <div className="text-xl font-extrabold text-emerald-900">King Travel</div>
+                  <div className="text-xl font-extrabold text-emerald-900">British Hajj Travel</div>
                   <span className="text-xs text-slate-400">942 verified reviews</span>
                 </div>
                 <div className="bg-amber-50 text-amber-800 text-xs font-bold px-3 py-1.5 rounded-lg border border-amber-200">

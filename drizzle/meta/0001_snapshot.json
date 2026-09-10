@@ -63,7 +63,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'King Travel Editorial'"
+          "default": "'British Hajj Travel Editorial'"
         },
         "is_published": {
           "name": "is_published",

@@ -35,12 +35,12 @@ export default function PageSeoHead({
 
   if (!finalTitle && pageTitle) {
     // Priority 2: Use Dynamic Page Title directly
-    finalTitle = pageTitle.includes('King Travel') ? pageTitle : `${pageTitle} | King Travel UK`;
+    finalTitle = pageTitle.includes('British Hajj Travel') ? pageTitle : `${pageTitle} | British Hajj Travel UK`;
   }
 
   if (!finalTitle) {
     // Priority 3: Fallback ONLY if no dynamic title exists
-    finalTitle = 'King Travel UK';
+    finalTitle = 'British Hajj Travel UK';
   }
 
   // Determine Meta Description according to strict Priority Order
@@ -51,8 +51,8 @@ export default function PageSeoHead({
     finalDescription = 'Licensed Hajj & Umrah pilgrimage operator in UK offering 5-star packages, visa consultation, and direct flights.';
   }
 
-  const finalCanonicalUrl = canonicalUrl || seoData?.canonicalUrl || 'https://kingtravelcan.com';
-  const finalOgImageUrl = ogImageUrl || seoData?.ogImageUrl || 'https://media.kingtravelcan.com/uploads/branding/logo.png';
+  const finalCanonicalUrl = canonicalUrl || seoData?.canonicalUrl || 'https://britishhajjtravel.com';
+  const finalOgImageUrl = ogImageUrl || seoData?.ogImageUrl || 'https://media.britishhajjtravel.com/uploads/branding/logo.png';
   const finalJsonLdPayload = jsonLdPayload || seoData?.jsonLdPayload;
   const finalNoIndex = noIndex ?? seoData?.noIndex ?? false;
 

@@ -38,13 +38,13 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
                 identityData.logo.startsWith('data:') ? (
                   <img
                     src={identityData.logo}
-                    alt={identityData.logoAlt || identityData.siteName || "King Travel Logo"}
+                    alt={identityData.logoAlt || identityData.siteName || "British Hajj Travel Logo"}
                     className="w-full h-auto max-h-[60px] object-contain"
                   />
                 ) : (
                   <Image
                     src={identityData.logo}
-                    alt={identityData.logoAlt || identityData.siteName || "King Travel Logo"}
+                    alt={identityData.logoAlt || identityData.siteName || "British Hajj Travel Logo"}
                     width={250}
                     height={60}
                     priority
@@ -55,7 +55,7 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
               ) : (
                 <Image
                   src="/img/logo.png"
-                  alt="King Travel Logo"
+                  alt="British Hajj Travel Logo"
                   width={250}
                   height={60}
                   priority
