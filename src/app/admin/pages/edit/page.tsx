@@ -67,6 +67,7 @@ const SECTION_CATALOG: SectionCategory[] = [
       { type: 'Hajj Services Grid', description: '4-column icon grid showcasing Hajj services (e.g. Pre-Hajj Meet-up, Buffet Meals, Transport, Scholar).', pages: ['Hajj Packages'] },
       { type: 'Banner 4 Grids', description: 'Banner with 4 overlapping accreditation/feature cards.', pages: ['Hajj Packages', 'Umrah Packages'] },
       { type: 'Package Brochure', description: 'Display 1 or more promotional package brochure flyers/images with responsive grid and centered single view.', pages: ['Hajj Packages', 'Umrah Packages', 'Any Page'] },
+      { type: 'Gallery', description: 'Responsive masonry gallery with image lightbox, navigation, and embedded videos.', pages: ['Gallery', 'Any Page'] },
       { type: 'Packages Content (Rich Text)', description: 'Rich text editor with HTML support to describe Umrah & Hajj packages.', pages: ['Hajj Packages', 'Umrah Packages'] },
     ],
   },
@@ -610,6 +611,14 @@ function PageBuilderContent() {
         title: 'EXPLORE OUR LUXURY HAJJ DEALS',
         description: '',
         images: [],
+      };
+    } else if (type === 'Gallery') {
+      defaultData = {
+        eyebrow: 'GALLERY',
+        title: 'Highlights from British Hajj Travel',
+        description: '',
+        images: [],
+        videos: [],
       };
     } else if (type === 'Text Block (Rich Text)' || type === 'Packages Content (Rich Text)') {
       defaultData = {
@@ -2888,6 +2897,91 @@ function PageBuilderContent() {
                                     })}
                                   </div>
                                 )}
+                              </div>
+                            )}
+
+                            {sec.type === 'Gallery' && (
+                              <div className="bg-white border border-slate-200 rounded-xl p-3.5 flex flex-col gap-3 mt-1">
+                                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-2">
+                                  <div>
+                                    <span className="text-xs font-extrabold text-primary uppercase">GALLERY IMAGES & VIDEOS</span>
+                                    <p className="text-[11px] text-slate-500 mt-0.5">Images keep their full aspect ratio and display in a responsive masonry layout. Videos appear below the images.</p>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <label className="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-bold text-white shadow-sm cursor-pointer">
+                                      <Upload className="w-3.5 h-3.5" /> Bulk Upload Images
+                                      <input
+                                        type="file"
+                                        accept="image/*"
+                                        multiple
+                                        className="hidden"
+                                        onChange={(event) => {
+                                          const files = Array.from(event.target.files || []);
+                                          if (!files.length) return;
+                                          const galleryName = (slug.replace(/^\/+|\/+$/g, '').split('/').pop() || 'main-gallery').toLowerCase().replace(/[^a-z0-9-]+/g, '-');
+                                          const subfolder = `gallery/${galleryName}`;
+                                          const current = Array.isArray(sec.data?.images) ? [...sec.data.images] : [];
+                                          (async () => {
+                                            for (const file of files) {
+                                              const url = await uploadFile(file, subfolder);
+                                              if (url) {
+                                                current.push({ image: url, alt: generateAutoAltText(file, sec.data?.title || title || 'Gallery'), title: file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ') });
+                                                updateSectionData(sec.id, 'images', [...current]);
+                                              }
+                                            }
+                                          })();
+                                          event.currentTarget.value = '';
+                                        }}
+                                      />
+                                    </label>
+                                    <button
+                                      type="button"
+                                      onClick={() => updateSectionData(sec.id, 'images', [...(Array.isArray(sec.data?.images) ? sec.data.images : []), { image: '', alt: '', title: '' }])}
+                                      className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 cursor-pointer"
+                                    >+ Add Single</button>
+                                  </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+                                  {(Array.isArray(sec.data?.images) ? sec.data.images : []).map((item: any, imageIndex: number, items: any[]) => {
+                                    const imageSrc = typeof item === 'string' ? item : item?.image || '';
+                                    const imageAlt = typeof item === 'string' ? '' : item?.alt || '';
+                                    const imageTitle = typeof item === 'string' ? '' : item?.title || '';
+                                    const galleryName = (slug.replace(/^\/+|\/+$/g, '').split('/').pop() || 'main-gallery').toLowerCase().replace(/[^a-z0-9-]+/g, '-');
+                                    const updateImage = (changes: Record<string, string>) => {
+                                      const updated = [...items];
+                                      updated[imageIndex] = { ...(typeof updated[imageIndex] === 'string' ? { image: updated[imageIndex] } : updated[imageIndex]), ...changes };
+                                      updateSectionData(sec.id, 'images', updated);
+                                    };
+                                    return (
+                                      <div key={imageIndex} className="rounded-lg border border-slate-200 bg-slate-50 p-2.5">
+                                        {imageSrc ? <img src={imageSrc} alt={imageAlt || 'Gallery preview'} className="mb-2 h-32 w-full rounded object-cover" /> : <div className="mb-2 flex h-32 items-center justify-center rounded border-2 border-dashed border-slate-300 text-xs text-slate-500">No image selected</div>}
+                                        <ImageUploadWidget value={imageSrc} onChange={(url) => updateImage({ image: url })} subfolder={`gallery/${galleryName}`} hideManualUrl={false} />
+                                        <input value={imageTitle} onChange={(event) => updateImage({ title: event.target.value })} placeholder="Image title (optional)" className="mt-2 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-xs text-slate-900" />
+                                        <input value={imageAlt} onChange={(event) => updateImage({ alt: event.target.value })} placeholder="SEO alt text" className="mt-2 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-xs text-slate-900" />
+                                        <div className="mt-2 flex justify-between gap-1">
+                                          <button type="button" disabled={imageIndex === 0} onClick={() => { const updated = [...items]; [updated[imageIndex - 1], updated[imageIndex]] = [updated[imageIndex], updated[imageIndex - 1]]; updateSectionData(sec.id, 'images', updated); }} className="rounded bg-slate-200 px-2 py-1 text-xs disabled:opacity-40">Move left</button>
+                                          <button type="button" disabled={imageIndex === items.length - 1} onClick={() => { const updated = [...items]; [updated[imageIndex], updated[imageIndex + 1]] = [updated[imageIndex + 1], updated[imageIndex]]; updateSectionData(sec.id, 'images', updated); }} className="rounded bg-slate-200 px-2 py-1 text-xs disabled:opacity-40">Move right</button>
+                                          <button type="button" onClick={() => updateSectionData(sec.id, 'images', items.filter((_: any, index: number) => index !== imageIndex))} className="rounded bg-red-100 px-2 py-1 text-xs font-bold text-red-700">Remove</button>
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+
+                                <div className="border-t border-slate-200 pt-3">
+                                  <div className="mb-2 flex items-center justify-between">
+                                    <span className="text-[11px] font-extrabold uppercase text-primary">Embedded Videos</span>
+                                    <button type="button" onClick={() => updateSectionData(sec.id, 'videos', [...(Array.isArray(sec.data?.videos) ? sec.data.videos : []), { url: '', title: '' }])} className="rounded bg-primary px-2.5 py-1 text-[11px] font-bold text-white">+ Add Video</button>
+                                  </div>
+                                  {(Array.isArray(sec.data?.videos) ? sec.data.videos : []).map((video: any, videoIndex: number) => (
+                                    <div key={videoIndex} className="mb-2 grid grid-cols-[1fr_1fr_auto] gap-2">
+                                      <input value={typeof video === 'string' ? video : video?.url || ''} onChange={(event) => updateSectionData(sec.id, 'videos', (Array.isArray(sec.data?.videos) ? sec.data.videos : []).map((entry: any, index: number) => index === videoIndex ? { ...(typeof entry === 'string' ? {} : entry), url: event.target.value } : entry))} placeholder="YouTube, Vimeo, or embed URL" className="rounded border border-slate-300 px-2 py-1.5 text-xs text-slate-900" />
+                                      <input value={typeof video === 'string' ? '' : video?.title || ''} onChange={(event) => updateSectionData(sec.id, 'videos', (Array.isArray(sec.data?.videos) ? sec.data.videos : []).map((entry: any, index: number) => index === videoIndex ? { ...(typeof entry === 'string' ? { url: entry } : entry), title: event.target.value } : entry))} placeholder="Video title (optional)" className="rounded border border-slate-300 px-2 py-1.5 text-xs text-slate-900" />
+                                      <button type="button" onClick={() => updateSectionData(sec.id, 'videos', (Array.isArray(sec.data?.videos) ? sec.data.videos : []).filter((_: any, index: number) => index !== videoIndex))} className="rounded bg-red-100 px-2 py-1 text-xs font-bold text-red-700">Remove</button>
+                                    </div>
+                                  ))}
+                                </div>
                               </div>
                             )}
 

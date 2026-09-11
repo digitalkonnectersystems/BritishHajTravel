@@ -14,6 +14,7 @@ import {
   getSiteIdentity,
   getLoginAuthSettings,
   getNavItems,
+  getGalleryNavItems,
   getFooterData,
   getSeoIntelligenceSettings,
 } from "@/actions/pageActions";
@@ -80,10 +81,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [identity, loginAuth, navItems, footerData, seoSettings, hotelDirectory, destinations] = await Promise.all([
+  const [identity, loginAuth, navItems, galleryNavItems, footerData, seoSettings, hotelDirectory, destinations] = await Promise.all([
     getSiteIdentity(),
     getLoginAuthSettings(),
     getNavItems(),
+    getGalleryNavItems(),
     getFooterData(),
     getSeoIntelligenceSettings(),
     getHotelDirectory().catch(() => []),
@@ -117,6 +119,15 @@ export default async function RootLayout({
     const manualChildren = Array.isArray(item.children) ? item.children.filter((child: any) => !String(child.id).startsWith('hotel-category-')) : [];
     return { ...item, children: [...categoryChildren, ...manualChildren] };
   });
+  const existingGalleryItem = liveNavItems.find((item: any) => item.id === 'galleries' || item.label?.toLowerCase() === 'gallery');
+  if (galleryNavItems.length > 0) {
+    if (existingGalleryItem) {
+      existingGalleryItem.url = '/gallery';
+      existingGalleryItem.children = galleryNavItems;
+    } else {
+      liveNavItems.push({ id: 'galleries', label: 'Gallery', url: '/gallery', level: 1, children: galleryNavItems });
+    }
+  }
   const faviconUrl = identity?.favicon || "/img/favicon.ico";
   const initialMaintenanceMode = loginAuth?.maintenanceMode ?? false;
 

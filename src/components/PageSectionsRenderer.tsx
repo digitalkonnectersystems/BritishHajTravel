@@ -18,6 +18,7 @@ import CertificationsFlipCardsSection from '@/components/CertificationsFlipCards
 import SoldOutPackagesSection from '@/components/SoldOutPackagesSection';
 import Banner4GridsSection from '@/components/Banner4GridsSection';
 import PackageBrochuresSection from '@/components/PackageBrochuresSection';
+import GallerySection from '@/components/GallerySection';
 import DynamicSiteForm from '@/components/DynamicSiteForm';
 import FaqSection from '@/components/FaqSection';
 import DestinationsGrid from '@/components/DestinationsGrid';
@@ -36,6 +37,9 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         }
         if (sec.type === 'Package Brochure') {
           return <PackageBrochuresSection key={idx} data={sec.data || {}} pageData={pageData} />;
+        }
+        if (sec.type === 'Gallery') {
+          return <GallerySection key={idx} data={sec.data || {}} />;
         }
         if (sec.type === 'FAQ') {
           return <FaqSection key={idx} data={sec.data || {}} />;

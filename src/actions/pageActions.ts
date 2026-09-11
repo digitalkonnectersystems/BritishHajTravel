@@ -47,6 +47,20 @@ export async function getPagesList() {
         metaDescription: 'Explore British Hajj Travel destinations and available packages.',
       });
     }
+    const mainGalleryPage = await db.select({ id: sitePages.id }).from(sitePages).where(eq(sitePages.slug, '/gallery')).limit(1);
+    if (mainGalleryPage.length === 0) {
+      await db.insert(sitePages).values({
+        title: 'Gallery',
+        slug: '/gallery',
+        status: 'published',
+        showInMenu: false,
+        bannerTitle: 'Gallery',
+        bannerDescription: 'Explore moments from British Hajj Travel journeys.',
+        sections: JSON.stringify([{ id: 'gallery-main', type: 'Gallery', title: 'Main Gallery', data: { eyebrow: 'GALLERY', title: 'Highlights from British Hajj Travel', description: '', images: [], videos: [] } }]),
+        metaTitle: 'Gallery | British Hajj Travel',
+        metaDescription: 'Explore British Hajj Travel journey highlights and videos.',
+      });
+    }
     let pages = await db.select().from(sitePages);
 
     // Apply stored reordering sequence if available
@@ -262,6 +276,34 @@ export async function getNavItems() {
     console.error('getNavItems DB query failed:', err);
   }
   return getDefaultNavItems();
+}
+
+export async function getGalleryNavItems() {
+  try {
+    let pages = await db.select({ id: sitePages.id, title: sitePages.title, slug: sitePages.slug, status: sitePages.status, sections: sitePages.sections }).from(sitePages);
+    if (!pages.some((page) => page.slug === '/gallery')) {
+      const inserted = await db.insert(sitePages).values({
+        title: 'Gallery',
+        slug: '/gallery',
+        status: 'published',
+        showInMenu: false,
+        bannerTitle: 'Gallery',
+        bannerDescription: 'Explore moments from British Hajj Travel journeys.',
+        sections: JSON.stringify([{ id: 'gallery-main', type: 'Gallery', title: 'Main Gallery', data: { eyebrow: 'GALLERY', title: 'Highlights from British Hajj Travel', description: '', images: [], videos: [] } }]),
+        metaTitle: 'Gallery | British Hajj Travel',
+        metaDescription: 'Explore British Hajj Travel journey highlights and videos.',
+      }).$returningId();
+      if (inserted.length > 0) {
+        pages = [...pages, { id: inserted[0].id, title: 'Gallery', slug: '/gallery', status: 'published', sections: JSON.stringify([]) }];
+      }
+    }
+    return pages
+      .filter((page) => page.status === 'published' && page.slug !== '/gallery' && safeJsonParse<any[]>(page.sections, []).some((section) => section?.type === 'Gallery'))
+      .map((page) => ({ id: `gallery-${page.id}`, label: page.title, url: page.slug, level: 2, children: [] }));
+  } catch (error) {
+    console.error('getGalleryNavItems DB query failed:', error);
+    return [];
+  }
 }
 
 export async function saveNavItemsAction(navItems: any[]) {

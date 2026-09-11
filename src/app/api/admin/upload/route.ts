@@ -33,6 +33,10 @@ const SUBFOLDER_ALIASES: Record<string, string> = {
 
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10MB limit
 
+function isValidSubfolder(value: string) {
+  return ALLOWED_SUBFOLDERS.has(value) || /^gallery\/[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value);
+}
+
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
@@ -49,7 +53,7 @@ export async function POST(req: NextRequest) {
     // Validate subfolder against allow-list
     subfolder = subfolder.toLowerCase().trim();
     subfolder = SUBFOLDER_ALIASES[subfolder] || subfolder;
-    if (!ALLOWED_SUBFOLDERS.has(subfolder)) {
+    if (!isValidSubfolder(subfolder)) {
       return NextResponse.json(
         {
           success: false,

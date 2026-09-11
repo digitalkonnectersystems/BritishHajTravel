@@ -59,6 +59,7 @@ export default async function DynamicPage({
   const needsHajj = hasSoldOut || sections.some((sec: any) =>
     ["Hajj Packages", "Packages Grid"].includes(sec?.type)
   );
+  const isGalleryPage = sections.some((sec: any) => sec?.type === "Gallery");
 
   const [umrahPackages, hajjPackages] = await Promise.all([
     needsUmrah ? getPackagesByType("umrah") : Promise.resolve([]),
@@ -72,7 +73,7 @@ export default async function DynamicPage({
       <PageSeoHead pageTitle={page.title} seoData={page.seoData} />
 
       <PageBanner
-        title={page.bannerTitle || page.title}
+        title={isGalleryPage ? page.title : (page.bannerTitle || page.title)}
         description={page.bannerDescription || ""}
         bgImage={page.bannerBgImage || undefined}
         position={page.bannerPosition || undefined}

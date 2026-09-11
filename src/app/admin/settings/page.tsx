@@ -501,11 +501,37 @@ export default function AdminSettingsPage() {
   const [savingForms, setSavingForms] = useState(false);
 
   useEffect(() => {
-    getNavItems().then(items => {
-      if (items && Array.isArray(items)) setNavTree(items);
-    });
-    getPagesList().then(pages => {
+    Promise.all([getNavItems(), getPagesList()]).then(([items, pages]) => {
       if (pages && Array.isArray(pages)) setPagesList(pages);
+      if (!items || !Array.isArray(items)) return;
+
+      const galleryChildren = (pages || []).filter((page: any) => {
+        if (!page?.sections) return false;
+        try {
+          const sections = typeof page.sections === 'string' ? JSON.parse(page.sections) : page.sections;
+          return page.slug !== '/gallery' && page.status === 'published' && Array.isArray(sections) && sections.some((section: any) => section?.type === 'Gallery');
+        } catch {
+          return false;
+        }
+      }).map((page: any) => ({
+        id: `gallery-${page.id}`,
+        label: page.title,
+        url: page.slug,
+        level: 2,
+        children: [],
+      }));
+
+      const galleryItem = {
+        id: 'galleries',
+        label: 'Gallery',
+        url: '/gallery',
+        level: 1,
+        children: galleryChildren,
+      };
+      const existingGallery = items.find((item: any) => item.id === 'galleries' || item.label?.toLowerCase() === 'gallery');
+      setNavTree(existingGallery
+        ? items.map((item: any) => item === existingGallery ? { ...item, ...galleryItem, children: galleryChildren } : item)
+        : [...items, galleryItem]);
     });
     getFooterData().then(data => {
       if (data) setFooterData(data);
