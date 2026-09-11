@@ -368,14 +368,14 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
           );
         }
 
-        // ── Airlines ──────────────────────────────────────────────────────────
-        if (sec.type === "Airlines") {
+        // ── Airlines / Hotels logo carousels ─────────────────────────────────
+        if (sec.type === "Airlines" || sec.type === "Hotels") {
           let logos: { src: string; alt: string }[] = (sec.data?.logos || []).map((l: any) => ({
             src: l.src || "",
             alt: l.alt || "",
           }));
 
-          if (logos.length === 0) {
+          if (logos.length === 0 && sec.type === "Airlines") {
             logos = [
               { src: '/img/a-1.png', alt: 'Saudi Airlines' },
               { src: '/img/a-2.png', alt: 'Emirates' },
@@ -388,6 +388,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
               { src: '/img/a-9.png', alt: 'Air UK' },
             ];
           }
+          const carouselType = sec.type === "Hotels" ? "hotel" : "airline";
           return (
             <section key={idx} className="py-12">
               <div className="max-w-7xl mx-auto px-4">
@@ -398,18 +399,25 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                     </span>
                   )}
                   <h2 className="section-heading font-serif text-primary font-normal">
-                    {sec.data?.title || "Airlines We Sourced Deals From"}
+                    {sec.data?.title || (sec.type === "Hotels" ? "Our Recommended Hotels" : "Airlines We Sourced Deals From")}
                   </h2>
                 </div>
                 {logos.length > 0 ? (
                   <MarqueeTrack
-                    type="airline"
+                    type={carouselType}
                     images={logos}
                     speedMs={sec.data?.speedMs || 30000}
                     direction={sec.data?.direction || "left"}
                   />
                 ) : (
-                  <p className="text-center text-red-600 font-semibold text-base">No Airline Logos Configured Yet.</p>
+                  <p className="text-center text-slate-400 text-sm">No {sec.type === "Hotels" ? "hotel" : "airline"} logos configured yet.</p>
+                )}
+                {sec.data?.viewAllSlug && (
+                  <div className="mt-7 text-center">
+                    <Link href={sec.data.viewAllSlug} className="inline-flex rounded-full bg-gold px-5 py-2.5 text-xs font-bold text-white transition-colors hover:bg-primary">
+                      {sec.data.viewAllLabel || "View All"}
+                    </Link>
+                  </div>
                 )}
               </div>
             </section>
@@ -457,6 +465,13 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                   />
                 ) : (
                   <p className="text-center text-slate-400 text-sm">No organization logos configured yet.</p>
+                )}
+                {sec.data?.viewAllSlug && (
+                  <div className="mt-7 text-center">
+                    <Link href={sec.data.viewAllSlug} className="inline-flex rounded-full bg-gold px-5 py-2.5 text-xs font-bold text-white transition-colors hover:bg-primary">
+                      {sec.data.viewAllLabel || "View All"}
+                    </Link>
+                  </div>
                 )}
               </div>
             </section>

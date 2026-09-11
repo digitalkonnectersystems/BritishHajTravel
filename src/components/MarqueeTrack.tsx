@@ -3,7 +3,7 @@
 import Image from "next/image";
 
 interface MarqueeTrackProps {
-  type: "travel" | "airline";
+  type: "travel" | "airline" | "hotel";
   images: { src: string; alt?: string }[];
   speedMs?: number;
   direction?: "left" | "right";

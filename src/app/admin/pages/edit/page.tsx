@@ -47,6 +47,7 @@ const SECTION_CATALOG: SectionCategory[] = [
       { type: 'Testimonials', description: 'Google Reviews carousel with star rating, review count, and testimonial cards from happy pilgrims.', pages: ['Homepage'] },
       { type: 'Airlines', description: 'Infinite scrolling logo marquee of airline partner brands.', pages: ['Homepage'] },
       { type: 'Travel Organization', description: 'Infinite scrolling logo marquee of travel organizations.', pages: ['Homepage'] },
+      { type: 'Hotels', description: 'Infinite scrolling hotel logo carousel with a configurable View All link.', pages: ['Homepage', 'Any Page'] },
       { type: 'Contact', description: 'Animated Contact with dual notification (admin + user confirmation email).', pages: ['Homepage'] },
     ],
   },
@@ -690,7 +691,19 @@ function PageBuilderContent() {
         direction: 'left',
         logos: [
           { src: '/img/air/saudia.png', alt: 'Organization' },
-        ]
+        ],
+        viewAllLabel: 'View All Organizations',
+        viewAllSlug: '',
+      };
+    } else if (type === 'Hotels') {
+      defaultData = {
+        eyebrow: 'HOTEL PARTNERS',
+        title: 'Our Recommended Hotels',
+        speedMs: 30000,
+        direction: 'left',
+        logos: [],
+        viewAllLabel: 'View All Hotels',
+        viewAllSlug: '/hotels',
       };
     } else if (type === 'Airlines') {
       defaultData = {
@@ -700,7 +713,9 @@ function PageBuilderContent() {
         direction: 'left',
         logos: [
           { src: '/img/air/saudia.png', alt: 'Saudia' },
-        ]
+        ],
+        viewAllLabel: 'View All Airlines',
+        viewAllSlug: '/airlines',
       };
     } else if (type === 'Available Flights Grid') {
       defaultData = {
@@ -3554,12 +3569,35 @@ function PageBuilderContent() {
                               </div>
                             )}
 
-                            {(sec.type === 'Airlines' || sec.type === 'Travel Organization' || sec.type === 'Partners Marquee' || sec.type === 'Logo Carousel' || sec.type === 'Airlines Logo Carousel') && (
+                            {(sec.type === 'Airlines' || sec.type === 'Hotels' || sec.type === 'Travel Organization' || sec.type === 'Partners Marquee' || sec.type === 'Logo Carousel' || sec.type === 'Airlines Logo Carousel') && (
                               <div className="bg-white border border-slate-200 rounded-xl p-3.5 flex flex-col gap-3 mt-1">
                                 <div className="flex justify-between items-center pb-2 border-b border-slate-200">
                                   <span className="text-xs font-extrabold text-primary uppercase">
-                                    {sec.type === 'Travel Organization' ? '🏢 TRAVEL ORGANIZATION LOGO CAROUSEL' : '✈️ AIRLINES LOGO CAROUSEL & PARTNERS MANAGER'}
+                                    {sec.type === 'Travel Organization' ? '🏢 TRAVEL ORGANIZATION LOGO CAROUSEL' : sec.type === 'Hotels' ? '🏨 HOTEL LOGO CAROUSEL & PARTNERS MANAGER' : '✈️ AIRLINES LOGO CAROUSEL & PARTNERS MANAGER'}
                                   </span>
+                                </div>
+
+                                <div className="grid grid-cols-1 gap-3 border-b border-slate-100 pb-3 md:grid-cols-2">
+                                  <div>
+                                    <label className="block text-[10px] font-bold text-slate-600 mb-1">VIEW ALL BUTTON LABEL</label>
+                                    <input
+                                      type="text"
+                                      value={sec.data?.viewAllLabel || ''}
+                                      onChange={(e) => updateSectionData(sec.id, 'viewAllLabel', e.target.value)}
+                                      placeholder={sec.type === 'Hotels' ? 'View All Hotels' : 'View All'}
+                                      className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold text-slate-900 bg-white"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="block text-[10px] font-bold text-slate-600 mb-1">VIEW ALL PAGE SLUG</label>
+                                    <input
+                                      type="text"
+                                      value={sec.data?.viewAllSlug || ''}
+                                      onChange={(e) => updateSectionData(sec.id, 'viewAllSlug', e.target.value)}
+                                      placeholder={sec.type === 'Hotels' ? '/hotels' : '/airlines'}
+                                      className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-mono text-slate-900 bg-white"
+                                    />
+                                  </div>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                   <div>

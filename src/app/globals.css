@@ -457,6 +457,12 @@ h2.section-heading {
   animation: marquee-scroll 35s linear infinite;
 }
 
+.marquee-track.hotel {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 35s linear infinite;
+}
+
 .marquee-track:hover {
   animation-play-state: paused;
 }
@@ -471,6 +477,11 @@ h2.section-heading {
 .marquee-track.travel .marquee-item {
   width: 250px;
   padding: 0 60px;
+}
+
+.marquee-track.hotel .marquee-item {
+  width: 300px;
+  padding: 0 20px;
 }
 
 @keyframes marquee-scroll {

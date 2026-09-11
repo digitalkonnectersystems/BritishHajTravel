@@ -8,9 +8,11 @@ import {
   createHotelCategoryAction,
   deleteHotelAction,
   deleteHotelCategoryAction,
+  updateHotelCategoryOrderAction,
   getHotelAdminData,
   updateHotelAction,
   updateHotelCategoryAction,
+  updateHotelOrderAction,
   type HotelInput,
 } from '@/actions/hotelActions';
 
@@ -39,9 +41,10 @@ export default function HotelsClient() {
   const [editingHotelId, setEditingHotelId] = useState<number | null>(null);
   const [categoryName, setCategoryName] = useState('');
   const [editingCategoryId, setEditingCategoryId] = useState<number | null>(null);
-  const [categoryOrder, setCategoryOrder] = useState('0');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
+  const [draggedCategoryIndex, setDraggedCategoryIndex] = useState<number | null>(null);
+  const [draggedHotelIndex, setDraggedHotelIndex] = useState<number | null>(null);
 
   const loadData = async () => {
     setLoading(true);
@@ -62,11 +65,10 @@ export default function HotelsClient() {
   const saveCategory = async (event: React.FormEvent) => {
     event.preventDefault();
     const result = editingCategoryId
-      ? await updateHotelCategoryAction(editingCategoryId, { name: categoryName, displayOrder: Number(categoryOrder) })
-      : await createHotelCategoryAction({ name: categoryName, displayOrder: Number(categoryOrder) });
+      ? await updateHotelCategoryAction(editingCategoryId, { name: categoryName })
+      : await createHotelCategoryAction({ name: categoryName });
     if (!result.success) return notify(result.error || 'Unable to save category.');
     setCategoryName('');
-    setCategoryOrder('0');
     setEditingCategoryId(null);
     notify('Category saved.');
     await loadData();
@@ -115,6 +117,36 @@ export default function HotelsClient() {
     else notify(result.error || 'Unable to delete category.');
   };
 
+  const reorderCategories = async (index: number) => {
+    if (draggedCategoryIndex === null || draggedCategoryIndex === index) return;
+    const updated = [...categories];
+    const [moved] = updated.splice(draggedCategoryIndex, 1);
+    updated.splice(index, 0, moved);
+    setDraggedCategoryIndex(index);
+    setCategories(updated);
+  };
+
+  const finishCategoryReorder = async () => {
+    setDraggedCategoryIndex(null);
+    const result = await updateHotelCategoryOrderAction(categories.map((category) => category.id));
+    if (!result.success) notify(result.error || 'Unable to update category order.');
+  };
+
+  const reorderHotels = (index: number) => {
+    if (draggedHotelIndex === null || draggedHotelIndex === index) return;
+    const updated = [...hotels];
+    const [moved] = updated.splice(draggedHotelIndex, 1);
+    updated.splice(index, 0, moved);
+    setDraggedHotelIndex(index);
+    setHotels(updated);
+  };
+
+  const finishHotelReorder = async () => {
+    setDraggedHotelIndex(null);
+    const result = await updateHotelOrderAction(hotels.map((hotel) => hotel.id));
+    if (!result.success) notify(result.error || 'Unable to update hotel order.');
+  };
+
   return (
     <AdminLayout user={{ name: 'Admin User', role: 'Super Admin' }}>
       <div className="flex flex-col gap-6">
@@ -131,18 +163,18 @@ export default function HotelsClient() {
             <h2 className="mb-4 text-sm font-extrabold uppercase tracking-wide text-primary">Hotel categories</h2>
             <form onSubmit={saveCategory} className="flex flex-col gap-3">
               <input className={fieldClass()} value={categoryName} onChange={(e) => setCategoryName(e.target.value)} placeholder="e.g. Makkah" required />
-              <input className={fieldClass()} type="number" value={categoryOrder} onChange={(e) => setCategoryOrder(e.target.value)} placeholder="Display order" />
               <button className="rounded-lg bg-primary px-4 py-2 text-xs font-bold text-white hover:bg-white hover:text-primary" type="submit">
                 {editingCategoryId ? 'Update Category' : 'Add Category'}
               </button>
               {editingCategoryId && <button type="button" onClick={() => { setEditingCategoryId(null); setCategoryName(''); }} className="text-xs font-bold text-slate-500">Cancel editing</button>}
             </form>
             <div className="mt-5 flex flex-col gap-2">
-              {categories.map((category) => (
-                <div key={category.id} className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
+              {categories.map((category, categoryIndex) => (
+                <div key={category.id} draggable onDragStart={() => setDraggedCategoryIndex(categoryIndex)} onDragOver={(event) => { event.preventDefault(); reorderCategories(categoryIndex); }} onDragEnd={finishCategoryReorder} className={`flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 ${draggedCategoryIndex === categoryIndex ? 'opacity-40' : ''}`}>
+                  <span className="mr-2 cursor-grab select-none text-slate-400" title="Drag to reorder">⋮⋮</span>
                   <a href={`/hotels/#${category.slug}`} target="_blank" className="text-sm font-bold text-primary">{category.name}</a>
-                  <div className="flex gap-2 text-[11px] font-bold">
-                    <button type="button" onClick={() => { setEditingCategoryId(category.id); setCategoryName(category.name); setCategoryOrder(String(category.displayOrder || 0)); }} className="text-blue-600">Edit</button>
+                  <div className="ml-auto flex gap-2 text-[11px] font-bold">
+                    <button type="button" onClick={() => { setEditingCategoryId(category.id); setCategoryName(category.name); }} className="text-blue-600">Edit</button>
                     <button type="button" onClick={() => removeCategory(category.id)} className="text-red-600">Delete</button>
                   </div>
                 </div>
@@ -164,7 +196,6 @@ export default function HotelsClient() {
               <input className={fieldClass()} value={hotelForm.priceLabel} onChange={(e) => setHotelForm({ ...hotelForm, priceLabel: e.target.value })} placeholder="Price label, e.g. £180" />
               <input className={fieldClass()} value={hotelForm.pricePeriod} onChange={(e) => setHotelForm({ ...hotelForm, pricePeriod: e.target.value })} placeholder="per Night" />
               <input className={fieldClass()} value={hotelForm.rating} onChange={(e) => setHotelForm({ ...hotelForm, rating: e.target.value })} placeholder="Rating 0-5" type="number" min="0" max="5" step="0.1" />
-              <input className={fieldClass()} value={hotelForm.displayOrder} onChange={(e) => setHotelForm({ ...hotelForm, displayOrder: Number(e.target.value) })} placeholder="Display order" type="number" />
               <div className="md:col-span-2"><ImageUploadWidget value={hotelForm.imageUrl || ''} onChange={(url) => setHotelForm({ ...hotelForm, imageUrl: url })} subfolder="hotels" /></div>
               <textarea className={`${fieldClass()} md:col-span-2`} rows={3} value={hotelForm.description} onChange={(e) => setHotelForm({ ...hotelForm, description: e.target.value })} placeholder="Short hotel description" />
               <label className="flex items-center gap-2 text-xs font-bold text-slate-600"><input type="checkbox" checked={hotelForm.isPublished !== false} onChange={(e) => setHotelForm({ ...hotelForm, isPublished: e.target.checked })} /> Published on website</label>
@@ -180,13 +211,14 @@ export default function HotelsClient() {
           <div className="border-b border-slate-200 px-5 py-4"><h2 className="m-0 text-sm font-extrabold uppercase tracking-wide text-primary">Current hotels</h2></div>
           {loading ? <p className="p-5 text-sm text-slate-500">Loading hotels...</p> : (
             <div className="divide-y divide-slate-100">
-              {hotels.map((hotel) => (
-                <div key={hotel.id} className="flex flex-wrap items-center justify-between gap-4 px-5 py-4">
-                  <div className="flex items-center gap-3">
+              {hotels.map((hotel, hotelIndex) => (
+                <div key={hotel.id} draggable onDragStart={() => setDraggedHotelIndex(hotelIndex)} onDragOver={(event) => { event.preventDefault(); reorderHotels(hotelIndex); }} onDragEnd={finishHotelReorder} className={`grid grid-cols-[24px_minmax(0,1fr)_auto] items-center gap-4 px-5 py-4 ${draggedHotelIndex === hotelIndex ? 'bg-emerald-50 opacity-60' : ''}`}>
+                  <span className="cursor-grab select-none text-slate-400" title="Drag to reorder">⋮⋮</span>
+                  <div className="flex min-w-0 items-center justify-self-start gap-3">
                     {hotel.imageUrl ? <img src={hotel.imageUrl} alt="" className="h-14 w-20 rounded object-cover" /> : <div className="h-14 w-20 rounded bg-slate-100" />}
-                    <div><p className="m-0 text-sm font-bold text-slate-900">{hotel.name}</p><p className="m-0 text-xs text-slate-500">{hotel.city} · {categories.find((category) => category.id === hotel.categoryId)?.name || 'Uncategorised'}</p></div>
+                    <div className="min-w-0"><p className="m-0 text-sm font-bold text-slate-900">{hotel.name}</p><p className="m-0 text-xs text-slate-500">{hotel.city} · {categories.find((category) => category.id === hotel.categoryId)?.name || 'Uncategorised'}</p></div>
                   </div>
-                  <div className="flex gap-2"><button type="button" onClick={() => editHotel(hotel)} className="rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700">Edit</button><button type="button" onClick={() => removeHotel(hotel.id)} className="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-bold text-red-600">Delete</button></div>
+                  <div className="flex justify-self-end gap-2"><button type="button" onClick={() => editHotel(hotel)} className="rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700">Edit</button><button type="button" onClick={() => removeHotel(hotel.id)} className="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-bold text-red-600">Delete</button></div>
                 </div>
               ))}
               {!hotels.length && <p className="p-5 text-sm text-slate-500">No hotels added yet.</p>}

@@ -9,7 +9,7 @@ export default async function DestinationsPage() {
   let sections: any[] = [];
   try { sections = pageData?.sections ? (typeof pageData.sections === 'string' ? JSON.parse(pageData.sections) : pageData.sections) : []; } catch { sections = []; }
   return (
-    <main className="bg-white min-h-screen">
+    <main className="bg-sage min-h-screen">
       <PageBanner title={pageData?.bannerTitle || 'Destinations'} description={pageData?.bannerDescription || ''} bgImage={pageData?.bannerBgImage || undefined} position={pageData?.bannerPosition || undefined} size={pageData?.bannerSize || undefined} />
       {sections.length > 0 ? <PageSectionsRenderer sections={sections} pageData={pageData} initialDestinationData={destinations} /> : <DestinationsGrid destinations={destinations} />}
     </main>

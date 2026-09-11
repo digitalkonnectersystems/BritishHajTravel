@@ -102,6 +102,17 @@ export async function deleteHotelCategoryAction(id: number) {
   }
 }
 
+export async function updateHotelCategoryOrderAction(orderedIds: number[]) {
+  try {
+    await Promise.all(orderedIds.map((id, index) => db.update(hotelCategories).set({ displayOrder: index, updatedAt: new Date() }).where(eq(hotelCategories.id, id))));
+    revalidatePath('/hotels');
+    revalidateTag('hotel-directory', 'max');
+    return { success: true };
+  } catch {
+    return { success: false, error: 'Failed to update hotel category order.' };
+  }
+}
+
 export type HotelInput = {
   categoryId: number;
   name: string;
@@ -171,5 +182,16 @@ export async function deleteHotelAction(id: number) {
     return { success: true };
   } catch {
     return { success: false, error: 'Failed to delete hotel.' };
+  }
+}
+
+export async function updateHotelOrderAction(orderedIds: number[]) {
+  try {
+    await Promise.all(orderedIds.map((id, index) => db.update(hotels).set({ displayOrder: index, updatedAt: new Date() }).where(eq(hotels.id, id))));
+    revalidatePath('/hotels');
+    revalidateTag('hotel-directory', 'max');
+    return { success: true };
+  } catch {
+    return { success: false, error: 'Failed to update hotel order.' };
   }
 }

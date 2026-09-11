@@ -142,3 +142,15 @@ export async function deleteDestinationAction(id: number) {
     return { success: false, error: error.message || 'Failed to delete destination.' };
   }
 }
+
+export async function updateDestinationOrderAction(orderedIds: number[]) {
+  try {
+    await Promise.all(orderedIds.map((id, index) => db.update(destinations).set({ displayOrder: index, updatedAt: new Date() }).where(eq(destinations.id, id))));
+    revalidatePath('/destinations');
+    revalidatePath('/', 'layout');
+    revalidateTag('nav-items', 'max');
+    return { success: true };
+  } catch {
+    return { success: false, error: 'Failed to update destination order.' };
+  }
+}

@@ -23,7 +23,7 @@ export default function DestinationsGrid({ destinations = [], title = 'Destinati
   }, [destinations]);
 
   return (
-    <section className="bg-white py-10 md:py-14">
+    <section className="bg-sage py-10 md:py-14">
       <div className="max-w-[1150px] mx-auto px-3">
         <h1 className="text-center text-primary text-3xl md:text-4xl font-medium mb-9">{title}</h1>
         {destinations.length === 0 ? (
