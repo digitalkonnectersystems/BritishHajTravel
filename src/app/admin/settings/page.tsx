@@ -27,6 +27,7 @@ import {
   getSeoIntelligenceSettings,
   saveSeoIntelligenceSettingsAction,
 } from '@/actions/pageActions';
+import { getDestinations } from '@/actions/destinationActions';
 import { getEmailDeliveryLogsAction } from '@/actions/logActions';
 import {
   getResponsiveEmailTemplateHtml,
@@ -122,6 +123,7 @@ export default function AdminSettingsPage() {
   const [editingItem, setEditingItem] = useState<any | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [pagesList, setPagesList] = useState<any[]>([]);
+  const [destinationsList, setDestinationsList] = useState<any[]>([]);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
 
   // Drag-and-drop state (native HTML5 — no external library)
@@ -501,8 +503,9 @@ export default function AdminSettingsPage() {
   const [savingForms, setSavingForms] = useState(false);
 
   useEffect(() => {
-    Promise.all([getNavItems(), getPagesList()]).then(([items, pages]) => {
+    Promise.all([getNavItems(), getPagesList(), getDestinations()]).then(([items, pages, destinations]) => {
       if (pages && Array.isArray(pages)) setPagesList(pages);
+      if (destinations && Array.isArray(destinations)) setDestinationsList(destinations);
       if (!items || !Array.isArray(items)) return;
 
       const galleryChildren = (pages || []).filter((page: any) => {
@@ -529,9 +532,13 @@ export default function AdminSettingsPage() {
         children: galleryChildren,
       };
       const existingGallery = items.find((item: any) => item.id === 'galleries' || item.label?.toLowerCase() === 'gallery');
+      const existingDestinations = items.find((item: any) => item.label?.toLowerCase() === 'destinations');
+      const navigationWithDestinations = existingDestinations
+        ? items
+        : [...items, { id: 'destinations-directory', label: 'Destinations', url: '/destinations', level: 1, children: [] }];
       setNavTree(existingGallery
-        ? items.map((item: any) => item === existingGallery ? { ...item, ...galleryItem, children: galleryChildren } : item)
-        : [...items, galleryItem]);
+        ? navigationWithDestinations.map((item: any) => item === existingGallery ? { ...item, ...galleryItem, children: galleryChildren } : item)
+        : [...navigationWithDestinations, galleryItem]);
     });
     getFooterData().then(data => {
       if (data) setFooterData(data);
@@ -4072,8 +4079,8 @@ export default function AdminSettingsPage() {
                         <div
                           key={f.key}
                           className={`rounded-3xl p-6 border transition-all flex flex-col justify-between ${isEditingThisForm
-                            ? 'bg-gold/50 border-[#DB9E30] shadow-md'
-                            : 'bg-white border-gold shadow-2xs hover:border-gold/30'
+                            ? 'bg-red/50 border-[#DB9E30] shadow-md'
+                            : 'bg-white border-red shadow-2xs hover:border-red/30'
                             }`}
                         >
                           <div>
@@ -4111,7 +4118,7 @@ export default function AdminSettingsPage() {
                                   }}
                                   className={`px-3 py-1.5 rounded-full text-xs font-extrabold outline-none cursor-pointer border transition-colors ${cfg.enabled ?? true
                                     ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
-                                    : 'bg-amber-50 text-gold border-[#DB9E30]/50 font-bold'
+                                    : 'bg-amber-50 text-red border-[#DB9E30]/50 font-bold'
                                     }`}
                                 >
                                   <option value="active">● Active</option>
@@ -4150,7 +4157,7 @@ export default function AdminSettingsPage() {
                           <div className="pt-4 border-t border-slate-100 flex justify-between items-center">
                             <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${cfg.enabled ?? true
                               ? 'text-emerald-700 bg-emerald-50 border-emerald-200'
-                              : 'text-gold bg-amber-50 border-[#DB9E30]/30'
+                              : 'text-red bg-amber-50 border-[#DB9E30]/30'
                               }`}>
                               ● {cfg.enabled ?? true ? 'Active on Frontend' : 'Disabled (Blurred Overlay)'}
                             </span>
@@ -4716,12 +4723,12 @@ export default function AdminSettingsPage() {
 
                   {/* ── SMTP Environment Connection (.env Configured) Card ── */}
                   <div className="p-6 lg:p-7 rounded-3xl bg-gradient-to-r from-[#071814] via-[#0E2C24] to-primary text-white border border-[#DB9E30]/30 shadow-xl relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-gold opacity-10 rounded-full blur-3xl pointer-events-none" />
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-red opacity-10 rounded-full blur-3xl pointer-events-none" />
 
                     <div className="relative z-10 flex flex-col gap-5">
                       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-emerald-500/20 pb-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-2xl bg-gold/20 border border-[#DB9E30]/40 flex items-center justify-center text-xl shadow-xs">
+                          <div className="w-10 h-10 rounded-2xl bg-red/20 border border-[#DB9E30]/40 flex items-center justify-center text-xl shadow-xs">
                             ⚡
                           </div>
                           <div>
@@ -4740,7 +4747,7 @@ export default function AdminSettingsPage() {
                       {/* Active .env Configuration Parameters Grid */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-1">
                         <div className="p-3.5 rounded-2xl bg-[#051410]/70 border border-emerald-500/20 backdrop-blur-md">
-                          <span className="text-[10px] font-extrabold text-gold uppercase tracking-widest block mb-1">
+                          <span className="text-[10px] font-extrabold text-red uppercase tracking-widest block mb-1">
                             SMTP SERVER HOST
                           </span>
                           <span className="text-xs font-mono font-bold text-white block truncate">
@@ -4750,7 +4757,7 @@ export default function AdminSettingsPage() {
                         </div>
 
                         <div className="p-3.5 rounded-2xl bg-[#051410]/70 border border-emerald-500/20 backdrop-blur-md">
-                          <span className="text-[10px] font-extrabold text-gold uppercase tracking-widest block mb-1">
+                          <span className="text-[10px] font-extrabold text-red uppercase tracking-widest block mb-1">
                             PORT &amp; ENCRYPTION
                           </span>
                           <span className="text-xs font-mono font-bold text-emerald-300 block">
@@ -4760,7 +4767,7 @@ export default function AdminSettingsPage() {
                         </div>
 
                         <div className="p-3.5 rounded-2xl bg-[#051410]/70 border border-emerald-500/20 backdrop-blur-md">
-                          <span className="text-[10px] font-extrabold text-gold uppercase tracking-widest block mb-1">
+                          <span className="text-[10px] font-extrabold text-red uppercase tracking-widest block mb-1">
                             AUTHENTICATED ACCOUNT
                           </span>
                           <span className="text-xs font-mono font-bold text-white block truncate">
@@ -4770,7 +4777,7 @@ export default function AdminSettingsPage() {
                         </div>
 
                         <div className="p-3.5 rounded-2xl bg-[#051410]/70 border border-emerald-500/20 backdrop-blur-md">
-                          <span className="text-[10px] font-extrabold text-gold uppercase tracking-widest block mb-1">
+                          <span className="text-[10px] font-extrabold text-red uppercase tracking-widest block mb-1">
                             SECURITY MODE
                           </span>
                           <span className="text-xs font-mono font-bold text-emerald-300 block">
@@ -4924,7 +4931,7 @@ export default function AdminSettingsPage() {
                       <div className="flex items-center justify-between text-xs font-bold text-ink-lt border-b border-slate-800 pb-3">
                         <span className="flex items-center gap-2">
                           <span>&lt;/&gt; HTML EDITOR</span>
-                          <span className="text-[10px] font-mono text-gold bg-gold/10 px-2 py-0.5 rounded-full border border-gold/30">
+                          <span className="text-[10px] font-mono text-red bg-red/10 px-2 py-0.5 rounded-full border border-red/30">
                             {selectedTemplateSubject}
                           </span>
                         </span>
@@ -5170,6 +5177,23 @@ export default function AdminSettingsPage() {
                   className="w-full p-3 rounded-xl border border-slate-200 text-xs outline-none focus:border-primary font-mono"
                 />
               </div>
+
+              {editingItem.parentId && navTree.some((item: any) => item.id === editingItem.parentId && item.label?.toLowerCase() === 'destinations') && destinationsList.length > 0 && (
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Or Select Destination</label>
+                  <select
+                    value={editingItem.id?.startsWith('destination-') ? editingItem.id : ''}
+                    onChange={(e) => {
+                      const selected = destinationsList.find((destination: any) => `destination-${destination.id}` === e.target.value);
+                      if (selected) setEditingItem({ ...editingItem, id: `destination-${selected.id}`, label: selected.title, url: `/destinations/${selected.slug}` });
+                    }}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 text-xs outline-none cursor-pointer bg-slate-50"
+                  >
+                    <option value="">-- Choose Destination --</option>
+                    {destinationsList.map((destination: any) => <option key={destination.id} value={`destination-${destination.id}`}>{destination.title}</option>)}
+                  </select>
+                </div>
+              )}
 
               {pagesList && pagesList.length > 0 && (
                 <div>

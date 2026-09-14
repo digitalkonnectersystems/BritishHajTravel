@@ -130,7 +130,7 @@ export default async function HajjPackagesPage() {
       <section className="hero packages">
         <div className="wrap">
           <h1 className="page-header-title">
-            Luxury <span className="text-gold">Hajj Packages 2027</span>
+            Luxury <span className="text-red">Hajj Packages 2027</span>
           </h1>
           <p className="page-header-leadtxt">
             Luxury Hajj 2027 Packages with 5-Star Hotels, VIP Services &amp; Complete Spiritual Guidance.

@@ -26,11 +26,23 @@ async function ensureDestinationsTable() {
     section_title varchar(255) DEFAULT 'Packages for this destination',
     banner_images json,
     package_ids json,
+    packages_data json,
+    package_data json,
     status enum('published','draft') NOT NULL DEFAULT 'published',
     display_order int NOT NULL DEFAULT 0,
     created_at timestamp DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
   )`);
+  try {
+    await db.execute(sql`ALTER TABLE destinations ADD COLUMN packages_data json AFTER package_ids`);
+  } catch {
+    // The column already exists on databases that have applied the migration.
+  }
+  try {
+    await db.execute(sql`ALTER TABLE destinations ADD COLUMN package_data json AFTER packages_data`);
+  } catch {
+    // The column already exists on databases that have applied the migration.
+  }
 }
 
 export async function getDestinations(includeDrafts = false) {
@@ -43,6 +55,8 @@ export async function getDestinations(includeDrafts = false) {
       ...row,
       bannerImages: parseJson(row.bannerImages),
       packageIds: parseJson(row.packageIds).map(Number).filter(Boolean),
+      packagesData: parseJson(row.packagesData, []),
+      packageData: row.packageData || (parseJson(row.packagesData, [])[0] || null),
     }));
   } catch (error) {
     console.error('getDestinations DB error:', error);
@@ -62,6 +76,8 @@ export async function getDestinationBySlug(slug: string) {
       ...row,
       bannerImages: parseJson(row.bannerImages),
       packageIds: parseJson(row.packageIds).map(Number).filter(Boolean),
+      packagesData: parseJson(row.packagesData, []),
+      packageData: row.packageData || (parseJson(row.packagesData, [])[0] || null),
     };
   } catch (error) {
     console.error('getDestinationBySlug DB error:', error);
@@ -77,6 +93,8 @@ export async function saveDestinationAction(data: {
   sectionTitle?: string;
   bannerImages?: string[];
   packageIds?: number[];
+  packagesData?: any[];
+  packageData?: any;
   status?: 'published' | 'draft';
   displayOrder?: number;
 }) {
@@ -92,6 +110,8 @@ export async function saveDestinationAction(data: {
     const bannerImages = (data.bannerImages || [])
       .map((image) => String(image || '').trim())
       .filter(Boolean);
+    const packagesData = Array.isArray(data.packagesData) ? data.packagesData : [];
+    const packageData = data.packageData || packagesData[0] || null;
 
     const values = {
       title,
@@ -100,6 +120,8 @@ export async function saveDestinationAction(data: {
       sectionTitle: data.sectionTitle || 'Packages for this destination',
       bannerImages,
       packageIds,
+      packagesData,
+      packageData,
       status: data.status || 'published',
       displayOrder: Number(data.displayOrder || 0),
       updatedAt: new Date(),

@@ -165,7 +165,7 @@ export default function AdminPagesListPage() {
                       <button
                         type="button"
                         onClick={() => handleCopySlug(p.id, p.slug)}
-                        className="p-1 rounded-md text-primary hover:text-slate-900 hover:bg-gold/20 transition-colors border-none cursor-pointer flex items-center justify-center"
+                        className="p-1 rounded-md text-primary hover:text-slate-900 hover:bg-red/20 transition-colors border-none cursor-pointer flex items-center justify-center"
                         title="Copy full page URL"
                       >
                         {copiedId === p.id ? (
@@ -219,7 +219,7 @@ export default function AdminPagesListPage() {
                       <button
                         onClick={() => handleDelete(p.id, p.title)}
                         disabled={deletingId === p.id}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-50 text-red-600 hover:text-white hover:bg-gold border border-red-200 text-[11px] font-bold cursor-pointer disabled:opacity-50"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-50 text-red-600 hover:text-white hover:bg-red border border-red-200 text-[11px] font-bold cursor-pointer disabled:opacity-50"
                       >
                         {deletingId === p.id ? 'Deleting...' : <><Trash2 className="w-3 h-3" /></>}
                       </button>

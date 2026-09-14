@@ -342,7 +342,7 @@ export default function DynamicSiteForm({
                               required={f3.required}
                               value={formData[f3.id] || ""}
                               onChange={handleChange}
-                              className="w-full border border-line p-3 pr-10 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat cursor-pointer focus:border-emerald-800"
+                              className="w-full border border-line p-3 pr-10 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat cursor-pointer focus:border-emerald-800"
                             >
                               <option value="">Select {f3.label}</option>
                               {f3.type === "dropdown_flight_type" && ["One-Way", "Round Trip"].map(opt => (
@@ -410,7 +410,7 @@ export default function DynamicSiteForm({
                       required={field.required}
                       value={formData[field.id] || ""}
                       onChange={handleChange}
-                      className="w-full border border-line p-3 pr-10 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat cursor-pointer focus:border-emerald-800"
+                      className="w-full border border-line p-3 pr-10 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat cursor-pointer focus:border-emerald-800"
                     >
                       <option value="">Select {field.label}</option>
 
@@ -466,7 +466,7 @@ export default function DynamicSiteForm({
                         } catch { }
                       }}
                       onChange={handleChange}
-                      className="w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium focus:border-emerald-800 cursor-pointer"
+                      className="w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium focus:border-emerald-800 cursor-pointer"
                     />
                   ) : isTel ? (
                     <input
@@ -479,7 +479,7 @@ export default function DynamicSiteForm({
                       maxLength={formKey === "flightInquiry" ? 11 : undefined}
                       inputMode="tel"
                       autoComplete="tel"
-                      className="w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium focus:border-emerald-800"
+                      className="w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium focus:border-emerald-800"
                     />
                   ) : (
                     <input
@@ -489,7 +489,7 @@ export default function DynamicSiteForm({
                       value={formData[field.id] || ""}
                       onChange={handleChange}
                       placeholder={field.placeholder || ""}
-                      className="w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium focus:border-emerald-800"
+                      className="w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium focus:border-emerald-800"
                     />
                   )}
                 </div>
@@ -514,7 +514,7 @@ export default function DynamicSiteForm({
               onChange={handleChange}
               placeholder={field.placeholder || "Message"}
               rows={4}
-              className="w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium resize-none focus:border-emerald-800"
+              className="w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium resize-none focus:border-emerald-800"
             />
           </div>
         ))}
@@ -522,7 +522,7 @@ export default function DynamicSiteForm({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-gold text-white font-extrabold py-3.5 px-6 rounded-sm shadow-md hover:bg-gold-lt hover:text-white active:scale-[0.99] transition-all duration-300 tracking-wider uppercase text-sm flex items-center justify-center cursor-pointer"
+          className="w-full bg-red text-white font-extrabold py-3.5 px-6 rounded-sm shadow-md hover:bg-red-lt hover:text-white active:scale-[0.99] transition-all duration-300 tracking-wider uppercase text-sm flex items-center justify-center cursor-pointer"
         >
           {isSubmitting
             ? "Submitting Request..."

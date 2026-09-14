@@ -208,10 +208,10 @@ export default function UmrahPackagesPageClient({ initialPageData, packages = []
                     {/* Top Bar Tags */}
                     <div className="card-hero-tags">
                       <div className="tag-black">
-                        <i className="fa-solid fa-kaaba text-gold"></i>
+                        <i className="fa-solid fa-kaaba text-red"></i>
                         <span>{badgeTag}</span>
                       </div>
-                      <div className="tag-gold">
+                      <div className="tag-red">
                         <i className="fa-solid fa-calendar-days"></i>
                         <span>{duration}</span>
                       </div>
@@ -281,7 +281,7 @@ export default function UmrahPackagesPageClient({ initialPageData, packages = []
                         <div className="hotel-details">
                           <div className="hotel-name">{madinahHotel.name}</div>
                           <div className="hotel-location">
-                            <i className="fa-solid fa-location-dot text-gold"></i>
+                            <i className="fa-solid fa-location-dot text-red"></i>
                             <span>{madinahHotel.location}</span>
                           </div>
                           <div className="hotel-tags">
@@ -320,7 +320,7 @@ export default function UmrahPackagesPageClient({ initialPageData, packages = []
 
                       <Link
                         href={`/package/${card.slug || card.id || card.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
-                        className="w-full bg-gold hover:bg-[#b88222] text-slate-950 font-extrabold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition-all cursor-pointer mt-2"
+                        className="w-full bg-red hover:bg-[#b88222] text-slate-950 font-extrabold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition-all cursor-pointer mt-2"
                       >
                         <i className="fa-solid fa-passport"></i>
                         <span>Book Umrah 2026</span>
@@ -388,7 +388,7 @@ export default function UmrahPackagesPageClient({ initialPageData, packages = []
                         '[&_a]:text-primary [&_a]:underline',
                         '[&_ul]:list-disc [&_ul]:pl-5',
                         '[&_ol]:list-decimal [&_ol]:pl-5',
-                        '[&_blockquote]:border-l-4 [&_blockquote]:border-gold [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-slate-600',
+                        '[&_blockquote]:border-l-4 [&_blockquote]:border-red [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-slate-600',
                         '[&_strong]:text-slate-900',
                         '[&_p]:text-slate-700 [&_p]:leading-relaxed',
                       ].join(' ')}

@@ -7,6 +7,7 @@ import DynamicIcon from "@/components/ui/DynamicIcon";
 import { getDurationUnit } from "@/lib/packageHelpers";
 import { getPackagesByType, getPackagesByIds } from "@/actions/packageActions";
 import PackageBookingModal from "@/components/PackageBookingModal";
+import PackageDetailModal from "@/components/PackageDetailModal";
 export default function HajjPackagesSection({
   data,
   initialPackages,
@@ -45,9 +46,17 @@ export default function HajjPackagesSection({
   const [loading, setLoading] = useState(!initialPackages);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [selectedPkgForBooking, setSelectedPkgForBooking] = useState<any>(null);
+  const [detailModalOpen, setDetailModalOpen] = useState(false);
+  const [selectedPkgForDetail, setSelectedPkgForDetail] = useState<any>(null);
 
   useEffect(() => {
     const packageIds = data?.packageIds || [];
+
+    if (data?.isDestinationSection && initialPackages) {
+      setPkgs(initialPackages);
+      setLoading(false);
+      return;
+    }
 
     // If we have initialPackages and no specific packageIds are selected, 
     // we don't need to fetch on mount, because the server already gave us all packages.
@@ -71,8 +80,8 @@ export default function HajjPackagesSection({
   }, [data?.packageIds, initialPackages]);
 
   const sectionClass = isHomepage
-    ? "pb-12 md:pb-16 md:pt-16 bg-sage"
-    : "pt-12 md:pb-16 bg-sage";
+    ? "pb-12 md:pb-16 md:pt-16 bg-white"
+    : "pt-12 md:pb-16 bg-blue-lt";
 
   return (
     <section className={sectionClass}>
@@ -102,7 +111,7 @@ export default function HajjPackagesSection({
                   <div className="h-4 bg-gray-200 rounded w-2/3" />
                   <div className="h-16 bg-gray-100 rounded-2xl" />
                   <div className="h-16 bg-gray-100 rounded-2xl" />
-                  <div className="h-12 bg-gold/30 rounded-xl" />
+                  <div className="h-12 bg-red/30 rounded-xl" />
                 </div>
               </div>
             ))}
@@ -130,12 +139,19 @@ export default function HajjPackagesSection({
               }
               const heroImage =
                 cd.bannerImage ||
+                pkg.image ||
                 pkg.featuredImage ||
                 "/uploads/sections/hajj_1.jpg";
-              const badgeTag = cd.badgeTag || data?.badgeTag || (data?.destinationName ? data.destinationName.toUpperCase() : "HAJJ 2027");
+              const titleCandidate = String(
+                pkg.title || pkg.packageTitle || cd.packageTitle || ""
+              ).trim();
+              const packageTitle = data?.isDestinationSection && titleCandidate.length < 2
+                ? String(pkg.destinationTitle || "Travel Package").trim()
+                : titleCandidate || String(pkg.destinationTitle || "Travel Package").trim();
+              const badgeTag = cd.badgeTag || data?.badgeTag || pkg.destinationTitle?.toUpperCase() || (data?.destinationName ? data.destinationName.toUpperCase() : "HAJJ 2027");
               const duration = cd.duration || `${pkg.durationDays || 14}Days`;
               const flightRoute =
-                cd.flightRoute || "FROM CANADA ➔ TO SAUDIA";
+                cd.flightRoute || pkg.flightRoute || "FROM CANADA ➔ TO SAUDIA";
               const operatorName = cd.operatorName || "British Hajj Travel";
               const operatorRating = cd.operatorRating || "4.4/5";
               const priceSubtext =
@@ -165,7 +181,7 @@ export default function HajjPackagesSection({
 
               const defaultAccommodations = [
                 {
-                  city: 'MAKKAH',
+                  city: makkahHotel?.label || 'MAKKAH',
                   subtitle: makkahHotel?.name || '',
                   location: makkahHotel?.location || '',
                   badge: makkahHotel?.badge || '',
@@ -176,7 +192,7 @@ export default function HajjPackagesSection({
                   durationEnabled: isDurEnabled(makkahHotel),
                 },
                 {
-                  city: 'MADINA',
+                  city: madinahHotel?.label || 'MADINA',
                   subtitle: madinahHotel?.name || '',
                   location: madinahHotel?.location || '',
                   badge: madinahHotel?.badge || '',
@@ -187,7 +203,7 @@ export default function HajjPackagesSection({
                   durationEnabled: isDurEnabled(madinahHotel),
                 },
                 {
-                  city: 'AZIZIYA',
+                  city: aziziyaHotel?.label || 'AZIZIYA',
                   subtitle: aziziyaHotel?.name || '',
                   location: aziziyaHotel?.location || '',
                   badge: aziziyaHotel?.badge || '',
@@ -198,7 +214,7 @@ export default function HajjPackagesSection({
                   durationEnabled: isDurEnabled(aziziyaHotel),
                 },
                 {
-                  city: 'MINA',
+                  city: minaHotel?.label || 'MINA',
                   subtitle: minaHotel?.name || '',
                   location: minaHotel?.location || '',
                   badge: minaHotel?.badge || '',
@@ -242,16 +258,16 @@ export default function HajjPackagesSection({
                   <div className="relative h-[230px] w-full">
                     <img
                       src={heroImage}
-                      alt={pkg.title || "Hajj Package"}
+                      alt={packageTitle}
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
 
                     {/* Badges */}
-                    <div className="absolute top-4 left-4 flex items-center gap-1.5 text-white text-[11px] font-bold tracking-wider">
+                    {!data?.isDestinationSection && <div className="absolute top-4 left-4 flex items-center gap-1.5 text-white text-[11px] font-bold tracking-wider">
                       <LucideIcons.Shield className="w-3.5 h-3.5" /> {badgeTag}
-                    </div>
-                    <div className="absolute top-4 right-4 bg-gold text-white px-3 py-1 rounded-full text-[11px] font-black tracking-wider flex items-center gap-1.5 shadow-sm">
+                    </div>}
+                    <div className="absolute top-4 right-4 bg-red text-white px-3 py-1 rounded-full text-[11px] font-black tracking-wider flex items-center gap-1.5 shadow-sm">
                       <LucideIcons.Calendar className="w-3.5 h-3.5" /> {duration}
                     </div>
 
@@ -260,8 +276,8 @@ export default function HajjPackagesSection({
                       <div className="text-white text-[11px] font-black tracking-widest mb-1 flex items-center gap-1.5">
                         <LucideIcons.Plane className="w-3.5 h-3.5" /> {flightRoute}
                       </div>
-                      <h3 className="text-white font-serif text-2xl leading-tight font-bold">
-                        {pkg.title || "5 Star Deluxe Hajj Package 2027"}
+                      <h3 className="max-w-full whitespace-normal break-words text-white font-serif text-2xl leading-tight font-bold">
+                        {packageTitle}
                       </h3>
                     </div>
                   </div>
@@ -293,7 +309,7 @@ export default function HajjPackagesSection({
                             <h4 className="text-primary font-black text-xs uppercase tracking-wider leading-none mb-0.5">
                               {acc.city}
                             </h4>
-                            <div className="text-gold font-serif font-bold text-[10px] uppercase tracking-wide truncate">
+                            <div className="text-red font-serif font-bold text-[10px] uppercase tracking-wide truncate">
                               {acc.subtitle}
                             </div>
                             <div className="text-ink-soft text-[10px] flex items-center gap-1 mb-1.5 truncate">
@@ -308,7 +324,7 @@ export default function HajjPackagesSection({
                                 </span>
                               )}
                               {acc.durationEnabled !== false && acc.nights && (
-                                <span className="bg-gold-lt text-white text-[9px] px-1.5 py-0.5 rounded font-bold tracking-wider flex items-center gap-1 shrink-0">
+                                <span className="bg-red-lt text-white text-[9px] px-1.5 py-0.5 rounded font-bold tracking-wider flex items-center gap-1 shrink-0">
                                   {getDurationUnit(acc.nights) === 'days' ? (
                                     <LucideIcons.Sun className="w-2.5 h-2.5 text-white" />
                                   ) : (
@@ -371,13 +387,13 @@ export default function HajjPackagesSection({
                         </div>
                         <div className="text-sm font-bold text-ink flex items-center gap-2 whitespace-nowrap">
                           {operatorName}{" "}
-                          <span className="bg-gold text-white text-[10px] px-1.5 py-0.5 rounded font-black">
+                          <span className="bg-red text-white text-[10px] px-1.5 py-0.5 rounded font-black">
                             {operatorRating}
                           </span>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-[10px] font-bold text-gold uppercase tracking-widest mb-1">
+                        <div className="text-[10px] font-bold text-red uppercase tracking-widest mb-1">
                           {priceSubtext}
                         </div>
                         <div className="text-2xl font-black text-primary leading-none">
@@ -387,12 +403,21 @@ export default function HajjPackagesSection({
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-2.5">
-                      <a
-                        href={`/${pkg.slug}`}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (data?.isDestinationSection) {
+                            if (pkg.destinationSlug) {
+                              window.location.href = `/destinations/${pkg.destinationSlug}`;
+                            }
+                          } else if (pkg.slug) {
+                            window.location.href = `/${pkg.slug}`;
+                          }
+                        }}
                         className="flex-1 py-3.5 border-2 border-primary text-primary hover:bg-primary hover:text-white text-xs font-black rounded-xl uppercase tracking-wider transition-colors flex justify-center items-center gap-2"
                       >
                         <LucideIcons.Eye className="w-4 h-4" /> View Detail
-                      </a>
+                      </button>
 
                       <button
                         type="button"
@@ -400,9 +425,9 @@ export default function HajjPackagesSection({
                           setSelectedPkgForBooking(pkg);
                           setBookingModalOpen(true);
                         }}
-                        className="flex-1 py-3.5 bg-gold hover:bg-white hover:border hover:border-gold text-white hover:text-gold text-xs font-black rounded-xl uppercase tracking-wider transition-colors flex justify-center items-center gap-2 shadow-sm"
+                        className="flex-1 py-3.5 bg-red hover:bg-white hover:border hover:border-red text-white hover:text-red text-xs font-black rounded-xl uppercase tracking-wider transition-colors flex justify-center items-center gap-2 shadow-sm"
                       >
-                        <LucideIcons.BookOpen className="w-4 h-4" /> {data?.buttonLabel || "Book Hajj 2027"}
+                        <LucideIcons.BookOpen className="w-4 h-4" /> {data?.isDestinationSection ? (cd.btnLabel || "Book Now") : (data?.buttonLabel || "Book Hajj 2027")}
                       </button>
                     </div>
                   </div>
@@ -417,6 +442,11 @@ export default function HajjPackagesSection({
         isOpen={bookingModalOpen}
         onClose={() => setBookingModalOpen(false)}
         pkg={selectedPkgForBooking}
+      />
+      <PackageDetailModal
+        isOpen={detailModalOpen}
+        onClose={() => setDetailModalOpen(false)}
+        pkg={selectedPkgForDetail}
       />
     </section>
   );

@@ -6,7 +6,7 @@ export default function WhoWeAreSection({ data }: { data: any }) {
   // Use data from the CMS if available, otherwise fallback to hardcoded
   const eyebrow = data?.eyebrow || "WHO WE ARE";
   const title = data?.title || "We provide and offer<br />Hajj & Umrah packages";
-  const description1 = data?.description1 || "British Hajj Travel proudly provides reliable and professional Hajj and Umrah services across United Kingdom. With years of experience serving the Muslim community, we are committed to making your sacred journey smooth, comfortable, and spiritually fulfilling.";
+  const description1 = data?.description1 || "Since 2001, British Haj Travel Ltd UK has proudly delivered high-quality Hajj and Umrah packages to pilgrims across the United Kingdom, earning a reputation for trust, reliability, and excellence. With over two decades of experience in serving the needs of thousands of pilgrims, we understand the spiritual importance of this sacred journey and are committed to making every step of it smooth, comfortable, and memorable. Our mission is to provide a seamless blend of spiritual fulfillment and premium service, ensuring every pilgrim travels with confidence, peace of mind, and complete satisfaction.";
   const description2 = data?.description2 || "Whether you are traveling for Hajj, Umrah, or Saudi Visa services, our expert team is here to guide you every step of the way.";
   const image = data?.image || "uploads\\sections\\hajj_1.jpg";
   const reviewText = data?.reviewText || "\"Every detail handled — from visa to hotel, steps from the Haram.\"";
@@ -79,7 +79,7 @@ export default function WhoWeAreSection({ data }: { data: any }) {
 
             {/* Review Badge */}
             <div className="absolute bottom-4 -left-2 sm:bottom-8 sm:-left-8 bg-white p-5 rounded-2xl shadow-xl w-64">
-              <div className="flex text-gold text-sm mb-2">★★★★★</div>
+              <div className="flex text-red text-sm mb-2">★★★★★</div>
               <p className="text-xs text-ink-soft font-medium leading-relaxed">
                 {reviewText}
               </p>
@@ -105,7 +105,7 @@ export default function WhoWeAreSection({ data }: { data: any }) {
                   key={idx}
                   className="bg-[#FAF9F5]/90 rounded-xl sm:rounded-2xl p-2.5 sm:p-5 md:p-6 text-center border border-[#E3D9C6] shadow-xs flex flex-col items-center justify-center transition-all hover:shadow-md"
                 >
-                  <div className="text-gold font-serif text-xl sm:text-3xl md:text-4xl mb-1 sm:mb-2 font-normal leading-none">{stat.displayValue}</div>
+                  <div className="text-red font-serif text-xl sm:text-3xl md:text-4xl mb-1 sm:mb-2 font-normal leading-none">{stat.displayValue}</div>
                   <div className="text-[10px] sm:text-xs md:text-[13px] font-medium text-ink-soft leading-tight sm:leading-snug">{stat.label}</div>
                 </div>
               ))}

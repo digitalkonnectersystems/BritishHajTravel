@@ -12,7 +12,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   'Pilgrimage Guide': 'bg-emerald-100 text-emerald-700 border-emerald-200',
   'Hajj Tips': 'bg-amber-100 text-amber-700 border-amber-200',
   'Umrah Guide': 'bg-teal-100 text-teal-700 border-teal-200',
-  'Saudi Visa': 'bg-gold text-white border-gold',
+  'Saudi Visa': 'bg-red text-white border-red',
   'Travel Tips': 'bg-purple-100 text-purple-700 border-purple-200',
   'News & Updates': 'bg-rose-100 text-rose-700 border-rose-200',
   'Spiritual Journey': 'bg-indigo-100 text-indigo-700 border-indigo-200',
@@ -148,12 +148,12 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
               </>
             )}
           </div> */}
-          <span className="self-start date-display !text-white p-2 border border-gold rounded-full bg-gold">{displayDate}</span>
+          <span className="self-start date-display !text-white p-2 border border-red rounded-full bg-red">{displayDate}</span>
         </div>
       </div>
 
       {/* ── Content Layout ── */}
-      <section className="bg-sage section-outer">
+      <section className="bg-blue-lt section-outer">
         <div className="section-inner">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-10 items-start">
 
@@ -170,8 +170,8 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
 
               {/* Excerpt callout */}
               {blog.excerpt && (
-                <div className="bg-[var(--gold-soft)] border-l-4 border-gold rounded-r-2xl px-6 py-5 mb-8 shadow-sm">
-                  <p className="text-base text-gold italic leading-relaxed font-medium m-0">{blog.excerpt}</p>
+                <div className="bg-[var(--red-soft)] border-l-4 border-red rounded-r-2xl px-6 py-5 mb-8 shadow-sm">
+                  <p className="text-base text-red italic leading-relaxed font-medium m-0">{blog.excerpt}</p>
                 </div>
               )}
 
@@ -283,7 +283,7 @@ function SidebarPackageSection({
     <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
       <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
         <span className="text-lg font-extrabold text-ink">{title}</span>
-        <span className="text-[10px] border border-gold px-2 rounded-full py-1 px-2 bg-gold-lt/10 font-bold uppercase tracking-wider text-gold">
+        <span className="text-[10px] border border-red px-2 rounded-full py-1 px-2 bg-red-lt/10 font-bold uppercase tracking-wider text-red">
           {packages.length} Available
         </span>
       </div>

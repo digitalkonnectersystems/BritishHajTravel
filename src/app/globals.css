@@ -11,16 +11,14 @@
   /* --green: #004B39; */
   /* --green-light: color-mix(in srgb, var(--green), #ffffff 80%); */
 
-  --gold: #b50007;
-  --gold-lt: color-mix(in srgb, var(--gold), #000000 20%);
-  --gold-soft: #ffefef;
-  --yellow-light: color-mix(in srgb, var(--gold), #ffffff 80%);
+  --red: #b50007;
+  --red-lt: color-mix(in srgb, var(--red), #000000 20%);
+  --red-soft: #ffefef;
+  --yellow-light: color-mix(in srgb, var(--red), #ffffff 80%);
 
   --gray: #F5EFE1;
-  --sage: #F5EFE1;
-  /* --sage: #c8c8c866; */
+  --blue-lt: #f6f7ff;
   --paper: #FBF8F1;
-  /* --gray: #EAEAE4; */
   --line: #E4DAC0;
   --light-bg: #F4F6F5;
   --dark: #222222;
@@ -31,7 +29,7 @@
   /* --primary: #2f2f8f; */
   /* --primary-light: #125c40; */
   --primary-light: color-mix(in srgb, var(--primary) 77%, #ffffff);
-  --accent: var(--gold);
+  --accent: var(--red);
   --accent-hover: #bfa030;
 
   /* Typography */
@@ -56,9 +54,9 @@
   /* override colors */
   /* --ink: yellow;
   --ink-soft: #00ff15;
-  --gold: rgb(255, 0, 200);
+  --red: rgb(255, 0, 200);
   --primary: #0400ff;
-  --sage: #f1e5f5;
+  --blue-lt: #f1e5f5;
   --dark: #ff002b; */
 }
 
@@ -69,12 +67,12 @@
   --color-ink-soft: var(--ink-soft);
   --color-ink-light: var(--ink-light);
   --color-cream: var(--cream);
-  --color-sage: var(--sage);
+  --color-blue-lt: var(--blue-lt);
   --color-paper: var(--paper);
   --color-gray: var(--gray);
-  --color-gold: var(--gold);
-  --color-gold-lt: var(--gold-lt);
-  --color-gold-soft: var(--gold-soft);
+  --color-red: var(--red);
+  --color-red-lt: var(--red-lt);
+  --color-red-soft: var(--red-soft);
   --color-line: var(--line);
   --color-yellow-light: var(--yellow-light);
   --color-primary: var(--primary);
@@ -183,7 +181,7 @@ input[type="date"]:not(.opacity-0):not([class*="opacity-0"])::-webkit-calendar-p
 
 .contact-info h4 {
   font-weight: 600;
-  color: var(--gold);
+  color: var(--red);
   font-size: 14px;
   letter-spacing: .14em;
   text-transform: uppercase;
@@ -245,7 +243,7 @@ h2.section-heading {
   font-size: 18px;
   letter-spacing: .28em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--red);
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -286,7 +284,7 @@ h2.section-heading {
   font-size: 18px;
   letter-spacing: .28em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--red);
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -294,7 +292,7 @@ h2.section-heading {
 }
 
 .eyebrow.pill {
-  background: var(--gold-soft);
+  background: var(--red-soft);
   color: #8a6a35;
   padding: 8px 16px;
   border-radius: 99px;
@@ -309,7 +307,7 @@ h2.section-heading {
   display: inline-block;
   width: 16px;
   height: 16px;
-  background: var(--gold);
+  background: var(--red);
   flex: none;
   clip-path: polygon(50% 0%, 61% 35%, 100% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 0% 35%, 39% 35%);
 }
@@ -327,33 +325,33 @@ h2.section-heading {
   padding: 16px 30px;
   border-radius: 99px;
   text-transform: uppercase;
-  border: 1px solid var(--gold);
+  border: 1px solid var(--red);
   color: var(--white); 
    /* color: var(--ink); */
-  background: var(--gold);
+  background: var(--red);
   transition: .35s ease;
   white-space: nowrap;
   box-shadow: 0 14px 28px -14px rgba(217, 65, 65, 0.55);
 }
 
 .btn:hover {
-  /* background: var(--gold-lt); */
+  /* background: var(--red-lt); */
   background: var(--white);
   transform: translateY(-2px);
-  color: var(--gold); 
+  color: var(--red); 
 
   /* box-shadow: 0 18px 34px -14px rgba(217, 65, 65, 0.6); */
   text-decoration: none;
 }
 
 .btn.dark {
-  background: var(--gold);
+  background: var(--red);
   color: var(--ink);
   box-shadow: none;
 }
 
 .btn.dark:hover {
-  background: var(--gold-lt);
+  background: var(--red-lt);
   transform: translateY(-2px);
 }
 
@@ -387,9 +385,9 @@ h2.section-heading {
 }
 
 .btn.outline:hover {
-  background: var(--gold);
+  background: var(--red);
   color: var(--ink);
-  border-color: var(--gold) !important;
+  border-color: var(--red) !important;
 }
 
 .btn.sm {
@@ -402,15 +400,15 @@ h2.section-heading {
 }
 
 .btnff {
-  border: var(--gold);
+  border: var(--red);
   color: var(--white); 
-  background: var(--gold);
+  background: var(--red);
 }
 
 .btnff:hover {
-  border: var(--gold);
+  border: var(--red);
   background: var(--white);
-  color: var(--gold); 
+  color: var(--red); 
 }
 
 .travels-section {
@@ -686,7 +684,7 @@ header {
 }
 
 .hero-content .eyebrow {
-  color: var(--gold);
+  color: var(--red);
 }
 
 .hero h1 {
@@ -698,7 +696,7 @@ header {
 .hero h1 em,
 .hero h1 span {
   font-style: normal;
-  color: var(--gold);
+  color: var(--red);
 }
 
 .hero p.lead {
@@ -743,7 +741,7 @@ header {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: var(--gold-soft);
+  background: var(--red-soft);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -753,7 +751,7 @@ header {
 .float-badge .ico svg {
   width: 20px;
   height: 20px;
-  stroke: var(--gold);
+  stroke: var(--red);
   fill: none;
   stroke-width: 1.5;
 }
@@ -790,7 +788,7 @@ header {
   z-index: 5;
   margin: -56px auto 40px;
   max-width: 1080px;
-  background: var(--sage);
+  background: var(--blue-lt);
   border-radius: var(--r-lg);
   box-shadow: var(--shadow-soft);
   padding: 34px 40px 30px;
@@ -990,7 +988,7 @@ section#flights {
 }
 
 .tint {
-  background: var(--sage);
+  background: var(--blue-lt);
 }
 
 .tint-gray {
@@ -1082,7 +1080,7 @@ section#flights {
 .stat-box .n {
   font-family: var(--serif);
   font-size: 26px;
-  color: var(--gold);
+  color: var(--red);
 }
 
 .stat-box .l {
@@ -1157,7 +1155,7 @@ section#flights {
 }
 
 .pkg-card.active {
-  background: var(--gold);
+  background: var(--red);
   transform: translateY(-32px);
   transition: all ease-in-out 0.5s;
 }
@@ -1168,7 +1166,7 @@ section#flights {
 
 .pkg-card.active .btn {
   background-color: var(--ink-soft);
-  color: var(--gold);
+  color: var(--red);
   border: 0;
 }
 
@@ -1233,7 +1231,7 @@ section#flights {
   margin-top: 10px;
   font-size: 22px;
   font-weight: 600;
-  color: var(--gold);
+  color: var(--red);
 }
 
 .pkg-price span {
@@ -1353,14 +1351,14 @@ section#flights {
 }
 
 .svc-tile:hover .svc-ico svg {
-  stroke: var(--gold-lt);
+  stroke: var(--red-lt);
 }
 
 .svc-ico {
   width: 50px;
   height: 50px;
   border-radius: 15px;
-  background: var(--gold-soft);
+  background: var(--red-soft);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1436,14 +1434,14 @@ section#flights {
   width: 46px;
   height: 46px;
   border-radius: 14px;
-  background: var(--gold-soft);
+  background: var(--red-soft);
   flex: none;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--serif);
   font-size: 17px;
-  color: var(--gold);
+  color: var(--red);
 }
 
 .provide-list h4 {
@@ -1655,7 +1653,7 @@ section#flights {
 }
 
 /* .section-tag {
-  color: var(--gold);
+  color: var(--red);
   text-transform: uppercase;
   font-weight: 700;
   font-size: 0.9rem;
@@ -1774,7 +1772,7 @@ section#flights {
 }
 
 .visa-tagline {
-  color: var(--gold);
+  color: var(--red);
   text-transform: uppercase;
   font-weight: 700;
   font-size: 0.9rem;
@@ -1810,7 +1808,7 @@ section#flights {
 }
 
 .contact-item svg {
-  color: var(--gold);
+  color: var(--red);
 }
 
 .contact-item a {
@@ -1822,12 +1820,12 @@ section#flights {
 }
 
 .contact-item a:hover {
-  color: var(--gold);
+  color: var(--red);
 }
 
 .visa-btn-cta {
   display: inline-block;
-  background-color: var(--gold);
+  background-color: var(--red);
   color: var(--ink);
   padding: 16px 40px;
   border-radius: 50px;
@@ -1889,7 +1887,7 @@ section#flights {
   position: absolute;
   left: -20px;
   top: 30px;
-  background: var(--gold);
+  background: var(--red);
   color: var(--white);
   width: 30px;
   height: 30px;
@@ -1960,8 +1958,7 @@ section#flights {
   z-index: 200;
 }
 
-.dropdown-parent:hover .dropdown-menu,
-.dropdown-parent:focus-within .dropdown-menu {
+.dropdown-parent:hover:not(.hover-suppressed) .dropdown-menu {
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0);
@@ -1985,8 +1982,13 @@ section#flights {
 
 .dropdown-menu a:hover {
   color: var(--white) !important;
-  background: var(--gold) !important;
+  background: var(--red) !important;
 }
+
+/* .dropdown-menu a:active {
+  color: var(--white) !important;
+  background: var(--red) !important;
+} */
 
 .nav-arrow {
   display: inline-block;
@@ -2028,7 +2030,7 @@ section#flights {
 }
 
 .umrah-hero h1 span {
-  color: var(--gold, #DB9E30);
+  color: var(--red, #DB9E30);
 }
 
 .umrah-hero p {
@@ -2078,7 +2080,7 @@ section#flights {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--gold);
+  color: var(--red);
   font-size: 20px;
 }
 
@@ -2164,7 +2166,7 @@ section#flights {
   backdrop-filter: blur(4px);
 }
 
-.tag-gold {
+.tag-red {
   background: #DB9E30;
   color: #0f172a;
   font-size: 11px;
@@ -2406,7 +2408,7 @@ section#flights {
   color: #0f172a;
 }
 
-.btn-gold-custom {
+.btn-red-custom {
   background: #DB9E30;
   color: #0f172a;
   font-size: 12px;
@@ -2422,7 +2424,7 @@ section#flights {
   text-decoration: none !important;
 }
 
-.btn-gold-custom:hover {
+.btn-red-custom:hover {
   background: #e7be6e;
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(219, 158, 48, 0.3);
@@ -2866,7 +2868,7 @@ select {
 
 /* InnerPages Header Css */
 .page-header-title {
-  @apply text-3xl md:text-5xl font-serif font-normal text-white mb-3 tracking-wide [&>span]:text-gold [&>em]:text-gold [&>em]:not-italic;
+  @apply text-3xl md:text-5xl font-serif font-normal text-white mb-3 tracking-wide [&>span]:text-red [&>em]:text-red [&>em]:not-italic;
 }
 
 .page-header-leadtxt {

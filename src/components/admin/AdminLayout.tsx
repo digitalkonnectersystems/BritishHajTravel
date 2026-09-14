@@ -290,7 +290,7 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
                       <div className="min-w-0">
                         <div className="text-sm font-extrabold truncate text-white">{userName}</div>
                         <div className="text-[10px] text-emerald-200 font-medium truncate">{user?.email || 'admin@britishhajjtravel.com'}</div>
-                        <span className="inline-block mt-1 text-[9px] font-extrabold uppercase tracking-wider text-gold bg-gold/20 border border-[#DB9E30]/40 px-2 py-0.5 rounded-md">
+                        <span className="inline-block mt-1 text-[9px] font-extrabold uppercase tracking-wider text-red bg-red/20 border border-[#DB9E30]/40 px-2 py-0.5 rounded-md">
                           {userRole}
                         </span>
                       </div>
@@ -356,7 +356,7 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
         </header>
 
         {/* Main scrollable content — light canvas */}
-        <main className="flex-1 overflow-y-auto bg-sage p-7 px-8 text-slate-800">
+        <main className="flex-1 overflow-y-auto bg-blue-lt p-7 px-8 text-slate-800">
           {children}
         </main>
       </div>

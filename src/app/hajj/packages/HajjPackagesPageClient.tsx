@@ -347,10 +347,10 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
                     {/* Top Bar Tags */}
                     <div className="absolute top-4 inset-x-4 flex justify-between items-center text-xs">
                       <div className="bg-primary text-white font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 backdrop-blur-sm">
-                        <i className="fa-solid fa-kaaba text-gold"></i>
+                        <i className="fa-solid fa-kaaba text-red"></i>
                         <span>{badgeTag}</span>
                       </div>
-                      <div className="text-gold font-extrabold px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+                      <div className="text-red font-extrabold px-3 py-1.5 rounded-lg flex items-center gap-1.5">
                         <i className="fa-solid fa-calendar-days"></i>
                         <span>{duration}</span>
                       </div>
@@ -392,7 +392,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
                             </div>
                             <div className="flex-1 min-w-0">
                               <h4 className="text-xs font-black text-primary uppercase tracking-wider leading-none mb-0.5">{acc.city}</h4>
-                              <div className="text-gold font-bold text-[10px] uppercase tracking-wide truncate mb-1">
+                              <div className="text-red font-bold text-[10px] uppercase tracking-wide truncate mb-1">
                                 {acc.subtitle}
                               </div>
                               <p className="text-[10px] text-slate-500 flex items-center gap-1 mb-1 truncate">
@@ -407,7 +407,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
                                   </span>
                                 )}
                                 {acc.durationEnabled !== false && acc.nights && (
-                                  <span className="text-[8px] font-bold bg-gold-lt text-ink-soft px-1.5 py-0.5 rounded flex items-center gap-1 shrink-0">
+                                  <span className="text-[8px] font-bold bg-red-lt text-ink-soft px-1.5 py-0.5 rounded flex items-center gap-1 shrink-0">
                                     {getDurationUnit(acc.nights) === 'days' ? (
                                       <LucideIcons.Sun className="w-2 h-2 text-ink" />
                                     ) : (
@@ -489,7 +489,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
                         </Link>
                         <Link
                           href={`/package/${pkgSlug}`}
-                          className="flex-1 bg-gold hover:bg-[#b88222] text-slate-950 font-extrabold py-3 px-3 rounded-xl flex items-center justify-center gap-2 text-xs uppercase tracking-wider shadow-sm hover:shadow-md transition-all cursor-pointer"
+                          className="flex-1 bg-red hover:bg-[#b88222] text-slate-950 font-extrabold py-3 px-3 rounded-xl flex items-center justify-center gap-2 text-xs uppercase tracking-wider shadow-sm hover:shadow-md transition-all cursor-pointer"
                         >
                           <i className="fa-solid fa-book-bookmark text-xs"></i>
                           <span>{btnLabel}</span>
@@ -540,7 +540,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
             <div className="max-w-5xl mx-auto px-4">
               <div className="text-center mb-10">
                 {eyebrow && (
-                  <span className="text-xs font-extrabold uppercase tracking-widest text-gold block mb-2">{eyebrow}</span>
+                  <span className="text-xs font-extrabold uppercase tracking-widest text-red block mb-2">{eyebrow}</span>
                 )}
                 <h2 className="text-3xl md:text-4xl font-extrabold text-primary mb-3">{heading}</h2>
                 {subtitle && (
@@ -553,7 +553,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
                     key={i}
                     className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 flex flex-col items-center text-center gap-3 hover:shadow-md transition-shadow"
                   >
-                    <div className="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center text-gold mb-1">
+                    <div className="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center text-red mb-1">
                       <DynamicIcon name={svc.icon || 'Star'} className="w-8 h-8" />
                     </div>
                     <h3 className="text-sm font-extrabold text-primary leading-snug">{svc.title}</h3>
@@ -608,7 +608,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
               return (
                 <section
                   key={`tb-${idx}`}
-                  className="py-12 md:py-16 bg-sage px-4"
+                  className="py-12 md:py-16 bg-blue-lt px-4"
                 >
                   <div className="section-rich bg-white rounded-3xl p-4 md:p-8 max-w-[1360px] mx-auto w-full">
                     <div
@@ -620,7 +620,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
                         '[&_a]:text-primary [&_a]:underline',
                         '[&_ul]:list-disc [&_ul]:pl-5',
                         '[&_ol]:list-decimal [&_ol]:pl-5',
-                        '[&_blockquote]:border-l-4 [&_blockquote]:border-gold [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-slate-600',
+                        '[&_blockquote]:border-l-4 [&_blockquote]:border-red [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-slate-600',
                         '[&_strong]:text-slate-900',
                         '[&_p]:text-slate-700 [&_p]:leading-relaxed',
                       ].join(' ')}
@@ -664,7 +664,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
           <section className="bg-primary text-white py-6 overflow-hidden">
             <div className="max-w-7xl mx-auto">
               <div className="text-center mb-12">
-                <div className="text-xs font-extrabold uppercase tracking-widest text-gold mb-2">
+                <div className="text-xs font-extrabold uppercase tracking-widest text-red mb-2">
                   {eyebrow}
                 </div>
                 <h2 className="text-3xl md:text-4xl font-serif text-white">{heading}</h2>

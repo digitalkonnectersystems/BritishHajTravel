@@ -61,7 +61,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
 
           if (isPackagesPage) {
             return (
-              <section key={idx} className="pb-12 md:pt-16 md:pb-16 bg-sage px-4">
+              <section key={idx} className="pb-12 md:pt-16 md:pb-16 bg-blue-lt px-4">
                 <div className="section-rich bg-white rounded-3xl p-4 md:p-8 max-w-[1360px] mx-auto w-full">
                   <div
                     className={`${RICH_TEXT_PROSE_CLASS} max-w-none text-sm leading-relaxed`}
@@ -91,7 +91,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
             ];
 
           return (
-            <section key={idx} className="py-12 md:py-16 bg-sage">
+            <section key={idx} className="py-12 md:py-16 bg-blue-lt">
               <div className="max-w-5xl mx-auto px-4">
                 <div className="flex flex-col items-center text-center mb-8">
                   <span className="eyebrow mx-auto block">
@@ -118,7 +118,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                               <Image src={flight.logo} alt={flight.name || "Airline Logo"} fill className="object-cover" unoptimized />
                             </div>
                           ) : (
-                            <div className="bg-gold text-white font-bold px-3 py-2 rounded text-base tracking-wide flex items-center justify-center min-w-[54px] h-[44px]">
+                            <div className="bg-red text-white font-bold px-3 py-2 rounded text-base tracking-wide flex items-center justify-center min-w-[54px] h-[44px]">
                               {flight.code || "PIA"}
                             </div>
                           )}
@@ -138,7 +138,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                           <div className="flex-1 flex items-center justify-center px-4 relative">
                             <div className="w-full border-t border-dashed border-gray-300 absolute"></div>
                             <div className="bg-gray-100 px-2 z-10 rounded-full py-1">
-                              <i className="fa-solid fa-plane text-gold text-sm rotate-320"></i>
+                              <i className="fa-solid fa-plane text-red text-sm rotate-320"></i>
                             </div>
                           </div>
 
@@ -166,7 +166,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                             target={pageData?.slug === "/cheap-flights-air-tickets" || pageData?.slug === "cheap-flights-air-tickets" ? undefined : "_blank"}
                             rel="noopener noreferrer"
                             suppressHydrationWarning
-                            className="bg-gold text-white hover:bg-gold-lt border hover:border-gold  hover:text-white font-bold py-3 px-6 md:px-8 rounded-md tracking-wide shadow-sm transition-all duration-150 cursor-pointer text-sm w-full md:w-auto inline-block text-center"
+                            className="bg-red text-white hover:bg-red-lt border hover:border-red  hover:text-white font-bold py-3 px-6 md:px-8 rounded-md tracking-wide shadow-sm transition-all duration-150 cursor-pointer text-sm w-full md:w-auto inline-block text-center"
                           >
                             Booking
                           </a>
@@ -194,7 +194,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                 <p className="text-slate-600 text-sm md:text-base max-w-xl mx-auto mb-8 leading-relaxed font-light">
                   {sec.data?.description || "Speak directly with our ticketing specialists to get custom quotes, group flight discounts, and immediate confirmations."}
                 </p>
-                <Link href={sec.data?.btnLink || "/contact"} className="inline-block bg-primary hover:bg-gold text-white hover:text-slate-900 font-bold px-8 py-3.5 rounded-xl shadow-md transition-all text-sm">
+                <Link href={sec.data?.btnLink || "/contact"} className="inline-block bg-primary hover:bg-red text-white hover:text-slate-900 font-bold px-8 py-3.5 rounded-xl shadow-md transition-all text-sm">
                   {sec.data?.btnLabel || "Contact Flight Desk"}
                 </Link>
               </div>
@@ -216,7 +216,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
           const isFlightBookingPage = pageData?.slug === "/airline-tickets-booking" || pageData?.slug === "airline-tickets-booking";
           const formKey = formKeyMap[sec.type];
           return (
-            <section key={idx} className={`relative z-10 w-full flex justify-center ${isFlightBookingPage ? "bg-sage" : ""}`} suppressHydrationWarning>
+            <section key={idx} className={`relative z-10 w-full flex justify-center ${isFlightBookingPage ? "bg-blue-lt" : ""}`} suppressHydrationWarning>
               <DynamicSiteForm
                 formKey={formKey}
                 bgColor={isFlightBookingPage ? "transparent" : sec.data?.bgColor}
@@ -351,7 +351,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                           href={sec.data.reviewLink}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="w-fit inline-block border-gold text-white bg-gold font-bold text-xs px-5 py-2.5 rounded-full hover:border-gold hover:text-gold hover:bg-white transition-colors"
+                          className="w-fit inline-block border-red text-white bg-red font-bold text-xs px-5 py-2.5 rounded-full hover:border-red hover:text-red hover:bg-white transition-colors"
                         >
                           {sec.data?.ctaLabel || "Write A Review"}
                         </a>
@@ -414,7 +414,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                 )}
                 {sec.data?.viewAllSlug && (
                   <div className="mt-7 text-center">
-                    <Link href={sec.data.viewAllSlug} className="inline-flex rounded-full bg-gold px-5 py-2.5 text-xs font-bold text-white transition-colors hover:bg-primary">
+                    <Link href={sec.data.viewAllSlug} className="inline-flex rounded-full bg-red px-5 py-2.5 text-xs font-bold text-white transition-colors hover:bg-primary">
                       {sec.data.viewAllLabel || "View All"}
                     </Link>
                   </div>
@@ -468,7 +468,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                 )}
                 {sec.data?.viewAllSlug && (
                   <div className="mt-7 text-center">
-                    <Link href={sec.data.viewAllSlug} className="inline-flex rounded-full bg-gold px-5 py-2.5 text-xs font-bold text-white transition-colors hover:bg-primary">
+                    <Link href={sec.data.viewAllSlug} className="inline-flex rounded-full bg-red px-5 py-2.5 text-xs font-bold text-white transition-colors hover:bg-primary">
                       {sec.data.viewAllLabel || "View All"}
                     </Link>
                   </div>
@@ -647,7 +647,7 @@ function GoogleReviewsSlider() {
         type="button"
         onClick={prevSlide}
         aria-label="Previous Review"
-        className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full hover:bg-gold hover:text-white bg-white text-primary shadow-xl border border-primary flex items-center justify-center transition-all"
+        className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full hover:bg-red hover:text-white bg-white text-primary shadow-xl border border-primary flex items-center justify-center transition-all"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <polyline points="15 18 9 12 15 6"></polyline>
@@ -659,7 +659,7 @@ function GoogleReviewsSlider() {
         type="button"
         onClick={nextSlide}
         aria-label="Next Review"
-        className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full  hover:bg-gold hover:text-white bg-white text-primary shadow-xl border border-primary flex items-center justify-center transition-all cursor-pointer"
+        className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full  hover:bg-red hover:text-white bg-white text-primary shadow-xl border border-primary flex items-center justify-center transition-all cursor-pointer"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <polyline points="9 18 15 12 9 6"></polyline>

@@ -62,7 +62,7 @@ export default function ConfirmModal({ config, onClose }: ConfirmModalProps) {
           glow: 'shadow-[0_0_60px_rgba(245,158,11,0.35)]',
           iconBg: 'bg-amber-500/20 border-amber-400/40 text-amber-400',
           defaultIcon: <AlertCircle className="w-8 h-8 text-amber-400 animate-bounce" />,
-          buttonBg: 'bg-gold hover:bg-amber-400 text-slate-950 font-black',
+          buttonBg: 'bg-red hover:bg-amber-400 text-slate-950 font-black',
           titleColor: 'text-amber-300',
         };
       case 'success':

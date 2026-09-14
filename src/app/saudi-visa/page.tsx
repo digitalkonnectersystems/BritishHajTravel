@@ -39,7 +39,7 @@ function VisaProcessStepsSection({ data }: { data?: any }) {
             </div>
           </div>
 
-          <Link href="/contact" className="inline-block bg-gold hover:bg-gold-soft hover:text-gold text-white font-extrabold px-6 py-3.5 rounded-md shadow-lg transition-all text-sm mt-4">
+          <Link href="/contact" className="inline-block bg-red hover:bg-red-soft hover:text-red text-white font-extrabold px-6 py-3.5 rounded-md shadow-lg transition-all text-sm mt-4">
             Start Your Visa Application Today
           </Link>
         </div>
@@ -51,7 +51,7 @@ function VisaProcessStepsSection({ data }: { data?: any }) {
             { number: 3, title: "Sit Back & Get Your Visa", description: "We handle the complete visa processing on your behalf. Once approved, your Saudi visa will be delivered to you quickly and securely." }
           ]).map((st: any, sIdx: number) => (
             <div key={sIdx} className="visa-step-card p-5 rounded-2xl bg-white shadow-md border border-slate-100 flex gap-4 items-start">
-              <div className="step-badge w-8 h-8 rounded-full bg-gold text-white font-extrabold flex items-center justify-center shrink-0 text-sm">
+              <div className="step-badge w-8 h-8 rounded-full bg-red text-white font-extrabold flex items-center justify-center shrink-0 text-sm">
                 {st.number || sIdx + 1}
               </div>
               <div>

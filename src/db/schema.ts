@@ -76,6 +76,8 @@ export const destinations = mysqlTable('destinations', {
   sectionTitle: varchar('section_title', { length: 255 }).default('Packages for this destination'),
   bannerImages: json('banner_images'),
   packageIds: json('package_ids'),
+  packagesData: json('packages_data'),
+  packageData: json('package_data'),
   status: mysqlEnum('status', ['published', 'draft']).notNull().default('published'),
   displayOrder: int('display_order').notNull().default(0),
   createdAt: timestamp('created_at').defaultNow(),

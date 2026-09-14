@@ -114,7 +114,7 @@ export default function PackageBrochuresSection({ data, pageData }: PackageBroch
 
   return (
     <>
-      <section className="pt-12 md:pt-16 pb-0 bg-sage">
+      <section className="pt-12 md:pt-16 pb-0 bg-blue-lt">
         <div className="max-w-[1400px] mx-auto px-5">
           {(eyebrow || title || description) && (
             <div className="flex flex-col items-center text-center mb-10 md:mb-12">
@@ -194,7 +194,7 @@ export default function PackageBrochuresSection({ data, pageData }: PackageBroch
           >
             <div className="flex items-center gap-3">
               {total > 1 && (
-                <span className="bg-gold px-3 py-1 rounded-full text-xs font-bold text-ink tracking-widest uppercase">
+                <span className="bg-red px-3 py-1 rounded-full text-xs font-bold text-ink tracking-widest uppercase">
                   {popupIdx + 1} / {total}
                 </span>
               )}
@@ -258,7 +258,7 @@ export default function PackageBrochuresSection({ data, pageData }: PackageBroch
               <button
                 type="button"
                 onClick={(e) => { e.stopPropagation(); prevSlide(); }}
-                className="absolute left-2 sm:-left-12 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gold hover:bg-primary text-white flex items-center justify-center transition-all shadow-lg border border-white/20 cursor-pointer"
+                className="absolute left-2 sm:-left-12 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-red hover:bg-primary text-white flex items-center justify-center transition-all shadow-lg border border-white/20 cursor-pointer"
                 title="Previous"
               >
                 <ChevronLeft className="w-6 h-6" />
@@ -339,7 +339,7 @@ export default function PackageBrochuresSection({ data, pageData }: PackageBroch
               <button
                 type="button"
                 onClick={(e) => { e.stopPropagation(); nextSlide(); }}
-                className="absolute right-2 sm:-right-12 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gold hover:bg-primary text-white flex items-center justify-center transition-all shadow-lg border border-white/20 cursor-pointer"
+                className="absolute right-2 sm:-right-12 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-red hover:bg-primary text-white flex items-center justify-center transition-all shadow-lg border border-white/20 cursor-pointer"
                 title="Next"
               >
                 <ChevronRight className="w-6 h-6" />

@@ -1,17 +1,36 @@
 import { getDestinations } from '@/actions/destinationActions';
-import DestinationsGrid from '@/components/DestinationsGrid';
 import { getPageBySlug } from '@/actions/pageActions';
 import PageBanner from '@/components/PageBanner';
-import PageSectionsRenderer from '@/components/PageSectionsRenderer';
+import DestinationsPageSection from '@/components/DestinationsPageSection';
 
 export default async function DestinationsPage() {
   const [destinations, pageData] = await Promise.all([getDestinations(), getPageBySlug('/destinations')]);
-  let sections: any[] = [];
-  try { sections = pageData?.sections ? (typeof pageData.sections === 'string' ? JSON.parse(pageData.sections) : pageData.sections) : []; } catch { sections = []; }
+  const destinationPackages = destinations
+    .map((destination: any) => ({ destination, pkg: destination.packageData || destination.packagesData?.[0] || null }))
+    .filter(({ pkg }: any) => pkg && pkg.status !== 'draft' && pkg.status !== 'sold_out')
+    .map(({ destination, pkg }: any) => {
+      return {
+        ...pkg,
+        destinationTitle: destination.title,
+        destinationSlug: destination.slug,
+        cardData: typeof pkg.cardData === 'string' ? pkg.cardData : {
+          ...(pkg.cardData || {}),
+          destination: pkg.destination || destination.title,
+        },
+      };
+    });
+
   return (
-    <main className="bg-sage min-h-screen">
+    <main className="bg-blue-lt min-h-screen">
       <PageBanner title={pageData?.bannerTitle || 'Destinations'} description={pageData?.bannerDescription || ''} bgImage={pageData?.bannerBgImage || undefined} position={pageData?.bannerPosition || undefined} size={pageData?.bannerSize || undefined} />
-      {sections.length > 0 ? <PageSectionsRenderer sections={sections} pageData={pageData} initialDestinationData={destinations} /> : <DestinationsGrid destinations={destinations} />}
+      <DestinationsPageSection
+        data={{
+          eyebrow: 'DESTINATIONS',
+          title: pageData?.title || 'Destination Packages',
+          description: 'Explore destination packages with complete travel arrangements, accommodation, and support.',
+        }}
+        initialPackages={destinationPackages}
+      />
     </main>
   );
 }

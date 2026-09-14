@@ -36,11 +36,16 @@ export default function WhatWeProvideSection({ data }: { data: any }) {
               className="text-4xl md:text-5xl text-primary font-serif text-ink leading-[1.15] mb-6"
               dangerouslySetInnerHTML={{ __html: title }}
             />
+            {(data?.description || data?.subtitle) && (
+              <p className="text-ink-soft text-base leading-relaxed mb-6">
+                {data.description || data.subtitle}
+              </p>
+            )}
 
             <div className="flex flex-col">
               {items.map((item: any, i: number) => (
                 <div key={i} className="flex gap-6 items-start py-6 border-b border-gray-200">
-                  <div className="w-12 h-12 shrink-0 rounded-2xl bg-[#fad8d8] flex items-center justify-center text-gold font-serif text-lg">
+                  <div className="w-12 h-12 shrink-0 rounded-2xl bg-[#fad8d8] flex items-center justify-center text-red font-serif text-lg">
                     {String(i + 1).padStart(2, '0')}
                   </div>
                   <div>

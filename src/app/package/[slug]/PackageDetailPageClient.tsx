@@ -513,18 +513,18 @@ export default function PackageDetailPageClient({
             <p className="text-xs sm:text-sm font-semibold tracking-wider text-white/90 uppercase mb-5">
               DURATION: {durationText}
             </p>
-            <div className="flex flex-wrap items-center gap-4 text-xs font-bold text-gold">
+            <div className="flex flex-wrap items-center gap-4 text-xs font-bold text-red">
               <span className="flex items-center gap-1.5 bg-white/10 px-3.5 py-2 rounded-xl border border-white/20">
-                <Plane className="w-4 h-4 text-gold" /> DEPARTURE: <strong className="text-white">{departure}</strong>
+                <Plane className="w-4 h-4 text-red" /> DEPARTURE: <strong className="text-white">{departure}</strong>
               </span>
               <span className="flex items-center gap-1.5 bg-white/10 px-3.5 py-2 rounded-xl border border-white/20">
-                <Plane className="w-4 h-4 text-gold" /> DESTINATION: <strong className="text-white">{destination}</strong>
+                <Plane className="w-4 h-4 text-red" /> DESTINATION: <strong className="text-white">{destination}</strong>
               </span>
             </div>
           </div>
 
           {/* Price Box Overlay on Right */}
-          <div className="mt-8 md:mt-0 md:absolute md:top-1/2 md:-translate-y-1/2 md:right-10 bg-gold border-2 border-dashed border-gold rounded-2xl p-5 text-center min-w-[220px] backdrop-blur-md shadow-xl">
+          <div className="mt-8 md:mt-0 md:absolute md:top-1/2 md:-translate-y-1/2 md:right-10 bg-red border-2 border-dashed border-red rounded-2xl p-5 text-center min-w-[220px] backdrop-blur-md shadow-xl">
             <span className="text-[10px] font-extrabold uppercase tracking-widest text-white block mb-1">
               {exclusiveBadge}
             </span>
@@ -609,7 +609,7 @@ export default function PackageDetailPageClient({
 
                   {/* Madinah Hotel Card */}
                   {(rawMadinahHotel.name || rawMadinahHotel.image) && (
-                    <div className="bg-white rounded-2xl overflow-hidden border border-gold-soft shadow-md flex flex-col">
+                    <div className="bg-white rounded-2xl overflow-hidden border border-red-soft shadow-md flex flex-col">
                       <div className="relative h-48 w-full bg-slate-200">
                         {madinahImg ? (
                           <Image
@@ -624,16 +624,16 @@ export default function PackageDetailPageClient({
                             No image available
                           </div>
                         )}
-                        <span className="absolute top-3 left-3 bg-gold text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
+                        <span className="absolute top-3 left-3 bg-red text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
                           Madinah
                         </span>
                       </div>
                       <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
                         <div>
-                          <h4 className="font-bold text-gold text-base line-clamp-1">{madinahName}</h4>
+                          <h4 className="font-bold text-red text-base line-clamp-1">{madinahName}</h4>
                           {madinahLoc && (
                             <p className="text-xs text-slate-500 flex items-center gap-1 mt-1">
-                              <MapPin className="w-3.5 h-3.5 text-gold" />
+                              <MapPin className="w-3.5 h-3.5 text-red" />
                               <span>{madinahLoc}</span>
                             </p>
                           )}
@@ -641,7 +641,7 @@ export default function PackageDetailPageClient({
                         {(madinahBadge || madinahNights) && (
                           <div className="flex items-center gap-2 pt-2 border-t border-slate-100 text-xs font-semibold text-slate-600">
                             {madinahBadge && (
-                              <span className="bg-gold-soft text-gold px-2.5 py-1 rounded-lg border border-gold-lt flex items-center gap-1 text-[11px]">
+                              <span className="bg-red-soft text-red px-2.5 py-1 rounded-lg border border-red-lt flex items-center gap-1 text-[11px]">
                                 {madinahBadgeIcon ? <DynamicIcon name={madinahBadgeIcon} className="w-3 h-3" /> : <Utensils className="w-3 h-3" />} {madinahBadge}
                               </span>
                             )}
@@ -687,7 +687,7 @@ export default function PackageDetailPageClient({
                           <ul className="space-y-1.5 pt-1">
                             {details.map((d: string, dIdx: number) => (
                               <li key={dIdx} className="text-xs sm:text-sm text-slate-600 leading-relaxed flex items-start gap-2">
-                                <span className="text-gold font-bold text-xs mt-0.5">•</span>
+                                <span className="text-red font-bold text-xs mt-0.5">•</span>
                                 <span>{d}</span>
                               </li>
                             ))}
@@ -797,13 +797,13 @@ export default function PackageDetailPageClient({
 
             {/* 5. Important Booking Notice */}
             {importantNotice && (
-              <div className="bg-gold-soft border border-gold-lt rounded-2xl p-5 sm:p-6 flex items-start gap-4 shadow-sm">
-                <div className="p-2.5 bg-gold-soft rounded-xl shrink-0">
-                  <AlertCircle className="w-6 h-6 text-gold" />
+              <div className="bg-red-soft border border-red-lt rounded-2xl p-5 sm:p-6 flex items-start gap-4 shadow-sm">
+                <div className="p-2.5 bg-red-soft rounded-xl shrink-0">
+                  <AlertCircle className="w-6 h-6 text-red" />
                 </div>
                 <div className="space-y-1">
-                  <h4 className="font-bold text-gold text-sm">Important Booking Notice</h4>
-                  <p className="text-xs text-gold-900/80 leading-relaxed font-medium">
+                  <h4 className="font-bold text-red text-sm">Important Booking Notice</h4>
+                  <p className="text-xs text-red-900/80 leading-relaxed font-medium">
                     {importantNotice}
                   </p>
                 </div>
@@ -861,9 +861,9 @@ export default function PackageDetailPageClient({
                   <h4 className="font-bold font-serif text-primary text-lg">{operatorName}</h4>
                   <p className="text-xs pt-1 text-ink-lt font-medium">{operatorReviews}</p>
                 </div>
-                <div className="bg-gold-soft text-gold font-extrabold text-xs px-2.5 py-1 rounded-lg flex items-center gap-1 shadow-sm">
+                <div className="bg-red-soft text-red font-extrabold text-xs px-2.5 py-1 rounded-lg flex items-center gap-1 shadow-sm">
                   <span>{operatorRating}</span>
-                  <Star className="w-3 h-3 fill-gold text-gold" />
+                  <Star className="w-3 h-3 fill-red text-red" />
                 </div>
               </div>
 
@@ -888,7 +888,7 @@ export default function PackageDetailPageClient({
                       setFullName(e.target.value);
                       if (errors.fullName) setErrors((prev) => ({ ...prev, fullName: false }));
                     }}
-                    className={`w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium ${errors.fullName ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"
+                    className={`w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium ${errors.fullName ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"
                       }`}
                   />
                   {errors.fullName && (
@@ -916,7 +916,7 @@ export default function PackageDetailPageClient({
                         setPhone(val);
                         if (errors.phone) setErrors((prev) => ({ ...prev, phone: false }));
                       }}
-                      className={`w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium appearance-none bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat ${errors.phone ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"
+                      className={`w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium appearance-none bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat ${errors.phone ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"
                         }`}
                     />
                     {errors.phone && (
@@ -935,7 +935,7 @@ export default function PackageDetailPageClient({
                         setEmail(e.target.value);
                         if (errors.email) setErrors((prev) => ({ ...prev, email: false }));
                       }}
-                      className={`w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium appearance-none bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat ${errors.email ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"
+                      className={`w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium appearance-none bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat ${errors.email ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"
                         }`}
                     />
                     {errors.email && (
@@ -953,7 +953,7 @@ export default function PackageDetailPageClient({
                     <select
                       value={adults}
                       onChange={(e) => setAdults(e.target.value)}
-                      className={`w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat focus:border-emerald-800`}
+                      className={`w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat focus:border-emerald-800`}
                     >
                       <option value="1">1</option>
                       <option value="2">2</option>
@@ -970,7 +970,7 @@ export default function PackageDetailPageClient({
                     <select
                       value={childrenCount}
                       onChange={(e) => setChildrenCount(e.target.value)}
-                      className={`w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat focus:border-emerald-800`}
+                      className={`w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat focus:border-emerald-800`}
                     >
                       <option value="0">0</option>
                       <option value="1">1</option>
@@ -986,7 +986,7 @@ export default function PackageDetailPageClient({
                     <select
                       value={infantsCount}
                       onChange={(e) => setInfantsCount(e.target.value)}
-                      className={`w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat focus:border-emerald-800`}
+                      className={`w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat focus:border-emerald-800`}
                     >
                       <option value="0">0</option>
                       <option value="1">1</option>
@@ -1005,7 +1005,7 @@ export default function PackageDetailPageClient({
                     </label>
                     <div className="relative">
                       <div
-                        className={`w-full flex items-center justify-between border border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium ${errors.selectedDate ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"
+                        className={`w-full flex items-center justify-between border border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium ${errors.selectedDate ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"
                           }`}
                       >
                         <span className={selectedDate ? "text-slate-900" : "text-slate-400"}>
@@ -1053,7 +1053,7 @@ export default function PackageDetailPageClient({
                           setSelectedPackageType(e.target.value);
                           if (errors.selectedPackageType) setErrors((prev) => ({ ...prev, selectedPackageType: false }));
                         }}
-                        className={`w-full border border-line p-3 pr-9 rounded-sm bg-white outline-none focus:border-gold transition-colors text-ink text-sm font-medium appearance-none cursor-pointer ${errors.selectedPackageType ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"
+                        className={`w-full border border-line p-3 pr-9 rounded-sm bg-white outline-none focus:border-red transition-colors text-ink text-sm font-medium appearance-none cursor-pointer ${errors.selectedPackageType ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"
                           }`}
                       >
                         {packagePrices.map((item, idx) => (
@@ -1085,7 +1085,7 @@ export default function PackageDetailPageClient({
                 {/* Submit CTA Button */}
                 <button
                   type="submit"
-                  className="w-full bg-gold text-white font-extrabold py-3.5 px-6 rounded-sm shadow-md hover:bg-gold-lt hover:text-white active:scale-[0.99] transition-all duration-300 tracking-wider uppercase text-sm flex items-center justify-center cursor-pointer"
+                  className="w-full bg-red text-white font-extrabold py-3.5 px-6 rounded-sm shadow-md hover:bg-red-lt hover:text-white active:scale-[0.99] transition-all duration-300 tracking-wider uppercase text-sm flex items-center justify-center cursor-pointer"
                 >
                   <TicketPercent className="w-4 h-4 mr-2" />
                   <span>Book {pkg.badgeTag || "Package"}</span>
@@ -1124,7 +1124,7 @@ export default function PackageDetailPageClient({
                 e.stopPropagation();
                 showPreviousGalleryImage();
               }}
-              className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-gold hover:bg-primary text-black hover:text-white flex items-center justify-center cursor-pointer z-20"
+              className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-red hover:bg-primary text-black hover:text-white flex items-center justify-center cursor-pointer z-20"
               aria-label="Previous gallery image"
             >
               <ChevronLeft className="w-7 h-7" />
@@ -1152,14 +1152,14 @@ export default function PackageDetailPageClient({
                 e.stopPropagation();
                 showNextGalleryImage();
               }}
-              className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-gold hover:bg-primary text-black hover:text-white flex items-center justify-center cursor-pointer z-20"
+              className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-red hover:bg-primary text-black hover:text-white flex items-center justify-center cursor-pointer z-20"
               aria-label="Next gallery image"
             >
               <ChevronRight className="w-7 h-7" />
             </button>
           )}
 
-          <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 text-black text-xs font-bold bg-gold px-3 py-1.5 rounded-full">
+          <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 text-black text-xs font-bold bg-red px-3 py-1.5 rounded-full">
             {galleryOpenIndex + 1} / {packagesGallery.length}
           </div>
         </div>

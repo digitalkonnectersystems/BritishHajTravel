@@ -90,7 +90,7 @@ export default function UpcomingUmrahPackages({
  
   // Homepage should only show the first 4 Umrah packages.
   const displayedPkgs = isHomepage ? pkgs.slice(0, 4) : pkgs;
-  const sectionBgClass = isUmrahListingPage ? "bg-gray" : isHomepage ? "bg-white" : (pathname === "/" ? "bg-white" : "bg-sage");
+  const sectionBgClass = isUmrahListingPage ? "bg-blue-lt" : isHomepage ? "bg-white" : (pathname === "/" ? "bg-white" : "bg-blue-lt");
  
   return (
     <section className={`py-12 md:py-16 ${sectionBgClass}`}>
@@ -123,7 +123,7 @@ export default function UpcomingUmrahPackages({
                   <div className="h-5 bg-gray-200 rounded w-2/3" />
                   <div className="h-5 bg-gray-100 rounded w-1/2" />
                   <div className="h-24 bg-gray-100 rounded" />
-                  <div className="h-12 bg-gold/30 rounded-xl" />
+                  <div className="h-12 bg-red/30 rounded-xl" />
                 </div>
               </div>
             ))}
@@ -215,7 +215,7 @@ export default function UpcomingUmrahPackages({
                       Starting From
                     </span>
                     <div
-                      className={`${isGold ? "text-white" : "text-gold"
+                      className={`${isGold ? "text-white" : "text-red"
                         } font-black text-xl mb-6`}
                     >
                       £ {price}{" "}
@@ -288,8 +288,8 @@ export default function UpcomingUmrahPackages({
                           setBookingModalOpen(true);
                         }}
                         className={`flex-1 py-3 text-center text-xs font-black rounded-md uppercase tracking-widest transition-colors block border-2 border-transparent cursor-pointer ${isGold
-                          ? "bg-gold hover:bg-white hover:border-gold text-white hover:text-gold"
-                          : "bg-gold hover:bg-white hover:border-gold text-white hover:text-gold"
+                          ? "bg-red hover:bg-white hover:border-red text-white hover:text-red"
+                          : "bg-red hover:bg-white hover:border-red text-white hover:text-red"
                           }`}
                       >
                         {buttonText}
@@ -306,7 +306,7 @@ export default function UpcomingUmrahPackages({
           <div className="flex justify-center mt-12">
             <a
               href="/umrah-packages"
-              className="px-8 py-3.5 border-2 border-gold text-gold font-bold text-xs uppercase tracking-widest rounded-md hover:bg-gold hover:text-white transition-all flex items-center gap-3"
+              className="px-8 py-3.5 border-2 border-red text-red font-bold text-xs uppercase tracking-widest rounded-md hover:bg-red hover:text-white transition-all flex items-center gap-3"
             >
               SEE ALL PACKAGES <span>→</span>
             </a>

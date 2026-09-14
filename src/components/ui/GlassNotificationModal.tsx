@@ -43,7 +43,7 @@ export default function GlassNotificationModal({
           iconBg: "bg-amber-500/20 text-amber-400 border-amber-400/40",
           icon: <AlertTriangle className="w-8 h-8 text-amber-400 animate-bounce" />,
           badgeText: "WARNING",
-          buttonBg: "bg-gold hover:bg-amber-400 text-slate-950",
+          buttonBg: "bg-red hover:bg-amber-400 text-slate-950",
           titleColor: "text-amber-300",
         };
       case "error":

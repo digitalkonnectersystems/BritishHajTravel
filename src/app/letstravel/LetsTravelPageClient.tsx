@@ -123,7 +123,7 @@ export default function LetsTravelPageClient({ initialIdentity, initialLoginAuth
         <>
           {/* <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#DB9E30_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
           <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-primary rounded-full blur-[120px] opacity-40 pointer-events-none" />
-          <div className="absolute -bottom-40 -right-40 w-[500px] h-[500px] bg-gold rounded-full blur-[140px] opacity-15 pointer-events-none" /> */}
+          <div className="absolute -bottom-40 -right-40 w-[500px] h-[500px] bg-red rounded-full blur-[140px] opacity-15 pointer-events-none" /> */}
         </>
       )}
 
@@ -230,7 +230,7 @@ export default function LetsTravelPageClient({ initialIdentity, initialLoginAuth
               <button
                 type="button"
                 onClick={() => { setFlowType('forgot_password'); setError(null); setSuccessMsg(null); }}
-                className="text-[10px] font-bold text-gold hover:underline transition-colors uppercase tracking-wider"
+                className="text-[10px] font-bold text-red hover:underline transition-colors uppercase tracking-wider"
               >
                 Forgot Password?
               </button>
@@ -304,7 +304,7 @@ export default function LetsTravelPageClient({ initialIdentity, initialLoginAuth
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 text-[#EAEAE4]/60 hover:text-gold transition p-1 text-sm focus:outline-none"
+                  className="absolute right-3 text-[#EAEAE4]/60 hover:text-red transition p-1 text-sm focus:outline-none"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
@@ -353,7 +353,7 @@ export default function LetsTravelPageClient({ initialIdentity, initialLoginAuth
               <button
                 type="submit"
                 disabled={loading || (confirmPasswordInput !== passwordInput)}
-                className="w-full bg-gold hover:bg-[#E7BE6E] text-[#132723] font-bold text-sm py-3.5 rounded-xl shadow-lg transition duration-200 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer mb-3"
+                className="w-full bg-red hover:bg-[#E7BE6E] text-[#132723] font-bold text-sm py-3.5 rounded-xl shadow-lg transition duration-200 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer mb-3"
               >
                 {loading ? 'Resetting...' : 'Reset Password'}
               </button>

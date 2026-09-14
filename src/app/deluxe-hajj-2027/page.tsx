@@ -19,7 +19,7 @@ export default function DeluxeHajj2027Page() {
   };
 
   return (
-    <main className="bg-sage min-h-screen">
+    <main className="bg-blue-lt min-h-screen">
       {/* ================= SUB-HEADER HERO ================= */}
       <div className="sub-header bg-[#0b4a3a] text-white py-12 px-4">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
@@ -307,7 +307,7 @@ export default function DeluxeHajj2027Page() {
 
                 <Link
                   href="/contact"
-                  className="w-full bg-[#d4af37] hover:bg-gold-lt text-white font-bold py-4 px-6 rounded-xl shadow-md flex items-center justify-center gap-2 transition duration-200 text-center block"
+                  className="w-full bg-[#d4af37] hover:bg-red-lt text-white font-bold py-4 px-6 rounded-xl shadow-md flex items-center justify-center gap-2 transition duration-200 text-center block"
                 >
                   <span>Book Hajj 2027 Now</span>
                   <i className="fa-solid fa-arrow-right text-xs"></i>

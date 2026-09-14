@@ -201,7 +201,7 @@ export default function AboutPageClient({ initialPageData }: { initialPageData?:
                     <ul className="features-list grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 text-xs text-slate-700 font-medium list-none p-0 mt-3">
                       {feats.map((f: string, i: number) => (
                         <li key={i} className="flex items-start gap-2">
-                          <span className="text-gold font-bold">✓</span> {f}
+                          <span className="text-red font-bold">✓</span> {f}
                         </li>
                       ))}
                     </ul>
@@ -234,7 +234,7 @@ export default function AboutPageClient({ initialPageData }: { initialPageData?:
                         <span className="service-icon text-2xl p-2.5 rounded-xl bg-slate-50 border border-slate-100">{item.icon}</span>
                         <div>
                           <h3 className="text-[20px] font-bold head m-0">{item.title}</h3>
-                          {item.subtitle && <span className="text-[14px] font-semibold text-gold block mt-0.5">{item.subtitle}</span>}
+                          {item.subtitle && <span className="text-[14px] font-semibold text-red block mt-0.5">{item.subtitle}</span>}
                         </div>
                       </div>
                       <p className="text-[14px] text-ink-soft leading-relaxed font-normal m-0">{item.description}</p>
@@ -346,7 +346,7 @@ export default function AboutPageClient({ initialPageData }: { initialPageData?:
                           <span className="text-[9px] font-bold text-slate-400 block uppercase">STARTING FROM</span>
                           <span className="text-lg font-extrabold text-primary">{pkg.price}</span>
                         </div>
-                        <button className="bg-primary hover:bg-gold text-white hover:text-slate-900 px-4 py-2 rounded-xl text-xs font-bold transition-all">
+                        <button className="bg-primary hover:bg-red text-white hover:text-slate-900 px-4 py-2 rounded-xl text-xs font-bold transition-all">
                           Book Package
                         </button>
                       </div>
@@ -375,7 +375,7 @@ export default function AboutPageClient({ initialPageData }: { initialPageData?:
         //     <section key={idx} id="flights" className="py-12">
         //       <div className="wrap">
         //         <div className="section-head center text-center mb-8">
-        //           <div className="eyebrow uppercase text-xs font-bold tracking-widest text-gold justify-center mb-1">
+        //           <div className="eyebrow uppercase text-xs font-bold tracking-widest text-red justify-center mb-1">
         //             {sec.data?.eyebrow || "OUR TRUSTED PARTNERS"}
         //           </div>
         //           <h2 className="">

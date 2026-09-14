@@ -1048,7 +1048,7 @@ function PageBuilderContent() {
 
               {/* Floating Top Right Badge 1 Card (Matching Frontend) */}
               <div className="absolute right-5 top-5 z-10 bg-white/95 text-slate-900 rounded-2xl p-2.5 px-3.5 shadow-lg border border-white flex items-center gap-2.5 backdrop-blur-xs">
-                <div className="w-8 h-8 rounded-full bg-gold/20 border border-[#DB9E30]/40 flex items-center justify-center text-gold text-xs">
+                <div className="w-8 h-8 rounded-full bg-red/20 border border-[#DB9E30]/40 flex items-center justify-center text-red text-xs">
                   ★
                 </div>
                 <div>
@@ -1059,7 +1059,7 @@ function PageBuilderContent() {
 
               {/* Floating Bottom Right Badge 2 Card (Matching Frontend) */}
               <div className="absolute right-5 bottom-5 z-10 bg-white/95 text-slate-900 rounded-2xl p-2.5 px-3.5 shadow-lg border border-white flex items-center gap-2.5 backdrop-blur-xs">
-                <div className="w-8 h-8 rounded-full bg-gold/20 border border-[#DB9E30]/40 flex items-center justify-center text-gold text-xs">
+                <div className="w-8 h-8 rounded-full bg-red/20 border border-[#DB9E30]/40 flex items-center justify-center text-red text-xs">
                   🕌
                 </div>
                 <div>
@@ -1074,7 +1074,7 @@ function PageBuilderContent() {
                   {heroEyebrow || 'Est. in UK · Licensed Pilgrimage Operator'}
                 </div>
                 <h1
-                  className="text-xl md:text-3xl font-serif text-white m-0 font-normal tracking-tight leading-tight [&>span]:text-gold [&>em]:text-gold [&>em]:not-italic"
+                  className="text-xl md:text-3xl font-serif text-white m-0 font-normal tracking-tight leading-tight [&>span]:text-red [&>em]:text-red [&>em]:not-italic"
                   dangerouslySetInnerHTML={{ __html: bannerTitle || title || 'Your journey to <span>Makkah & Madinah</span>, guided with care.' }}
                 />
                 <p className="text-xs text-white/80 leading-relaxed font-light">
@@ -1083,7 +1083,7 @@ function PageBuilderContent() {
 
                 {/* Primary & Secondary Buttons Matching Frontend */}
                 <div className="flex flex-wrap items-center gap-3 pt-2">
-                  <span className="bg-gold hover:bg-white text-white border-gold hover:text-gold hover:border-gold font-black text-xs px-5 py-2.5 rounded-full shadow-md transition-all cursor-pointer">
+                  <span className="bg-red hover:bg-white text-white border-red hover:text-red hover:border-red font-black text-xs px-5 py-2.5 rounded-full shadow-md transition-all cursor-pointer">
                     {primaryBtnLabel || 'View Umrah Packages'}
                   </span>
                   <span className="bg-white text-primary hover:bg-primary hover:text-white font-extrabold text-xs px-5 py-2.5 rounded-full shadow-md transition-all cursor-pointer border border-primary">
@@ -1134,7 +1134,7 @@ function PageBuilderContent() {
                       }
                     }
                   }}
-                  className="text-[10px] font-bold text-gold hover:bg-amber-100 bg-amber-50 px-2 py-0.5 rounded cursor-pointer border border-[#DB9E30]/30 transition-colors"
+                  className="text-[10px] font-bold text-red hover:bg-amber-100 bg-amber-50 px-2 py-0.5 rounded cursor-pointer border border-[#DB9E30]/30 transition-colors"
                   title="Highlight text and click to make it Red"
                 >
                   ✨ Red Words
@@ -1338,7 +1338,7 @@ function PageBuilderContent() {
               />
               <div className="relative z-10 max-w-md px-2">
                 <h1
-                  className="text-lg md:text-xl font-serif text-white m-0 font-normal tracking-wide [&>span]:text-gold [&>em]:text-gold [&>em]:not-italic"
+                  className="text-lg md:text-xl font-serif text-white m-0 font-normal tracking-wide [&>span]:text-red [&>em]:text-red [&>em]:not-italic"
 
                   dangerouslySetInnerHTML={{ __html: bannerTitle || title || 'Page Title' }}
                 />
@@ -1413,7 +1413,7 @@ function PageBuilderContent() {
                       }
                     }
                   }}
-                  className="text-[10px] font-bold text-gold hover:bg-amber-100 bg-amber-50 px-2 py-0.5 rounded cursor-pointer border border-[#DB9E30]/30 transition-colors"
+                  className="text-[10px] font-bold text-red hover:bg-amber-100 bg-amber-50 px-2 py-0.5 rounded cursor-pointer border border-[#DB9E30]/30 transition-colors"
                   title="Highlight text and click to make it Red"
                 >
                   ✨ Red Words

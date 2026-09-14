@@ -479,7 +479,7 @@ export default function SeoCenterModal({
                 <span className="text-xs font-bold text-emerald-300 bg-emerald-950/80 border border-emerald-700/60 px-2.5 py-0.5 rounded-full">
                   {pageData.title}
                 </span>
-                <span className="text-[9px] font-black uppercase tracking-wider text-gold bg-gold/20 border border-[#DB9E30]/40 px-2 py-0.5 rounded-md">
+                <span className="text-[9px] font-black uppercase tracking-wider text-red bg-red/20 border border-[#DB9E30]/40 px-2 py-0.5 rounded-md">
                   Next-Gen Intelligence
                 </span>
               </div>
@@ -576,7 +576,7 @@ export default function SeoCenterModal({
                 : 'text-slate-700 hover:bg-slate-100'
                 }`}
             >
-              <Zap className={`w-4 h-4 shrink-0 ${activeTab === 'geo' ? 'text-gold' : 'text-amber-500'}`} />
+              <Zap className={`w-4 h-4 shrink-0 ${activeTab === 'geo' ? 'text-red' : 'text-amber-500'}`} />
               <span>GEO (Generative AI)</span>
             </button>
 

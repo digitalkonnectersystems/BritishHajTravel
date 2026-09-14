@@ -196,7 +196,7 @@ export default function IconPicker({
               type="button"
               onClick={() => setActiveProviderTab('lucide')}
               className={`flex-1 py-1.5 rounded-lg transition-all ${activeProviderTab === 'lucide'
-                ? 'bg-gold text-white shadow-xs'
+                ? 'bg-red text-white shadow-xs'
                 : 'hover:bg-ink/30 text-ink-lt hover:text-ink'
                 }`}
             >
@@ -206,7 +206,7 @@ export default function IconPicker({
               type="button"
               onClick={() => setActiveProviderTab('dynamic')}
               className={`flex-1 py-1.5 rounded-lg transition-all ${activeProviderTab === 'dynamic'
-                ? 'bg-gold text-white shadow-xs'
+                ? 'bg-red text-white shadow-xs'
                 : 'hover:bg-ink/30 text-ink-lt hover:text-ink'
                 }`}
             >

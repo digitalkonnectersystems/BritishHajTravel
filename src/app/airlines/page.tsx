@@ -78,7 +78,7 @@ export default function AirlinesPage() {
   }, []);
 
   return (
-    <main className="bg-sage min-h-screen">
+    <main className="bg-blue-lt min-h-screen">
       {/* ================= DYNAMIC HERO BANNER ================= */}
       <PageBanner
         title={pageData?.bannerTitle || pageData?.title || "Find <span>Lowest Fare</span> Flights & Book Airline Tickets Across UK"}
@@ -170,7 +170,7 @@ export default function AirlinesPage() {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     suppressHydrationWarning
-                                    className="bg-emerald-900 text-white hover:bg-gold hover:text-slate-900 font-bold py-3 px-8 rounded-md tracking-wide shadow-sm transition-all duration-150 cursor-pointer text-sm w-full md:w-auto inline-block text-center"
+                                    className="bg-emerald-900 text-white hover:bg-red hover:text-slate-900 font-bold py-3 px-8 rounded-md tracking-wide shadow-sm transition-all duration-150 cursor-pointer text-sm w-full md:w-auto inline-block text-center"
                                   >
                                     Booking
                                   </a>
@@ -193,7 +193,7 @@ export default function AirlinesPage() {
                     <section key={idx} id="flights" className="py-12 bg-white">
                       <div className="wrap">
                         <div className="section-head center text-center mb-8">
-                          <div className="eyebrow uppercase text-xs font-bold tracking-widest text-gold justify-center mb-1">
+                          <div className="eyebrow uppercase text-xs font-bold tracking-widest text-red justify-center mb-1">
                             {sec.data?.eyebrow || "OUR TRUSTED PARTNERS"}
                           </div>
                           <h2 className="">
@@ -221,7 +221,7 @@ export default function AirlinesPage() {
                         <p className="text-slate-600 text-sm md:text-base max-w-xl mx-auto mb-8 leading-relaxed font-light">
                           {sec.data?.description || "Speak directly with our ticketing specialists to get custom quotes, group flight discounts, and immediate confirmations."}
                         </p>
-                        <Link href={sec.data?.btnLink || "/contact"} className="inline-block bg-primary hover:bg-gold text-white hover:text-slate-900 font-bold px-8 py-3.5 rounded-xl shadow-md transition-all text-sm">
+                        <Link href={sec.data?.btnLink || "/contact"} className="inline-block bg-primary hover:bg-red text-white hover:text-slate-900 font-bold px-8 py-3.5 rounded-xl shadow-md transition-all text-sm">
                           {sec.data?.btnLabel || "Contact Flight Desk"}
                         </Link>
                       </div>
@@ -233,7 +233,7 @@ export default function AirlinesPage() {
               })
             ) : (
               <>
-                <section className="pt-14 bg-sage">
+                <section className="pt-14 bg-blue-lt">
                   <div className="max-w-5xl mx-auto px-4">
                     <div className="text-center mb-8">
                       <span className="text-emerald-800 font-semibold uppercase tracking-wider text-sm block mb-1">Available Flights</span>
@@ -259,7 +259,7 @@ export default function AirlinesPage() {
                             </div>
                             <div className="text-right flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-4 border-t md:border-0 pt-4 md:pt-0 border-gray-200">
                               <div><span className="text-2xl font-bold text-gray-900">{flight.price}</span></div>
-                              <a href="https://wa.me/19056248344?text=Hi,%20I'm%20interested%20in%20booking%20this%20flight!" target="_blank" rel="noopener noreferrer" className="bg-emerald-900 text-white hover:bg-gold hover:text-slate-900 font-bold py-3 px-8 rounded-lg tracking-wide shadow-sm transition-colors duration-150 cursor-pointer text-sm w-full md:w-auto inline-block text-center">Booking</a>
+                              <a href="https://wa.me/19056248344?text=Hi,%20I'm%20interested%20in%20booking%20this%20flight!" target="_blank" rel="noopener noreferrer" className="bg-emerald-900 text-white hover:bg-red hover:text-slate-900 font-bold py-3 px-8 rounded-lg tracking-wide shadow-sm transition-colors duration-150 cursor-pointer text-sm w-full md:w-auto inline-block text-center">Booking</a>
                             </div>
                           </div>
                           <div className="border-t border-dashed border-gray-300/80 pt-4 text-right"><span className="text-xs font-medium text-gray-500">Price Per Person (Incl. Taxes &amp; Fees)</span></div>
@@ -270,7 +270,7 @@ export default function AirlinesPage() {
                 </section>
 
                 <section id="flights" className="py-12 bg-white">
-                  <div className="wrap"><div className="section-head center text-center mb-8"><div className="eyebrow uppercase text-xs font-bold tracking-widest text-gold justify-center mb-1">Our Trusted Partners</div><h2 className="">Airlines We Sourced Deals From</h2></div></div>
+                  <div className="wrap"><div className="section-head center text-center mb-8"><div className="eyebrow uppercase text-xs font-bold tracking-widest text-red justify-center mb-1">Our Trusted Partners</div><h2 className="">Airlines We Sourced Deals From</h2></div></div>
                   <MarqueeTrack type="airline" images={airlineLogos} />
                 </section>
 
@@ -278,7 +278,7 @@ export default function AirlinesPage() {
                   <div className="wrap text-center max-w-3xl mx-auto px-4">
                     <h2 className=" mb-4">Need Flight Booking Assistance?</h2>
                     <p className="text-slate-600 text-sm md:text-base max-w-xl mx-auto mb-8 leading-relaxed font-light">Speak directly with our ticketing specialists to get custom quotes, group flight discounts, and immediate confirmations.</p>
-                    <Link href="/contact" className="inline-block bg-primary hover:bg-gold text-white hover:text-slate-900 font-extrabold px-8 py-3.5 rounded-xl shadow-md transition-all text-sm">Contact Flight Desk</Link>
+                    <Link href="/contact" className="inline-block bg-primary hover:bg-red text-white hover:text-slate-900 font-extrabold px-8 py-3.5 rounded-xl shadow-md transition-all text-sm">Contact Flight Desk</Link>
                   </div>
                 </section>
               </>

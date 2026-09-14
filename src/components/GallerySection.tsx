@@ -57,7 +57,7 @@ export default function GallerySection({ data }: { data?: any }) {
   if (!images.length && !videos.length) return null;
 
   return (
-    <section className="bg-[#f4f6f8] py-10 md:py-14">
+    <section className="bg-blue-lt py-10 md:py-14">
       <div className="mx-auto w-full max-w-[1400px] px-5">
         {(data?.eyebrow || data?.title || data?.description) && (
           <div className="mb-8 text-center">

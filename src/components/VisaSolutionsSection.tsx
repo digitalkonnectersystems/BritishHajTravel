@@ -60,13 +60,13 @@ export default function VisaSolutionsSection({ data, className }: { data?: any; 
       ? data.items
       : defaultVisaSolutions;
 
-  const bgClass = data?.bgColor || (isHomepage ? "bg-white" : "bg-sage");
+  const bgClass = data?.bgColor || (isHomepage ? "bg-white" : "bg-blue-lt");
 
   return (
     <section id="saudi-visa" className={`py-12 md:py-16 w-full ${bgClass} ${className || ""}`}>
       <div className="max-w-[1400px] mx-auto px-5">
         <div className="section-head center text-center mb-10">
-          <div className="eyebrow uppercase text-xs font-bold tracking-widest text-gold mb-1">
+          <div className="eyebrow uppercase text-xs font-bold tracking-widest text-red mb-1">
             {data?.eyebrow || "EXPLORE OUR"}
           </div>
 
@@ -105,7 +105,7 @@ export default function VisaSolutionsSection({ data, className }: { data?: any; 
 
                 <Link
                   href="/contact"
-                  className="mt-5 inline-flex items-center justify-center bg-gold text-white font-bold text-sm px-6 py-3 rounded-md hover:bg-gold-lt transition-colors"
+                  className="mt-5 inline-flex items-center justify-center bg-red text-white font-bold text-sm px-6 py-3 rounded-md hover:bg-red-lt transition-colors"
                 >
                   Apply Now
                 </Link>

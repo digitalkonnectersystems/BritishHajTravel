@@ -168,7 +168,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
           <button
             type="button"
             onClick={() => setIsCreating(!isCreating)}
-            className="bg-gold hover:bg-gold-lt text-white px-5 py-2.5 rounded-full text-xs font-extrabold transition-colors cursor-pointer border-none shadow-md flex items-center gap-2"
+            className="bg-red hover:bg-red-lt text-white px-5 py-2.5 rounded-full text-xs font-extrabold transition-colors cursor-pointer border-none shadow-md flex items-center gap-2"
           >
             <Plus className="w-4 h-4" />
             {isCreating ? 'Close Form' : 'Create New Package'}
@@ -180,7 +180,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
       {isCreating && (
         <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-2xs animate-in fade-in">
           <h3 className="text-sm font-extrabold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-gold" /> Add New Pilgrimage Package
+            <Sparkles className="w-4 h-4 text-red" /> Add New Pilgrimage Package
           </h3>
           <form onSubmit={handleCreate} className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="md:col-span-2">

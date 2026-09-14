@@ -113,7 +113,7 @@ function ToolbarButton({
       title={title}
       className={[
         'inline-flex items-center justify-center w-7 h-7 rounded-md text-xs font-bold transition-colors border-none cursor-pointer select-none',
-        active ? 'bg-primary text-white' : 'bg-transparent text-ink hover:bg-gold/20',
+        active ? 'bg-primary text-white' : 'bg-transparent text-ink hover:bg-red/20',
         disabled ? 'opacity-30 cursor-not-allowed' : '',
       ]
         .filter(Boolean)
@@ -288,9 +288,9 @@ export default function TiptapEditor({
     const rawColor = (editor.getAttributes('textStyle').color as string)?.toLowerCase() || '';
     if (!rawColor) return 'default';
     if (rawColor === '#020e43' || rawColor.includes('var(--primary)') || rawColor === 'rgb(2, 14, 67)') return 'primary';
-    if (rawColor === '#b50007' || rawColor.includes('var(--gold)') || rawColor === 'rgb(181, 0, 7)') 
+    if (rawColor === '#b50007' || rawColor.includes('var(--red)') || rawColor === 'rgb(181, 0, 7)') 
     return 'gold';
-    if (rawColor === '#e7be6e' || rawColor.includes('var(--gold-lt)') || rawColor === 'rgb(231, 190, 110)') return 'gold-lt';
+    if (rawColor === '#e7be6e' || rawColor.includes('var(--red-lt)') || rawColor === 'rgb(231, 190, 110)') return 'gold-lt';
     if (rawColor === '#132723' || rawColor.includes('var(--ink)') || rawColor === 'rgb(19, 39, 35)') 
     return 'ink';
     if (rawColor === '#899391' || rawColor.includes('var(--ink-light)') || rawColor.includes('var(--ink-lt)')) return 'ink-lt';
@@ -389,7 +389,7 @@ export default function TiptapEditor({
   const activeColorPreview = COLOR_OPTIONS.find((c) => c.id === activeColor)?.previewBg || (activeColor !== 'default' ? activeColor : '#132723');
 
   return (
-    <div className="flex flex-col rounded-xl border border-gold/50 overflow-hidden bg-gold-lt/10 text-ink focus-within:border-primary transition-colors">
+    <div className="flex flex-col rounded-xl border border-red/50 overflow-hidden bg-red-lt/10 text-ink focus-within:border-primary transition-colors">
       {/* ── Toolbar ── */}
       <div className="shrink-0 flex flex-wrap items-center gap-1 px-2.5 py-2 bg-paper border-b border-line">
         {/* Paragraph / Heading picker */}
@@ -495,7 +495,7 @@ export default function TiptapEditor({
             }}
             title="Highlight color"
             className={[
-              'inline-flex items-center justify-center w-7 h-7 rounded-md text-xs font-bold transition-colors border-none cursor-pointer select-none hover:bg-gold/20',
+              'inline-flex items-center justify-center w-7 h-7 rounded-md text-xs font-bold transition-colors border-none cursor-pointer select-none hover:bg-red/20',
               hasHighlight ? 'bg-amber-200 text-amber-950' : 'bg-transparent text-ink',
             ]
               .filter(Boolean)

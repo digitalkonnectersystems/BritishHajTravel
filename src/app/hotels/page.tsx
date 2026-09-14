@@ -20,7 +20,7 @@ export default async function HotelsPage() {
   const hasHotels = categories.some((category) => category.hotels.length > 0);
 
   return (
-    <main className="min-h-screen bg-white pb-16">
+    <main className="min-h-screen bg-blue-lt pb-16">
       <PageSeoHead pageTitle={page?.title || 'Hotels'} seoData={page?.seoData} />
       <PageBanner
         title={page?.bannerTitle || page?.title || 'Hotels in Makkah and Madinah'}

@@ -67,7 +67,7 @@ type IncludeItem = {
   text: string;
 };
 
-function HajjCardFields({ pkgData, setPkgData }: { pkgData: any; setPkgData: (v: any) => void }) {
+export function HajjCardFields({ pkgData, setPkgData, includePackageMeta = false, hideBadge = false }: { pkgData: any; setPkgData: (v: any) => void; includePackageMeta?: boolean; hideBadge?: boolean }) {
   const cd = pkgData.cardData || defaultHajjCardData;
   const updateCD = (f: string, v: any) => setPkgData({ ...pkgData, cardData: { ...cd, [f]: v } });
 
@@ -156,10 +156,20 @@ function HajjCardFields({ pkgData, setPkgData }: { pkgData: any; setPkgData: (v:
           <ImageUploadWidget value={cd.bannerImage || ''} onChange={(url) => updateCD('bannerImage', url)} subfolder="packages" />
         </div>
         <div className="md:w-2/3 grid grid-cols-2 gap-3">
-          <div>
+          {includePackageMeta && <>
+            <div className="col-span-2">
+              <label className="text-[10px] font-bold text-ink-lt mb-1 block">PACKAGE TITLE</label>
+              <input type="text" value={pkgData.title || ''} onChange={e => setPkgData({ ...pkgData, title: e.target.value })} className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs" />
+            </div>
+            <div>
+              <label className="text-[10px] font-bold text-ink-lt mb-1 block">STARTING PRICE (£)</label>
+              <input type="number" min="0" step="0.01" value={pkgData.startingPrice || ''} onChange={e => setPkgData({ ...pkgData, startingPrice: e.target.value })} className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs" />
+            </div>
+          </>}
+          {!hideBadge && <div>
             <label className="text-[10px] font-bold text-ink-lt mb-1 block">TOP LEFT BADGE</label>
             <input type="text" value={cd.badgeTag || ''} onChange={e => updateCD('badgeTag', e.target.value)} className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs" />
-          </div>
+          </div>}
           <div>
             <label className="text-[10px] font-bold text-ink-lt mb-1 block">DURATION BADGE</label>
             <DurationInput
@@ -202,6 +212,10 @@ function HajjCardFields({ pkgData, setPkgData }: { pkgData: any; setPkgData: (v:
               </h5>
               <div className="space-y-2.5">
                 <ImageUploadWidget value={hotelObj.image || ''} onChange={(url) => updateHotel(h.key, 'image', url)} subfolder="packages" />
+                <div>
+                  <label className="text-[9px] font-bold text-ink-lt mb-0.5 block">ACCOMMODATION LABEL</label>
+                  <input type="text" value={hotelObj.label || ''} onChange={e => updateHotel(h.key, 'label', e.target.value)} placeholder={h.label} className="w-full px-2 py-1.5 rounded-lg border border-slate-200 text-xs" />
+                </div>
                 <div>
                   <label className="text-[9px] font-bold text-ink-lt mb-0.5 block">HOTEL NAME</label>
                   <input
@@ -249,13 +263,13 @@ function HajjCardFields({ pkgData, setPkgData }: { pkgData: any; setPkgData: (v:
                         title={hotelObj.badgeEnabled !== false ? 'Hide board badge on frontend' : 'Display board badge on frontend'}
                         className={`px-2 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border flex items-center gap-1 shrink-0 ${hotelObj.badgeEnabled !== false
                           ? 'bg-blue-100 text-primary border-primary hover:bg-blue-100'
-                          : 'bg-gold-soft text-gold border-gold hover:bg-gold hover:text-white'
+                          : 'bg-red-soft text-red border-red hover:bg-red hover:text-white'
                           }`}
                       >
                         {hotelObj.badgeEnabled !== false ? (
                           <Eye className="w-3 h-3 text-primary" />
                         ) : (
-                          <EyeOff className="w-3 h-3 text-gold" />
+                          <EyeOff className="w-3 h-3 text-red" />
                         )}
                         <span className="text-[10px] font-bold">{hotelObj.badgeEnabled !== false ? 'Show' : 'Hide'}</span>
                       </button>
@@ -291,7 +305,7 @@ function HajjCardFields({ pkgData, setPkgData }: { pkgData: any; setPkgData: (v:
           <button
             type="button"
             onClick={addInclusion}
-            className="text-[10px] font-extrabold text-gold border border-gold bg-gold-50 hover:bg-gold hover:text-white px-2.5 py-1 rounded-full transition-colors cursor-pointer"
+            className="text-[10px] font-extrabold text-red border border-red bg-red-50 hover:bg-red hover:text-white px-2.5 py-1 rounded-full transition-colors cursor-pointer"
           >
             + Add Inclusion
           </button>
@@ -338,7 +352,7 @@ function HajjCardFields({ pkgData, setPkgData }: { pkgData: any; setPkgData: (v:
           <button
             type="button"
             onClick={addEligibility}
-            className="text-[10px] font-extrabold text-gold border border-gold bg-gold-50 hover:bg-gold hover:text-white px-2.5 py-1 rounded-full transition-colors cursor-pointer"
+            className="text-[10px] font-extrabold text-red border border-red bg-red-50 hover:bg-red hover:text-white px-2.5 py-1 rounded-full transition-colors cursor-pointer"
           >
             + Add Point
           </button>
@@ -746,7 +760,7 @@ export default function EditPackageClient({ packageData }: EditPackageClientProp
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <h1 className="text-2xl font-extrabold text-slate-900 m-0 flex items-center gap-2">
-            <Edit2 className="w-5 h-5 text-gold" /> Edit {editingPkg.type === 'hajj' ? 'Hajj' : 'Umrah'} Package
+            <Edit2 className="w-5 h-5 text-red" /> Edit {editingPkg.type === 'hajj' ? 'Hajj' : 'Umrah'} Package
           </h1>
         </div>
       </div>
@@ -756,14 +770,14 @@ export default function EditPackageClient({ packageData }: EditPackageClientProp
           <button
             type="button"
             onClick={() => setActiveTab('basic')}
-            className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'basic' ? 'bg-gold text-white shadow' : 'text-slate-500 hover:text-slate-700'}`}
+            className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'basic' ? 'bg-red text-white shadow' : 'text-slate-500 hover:text-slate-700'}`}
           >
             Basic & Card Info
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('detail')}
-            className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'detail' ? 'bg-gold text-white shadow' : 'text-slate-500 hover:text-slate-700'}`}
+            className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'detail' ? 'bg-red text-white shadow' : 'text-slate-500 hover:text-slate-700'}`}
           >
             Detail Page Content
           </button>

@@ -12,7 +12,7 @@ export default function ContactMapsSection({ data }: { data?: any }) {
       <div className="bg-white rounded-3xl shadow-xl shadow-slate-100/50 border border-slate-100/80 p-4 flex-1 flex flex-col min-h-[250px]">
         <div className="mb-3 pl-2">
           <h3 className="text-sm font-extrabold uppercase tracking-widest text-primary flex items-center gap-2">
-            <i className="fa-solid fa-building text-gold"></i> {headTitle}
+            <i className="fa-solid fa-building text-red"></i> {headTitle}
           </h3>
           <p className="text-xs text-slate-500 font-medium mt-0.5">{headAddress}</p>
         </div>
@@ -28,7 +28,7 @@ export default function ContactMapsSection({ data }: { data?: any }) {
       <div className="bg-white rounded-3xl shadow-xl shadow-slate-100/50 border border-slate-100/80 p-4 flex-1 flex flex-col min-h-[250px]">
         <div className="mb-3 pl-2">
           <h3 className="text-sm font-extrabold uppercase tracking-widest text-primary flex items-center gap-2">
-            <i className="fa-solid fa-building text-gold"></i> {branchTitle}
+            <i className="fa-solid fa-building text-red"></i> {branchTitle}
           </h3>
           <p className="text-xs text-slate-500 font-medium mt-0.5">{branchAddress}</p>
         </div>

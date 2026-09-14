@@ -231,7 +231,7 @@ export default function AdminBlogsPage() {
                           type="button"
                           onClick={() => handleDelete(b.id, b.title)}
                           disabled={deletingId === b.id}
-                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-gold-soft hover:bg-gold hover:text-white text-red-600 border border-red-200 text-[11px] font-bold cursor-pointer disabled:opacity-50"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-soft hover:bg-red hover:text-white text-red-600 border border-red-200 text-[11px] font-bold cursor-pointer disabled:opacity-50"
                         >
                           <Trash2 className="w-3 h-3" />
                         </button>

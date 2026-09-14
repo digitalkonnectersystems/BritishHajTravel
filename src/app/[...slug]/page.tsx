@@ -69,7 +69,7 @@ export default async function DynamicPage({
   const isFlightBooking = slug.join("/") === "airline-tickets-booking";
 
   return (
-    <main className={`${isFlightBooking ? "bg-sage" : "bg-white"} min-h-screen`}>
+    <main className={`${isFlightBooking ? "bg-blue-lt" : "bg-white"} min-h-screen`}>
       <PageSeoHead pageTitle={page.title} seoData={page.seoData} />
 
       <PageBanner

@@ -42,7 +42,7 @@ export default function TravelServicesSection({ data }: { data: any }) {
               key={i}
               className="group bg-white rounded-2xl p-6 shadow-[0_4px_20px_rgb(0,0,0,0.06)] border border-[#eef0e4] hover:scale-[1.04] transition-all duration-300 cursor-pointer text-center flex flex-col items-center justify-center aspect-square"
             >
-              <div className="w-16 h-16 flex items-center justify-center mb-5 text-[var(--gold)]">
+              <div className="w-16 h-16 flex items-center justify-center mb-5 text-[var(--red)]">
                 <DynamicIcon name={s.icon || 'Star'} className="w-30 h-30" strokeWidth={1.5} />
               </div>
               <h4 className="text-primary text-center font-bold text-xl mb-2 leading-snug">{s.title}</h4>

@@ -179,7 +179,7 @@ export default function DashboardSeoCenterSection({ pages }: DashboardSeoCenterS
         {/* Card 3: AI Engine Readiness */}
         <div className="bg-[#F8FAFC] rounded-2xl p-5 border border-slate-200 space-y-3">
           <div className="text-xs font-extrabold text-slate-800 flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-gold" /> AI ENGINE READINESS
+            <Sparkles className="w-3.5 h-3.5 text-red" /> AI ENGINE READINESS
           </div>
 
           <div className="space-y-2">

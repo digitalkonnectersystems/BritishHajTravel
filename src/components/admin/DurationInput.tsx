@@ -82,7 +82,7 @@ export default function DurationInput({
           type="button"
           onClick={() => handleUnitToggle('days')}
           className={`px-2 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer border-none flex items-center gap-1 ${unitVal === 'days'
-            ? 'bg-gold text-white shadow-xs'
+            ? 'bg-red text-white shadow-xs'
             : 'hover:bg-ink/30 text-ink-lt hover:text-ink'
             }`}
         >
@@ -93,7 +93,7 @@ export default function DurationInput({
           type="button"
           onClick={() => handleUnitToggle('nights')}
           className={`px-2 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer border-none flex items-center gap-1 ${unitVal === 'nights'
-            ? 'bg-gold text-white shadow-xs'
+            ? 'bg-red text-white shadow-xs'
             : 'hover:bg-ink/30 text-ink-lt hover:text-ink'
             }`}
         >
@@ -110,10 +110,10 @@ export default function DurationInput({
           title={enabled ? 'Hide duration badge on frontend' : 'Display duration badge on frontend'}
           className={`px-2 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer border flex items-center gap-1 shrink-0 ${enabled
               ? 'bg-blue-100 text-primary border-primary hover:bg-primary hover:text-white'
-              : 'bg-gold-soft text-gold border-gold hover:bg-gold hover:text-white'
+              : 'bg-red-soft text-red border-red hover:bg-red hover:text-white'
             }`}
         >
-          {enabled ? <Eye className="w-3 h-3 text-primary hover:text-white" /> : <EyeOff className="w-3 h-3 text-gold" />}
+          {enabled ? <Eye className="w-3 h-3 text-primary hover:text-white" /> : <EyeOff className="w-3 h-3 text-red" />}
           <span className="text-[10px] font-bold">{enabled ? 'Show' : 'Hide'}</span>
         </button>
       )}

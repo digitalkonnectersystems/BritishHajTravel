@@ -122,7 +122,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any, page
                 </Link>
               </div>
             </div>
-            <div className="badges">
+            {/* <div className="badges">
               <div className="float-badge badge-1">
                 <div className="ico">
                   <svg viewBox="0 0 24 24">
@@ -146,11 +146,268 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any, page
                   <div className="l">{heroData.badge2Sub}</div>
                 </div>
               </div>
+            </div> */}
+
+            {/* <div className="max-w-[1080px] mx-auto px-5">
+              <div className="relative rounded-3xl shadow-xl bg-primary p-6 md:p-8 max-md:mt-6 -mt-8">
+                <h2 className="text-2xl text-white md:text-3xl font-serif tracking-tight text-center mb-6">
+                  Get a free Quote
+                </h2>
+                {quoteStatus && <p className="text-center text-primary font-semibold mb-6">{quoteStatus}</p>}
+
+                <form noValidate className="flex flex-col gap-4" onSubmit={handleQuoteSubmit}>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="relative">
+                      <label htmlFor="quote-fullName" className="text-white block text-xs font-bold uppercase tracking-wider mb-1.5">
+                        Your Name
+                      </label>
+                      <input
+                        type="text"
+                        id="quote-fullName"
+                        placeholder="Full Name"
+                        value={quoteForm.fullName}
+                        onChange={(e) => {
+                          setQuoteForm({ ...quoteForm, fullName: e.target.value });
+                          if (quoteErrors.fullName) setQuoteErrors((prev) => ({ ...prev, fullName: "" }));
+                        }}
+                        className={`w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium appearance-none bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat ${quoteErrors.fullName ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"
+                          }`}
+                      />
+                      {quoteErrors.fullName && <span className="text-red-600 text-xs font-semibold mt-1 block">{quoteErrors.fullName}</span>}
+                    </div>
+
+                    <div className="relative">
+                      <label htmlFor="quote-phone" className="text-white block text-xs font-bold uppercase tracking-wider mb-1.5">
+                        Phone Number
+                      </label>
+                      <input
+                        type="tel"
+                        id="quote-phone"
+                        placeholder="+44(___) ___-____"
+                        value={quoteForm.phone}
+                        inputMode="numeric"
+                        maxLength={11}
+                        onChange={(e) => {
+                          const value = e.target.value
+                            .replace(/\D/g, "")
+                            .slice(0, 11);
+
+                          setQuoteForm({
+                            ...quoteForm,
+                            phone: value,
+                          });
+
+                          if (quoteErrors.phone) {
+                            setQuoteErrors((prev) => ({
+                              ...prev,
+                              phone: "",
+                            }));
+                          }
+                        }}
+                        className={`w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium appearance-none bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat ${quoteErrors.fullName ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"
+                          }`}
+                      />
+                      {quoteErrors.phone && <span className="text-red-600 text-xs font-semibold mt-1 block">{quoteErrors.phone}</span>}
+                    </div>
+
+                    <div className="relative">
+                      <label htmlFor="quote-email" className="text-white block text-xs font-bold uppercase tracking-wider mb-1.5">
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        id="quote-email"
+                        placeholder="your@email.com"
+                        value={quoteForm.email}
+                        onChange={(e) => {
+                          setQuoteForm({ ...quoteForm, email: e.target.value });
+                          if (quoteErrors.email) setQuoteErrors((prev) => ({ ...prev, email: "" }));
+                        }}
+                        className={`w-full border p-3 rounded-sm bg-slate-50 outline-none transition-colors duration-300 text-slate-900 text-sm font-normal placeholder:text-slate-400 ${quoteErrors.email ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "border-line focus:border-red"
+                          }`}
+                      />
+                      {quoteErrors.email && <span className="text-red-600 text-xs font-semibold mt-1 block">{quoteErrors.email}</span>}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                    <div className="relative">
+                      <label htmlFor="quote-package" className="text-white block text-xs font-bold uppercase tracking-wider mb-1.5">
+                        Select Your Package
+                      </label>
+                      <select
+                        id="quote-package"
+                        value={quoteForm.packageType}
+                        onChange={(e) => setQuoteForm({ ...quoteForm, packageType: e.target.value })}
+                        className="cursor-pointer w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-slate-900 text-sm font-medium appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
+                      >
+                        <option>Select Package</option>
+                        <option>Umrah Package</option>
+                        <option>Hajj Package</option>
+                        <option>Flight Only</option>
+                        <option>Saudi Visa</option>
+                      </select>
+                    </div>
+
+
+                    <div className="relative">
+                      <label htmlFor="quote-pilgrims" className="text-white block text-xs font-bold uppercase tracking-wider mb-1.5">
+                        Number of Pilgrims
+                      </label>
+                      <input
+                        type="number"
+                        min="1"
+                        id="quote-pilgrims"
+                        value={quoteForm.adults}
+                        onChange={(e) => setQuoteForm({ ...quoteForm, adults: parseInt(e.target.value, 10) || 1 })}
+                        className="w-full border border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-slate-900 text-sm font-medium"
+                      />
+                    </div>
+
+                    <div className="">
+                      <button
+                        type="submit"
+                        className="w-full btnff font-extrabold py-3.5 px-6 rounded-sm shadow-md active:scale-[0.99] transition-all duration-300 tracking-wider uppercase text-sm flex items-center justify-center cursor-pointer"
+                      >
+                      <span>SUBMIT</span>
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div> */}
+            <div className="max-w-[1080px]">
+              <div className="relative rounded-3xl shadow-xl bg-primary p-6 md:p-8 max-md:mt-6 -mt-8">
+                <h2 className="text-2xl text-white md:text-3xl font-serif tracking-tight text-center mb-6">
+                  Get a free Quote
+                </h2>
+                {quoteStatus && <p className="text-center text-primary font-semibold mb-6">{quoteStatus}</p>}
+
+                <form noValidate className="flex flex-col gap-6" onSubmit={handleQuoteSubmit}>
+                  {/* 2-Column Grid for Input Fields */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+                    
+                    {/* 1. Full Name */}
+                    <div className="relative">
+                      <label htmlFor="quote-fullName" className="text-white block text-xs font-bold uppercase tracking-wider mb-1.5">
+                        Your Name
+                      </label>
+                      <input
+                        type="text"
+                        id="quote-fullName"
+                        placeholder="Full Name"
+                        value={quoteForm.fullName}
+                        onChange={(e) => {
+                          setQuoteForm({ ...quoteForm, fullName: e.target.value });
+                          if (quoteErrors.fullName) setQuoteErrors((prev) => ({ ...prev, fullName: "" }));
+                        }}
+                        className={`w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium appearance-none bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat ${
+                          quoteErrors.fullName ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"
+                        }`}
+                      />
+                      {quoteErrors.fullName && <span className="text-red-600 text-xs font-semibold mt-1 block">{quoteErrors.fullName}</span>}
+                    </div>
+
+                    {/* 2. Phone Number */}
+                    <div className="relative">
+                      <label htmlFor="quote-phone" className="text-white block text-xs font-bold uppercase tracking-wider mb-1.5">
+                        Phone Number
+                      </label>
+                      <input
+                        type="tel"
+                        id="quote-phone"
+                        placeholder="+44(___) ___-____"
+                        value={quoteForm.phone}
+                        inputMode="numeric"
+                        maxLength={11}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, "").slice(0, 11);
+                          setQuoteForm({ ...quoteForm, phone: value });
+                          if (quoteErrors.phone) {
+                            setQuoteErrors((prev) => ({ ...prev, phone: "" }));
+                          }
+                        }}
+                        className={`w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium appearance-none bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat ${
+                          quoteErrors.phone ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"
+                        }`}
+                      />
+                      {quoteErrors.phone && <span className="text-red-600 text-xs font-semibold mt-1 block">{quoteErrors.phone}</span>}
+                    </div>
+
+                    {/* 3. Email Address */}
+                    <div className="relative">
+                      <label htmlFor="quote-email" className="text-white block text-xs font-bold uppercase tracking-wider mb-1.5">
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        id="quote-email"
+                        placeholder="your@email.com"
+                        value={quoteForm.email}
+                        onChange={(e) => {
+                          setQuoteForm({ ...quoteForm, email: e.target.value });
+                          if (quoteErrors.email) setQuoteErrors((prev) => ({ ...prev, email: "" }));
+                        }}
+                        className={`w-full border p-3 rounded-sm bg-slate-50 outline-none transition-colors duration-300 text-slate-900 text-sm font-normal placeholder:text-slate-400 ${
+                          quoteErrors.email ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "border-line focus:border-red"
+                        }`}
+                      />
+                      {quoteErrors.email && <span className="text-red-600 text-xs font-semibold mt-1 block">{quoteErrors.email}</span>}
+                    </div>
+
+                    {/* 4. Select Package */}
+                    <div className="relative">
+                      <label htmlFor="quote-package" className="text-white block text-xs font-bold uppercase tracking-wider mb-1.5">
+                        Select Your Package
+                      </label>
+                      <select
+                        id="quote-package"
+                        value={quoteForm.packageType}
+                        onChange={(e) => setQuoteForm({ ...quoteForm, packageType: e.target.value })}
+                        className="cursor-pointer w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-slate-900 text-sm font-medium appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
+                      >
+                        <option>Select Package</option>
+                        <option>Umrah Package</option>
+                        <option>Hajj Package</option>
+                        <option>Flight Only</option>
+                        <option>Saudi Visa</option>
+                      </select>
+                    </div>
+
+                    {/* 5. Number of Pilgrims (Full Width across both columns) */}
+                    <div className="relative md:col-span-2">
+                      <label htmlFor="quote-pilgrims" className="text-white block text-xs font-bold uppercase tracking-wider mb-1.5">
+                        Number of Pilgrims
+                      </label>
+                      <input
+                        type="number"
+                        min="1"
+                        id="quote-pilgrims"
+                        value={quoteForm.adults}
+                        onChange={(e) => setQuoteForm({ ...quoteForm, adults: parseInt(e.target.value, 10) || 1 })}
+                        className="w-full border border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-slate-900 text-sm font-medium"
+                      />
+                    </div>
+
+                  </div>
+
+                  {/* 6. Centered Bottom Submit Button */}
+                  <div className="w-full max-w-md mx-auto pt-2">
+                    <button
+                      type="submit"
+                      className="w-full btnff font-extrabold py-3.5 px-6 rounded-sm shadow-md active:scale-[0.99] transition-all duration-300 tracking-wider uppercase text-sm flex items-center justify-center cursor-pointer"
+                    >
+                      <span>SUBMIT</span>
+                    </button>
+                  </div>
+
+                </form>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="max-w-[1080px] mx-auto px-5">
+        {/* <div className="max-w-[1080px] mx-auto px-5">
           <div className="relative rounded-3xl shadow-xl bg-primary p-6 md:p-8 max-md:mt-6 -mt-8">
             <h2 className="text-2xl text-white md:text-3xl font-serif tracking-tight text-center mb-6">
               Get a free Quote
@@ -172,7 +429,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any, page
                       setQuoteForm({ ...quoteForm, fullName: e.target.value });
                       if (quoteErrors.fullName) setQuoteErrors((prev) => ({ ...prev, fullName: "" }));
                     }}
-                    className={`w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium appearance-none bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat ${quoteErrors.fullName ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"
+                    className={`w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium appearance-none bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat ${quoteErrors.fullName ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"
                       }`}
                   />
                   {quoteErrors.fullName && <span className="text-red-600 text-xs font-semibold mt-1 block">{quoteErrors.fullName}</span>}
@@ -206,7 +463,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any, page
                         }));
                       }
                     }}
-                    className={`w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium appearance-none bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat ${quoteErrors.fullName ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"
+                    className={`w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium appearance-none bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat ${quoteErrors.fullName ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"
                       }`}
                   />
                   {quoteErrors.phone && <span className="text-red-600 text-xs font-semibold mt-1 block">{quoteErrors.phone}</span>}
@@ -225,7 +482,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any, page
                       setQuoteForm({ ...quoteForm, email: e.target.value });
                       if (quoteErrors.email) setQuoteErrors((prev) => ({ ...prev, email: "" }));
                     }}
-                    className={`w-full border p-3 rounded-sm bg-slate-50 outline-none transition-colors duration-300 text-slate-900 text-sm font-normal placeholder:text-slate-400 ${quoteErrors.email ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "border-line focus:border-gold"
+                    className={`w-full border p-3 rounded-sm bg-slate-50 outline-none transition-colors duration-300 text-slate-900 text-sm font-normal placeholder:text-slate-400 ${quoteErrors.email ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "border-line focus:border-red"
                       }`}
                   />
                   {quoteErrors.email && <span className="text-red-600 text-xs font-semibold mt-1 block">{quoteErrors.email}</span>}
@@ -241,7 +498,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any, page
                     id="quote-package"
                     value={quoteForm.packageType}
                     onChange={(e) => setQuoteForm({ ...quoteForm, packageType: e.target.value })}
-                    className="cursor-pointer w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-slate-900 text-sm font-medium appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
+                    className="cursor-pointer w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-slate-900 text-sm font-medium appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
                   >
                     <option>Select Package</option>
                     <option>Umrah Package</option>
@@ -262,7 +519,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any, page
                     id="quote-pilgrims"
                     value={quoteForm.adults}
                     onChange={(e) => setQuoteForm({ ...quoteForm, adults: parseInt(e.target.value, 10) || 1 })}
-                    className="w-full border border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-slate-900 text-sm font-medium"
+                    className="w-full border border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-slate-900 text-sm font-medium"
                   />
                 </div>
 
@@ -277,7 +534,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any, page
               </div>
             </form>
           </div>
-        </div>
+        </div> */}
       </section>
 
       <SubmissionSuccessModal

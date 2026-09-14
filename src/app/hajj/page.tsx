@@ -56,7 +56,7 @@ export default function CustomizeHajjPage() {
         <div className="text-center max-w-2xl mx-auto mb-10">
           <div className="eyebrow justify-center">Tailored Pilgrimage</div>
           <h1 className="text-4xl font-bold text-slate-900 mt-2 mb-4">
-            Customize Your Hajj Package <span className="text-[var(--gold)]">2027</span>
+            Customize Your Hajj Package <span className="text-[var(--red)]">2027</span>
           </h1>
           <p className="text-slate-600">
             Tailor your stay, accommodations, group guides, and travel arrangements according to your personal requirements.

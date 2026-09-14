@@ -58,7 +58,7 @@ export default async function BlogsListingPage() {
         size={pageData?.bannerSize}
       />
 
-      <section className="section-outer bg-sage">
+      <section className="section-outer bg-blue-lt">
         <div className="section-inner">
 
           {allBlogs.length === 0 && (
@@ -83,7 +83,7 @@ export default async function BlogsListingPage() {
                     className="w-full h-full object-cover absolute inset-0 group-hover:scale-105 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent" />
-                  <span className="absolute top-4 left-4 text-[11px] font-extrabold bg-gold text-white px-3 py-1 rounded-full uppercase tracking-wide">
+                  <span className="absolute top-4 left-4 text-[11px] font-extrabold bg-red text-white px-3 py-1 rounded-full uppercase tracking-wide">
                     Featured
                   </span>
                 </div>
@@ -112,7 +112,7 @@ export default async function BlogsListingPage() {
                     )}
                   </div> */}
                   <div className=" inline-flex items-center gap-2 text-sm font-bold text-ink group-hover:gap-3 transition-all">
-                    Read Full Article <span className="text-gold">→</span>
+                    Read Full Article <span className="text-red">→</span>
                   </div>
                 </div>
               </div>

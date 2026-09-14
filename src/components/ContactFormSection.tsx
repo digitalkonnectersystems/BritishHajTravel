@@ -108,7 +108,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
     ];
 
   return (
-    <section className="py-12 md:py-16 bg-sage">
+    <section className="py-12 md:py-16 bg-blue-lt">
       <div className="max-w-[1400px] mx-auto px-5">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
@@ -247,7 +247,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                       setForm({ ...form, fullName: e.target.value });
                       if (errors.fullName) setErrors((prev) => ({ ...prev, fullName: "" }));
                     }}
-                    className={`w-full border !border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium ${errors.fullName ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-primary"
+                    className={`w-full border !border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium ${errors.fullName ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-primary"
                       }`}
                   />
                   {errors.fullName && <span className="text-red-600 text-xs font-semibold mt-1 block">{errors.fullName}</span>}
@@ -263,7 +263,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                       setForm({ ...form, email: e.target.value });
                       if (errors.email) setErrors((prev) => ({ ...prev, email: "" }));
                     }}
-                    className={`w-full border border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium ${errors.email ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-primary"
+                    className={`w-full border border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium ${errors.email ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-primary"
                       }`}
                   />
                   {errors.email && <span className="text-red-600 text-xs font-semibold mt-1 block">{errors.email}</span>}
@@ -284,7 +284,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                       if (val.length > 11) val = val.slice(0, 11);
                       setForm({ ...form, phone: val });
                     }}
-                    className="w-full border border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium focus:border-primary"
+                    className="w-full border border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium focus:border-primary"
                   />
                 </div>
 
@@ -299,7 +299,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                       setForm({ ...form, packageType: e.target.value });
                       if (errors.packageType) setErrors((prev) => ({ ...prev, packageType: "" }));
                     }}
-                    className={`cursor-pointer w-full border border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-sm font-medium appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat ${form.packageType ? "text-[#111111]" : "text-slate-400"
+                    className={`cursor-pointer w-full border border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-sm font-medium appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat ${form.packageType ? "text-[#111111]" : "text-slate-400"
                       } ${errors.packageType ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-primary"}`}
                   >
                     <option value="" disabled hidden>Select Package *</option>
@@ -325,7 +325,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                       setErrors((prev) => ({ ...prev, message: "" }));
                     }
                   }}
-                  className={`w-full border border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-gold transition-colors text-[#111111] text-sm font-medium ${errors.message ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-primary"
+                  className={`w-full border border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium ${errors.message ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-primary"
                     }`}
                 />
                 {errors.message && <span className="text-red-600 text-xs font-semibold mt-1 block">{errors.message}</span>}
@@ -334,7 +334,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
               <div>
                 <button
                   type="submit"
-                  className="group w-full text-white bg-gold hover:bg-gold-lt font-bold py-4 px-8 rounded-md shadow-md hover:shadow-md active:scale-[0.99] transition-all duration-200 tracking-wider uppercase text-sm flex items-center justify-center gap-2 cursor-pointer mt-2"
+                  className="group w-full text-white bg-red hover:bg-red-lt font-bold py-4 px-8 rounded-md shadow-md hover:shadow-md active:scale-[0.99] transition-all duration-200 tracking-wider uppercase text-sm flex items-center justify-center gap-2 cursor-pointer mt-2"
                 >
                   <span>SEND ENQUIRY</span>
                   <i className="fa-solid fa-paper-plane text-xs group-hover:translate-x-1 group-hover:-translate-y-0.5 transition-transform"></i>

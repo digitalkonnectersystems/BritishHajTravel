@@ -135,11 +135,11 @@ Side trips to Pakistan or any other destination available with an additional cos
         {/* Modal Header */}
         <div className="bg-primary text-white p-5 flex justify-between items-center">
           <div>
-            <div className="text-[10px] font-extrabold uppercase tracking-widest text-gold">
+            <div className="text-[10px] font-extrabold uppercase tracking-widest text-red">
               ADMIN CMS PACKAGE DETAIL PAGE EDITOR (POPUP)
             </div>
             <h2 className="text-xl font-bold font-serif text-white mt-0.5">
-              Detail Page for: <span className="underline text-gold">{pkg.title || "Untitled Package"}</span>
+              Detail Page for: <span className="underline text-red">{pkg.title || "Untitled Package"}</span>
             </h2>
           </div>
           <button
@@ -201,7 +201,7 @@ Side trips to Pakistan or any other destination available with an additional cos
             <div className="space-y-5">
               {/* Live Header Banner Preview Box */}
               <div className="bg-primary text-white p-5 rounded-2xl relative overflow-hidden shadow-lg border border-emerald-950">
-                <div className="text-[9px] font-extrabold uppercase text-gold tracking-widest mb-1.5 flex items-center gap-1">
+                <div className="text-[9px] font-extrabold uppercase text-red tracking-widest mb-1.5 flex items-center gap-1">
                   <span>✨ LIVE BANNER PREVIEW (TITLE AUTO-FETCHED FROM CARD)</span>
                 </div>
                 <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
@@ -219,7 +219,7 @@ Side trips to Pakistan or any other destination available with an additional cos
                   </div>
 
                   <div className="bg-[#00382B] border-2 border-dashed border-[#DB9E30] rounded-xl p-3 text-center min-w-[170px] shrink-0">
-                    <span className="text-[9px] font-extrabold uppercase text-gold block">
+                    <span className="text-[9px] font-extrabold uppercase text-red block">
                       {exclusiveBadge || "EXCLUSIVE PACKAGE"}
                     </span>
                     <div className="text-xl font-black text-white font-serif mt-0.5">

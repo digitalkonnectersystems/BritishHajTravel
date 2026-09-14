@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -18,10 +18,15 @@ const DEFAULT_NAV_ITEMS = [
 export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIdentity = null }: { initialNavItems?: any[]; initialIdentity?: any }) {
   const [menuActive, setMenuActive] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [hoverSuppressed, setHoverSuppressed] = useState<string | null>(null);
   const navItems = initialNavItems?.length ? initialNavItems : DEFAULT_NAV_ITEMS;
   const identityData = initialIdentity;
   const pathname = usePathname();
 
+  useEffect(() => {
+    setMenuActive(false);
+    setOpenDropdown(null);
+  }, [pathname]);
 
   if (pathname?.startsWith("/admin") || pathname === "/letstravel") {
     return null;
@@ -81,7 +86,7 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
                     key={item.id || itemHref}
                     href={itemHref}
                     onClick={() => setMenuActive(false)}
-                    className={`text-[#333333] text-[16px] max-xl:text-[14px] max-xl:w-full max-xl:py-[8px] max-xl:border-b max-xl:border-[#eee] font-semibold uppercase tracking-normal transition-all duration-300 hover:text-gold ${isActive ? "!text-gold font-bold" : ""}`}
+                    className={`text-[#333333] text-[16px] max-xl:text-[14px] max-xl:w-full max-xl:py-[8px] max-xl:border-b max-xl:border-[#eee] font-semibold uppercase tracking-normal transition-all duration-300 hover:text-red ${isActive ? "!text-red font-bold" : ""}`}
                   >
                     {itemLabel}
                   </Link>
@@ -92,7 +97,12 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
               return (
                 <div
                   key={item.id || itemHref}
-                  className={`w-full xl:w-auto dropdown-parent${openDropdown === mobKey ? " mob-open" : ""}`}
+                  className={`w-full xl:w-auto dropdown-parent${openDropdown === mobKey ? " mob-open" : ""}${hoverSuppressed === mobKey ? " hover-suppressed" : ""}`}
+                  onMouseEnter={() => setHoverSuppressed(null)}
+                  onMouseLeave={() => {
+                    setHoverSuppressed(null);
+                    setOpenDropdown(null);
+                  }}
                 >
                   <span
                     className="cursor-pointer flex items-center xl:gap-0 gap-4"
@@ -104,8 +114,12 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
                   >
                     <Link
                       href={itemHref}
-                      onClick={() => setMenuActive(false)}
-                      className={`w-full xl:w-auto text-[#333333] text-[16px] max-xl:text-[14px] max-xl:w-full max-xl:py-[8px] max-xl:border-b max-xl:border-[#eee] font-semibold uppercase tracking-normal transition-all duration-300 hover:text-gold ${isParentActive ? "!text-gold font-bold" : ""}`}
+                      onClick={() => {
+                        setMenuActive(false);
+                        setOpenDropdown(null);
+                        setHoverSuppressed(mobKey);
+                      }}
+                      className={`w-full xl:w-auto text-[#333333] text-[16px] max-xl:text-[14px] max-xl:w-full max-xl:py-[8px] max-xl:border-b max-xl:border-[#eee] font-semibold uppercase tracking-normal transition-all duration-300 hover:text-red ${isParentActive ? "!text-red font-bold" : ""}`}
                     >
                       {itemLabel}
                     </Link>
@@ -120,10 +134,11 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
                         <Link
                           key={sub.id || subHref}
                           href={subHref}
-                          className={isSubActive ? "!text-gold font-bold" : ""}
+                          className={isSubActive ? "text-white font-bold" : ""}
                           onClick={() => {
                             setMenuActive(false);
                             setOpenDropdown(null);
+                            setHoverSuppressed(mobKey);
                           }}
                         >
                           {sub.label || sub.title}
