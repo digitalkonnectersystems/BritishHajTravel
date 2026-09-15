@@ -810,7 +810,7 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
                 </button>
                 <button
                   type="submit"
-                  className="px-7 py-2.5 rounded-full text-xs font-extrabold bg-primary text-white border-none cursor-pointer shadow-md hover:bg-[#003229] transition-colors"
+                  className="px-7 py-2.5 rounded-full text-xs font-extrabold bg-primary text-white border-none cursor-pointer shadow-md hover:bg-white hover:text-primary transition-colors"
                 >
                   Publish Package
                 </button>

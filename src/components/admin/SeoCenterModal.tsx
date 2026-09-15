@@ -506,7 +506,7 @@ export default function SeoCenterModal({
               type="button"
               onClick={handleSaveSeo}
               disabled={isSaving}
-              className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-primary hover:bg-emerald-700 text-white text-xs font-extrabold transition-colors cursor-pointer shadow-xs border border-primary/40"
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-primary hover:bg-white hover:text-primary text-white text-xs font-extrabold transition-colors cursor-pointer shadow-xs border border-primary/40"
             >
               {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
               <span>Save All SEO</span>

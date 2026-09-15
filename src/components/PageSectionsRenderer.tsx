@@ -22,9 +22,10 @@ import GallerySection from '@/components/GallerySection';
 import DynamicSiteForm from '@/components/DynamicSiteForm';
 import FaqSection from '@/components/FaqSection';
 import DestinationsGrid from '@/components/DestinationsGrid';
+import LatestBlogsSection from '@/components/LatestBlogsSection';
 import { RICH_TEXT_PROSE_CLASS } from '@/lib/richTextProseClass';
 import { useEffect, useState } from "react";
-export default function PageSectionsRenderer({ sections, pageData, initialPackageData, initialDestinationData }: { sections: any[], pageData?: any, initialPackageData?: any, initialDestinationData?: any[] }) {
+export default function PageSectionsRenderer({ sections, pageData, initialPackageData, initialDestinationData, initialBlogData }: { sections: any[], pageData?: any, initialPackageData?: any, initialDestinationData?: any[], initialBlogData?: any[] }) {
   if (!sections || !Array.isArray(sections)) return null;
 
   return (
@@ -34,6 +35,9 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         if (sec.hidden === true || sec.visible === false) return null;
         if (sec.type === 'Destinations Grid') {
           return <DestinationsGrid key={idx} destinations={initialDestinationData || []} title={sec.data?.title} />;
+        }
+        if (sec.type === 'Latest Blogs Grid' || sec.type === 'Blog Posts Carousel') {
+          return <LatestBlogsSection key={idx} data={sec.data || {}} blogs={initialBlogData || []} isHomepage={pageData?.slug === '/'} />;
         }
         if (sec.type === 'Package Brochure') {
           return <PackageBrochuresSection key={idx} data={sec.data || {}} pageData={pageData} />;
@@ -390,7 +394,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
           }
           const carouselType = sec.type === "Hotels" ? "hotel" : "airline";
           return (
-            <section key={idx} className="py-12">
+            <section key={idx} className="py-12 bg-blue-lt">
               <div className="max-w-7xl mx-auto px-4">
                 <div className="text-center flex flex-col mb-8">
                   {sec.data?.eyebrow && (
@@ -414,7 +418,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                 )}
                 {sec.data?.viewAllSlug && (
                   <div className="mt-7 text-center">
-                    <Link href={sec.data.viewAllSlug} className="inline-flex rounded-full bg-red px-5 py-2.5 text-xs font-bold text-white transition-colors hover:bg-primary">
+                    <Link href={sec.data.viewAllSlug} className="inline-flex rounded-full bg-red px-5 py-2.5 text-md font-bold text-white hover:text-white transition-colors hover:bg-red-lt mt-7 text-center">
                       {sec.data.viewAllLabel || "View All"}
                     </Link>
                   </div>
@@ -451,7 +455,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                       {sec.data.eyebrow}
                     </span>
                   )}
-                  <h2 className="section-heading font-normal">
+                  <h2 className="section-heading text-primary font-normal">
                     {sec.data?.title || "Trusted Travel Organizations"}
                   </h2>
                 </div>
@@ -468,7 +472,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                 )}
                 {sec.data?.viewAllSlug && (
                   <div className="mt-7 text-center">
-                    <Link href={sec.data.viewAllSlug} className="inline-flex rounded-full bg-red px-5 py-2.5 text-xs font-bold text-white transition-colors hover:bg-primary">
+                    <Link href={sec.data.viewAllSlug} className="inline-flex rounded-full bg-red px-5 py-2.5 text-md font-bold text-white hover:text-white transition-colors hover:bg-red-lt">
                       {sec.data.viewAllLabel || "View All"}
                     </Link>
                   </div>

@@ -155,7 +155,7 @@ export default function CategoryDropdown({ value, onChange, className = '' }: Ca
               type="button"
               onClick={handleAddCategory}
               disabled={saving || !newCategory.trim()}
-              className="px-3 py-2 bg-primary text-white rounded-lg hover:bg-[#003829] disabled:opacity-50 transition-colors flex items-center justify-center"
+              className="px-3 py-2 bg-primary text-white rounded-lg hover:bg-white hover:text-primary disabled:opacity-50 transition-colors flex items-center justify-center"
             >
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
             </button>

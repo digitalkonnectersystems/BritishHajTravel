@@ -123,7 +123,7 @@ export default function CertificationsFlipCardsSection({
   }
 
   return (
-    <section className="py-20 relative bg-gray overflow-hidden">
+    <section className="py-20 relative bg-blue-lt overflow-hidden">
 
       {/* Background */}
       {bgImage && (

@@ -1041,7 +1041,7 @@ export default function EditPackageClient({ packageData }: EditPackageClientProp
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-8 py-3 rounded-full text-sm font-extrabold bg-primary text-white border-none cursor-pointer shadow-md hover:bg-[#003229] transition-colors disabled:opacity-50"
+                className="px-8 py-3 rounded-full text-sm font-extrabold bg-primary text-white border-none cursor-pointer shadow-md hover:bg-white hover:text-primary transition-colors disabled:opacity-50"
               >
                 {isSubmitting ? 'Saving...' : 'Save Changes'}
               </button>

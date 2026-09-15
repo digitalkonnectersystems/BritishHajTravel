@@ -3848,7 +3848,7 @@ function PageBuilderContent() {
                                         });
                                         updateSectionData(sec.id, 'items', currentItems);
                                       }}
-                                      className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer text-white bg-primary hover:bg-emerald-800 transition-colors shadow-sm"
+                                      className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer text-white bg-primary hover:bg-white hover:text-primary transition-colors shadow-sm"
                                     >
                                       + Add Certification Card
                                     </button>

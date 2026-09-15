@@ -1,9 +1,13 @@
 import PageSectionsRenderer from "@/components/PageSectionsRenderer";
 import { getPageBySlug } from "@/actions/pageActions";
+import { getBlogsList } from "@/actions/blogActions";
 import PageSeoHead from "@/components/PageSeoHead";
 
 export default async function Home() {
-  const pageData = await getPageBySlug("/");
+  const [pageData, blogs] = await Promise.all([
+    getPageBySlug("/"),
+    getBlogsList(true),
+  ]);
 
   const homeSeo = pageData?.seoData || null;
 
@@ -24,7 +28,7 @@ export default async function Home() {
     <main>
       <PageSeoHead pageTitle="Home" seoData={homeSeo} />
       {/* ================= DYNAMIC SECTIONS ================= */}
-      <PageSectionsRenderer sections={dynamicSections} pageData={pageData} />
+      <PageSectionsRenderer sections={dynamicSections} pageData={pageData} initialBlogData={blogs} />
     </main>
   );
 }

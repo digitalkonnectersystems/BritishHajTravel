@@ -22,6 +22,7 @@ export async function getBlogsList(publishedOnly = false) {
     // Ensure all 6 standard blogs exist in the database dynamically
     const existingBlogs = await db.select({ slug: blogPosts.slug }).from(blogPosts);
     const existingSlugs = new Set(existingBlogs.map((b) => b.slug));
+    const shouldSeedDefaultBlogs = process.env.SEED_DEFAULT_BLOGS === 'true';
 
     const DEFAULT_BLOGS = [
       {
@@ -87,7 +88,7 @@ export async function getBlogsList(publishedOnly = false) {
     ];
 
     for (const blog of DEFAULT_BLOGS) {
-      if (!existingSlugs.has(blog.slug)) {
+      if (shouldSeedDefaultBlogs && !existingSlugs.has(blog.slug)) {
         await db.insert(blogPosts).values({
           ...blog,
           publishedAt: new Date(),
@@ -180,7 +181,7 @@ export async function updateBlogOrderAction(orderedIds: number[]) {
     revalidatePath('/blogs');
     revalidatePath('/admin/blogs');
     revalidateTag('blogs', 'max');
-    return { success: true };
+    return { success: false, error: err.message || 'Failed to update blog order' };
   }
 }
 
@@ -266,7 +267,7 @@ export async function saveBlogAction(data: BlogSavePayload) {
         isPublished,
         updatedAt: new Date(),
       };
-      if (parsedPublishedAt) updateData.publishedAt = parsedPublishedAt;
+      updateData.publishedAt = parsedPublishedAt;
 
       await db.update(blogPosts).set(updateData).where(eq(blogPosts.id, id));
 

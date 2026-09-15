@@ -62,7 +62,11 @@ export default function AdminBlogsPage() {
       onConfirm: async () => {
         setDeletingId(id);
         const res = await deleteBlogAction(id);
-        if (res.success) setBlogs((prev) => prev.filter((b) => b.id !== id));
+        if (res.success) {
+          setBlogs((prev) => prev.filter((b) => b.id !== id));
+        } else {
+          notify('Delete Failed', res.error || 'Failed to delete blog post.', 'error');
+        }
         setDeletingId(null);
       },
     });
