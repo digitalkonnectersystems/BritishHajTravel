@@ -264,9 +264,9 @@ export default function VisasClient({ initialVisas }: VisasClientProps) {
             No visa categories created in database yet.
           </div>
         ) : (
-          visas.map((v) => (
+          visas.map((v, index) => (
             <div
-              key={v.id}
+              key={`visa-${v.id ?? v.slug ?? v.title ?? 'item'}-${index}`}
               className="bg-white rounded-3xl p-6 border border-slate-100 shadow-2xs flex flex-col justify-between relative overflow-hidden hover:border-slate-200 transition-all"
             >
               <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
