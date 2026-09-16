@@ -9,7 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import { getPageById, savePageAction } from '@/actions/pageActions';
 import { getAllPackages } from '@/actions/packageActions';
 import ConfirmModal, { ConfirmModalConfig } from '@/components/ui/ConfirmModal';
-import { Trash2, Upload, Settings, MoveUp, MoveDown, ArrowUp, ArrowDown, GripVertical, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Trash2, Upload, Settings, MoveUp, MoveDown, ArrowUp, ArrowDown, GripVertical, ArrowLeft, ArrowRight, Plus, RefreshCw, Image as ImageIcon } from 'lucide-react';
 import AdminPackageDetailModal from '@/components/admin/AdminPackageDetailModal';
 import { uploadFile, uploadFileToFtp, generateAutoAltText } from '@/lib/uploadClient';
 import SeoCenterModal from '@/components/admin/SeoCenterModal';
@@ -141,6 +141,16 @@ const SECTION_CATALOG: SectionCategory[] = [
   },
 ];
 
+const DEFAULT_HOMEPAGE_VISA_CARDS = [
+  { country: 'Indian', passportLabel: 'Passport', price: '£145', flag: '🇮🇳', flagImage: '', slug: 'indian-passport' },
+  { country: 'Pakistani', passportLabel: 'Passport', price: '£170', flag: '🇵🇰', flagImage: '', slug: 'pakistani-passport' },
+  { country: 'British', passportLabel: 'Passport', price: '£150', flag: '🇬🇧', flagImage: '', slug: 'british-passport' },
+  { country: 'Bangladeshi', passportLabel: 'Passport', price: '£185', flag: '🇧🇩', flagImage: '', slug: 'bangladeshi-passport' },
+  { country: 'Afghan', passportLabel: 'Passport (with BRN)', price: '£190', flag: '🇦🇫', flagImage: '', slug: 'afghan-passport' },
+  { country: 'British Tourist', passportLabel: '(1 Year)', price: '£115', flag: '🇬🇧', flagImage: '', slug: 'british-tourist-1-year' },
+  { country: 'ETA. Saudi Visa', passportLabel: '', price: '£29', flag: '🇸🇦', flagImage: '', slug: 'eta-saudi-visa' },
+];
+
 // Flat list for search compatibility
 const SECTION_OPTIONS = SECTION_CATALOG.flatMap((cat) => cat.items.map((i) => i.type));
 
@@ -172,6 +182,18 @@ function PageBuilderContent() {
   const [badge1Sub, setBadge1Sub] = useState('Pilgrims Guided');
   const [badge2Top, setBadge2Top] = useState('5★ Hotels');
   const [badge2Sub, setBadge2Sub] = useState('Every Package, Every Time');
+  const [visaTitle, setVisaTitle] = useState('Umrah Visa');
+  const [visaSubtitle, setVisaSubtitle] = useState('Fast & Hassle-Free Visa Processing');
+  const [visaDocumentsLabel, setVisaDocumentsLabel] = useState('Required Documents');
+  const [visaDocumentsLink, setVisaDocumentsLink] = useState('/saudi-visa');
+  const [journeyTextTop, setJourneyTextTop] = useState('YOUR JOURNEY');
+  const [journeyTextBottom, setJourneyTextBottom] = useState('BEGINS HERE');
+  const [journeyIllustrationUrl, setJourneyIllustrationUrl] = useState('');
+  const [visaIconUrl, setVisaIconUrl] = useState('');
+  const [uploadingCardIndex, setUploadingCardIndex] = useState<number | null>(null);
+  const [uploadingVisaIcon, setUploadingVisaIcon] = useState(false);
+  const [uploadingJourneyIllustration, setUploadingJourneyIllustration] = useState(false);
+  const [visaCards, setVisaCards] = useState<any[]>(DEFAULT_HOMEPAGE_VISA_CARDS);
 
   const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
 
@@ -293,6 +315,15 @@ function PageBuilderContent() {
                   if (heroSec.data.badge1Sub !== undefined) setBadge1Sub(heroSec.data.badge1Sub);
                   if (heroSec.data.badge2Top !== undefined) setBadge2Top(heroSec.data.badge2Top);
                   if (heroSec.data.badge2Sub !== undefined) setBadge2Sub(heroSec.data.badge2Sub);
+                  if (heroSec.data.visaTitle !== undefined) setVisaTitle(heroSec.data.visaTitle);
+                  if (heroSec.data.visaSubtitle !== undefined) setVisaSubtitle(heroSec.data.visaSubtitle);
+                  if (heroSec.data.visaDocumentsLabel !== undefined) setVisaDocumentsLabel(heroSec.data.visaDocumentsLabel);
+                  if (heroSec.data.visaDocumentsLink !== undefined) setVisaDocumentsLink(heroSec.data.visaDocumentsLink);
+                  if (heroSec.data.journeyTextTop !== undefined) setJourneyTextTop(heroSec.data.journeyTextTop);
+                  if (heroSec.data.journeyTextBottom !== undefined) setJourneyTextBottom(heroSec.data.journeyTextBottom);
+                  if (heroSec.data.journeyIllustrationUrl !== undefined) setJourneyIllustrationUrl(heroSec.data.journeyIllustrationUrl);
+                  if (heroSec.data.visaIconUrl !== undefined) setVisaIconUrl(heroSec.data.visaIconUrl);
+                  if (Array.isArray(heroSec.data.visaCards) && heroSec.data.visaCards.length > 0) setVisaCards(heroSec.data.visaCards);
                 }
               } else if (p.slug === '/destinations') {
                 setSections([
@@ -835,6 +866,15 @@ function PageBuilderContent() {
             badge1Sub,
             badge2Top,
             badge2Sub,
+            visaTitle,
+            visaSubtitle,
+            visaDocumentsLabel,
+            visaDocumentsLink,
+            journeyTextTop,
+            journeyTextBottom,
+            journeyIllustrationUrl,
+            visaIconUrl,
+            visaCards,
             bannerBgImage,
             bannerPosition,
             bannerSize,
@@ -1265,6 +1305,429 @@ function PageBuilderContent() {
                 placeholder="Every Package, Every Time"
                 className="w-full px-3 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs font-medium outline-none focus:border-primary"
               />
+            </div>
+          </div>
+
+          {/* Homepage visa pricing cards & dynamic banner controls */}
+          <div className="border-t border-slate-100 pt-5 mt-1">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-4">
+              <div>
+                <h3 className="text-xs font-extrabold text-slate-800 uppercase tracking-wider m-0">
+                  Umrah Visa Floating Banner &amp; Pricing Cards
+                </h3>
+                <p className="text-[11px] text-slate-400 mt-1 mb-0">
+                  Fully dynamic controls for the bottom floating banner: upload custom SVG/image icons, customize titles, and manage each visa card with uploadable SVG flags.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() =>
+                  setVisaCards([
+                    ...visaCards,
+                    { country: '', passportLabel: 'Passport', price: '', flag: '🌐', flagImage: '', slug: '' },
+                  ])
+                }
+                className="rounded-full bg-primary text-white px-4 py-2 text-[11px] font-extrabold hover:bg-red transition-colors cursor-pointer border-none flex items-center gap-1.5 shrink-0 shadow-xs"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Add Visa Card</span>
+              </button>
+            </div>
+
+            {/* Banner Global Header Settings */}
+            <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-4 mb-5">
+              <div className="text-[10px] font-black uppercase tracking-wider text-slate-600 mb-3 flex items-center gap-1.5">
+                <span>⚙ Banner Header &amp; Branding Settings</span>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
+                <label className="block">
+                  <span className="block text-[9px] font-extrabold text-slate-500 uppercase tracking-wide mb-1">Section Title</span>
+                  <input
+                    type="text"
+                    value={visaTitle}
+                    onChange={(e) => setVisaTitle(e.target.value)}
+                    placeholder="Umrah Visa"
+                    className="w-full px-2.5 py-2 rounded-lg border border-slate-300 bg-white text-xs font-medium outline-none focus:border-primary"
+                  />
+                </label>
+                <label className="block">
+                  <span className="block text-[9px] font-extrabold text-slate-500 uppercase tracking-wide mb-1">Section Subtitle</span>
+                  <input
+                    type="text"
+                    value={visaSubtitle}
+                    onChange={(e) => setVisaSubtitle(e.target.value)}
+                    placeholder="Fast & Hassle-Free Visa Processing"
+                    className="w-full px-2.5 py-2 rounded-lg border border-slate-300 bg-white text-xs font-medium outline-none focus:border-primary"
+                  />
+                </label>
+                <label className="block">
+                  <span className="block text-[9px] font-extrabold text-slate-500 uppercase tracking-wide mb-1">Documents Button Label</span>
+                  <input
+                    type="text"
+                    value={visaDocumentsLabel}
+                    onChange={(e) => setVisaDocumentsLabel(e.target.value)}
+                    placeholder="Required Documents"
+                    className="w-full px-2.5 py-2 rounded-lg border border-slate-300 bg-white text-xs font-medium outline-none focus:border-primary"
+                  />
+                </label>
+                <label className="block">
+                  <span className="block text-[9px] font-extrabold text-slate-500 uppercase tracking-wide mb-1">Documents Button Link</span>
+                  <input
+                    type="text"
+                    value={visaDocumentsLink}
+                    onChange={(e) => setVisaDocumentsLink(e.target.value)}
+                    placeholder="/saudi-visa"
+                    className="w-full px-2.5 py-2 rounded-lg border border-slate-300 bg-white text-xs font-medium outline-none focus:border-primary"
+                  />
+                </label>
+              </div>
+
+              {/* Advanced Journey & Icon Customization */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 pt-3 border-t border-slate-200/60">
+                <label className="block">
+                  <span className="block text-[9px] font-extrabold text-slate-500 uppercase tracking-wide mb-1">Journey Text Top</span>
+                  <input
+                    type="text"
+                    value={journeyTextTop}
+                    onChange={(e) => setJourneyTextTop(e.target.value)}
+                    placeholder="YOUR JOURNEY"
+                    className="w-full px-2.5 py-2 rounded-lg border border-slate-300 bg-white text-xs font-medium outline-none focus:border-primary"
+                  />
+                </label>
+                <label className="block">
+                  <span className="block text-[9px] font-extrabold text-slate-500 uppercase tracking-wide mb-1">Journey Text Bottom</span>
+                  <input
+                    type="text"
+                    value={journeyTextBottom}
+                    onChange={(e) => setJourneyTextBottom(e.target.value)}
+                    placeholder="BEGINS HERE"
+                    className="w-full px-2.5 py-2 rounded-lg border border-slate-300 bg-white text-xs font-medium outline-none focus:border-primary"
+                  />
+                </label>
+
+                {/* Center Visa Icon (SVG / Image)
+                <div className="block">
+                  <span className="block text-[9px] font-extrabold text-slate-500 uppercase tracking-wide mb-1">Center Icon (SVG / Image)</span>
+                  <div className="flex items-center gap-2">
+                    <div className="w-9 h-9 rounded-lg bg-[#1E3A8A] flex items-center justify-center text-white shrink-0 overflow-hidden shadow-2xs">
+                      {visaIconUrl ? (
+                        <img src={visaIconUrl} alt="Visa Icon" className="w-5 h-5 object-contain" />
+                      ) : (
+                        <span className="text-xs">🪪</span>
+                      )}
+                    </div>
+                    <label className="cursor-pointer inline-flex items-center gap-1 px-2.5 py-2 rounded-lg bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 text-[11px] font-bold transition-colors">
+                      <Upload className="w-3 h-3" />
+                      <span>{uploadingVisaIcon ? 'Uploading...' : 'Upload SVG'}</span>
+                      <input
+                        type="file"
+                        accept=".svg,image/svg+xml,image/*"
+                        className="hidden"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            setUploadingVisaIcon(true);
+                            try {
+                              const url = await uploadFile(file, 'visas');
+                              if (url) setVisaIconUrl(url);
+                            } finally {
+                              setUploadingVisaIcon(false);
+                            }
+                          }
+                        }}
+                      />
+                    </label>
+                    {visaIconUrl && (
+                      <button
+                        type="button"
+                        onClick={() => setVisaIconUrl('')}
+                        className="text-[10px] text-red-600 hover:text-red-800 font-bold cursor-pointer border-none bg-transparent"
+                      >
+                        Reset
+                      </button>
+                    )}
+                  </div>
+                </div> */}
+
+                {/* Left Journey Illustration (SVG / Image) */}
+                <div className="block">
+                  <span className="block text-[9px] font-extrabold text-slate-500 uppercase tracking-wide mb-1">Journey Illustration (SVG / Image)</span>
+                  <div className="flex items-center gap-2">
+                    <div className="w-9 h-9 rounded-lg bg-white border border-slate-300 flex items-center justify-center shrink-0 overflow-hidden shadow-2xs">
+                      {journeyIllustrationUrl ? (
+                        <img src={journeyIllustrationUrl} alt="Journey Illustration" className="w-7 h-7 object-contain" />
+                      ) : (
+                        <span className="text-xs">🕋</span>
+                      )}
+                    </div>
+                    <label className="cursor-pointer inline-flex items-center gap-1 px-2.5 py-2 rounded-lg bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 text-[11px] font-bold transition-colors">
+                      <Upload className="w-3 h-3" />
+                      <span>{uploadingJourneyIllustration ? 'Uploading...' : 'Upload SVG'}</span>
+                      <input
+                        type="file"
+                        accept=".svg,image/svg+xml,image/*"
+                        className="hidden"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            setUploadingJourneyIllustration(true);
+                            try {
+                              const url = await uploadFile(file, 'visas');
+                              if (url) setJourneyIllustrationUrl(url);
+                            } finally {
+                              setUploadingJourneyIllustration(false);
+                            }
+                          }
+                        }}
+                      />
+                    </label>
+                    {journeyIllustrationUrl && (
+                      <button
+                        type="button"
+                        onClick={() => setJourneyIllustrationUrl('')}
+                        className="text-[10px] text-red-600 hover:text-red-800 font-bold cursor-pointer border-none bg-transparent"
+                      >
+                        Reset
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Individual Visa Cards */}
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+              {visaCards.map((card, index) => (
+                <div
+                  key={`visa-card-${index}`}
+                  className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between"
+                >
+                  {/* Top Bar: Card Label, Move Up/Down, Duplicate, Delete */}
+                  <div className="flex items-center justify-between gap-2 pb-3 mb-3 border-b border-slate-100">
+                    <div className="flex items-center gap-2">
+                      <span className="px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[10px] font-black uppercase tracking-wider">
+                        Card #{index + 1}
+                      </span>
+                      <span className="text-xs font-bold text-slate-800 truncate max-w-[150px]">
+                        {card.country || 'New Visa'}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-1">
+                      {/* Move Up */}
+                      <button
+                        type="button"
+                        disabled={index === 0}
+                        onClick={() => {
+                          if (index === 0) return;
+                          const copy = [...visaCards];
+                          const temp = copy[index - 1];
+                          copy[index - 1] = copy[index];
+                          copy[index] = temp;
+                          setVisaCards(copy);
+                        }}
+                        title="Move Up"
+                        className="p-1 rounded hover:bg-slate-100 text-slate-500 disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer border-none bg-transparent"
+                      >
+                        <ArrowUp className="w-3.5 h-3.5" />
+                      </button>
+                      {/* Move Down */}
+                      <button
+                        type="button"
+                        disabled={index === visaCards.length - 1}
+                        onClick={() => {
+                          if (index === visaCards.length - 1) return;
+                          const copy = [...visaCards];
+                          const temp = copy[index + 1];
+                          copy[index + 1] = copy[index];
+                          copy[index] = temp;
+                          setVisaCards(copy);
+                        }}
+                        title="Move Down"
+                        className="p-1 rounded hover:bg-slate-100 text-slate-500 disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer border-none bg-transparent"
+                      >
+                        <ArrowDown className="w-3.5 h-3.5" />
+                      </button>
+                      {/* Duplicate */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const copy = [...visaCards];
+                          copy.splice(index + 1, 0, { ...card, country: `${card.country || 'Visa'} (Copy)` });
+                          setVisaCards(copy);
+                        }}
+                        title="Duplicate"
+                        className="p-1 rounded hover:bg-slate-100 text-slate-500 cursor-pointer border-none bg-transparent text-[11px] font-bold"
+                      >
+                        Duplicate
+                      </button>
+                      {/* Remove */}
+                      <button
+                        type="button"
+                        onClick={() => setVisaCards(visaCards.filter((_, cardIndex) => cardIndex !== index))}
+                        title="Delete Card"
+                        className="p-1 rounded hover:bg-red-50 text-red-600 hover:text-red-700 cursor-pointer border-none bg-transparent ml-1"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Main Grid: Left Flag Upload & Preview, Right Form Fields */}
+                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-start">
+                    {/* Left: SVG / Flag Upload & Live Preview (4 cols) */}
+                    <div className="sm:col-span-4 flex flex-col items-center justify-center p-3 rounded-xl bg-slate-50 border border-slate-200/80 text-center">
+                      <span className="text-[9px] font-black uppercase tracking-wider text-slate-400 mb-1.5">
+                        Flag / SVG Icon
+                      </span>
+                      {/* Preview Box */}
+                      <div className="w-14 h-9 rounded-md border border-slate-300 bg-white p-0.5 flex items-center justify-center overflow-hidden shadow-2xs mb-2">
+                        {card.flagImage ? (
+                          <img src={card.flagImage} alt={card.country || 'Flag'} className="w-full h-full object-contain" />
+                        ) : (
+                          <span className="text-xl leading-none">{card.flag || '🌐'}</span>
+                        )}
+                      </div>
+
+                      {/* Upload Button */}
+                      <label className="w-full cursor-pointer inline-flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-lg bg-primary text-white hover:bg-red text-[11px] font-extrabold transition-colors shadow-2xs">
+                        <Upload className="w-3 h-3" />
+                        <span>{uploadingCardIndex === index ? 'Uploading...' : 'Upload SVG'}</span>
+                        <input
+                          type="file"
+                          accept=".svg,image/svg+xml,image/png,image/webp,image/jpeg"
+                          className="hidden"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              setUploadingCardIndex(index);
+                              try {
+                                const url = await uploadFile(file, 'visas');
+                                if (url) {
+                                  setVisaCards(prev => prev.map((item, i) => i === index ? { ...item, flagImage: url } : item));
+                                }
+                              } finally {
+                                setUploadingCardIndex(null);
+                              }
+                            }
+                          }}
+                        />
+                      </label>
+
+                      {/* Reset SVG Button */}
+                      {card.flagImage && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setVisaCards(visaCards.map((item, cardIndex) => cardIndex === index ? { ...item, flagImage: '' } : item));
+                          }}
+                          className="text-[10px] text-red-600 hover:text-red-800 font-bold mt-1.5 cursor-pointer border-none bg-transparent"
+                        >
+                          Reset to Vector Flag
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Right: Text Fields (8 cols) */}
+                    <div className="sm:col-span-8 grid grid-cols-2 gap-2.5">
+                      <label className="block">
+                        <span className="block text-[9px] font-extrabold text-slate-500 uppercase tracking-wide mb-1">
+                          Country / Visa Title
+                        </span>
+                        <input
+                          type="text"
+                          value={card.country || ''}
+                          onChange={(e) =>
+                            setVisaCards(
+                              visaCards.map((item, cardIndex) =>
+                                cardIndex === index ? { ...item, country: e.target.value } : item
+                              )
+                            )
+                          }
+                          placeholder="e.g. Indian"
+                          className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-semibold outline-none focus:border-primary"
+                        />
+                      </label>
+
+                      <label className="block">
+                        <span className="block text-[9px] font-extrabold text-slate-500 uppercase tracking-wide mb-1">
+                          Passport Sub-Label
+                        </span>
+                        <input
+                          type="text"
+                          value={card.passportLabel || ''}
+                          onChange={(e) =>
+                            setVisaCards(
+                              visaCards.map((item, cardIndex) =>
+                                cardIndex === index ? { ...item, passportLabel: e.target.value } : item
+                              )
+                            )
+                          }
+                          placeholder="e.g. Passport"
+                          className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-medium outline-none focus:border-primary"
+                        />
+                      </label>
+
+                      <label className="block">
+                        <span className="block text-[9px] font-extrabold text-slate-500 uppercase tracking-wide mb-1">
+                          Price Display
+                        </span>
+                        <input
+                          type="text"
+                          value={card.price || ''}
+                          onChange={(e) =>
+                            setVisaCards(
+                              visaCards.map((item, cardIndex) =>
+                                cardIndex === index ? { ...item, price: e.target.value } : item
+                              )
+                            )
+                          }
+                          placeholder="e.g. £145"
+                          className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-bold text-red-700 outline-none focus:border-primary"
+                        />
+                      </label>
+
+                      <label className="block">
+                        <span className="block text-[9px] font-extrabold text-slate-500 uppercase tracking-wide mb-1">
+                          Slug / URL Link
+                        </span>
+                        <input
+                          type="text"
+                          value={card.slug || ''}
+                          onChange={(e) =>
+                            setVisaCards(
+                              visaCards.map((item, cardIndex) =>
+                                cardIndex === index ? { ...item, slug: e.target.value } : item
+                              )
+                            )
+                          }
+                          placeholder="e.g. indian-passport"
+                          className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-medium outline-none focus:border-primary"
+                        />
+                      </label>
+
+                      <label className="col-span-2 block">
+                        <span className="block text-[9px] font-extrabold text-slate-500 uppercase tracking-wide mb-1">
+                          SVG / Image URL (Uploaded or External Link)
+                        </span>
+                        <input
+                          type="text"
+                          value={card.flagImage || ''}
+                          onChange={(e) =>
+                            setVisaCards(
+                              visaCards.map((item, cardIndex) =>
+                                cardIndex === index ? { ...item, flagImage: e.target.value } : item
+                              )
+                            )
+                          }
+                          placeholder="Click 'Upload SVG' on left or paste /images_BHT/... URL"
+                          className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-[11px] font-mono outline-none focus:border-primary"
+                        />
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

@@ -14,7 +14,7 @@ export default function Footer({ initialFooterData = {} }: { initialFooterData?:
   }
 
   return (
-    <footer id="footer-place" className="px-5 bg-[#2d2d2d] text-[#bccfc6] py-[70px] pb-[30px] text-[14px] md:text-[16px] [&_a]:text-[#bccfc6] [&_a:hover]:text-white">
+    <footer id="footer-place" className="px-5 bg-primary text-[#bccfc6] py-[70px] pb-[30px] text-[14px] md:text-[16px] [&_a]:text-[#bccfc6] [&_a:hover]:text-white">
       <div className="max-w-[1400px] mx-auto px-5 ">
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-[1.8fr_0.9fr_0.9fr_1.4fr] gap-x-[20px] gap-y-[40px] lg:gap-[40px]">
 
