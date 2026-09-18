@@ -279,7 +279,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any, page
               className="absolute inset-0 bg-[linear-gradient(100deg,#0A1447D9_0%,#0A1447B3_38%,#0A144626_68%)]"
             />
             <div className="hero-pattern"></div>
-            <div className="hero-content">
+            <div className="hero-content" style={{ paddingBottom: "54px" }}>
               <div className="eyebrowht">{heroData.heroEyebrow}</div>
               <h1 dangerouslySetInnerHTML={{ __html: heroData.title }} />
               <p className="lead">{heroData.description}</p>
@@ -446,7 +446,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any, page
                 </form>
               </div>
             </div> */}
-            <div className="max-w-[1080px]">
+            <div className="hero-quote-wrap max-w-[1080px]">
               <div className="relative rounded-3xl shadow-xl bg-primary p-6 md:p-8 max-md:mt-6 -mt-8">
                 <h2 className="text-2xl text-white md:text-3xl font-serif tracking-tight text-center mb-6">
                   Get a free Quote

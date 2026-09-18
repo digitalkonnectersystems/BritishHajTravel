@@ -19,9 +19,21 @@ function formatDate(value: unknown) {
 export default function LatestBlogsSection({ data, blogs, isHomepage = false }: { data?: any; blogs?: any[]; isHomepage?: boolean }) {
   const limit = Number(data?.limit) > 0 ? Number(data.limit) : 6;
   const visibleBlogs = (blogs || []).slice(0, isHomepage ? 3 : limit);
+  const bgImage = (data?.backgroundImage || data?.image || '').trim();
 
   return (
-    <section className="bg-primary py-12 md:py-16">
+    <section
+      className="bg-primary py-12 md:py-16 bg-center bg-cover bg-no-repeat bg-fixed"
+      style={
+        bgImage
+          ? {
+              backgroundImage: `linear-gradient(rgba(2, 14, 67, 0.70), rgba(2, 14, 67, 0.85)), url("${bgImage
+                .replace(/\\/g, '/')
+                .replace(/"/g, '\\"')}")`,
+            }
+          : undefined
+      }
+    >
       <div className="max-w-[1150px] mx-auto px-4">
         <div className="text-center mb-8">
           {data?.eyebrow && <span className="eyebrow block w-fit mx-auto text-center">{data.eyebrow}</span>}
@@ -41,7 +53,7 @@ export default function LatestBlogsSection({ data, blogs, isHomepage = false }: 
               >
                 <div className="relative aspect-[1.75] overflow-hidden bg-slate-100">
                   <Image
-                    src={blog.featuredImage || data?.image || FALLBACK_THUMB}
+                    src={blog.featuredImage || FALLBACK_THUMB}
                     alt={blog.title || 'Blog article'}
                     fill
                     unoptimized
@@ -50,7 +62,7 @@ export default function LatestBlogsSection({ data, blogs, isHomepage = false }: 
                 </div>
                 <div className="flex flex-col flex-1 p-5">
                   {data?.showDate !== false && formatDate(blog.publishedAt || blog.createdAt) && (
-                    <span className="date-display mb-2">
+                    <span className="date-display !text-red mb-2">
                       {formatDate(blog.publishedAt || blog.createdAt)}
                     </span>
                   )}

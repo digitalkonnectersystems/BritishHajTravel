@@ -24,7 +24,7 @@ import FaqSection from '@/components/FaqSection';
 import DestinationsGrid from '@/components/DestinationsGrid';
 import LatestBlogsSection from '@/components/LatestBlogsSection';
 import { RICH_TEXT_PROSE_CLASS } from '@/lib/richTextProseClass';
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 export default function PageSectionsRenderer({ sections, pageData, initialPackageData, initialDestinationData, initialBlogData }: { sections: any[], pageData?: any, initialPackageData?: any, initialDestinationData?: any[], initialBlogData?: any[] }) {
   if (!sections || !Array.isArray(sections)) return null;
 
@@ -423,6 +423,118 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                     </Link>
                   </div>
                 )}
+              </div>
+            </section>
+          );
+        }
+
+        // ── Airlines & Hotels combined two-column section ─────────────────────
+        if (sec.type === "Airlines & Hotels") {
+          let airlineLogos: { src: string; alt: string }[] = (sec.data?.airlineLogos || []).map((l: any) => ({
+            src: l.src || "",
+            alt: l.alt || "",
+          }));
+          let hotelLogos: { src: string; alt: string }[] = (sec.data?.hotelLogos || []).map((l: any) => ({
+            src: l.src || "",
+            alt: l.alt || "",
+          }));
+
+          if (airlineLogos.length === 0) {
+            airlineLogos = [
+              { src: '/img/a-1.png', alt: 'Saudi Airlines' },
+              { src: '/img/a-2.png', alt: 'Emirates' },
+              { src: '/img/a-3.png', alt: 'Qatar Airways' },
+              { src: '/img/a-4.png', alt: 'Turkish Airlines' },
+              { src: '/img/a-5.png', alt: 'Etihad Airways' },
+              { src: '/img/a-6.png', alt: 'EgyptAir' },
+              { src: '/img/a-7.png', alt: 'Royal Jordanian' },
+              { src: '/img/a-8.png', alt: 'Gulf Air' },
+              { src: '/img/a-9.png', alt: 'Air UK' },
+            ];
+          }
+
+          return (
+            <section key={idx} className="py-12 bg-blue-lt">
+              <div className="max-w-[1500px] mx-auto px-5 md:px-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-stretch">
+
+                  {/* ── Left: Airlines only ── */}
+                  <div className="min-w-0 overflow-hidden rounded-3xl bg-white border border-slate-200/80 shadow-sm p-6 md:p-8 flex flex-col">
+                    <div className="text-center flex flex-col mb-6">
+                      {sec.data?.airlineEyebrow && (
+                        <span className="eyebrow mx-auto">
+                          {sec.data.airlineEyebrow}
+                        </span>
+                      )}
+                      <h2 className="section-heading font-serif text-primary font-normal">
+                        {sec.data?.airlineTitle || "Airlines We Sourced Deals From"}
+                      </h2>
+                    </div>
+
+                    <div
+                      className="relative w-full min-w-0 max-w-full overflow-hidden isolate"
+                      style={{ contain: "layout paint" }}
+                    >
+                      {airlineLogos.length > 0 ? (
+                        <MarqueeTrack
+                          type="airline"
+                          images={airlineLogos}
+                          speedMs={sec.data?.airlineSpeedMs || 30000}
+                          direction={sec.data?.airlineDirection || "left"}
+                        />
+                      ) : (
+                        <p className="text-center text-slate-400 text-sm">No airline logos configured yet.</p>
+                      )}
+                    </div>
+
+                    {sec.data?.airlineViewAllSlug && (
+                      <div className="text-center">
+                        <Link href={sec.data.airlineViewAllSlug} className="inline-flex rounded-full bg-red px-5 py-2.5 text-md font-bold text-white hover:text-white transition-colors hover:bg-red-lt mt-7 text-center">
+                          {sec.data.airlineViewAllLabel || "View All Flights"}
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ── Right: Hotels only ── */}
+                  <div className="min-w-0 overflow-hidden rounded-3xl bg-white border border-slate-200/80 shadow-sm p-6 md:p-8 flex flex-col">
+                    <div className="text-center flex flex-col mb-6">
+                      {sec.data?.hotelEyebrow && (
+                        <span className="eyebrow mx-auto">
+                          {sec.data.hotelEyebrow}
+                        </span>
+                      )}
+                      <h2 className="section-heading font-serif text-primary font-normal">
+                        {sec.data?.hotelTitle || "Our Recommended Hotels"}
+                      </h2>
+                    </div>
+
+                    <div
+                      className="relative w-full min-w-0 max-w-full overflow-hidden isolate"
+                      style={{ contain: "layout paint" }}
+                    >
+                      {hotelLogos.length > 0 ? (
+                        <MarqueeTrack
+                          type="hotel"
+                          images={hotelLogos}
+                          speedMs={sec.data?.hotelSpeedMs || 30000}
+                          direction={sec.data?.hotelDirection || "left"}
+                        />
+                      ) : (
+                        <p className="text-center text-slate-400 text-sm">No hotel logos configured yet.</p>
+                      )}
+                    </div>
+
+                    {sec.data?.hotelViewAllSlug && (
+                      <div className="text-center">
+                        <Link href={sec.data.hotelViewAllSlug} className="inline-flex rounded-full bg-red px-5 py-2.5 text-md font-bold text-white hover:text-white transition-colors hover:bg-red-lt mt-7 text-center">
+                          {sec.data.hotelViewAllLabel || "View All Hotels"}
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+
+                </div>
               </div>
             </section>
           );

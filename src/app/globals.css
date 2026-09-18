@@ -17,7 +17,7 @@
   --yellow-light: color-mix(in srgb, var(--red), #ffffff 80%);
 
   --gray: #F5EFE1;
-  --blue-lt: #f6f7ff;
+  --blue-lt: #f3f9ff;
   --paper: #FBF8F1;
   --line: #E4DAC0;
   --light-bg: #F4F6F5;
@@ -225,6 +225,7 @@ h2,
 h3,
 h4 {
   font-family: var(--serif);
+  font-weight: bold;
   line-height: 1.1;
   letter-spacing: .2px;
   /* color: var(--color-primary); */
@@ -434,7 +435,7 @@ h2.section-heading {
 /* --- Marquee Layout Engine --- */
 .marquee-widget {
   width: 100%;
-  padding: 20px 0;
+  padding: 0px 0;
   box-sizing: border-box;
 }
 
@@ -2764,6 +2765,23 @@ select {
   .about_page_why_choose {
     flex-direction: column;
     display: flex !important;
+  }
+
+  /* Homepage hero: stack the quote form below the CTA buttons, inside the banner */
+  .hero-media {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding-bottom: 36px;
+    height: auto;
+  }
+
+  .hero-content {
+    max-width: 100%;
+  }
+
+  .hero-quote-wrap {
+    padding: 0 20px;
   }
 }
 

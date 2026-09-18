@@ -121,6 +121,10 @@ Every section uses this structure in the database:
 - `eyebrow`
 - `title`
 - `image`
+- `videoUrl` (optional — YouTube watch/shorts/live, Vimeo, direct .mp4/.webm, or raw embed URL; turns the image card into a click-to-play inline video player)
+- `videoPoster` (optional — custom thumbnail; falls back to the video's YouTube thumbnail, then `image`)
+- `videoFit` (`cover` default — fills the card with no black borders; `contain` — full frame visible)
+- `badgeTitle`, `badgeSubtitle` (reused as the play-button label when a video is set)
 - `items`: Array (`num`, `title`, `description`)
 
 ### 17. Hajj Packages Grid
