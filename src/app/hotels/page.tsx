@@ -28,6 +28,7 @@ export default async function HotelsPage() {
         bgImage={page?.bannerBgImage || undefined}
         position={page?.bannerPosition || undefined}
         size={page?.bannerSize || undefined}
+        heroSettings={page?.seoSettings}
       />
 
       {!hasHotels && (

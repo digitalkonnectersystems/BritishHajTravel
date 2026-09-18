@@ -78,6 +78,9 @@ export default async function DynamicPage({
         bgImage={page.bannerBgImage || undefined}
         position={page.bannerPosition || undefined}
         size={page.bannerSize || undefined}
+        heroSettings={page.seoSettings}
+        fallbackBgImage={slugPath === "/hajj-packages" ? "/images_BHT/packages/hajj-2026-4-1789469937874.webp" : undefined}
+        localOnly={slugPath === "/hajj-packages"}
       />
 
       {sections.length > 0 ? (

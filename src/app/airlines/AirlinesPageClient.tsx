@@ -74,6 +74,7 @@ export default function AirlinesPageClient({ initialPageData }: { initialPageDat
         bgImage={pageData?.bannerBgImage}
         position={pageData?.bannerPosition}
         size={pageData?.bannerSize}
+        heroSettings={pageData?.seoSettings}
       />
 
       {/* ================= DYNAMIC SECTIONS OR FALLBACK ================= */}

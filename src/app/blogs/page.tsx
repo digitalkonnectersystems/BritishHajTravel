@@ -56,6 +56,7 @@ export default async function BlogsListingPage() {
         bgImage={pageData?.bannerBgImage}
         position={pageData?.bannerPosition}
         size={pageData?.bannerSize}
+        heroSettings={pageData?.seoSettings}
       />
 
       <section className="section-outer bg-blue-lt">

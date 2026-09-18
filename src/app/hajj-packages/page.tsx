@@ -4,6 +4,7 @@ import { getPackagesByType } from "@/actions/packageActions";
 import { getPageBySlug } from "@/actions/pageActions";
 import PageSectionsRenderer from "@/components/PageSectionsRenderer";
 import HajjPackagesSection from "@/components/HajjPackagesSection";
+import PageBanner from "@/components/PageBanner";
 
 // Fallback cards shown only if no Hajj packages exist yet in the database,
 // so the page never renders empty.
@@ -127,16 +128,16 @@ export default async function HajjPackagesPage() {
   return (
     <main>
       <style dangerouslySetInnerHTML={{ __html: 'body { background-color: #fffff !important; }' }} />
-      <section className="hero packages">
-        <div className="wrap">
-          <h1 className="page-header-title">
-            Luxury <span className="text-red">Hajj Packages 2027</span>
-          </h1>
-          <p className="page-header-leadtxt">
-            Luxury Hajj 2027 Packages with 5-Star Hotels, VIP Services &amp; Complete Spiritual Guidance.
-          </p>
-        </div>
-      </section>
+      <PageBanner
+        title={pageData?.bannerTitle || "Luxury <span>Hajj Packages 2027</span>"}
+        description={pageData?.bannerDescription || "Luxury Hajj 2027 Packages with 5-Star Hotels, VIP Services & Complete Spiritual Guidance."}
+        bgImage={pageData?.bannerBgImage}
+        position={pageData?.bannerPosition}
+        size={pageData?.bannerSize}
+        heroSettings={pageData?.seoSettings}
+        fallbackBgImage="/images_BHT/packages/hajj-2026-4-1789469937874.webp"
+        localOnly
+      />
 
       {pageSections.length > 0 ? (
         <PageSectionsRenderer sections={pageSections} pageData={pageData} initialPackageData={{ hajj: liveCards.length > 0 ? hajjPackages : undefined }} />

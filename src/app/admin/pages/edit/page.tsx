@@ -454,6 +454,14 @@ function PageBuilderContent() {
 
   const [seoSettings, setSeoSettings] = useState<SeoSettings>({});
 
+  const [saudiVisaEyebrow, setSaudiVisaEyebrow] = useState('Saudi Visa Services');
+
+  const [saudiVisaFeatures, setSaudiVisaFeatures] = useState([
+    { icon: 'document', first: 'Clear', second: 'Guidance' },
+    { icon: 'people', first: 'Expert', second: 'Support' },
+    { icon: 'shield', first: 'Hassle-Free', second: 'Process' },
+  ]);
+
   const [sections, setSections] = useState<SectionItem[]>([]);
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -643,6 +651,14 @@ function PageBuilderContent() {
               const parsed = typeof p.seoSettings === 'string' ? JSON.parse(p.seoSettings) : p.seoSettings;
 
               setSeoSettings(parsed);
+
+              const savedHero = parsed?.innerHero || parsed?.saudiVisaHero;
+
+              if (savedHero?.eyebrow !== undefined) setSaudiVisaEyebrow(savedHero.eyebrow);
+
+              if (Array.isArray(savedHero?.features) && savedHero.features.length > 0) {
+                setSaudiVisaFeatures(savedHero.features.slice(0, 3));
+              }
 
             } catch (e) { }
 
@@ -1962,7 +1978,11 @@ function PageBuilderContent() {
 
         fd.append('metaDescription', metaDescription);
 
-        fd.append('seoSettings', JSON.stringify(seoSettings));
+        const updatedSeoSettings = slug !== '/' && pageId !== 1
+          ? { ...seoSettings, innerHero: { eyebrow: saudiVisaEyebrow, features: saudiVisaFeatures } }
+          : seoSettings;
+
+        fd.append('seoSettings', JSON.stringify(updatedSeoSettings));
 
         fd.append('bannerBgImage', bannerBgImage);
 
@@ -3740,7 +3760,7 @@ function PageBuilderContent() {
 
             {/* Right Side Compact Real-Time Live Preview Card */}
 
-            <div className="relative rounded-2xl overflow-hidden shadow-md flex flex-col items-center justify-center text-center p-4 text-white min-h-[140px] border border-slate-900/10">
+            <div className="relative rounded-2xl overflow-hidden shadow-md flex flex-col items-start justify-start text-left text-white p-5 md:p-6 min-h-[320px] border border-slate-900/10">
 
               <div
 
@@ -3750,15 +3770,18 @@ function PageBuilderContent() {
 
                   if (el) {
 
-                    const bgUrl = bannerBgImage
+                    const isHajjPage = slug === '/hajj-packages' || slug === '/hajj/packages';
+                    const bgUrl = bannerBgImage && (!isHajjPage || bannerBgImage.startsWith('/images_BHT/') || bannerBgImage.startsWith('/img/'))
 
                       ? bannerBgImage.replace(/"/g, "'")
 
-                      : "https://antiquewhite-stinkbug-399384.hostingersite.com/wp-content/uploads/2026/05/Umrah_packages_202605092201.jpeg";
+                      : isHajjPage
+                        ? '/images_BHT/packages/hajj-2026-4-1789469937874.webp'
+                        : '/images_BHT/banners/hero-banner-1789561198745.webp';
 
-                    el.style.backgroundImage = `linear-gradient(rgba(10, 66, 45, 0.45), rgba(10, 66, 45, 0.45)), url("${bgUrl}")`;
+                    el.style.backgroundImage = `linear-gradient(90deg, rgba(3, 19, 65, 0.98) 0%, rgba(3, 19, 65, 0.88) 42%, rgba(3, 19, 65, 0.2) 100%), url("${bgUrl}")`;
 
-                    el.style.backgroundPosition = bannerPosition || 'center center';
+                    el.style.backgroundPosition = 'right center';
 
                     el.style.backgroundSize = bannerSize || 'cover';
 
@@ -3770,34 +3793,29 @@ function PageBuilderContent() {
 
               />
 
-              <div className="relative z-10 max-w-md px-2">
-
+              <div className="relative z-10 w-full max-w-[640px]">
+                <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-[#173b8e] px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-white shadow-lg">
+                  <span className="text-[11px]">✈</span>
+                  {slug === '/saudi-visa' ? (saudiVisaEyebrow || 'Saudi Visa Services') : (title || 'British Hajj Travel')}
+                </div>
                 <h1
-
-                  className="text-lg md:text-xl font-serif text-white m-0 font-normal tracking-wide [&>span]:text-red [&>em]:text-red [&>em]:not-italic"
-
-
-
-                  dangerouslySetInnerHTML={{ __html: bannerTitle || title || 'Page Title' }}
-
+                  className="text-xl md:text-3xl font-serif text-white m-0 font-normal tracking-tight leading-tight [&>span]:text-red [&>em]:text-red [&>em]:not-italic"
+                    dangerouslySetInnerHTML={{ __html: bannerTitle || title || 'Page Title' }}
                 />
-
-                {bannerDescription && (
-
-                  <p
-
-                    className="text-[11px] opacity-90 max-w-sm m-0 mt-1 font-light leading-snug text-white/90"
-
-
-
-                  >
-
-                    {bannerDescription}
-
-                  </p>
-
-                )}
-
+                <p className="text-[10px] md:text-xs text-white/85 leading-relaxed font-light mt-2 max-w-[520px]">
+                  {bannerDescription || 'Page header description'}
+                </p>
+                <div className="mt-4 flex items-center gap-3 max-w-[560px]">
+                  {saudiVisaFeatures.map((feature, index) => (
+                    <div key={index} className="flex min-w-0 items-center gap-1.5 text-[9px] leading-tight text-white/90">
+                      {index > 0 && <span className="mr-1 h-7 w-px shrink-0 bg-white/30" />}
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#12357f] text-[12px] text-white">
+                        {feature.icon === 'shield' ? '✓' : feature.icon === 'people' ? '♟' : '▤'}
+                      </span>
+                      <span>{feature.first || ''}<br />{feature.second || ''}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
 
             </div>
@@ -3981,6 +3999,58 @@ function PageBuilderContent() {
             </div>
 
           </div>
+
+          {(
+            <div className="border-t border-slate-100 pt-4">
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <h4 className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider m-0">INNER PAGE HERO SUPPORT CONTENT</h4>
+                  <p className="text-[11px] text-slate-400 mt-1 mb-0">Edit the badge and three trust points shown below the hero copy.</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                <div>
+                  <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">BADGE LABEL</label>
+                  <input
+                    type="text"
+                    value={saudiVisaEyebrow}
+                    onChange={(e) => setSaudiVisaEyebrow(e.target.value)}
+                    className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 bg-slate-50 text-xs outline-none focus:border-primary"
+                  />
+                </div>
+
+                {saudiVisaFeatures.map((feature, index) => (
+                  <div key={index} className="rounded-xl border border-slate-200 bg-slate-50/70 p-3">
+                    <div className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-2">FEATURE {index + 1}</div>
+                    <select
+                      value={feature.icon || 'document'}
+                      onChange={(e) => setSaudiVisaFeatures((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, icon: e.target.value } : item))}
+                      className="w-full px-2 py-1.5 rounded-lg border border-slate-300 bg-white text-xs outline-none focus:border-primary mb-2"
+                    >
+                      <option value="document">Document icon</option>
+                      <option value="people">People icon</option>
+                      <option value="shield">Shield icon</option>
+                    </select>
+                    <input
+                      type="text"
+                      value={feature.first || ''}
+                      onChange={(e) => setSaudiVisaFeatures((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, first: e.target.value } : item))}
+                      placeholder="First line"
+                      className="w-full px-2 py-1.5 rounded-lg border border-slate-300 bg-white text-xs outline-none focus:border-primary mb-2"
+                    />
+                    <input
+                      type="text"
+                      value={feature.second || ''}
+                      onChange={(e) => setSaudiVisaFeatures((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, second: e.target.value } : item))}
+                      placeholder="Second line"
+                      className="w-full px-2 py-1.5 rounded-lg border border-slate-300 bg-white text-xs outline-none focus:border-primary"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
         </div>
 

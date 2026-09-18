@@ -68,6 +68,9 @@ function VisaProcessStepsSection({ data }: { data?: any }) {
 
 export default async function SaudiVisaPage() {
   const pageData = await getPageBySlug("/saudi-visa");
+  const heroSettings = pageData?.seoSettings
+    ? (typeof pageData.seoSettings === 'string' ? JSON.parse(pageData.seoSettings) : pageData.seoSettings)?.saudiVisaHero
+    : null;
   let sections: any[] = [];
   
   if (pageData?.sections) {
@@ -97,6 +100,10 @@ export default async function SaudiVisaPage() {
         bgImage={pageData?.bannerBgImage}
         position={pageData?.bannerPosition}
         size={pageData?.bannerSize}
+        heroSettings={pageData?.seoSettings}
+        variant="saudiVisa"
+        eyebrow={heroSettings?.eyebrow}
+        features={heroSettings?.features}
       />
 
       {/* ================= DYNAMIC OR FALLBACK SECTIONS ================= */}

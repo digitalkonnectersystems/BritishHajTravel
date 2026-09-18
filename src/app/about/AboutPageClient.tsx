@@ -140,6 +140,7 @@ export default function AboutPageClient({ initialPageData }: { initialPageData?:
         bgImage={pageData?.bannerBgImage}
         position={pageData?.bannerPosition}
         size={pageData?.bannerSize}
+        heroSettings={pageData?.seoSettings}
       />
 
       {/* ================= RENDER DYNAMIC SECTIONS ================= */}

@@ -22,7 +22,7 @@ export default async function DestinationsPage() {
 
   return (
     <main className="bg-blue-lt min-h-screen">
-      <PageBanner title={pageData?.bannerTitle || 'Destinations'} description={pageData?.bannerDescription || ''} bgImage={pageData?.bannerBgImage || undefined} position={pageData?.bannerPosition || undefined} size={pageData?.bannerSize || undefined} />
+      <PageBanner title={pageData?.bannerTitle || 'Destinations'} description={pageData?.bannerDescription || ''} bgImage={pageData?.bannerBgImage || undefined} position={pageData?.bannerPosition || undefined} size={pageData?.bannerSize || undefined} heroSettings={pageData?.seoSettings} />
       <DestinationsPageSection
         data={{
           eyebrow: 'DESTINATIONS',

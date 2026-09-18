@@ -171,6 +171,9 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
         bgImage={pageData?.bannerBgImage}
         position={pageData?.bannerPosition}
         size={pageData?.bannerSize}
+        heroSettings={pageData?.seoSettings}
+        fallbackBgImage="/images_BHT/packages/hajj-2026-4-1789469937874.webp"
+        localOnly
       />
 
       {/* ================= 4 FLOATING ACCREDITATION BADGES ================= */}

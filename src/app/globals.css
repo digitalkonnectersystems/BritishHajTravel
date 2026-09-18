@@ -2894,6 +2894,32 @@ select {
   @apply text-sm md:text-[1.2rem] opacity-90 max-w-6xl mx-auto font-light leading-relaxed text-white/90;
 }
 
+.saudi-visa-banner-title {
+  max-width: 920px;
+  text-align: left;
+  font-size: clamp(2.35rem, 4.2vw, 4rem);
+  line-height: 1.16;
+  letter-spacing: -0.02em;
+}
+
+.saudi-visa-banner-copy {
+  max-width: 900px;
+  margin-left: 0;
+  text-align: left;
+  font-size: clamp(1rem, 1.45vw, 1.25rem);
+  line-height: 1.62;
+}
+
+@media (max-width: 640px) {
+  .saudi-visa-banner-title {
+    font-size: 2.25rem;
+  }
+
+  .saudi-visa-banner-copy {
+    font-size: 1rem;
+  }
+}
+
 /* text editor headings css */
 .prose h1 {
   /* margin-top: 1.5em; */

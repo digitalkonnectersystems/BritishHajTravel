@@ -128,6 +128,7 @@ export default function UmrahPackagesPageClient({ initialPageData, packages = []
         bgImage={pageData?.bannerBgImage}
         position={pageData?.bannerPosition}
         size={pageData?.bannerSize}
+        heroSettings={pageData?.seoSettings}
       />
 
       {/* ================= 4 FLOATING ACCREDITATION BADGES ================= */}

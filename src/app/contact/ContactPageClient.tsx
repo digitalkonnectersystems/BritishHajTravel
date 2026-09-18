@@ -468,6 +468,7 @@ export default function ContactPageClient({ initialPageData, initialFormConfig }
         bgImage={pageData?.bannerBgImage}
         position={pageData?.bannerPosition}
         size={pageData?.bannerSize}
+        heroSettings={pageData?.seoSettings}
       />
 
       {/* ================= ALWAYS RELIABLE SECTIONS ================= */}
