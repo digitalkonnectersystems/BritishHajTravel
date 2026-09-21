@@ -405,6 +405,13 @@ export default function AdminSettingsPage() {
       { id: '5', label: 'Phone Number', type: 'tel', placeholder: '+1 (555) 000-0000', required: true },
       { id: '6', label: 'Consultation Details', type: 'textarea', placeholder: 'Describe your visa needs...', required: false },
     ],
+    umrahVisaOrder: [
+      { id: 'name', label: 'Name', type: 'text', placeholder: 'Enter your full name', required: true },
+      { id: 'email', label: 'Email', type: 'email', placeholder: 'Enter your email address', required: true },
+      { id: 'mobile', label: 'Mobile Number', type: 'tel', placeholder: 'Enter your mobile number', required: true },
+      { id: 'quantity', label: 'Quantity', type: 'number', placeholder: 'Enter number of travellers', required: true },
+      { id: 'travelDate', label: 'Travel Date', type: 'date', placeholder: 'mm/dd/yyyy', required: true },
+    ],
     flightInquiry: [
       { id: '1', label: 'Full Name (As per Passport)', type: 'text', placeholder: 'Full Name', required: true },
       { id: '2', label: 'Email Address', type: 'email', placeholder: 'example@email.com', required: true },
@@ -472,7 +479,7 @@ export default function AdminSettingsPage() {
     formRoutingRules: [
       { id: 'rule_1', forms: ['quoteForm', 'hajjCustomizeForm', 'contact', 'dropUsMessage'], sendTo: 'saudivisa@britishhajjtravel.com', cc: '', bcc: '' },
       { id: 'rule_2', forms: ['packageDetailForm', 'hajjPackageDetailForm', 'packageInquiry', 'blogSidebarForm'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
-      { id: 'rule_3', forms: ['visaConsultation'], sendTo: 'visas@britishhajjtravel.com', cc: '', bcc: '' },
+      { id: 'rule_3', forms: ['visaConsultation', 'umrahVisaOrder'], sendTo: 'visas@britishhajjtravel.com', cc: '', bcc: '' },
       { id: 'rule_4', forms: ['flightInquiry'], sendTo: 'flights@britishhajjtravel.com', cc: '', bcc: '' },
     ],
   });
@@ -495,6 +502,7 @@ export default function AdminSettingsPage() {
     contact: { title: 'Contact Page — Enquiry Form', subtitle: 'Primary contact form on the /contact page for general enquiries & support.', recipientEmail: 'saudivisa@britishhajjtravel.com', successMessage: 'Thank you! Your message has been received.', enabled: true, buttonText: 'Send Message' },
     packageInquiry: { title: 'Pilgrimage Package — Custom Inquiry Form', subtitle: 'Dynamic inquiry form placed on Umrah/Hajj package listing pages via Page Builder.', recipientEmail: 'booking@britishhajjtravel.com', successMessage: 'Package inquiry submitted successfully!', enabled: true, buttonText: 'Submit Package Inquiry' },
     visaConsultation: { title: 'Visa Services — Consultation Form', subtitle: 'Saudi eVisa & Pilgrimage visa consultation form placed via Page Builder on visa pages.', recipientEmail: 'visas@britishhajjtravel.com', successMessage: 'Visa application submitted!', enabled: true, buttonText: 'Submit Visa Request' },
+    umrahVisaOrder: { title: 'Umrah Visa Order Form', subtitle: 'Five-field Umrah Visa application form shown on the Saudi Visa page.', recipientEmail: 'visas@britishhajjtravel.com', successMessage: 'Umrah Visa request submitted! We will contact you shortly.', enabled: true, buttonText: 'Request Umrah Visa' },
     flightInquiry: { title: 'Flights Page — Booking Inquiry Form', subtitle: 'Flight quote & booking assistance form on the flights page.', recipientEmail: 'flights@britishhajjtravel.com', successMessage: 'Flight request received!', enabled: true, buttonText: 'Request Booking' },
     dropUsMessage: { title: 'General — Drop Us A Message Form', subtitle: 'General purpose contact form used across multiple pages via Page Builder.', recipientEmail: 'saudivisa@britishhajjtravel.com', successMessage: 'Thank you! Your message has been received.', enabled: true, buttonText: 'Send Enquiry' },
     blogSidebarForm: { title: 'Blog Detail Page — Sidebar Booking Form', subtitle: 'Sticky sidebar booking widget shown on every blog/article detail page.', recipientEmail: 'booking@britishhajjtravel.com', successMessage: 'Your booking inquiry has been submitted.', enabled: true, buttonText: 'Book Your Trip' },
@@ -4060,6 +4068,7 @@ export default function AdminSettingsPage() {
                         contact: { title: 'Contact Page — Enquiry Form', icon: '💬', desc: 'Primary contact form on the /contact page for general enquiries.' },
                         packageInquiry: { title: 'Pilgrimage Package — Custom Inquiry Form', icon: '🕋', desc: 'Dynamic inquiry form on Umrah/Hajj package listing pages via Page Builder.' },
                         visaConsultation: { title: 'Visa Services — Consultation Form', icon: '📜', desc: 'Saudi eVisa & Pilgrimage visa consultation form via Page Builder.' },
+                        umrahVisaOrder: { title: 'Umrah Visa Order Form', icon: '🕋', desc: 'Five-field Umrah Visa order form shown on the Saudi Visa page.' },
                         flightInquiry: { title: 'Flights Page — Booking Inquiry Form', icon: '✈️', desc: 'Flight quote & booking assistance form on the flights page.' },
                         dropUsMessage: { title: 'General — Drop Us A Message Form', icon: '📬', desc: 'General purpose contact form used across multiple pages via Page Builder.' },
                         blogSidebarForm: { title: 'Blog Detail Page — Sidebar Booking Form', icon: '📝', desc: 'Sticky sidebar booking widget shown on every blog/article detail page.' },
@@ -4096,7 +4105,7 @@ export default function AdminSettingsPage() {
                                           formKey === 'hajjPackageDetailForm' ? 'package_booking_enquiries' :
                                             formKey === 'contact' ? 'contact_enquiries' :
                                               formKey === 'dropUsMessage' ? 'contact_enquiries' :
-                                                formKey === 'visaConsultation' ? 'visa_enquiries' :
+                                                (formKey === 'visaConsultation' || formKey === 'umrahVisaOrder') ? 'visa_enquiries' :
                                                   formKey === 'flightInquiry' ? 'flight_enquiries' :
                                                     formKey === 'hajjCustomizeForm' ? 'quote_enquiries' :
                                                       formKey === 'blogSidebarForm' ? 'package_booking_enquiries' : 'enquiries'
@@ -4428,6 +4437,7 @@ export default function AdminSettingsPage() {
                         contact: { title: 'Contact Page — Enquiry Form', icon: '💬' },
                         packageInquiry: { title: 'Pilgrimage Package — Custom Inquiry Form', icon: '🕋' },
                         visaConsultation: { title: 'Visa Services — Consultation Form', icon: '📜' },
+                        umrahVisaOrder: { title: 'Umrah Visa Order Form', icon: '🕋' },
                         flightInquiry: { title: 'Flights Page — Booking Inquiry Form', icon: '✈️' },
                         dropUsMessage: { title: 'General — Drop Us A Message Form', icon: '📬' },
                         blogSidebarForm: { title: 'Blog Detail Page — Sidebar Booking Form', icon: '📝' },

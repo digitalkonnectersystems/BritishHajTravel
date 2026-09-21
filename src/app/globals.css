@@ -2990,3 +2990,90 @@ input:-webkit-autofill:active {
 hr {
   margin-bottom: 20px;
 }
+
+.umrah-visa-application-section {
+  background: #f4f8fc;
+  padding: 42px 20px 56px;
+}
+
+.umrah-visa-application-grid {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(320px, .95fr);
+  gap: 18px;
+}
+
+.umrah-visa-requirements-panel,
+.umrah-visa-form-panel {
+  background: #fff;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 8px 24px rgba(3, 31, 76, .06);
+}
+
+.umrah-visa-section-heading h2 {
+  color: #e7192b;
+  font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+  margin: 0 0 3px;
+  font-weight: 800;
+}
+
+.umrah-visa-section-heading p { color: #526176; font-size: .78rem; margin: 0 0 10px; }
+.umrah-visa-requirements-list { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; }
+.umrah-visa-requirement { display: flex; align-items: center; gap: 14px; background: #f2f6fb; border-radius: 6px; padding: 8px 12px; min-height: 52px; }
+.umrah-visa-requirement-icon { width: 28px; color: #174ca8; font-size: 1.6rem; text-align: center; flex: 0 0 28px; }
+.umrah-visa-requirement strong, .umrah-visa-requirement span { display: block; }
+.umrah-visa-requirement strong { color: #253a5b; font-size: 1rem; }
+.umrah-visa-requirement span { color: #536174; font-size: .875rem; line-height: 1.3; }
+.umrah-visa-note { border-radius: 6px; padding: 10px 14px; margin-top: 7px; font-size: 1rem; }
+.umrah-visa-note strong, .umrah-visa-note span { display: block; }
+.umrah-visa-note ul { margin: 4px 0 0; padding-left: 18px; color: #536174; line-height: 1.45; }
+.umrah-visa-note-important { background: #f1f5fa; color: #203b68; }
+.umrah-visa-note-red { background: #fff0f1; color: #e7192b; }
+.umrah-visa-note-green { background: #effbef; color: #159447; }
+.umrah-visa-note-red span, .umrah-visa-note-green span { color: #536174; margin-top: 2px; }
+.umrah-visa-form-panel { background: #fff; }
+.umrah-visa-form-panel > div:first-child { background: #073574; border-radius: 8px;
+  /* padding: 14px; */
+}
+/* .umrah-visa-form-panel .form-heading, .umrah-visa-form-panel h2 { color: #fff; } */
+.umrah-visa-help { margin-top: 8px; padding: 14px; background: #f7fbff; border-radius: 8px; color: #23436e; }
+.umrah-visa-help strong, .umrah-visa-help span, .umrah-visa-help a { display: block; }
+.umrah-visa-help strong { font-size: 1rem; }
+.umrah-visa-help span { color: #536174; font-size: .76rem; margin: 4px 0; }
+.umrah-visa-help a { color: #1556bf; font-size: .75rem; font-weight: 700; }
+
+@media (max-width: 800px) {
+  .umrah-visa-application-grid { grid-template-columns: 1fr; }
+}
+
+.umrah-visa-services-overview { background: #f4f8fc; padding: 18px 20px 42px; }
+.umrah-visa-services-overview-inner { max-width: 1400px; margin: 0 auto; }
+.umrah-visa-overview-content { background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 8px 24px rgba(3, 31, 76, .06); }
+.umrah-visa-overview-content h2 { margin: 0; padding: 14px; color: #fff; background: #064180; font-size: clamp(1rem, 2vw, 1.35rem); text-align: center; font-weight: 800; }
+.umrah-visa-overview-subtitle { margin: 0; padding: 4px 12px 8px; color: #315276; text-align: center; font-size: .875rem; }
+.umrah-visa-overview-table { border: 1px solid #d9e1e9; overflow: hidden; margin:0 24px 24px;  }
+.umrah-visa-overview-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); border-top: 1px solid #d9e1e9; font-size: .875rem; line-height: 1.8; }
+.umrah-visa-overview-row:first-child { border-top: 0; }
+.umrah-visa-overview-row > div { padding: 6px 9px; color: #536174; }
+.umrah-visa-overview-row > div:first-child { color: #263c5b; font-weight: 700; border-right: 1px solid #d9e1e9; }
+.umrah-visa-overview-row:nth-child(even) { background: #f1f5f8; }
+@media (max-width: 800px) { .umrah-visa-overview-row { grid-template-columns: 1fr; } .umrah-visa-overview-row > div:first-child { border-right: 0; border-bottom: 1px solid #d9e1e9; } }
+
+.umrah-visa-document-guide { background: #f4f8fc; padding: 34px 20px 18px; }
+.umrah-visa-document-guide-inner { max-width: 1400px; margin: 0 auto; }
+.umrah-visa-document-guide h2 { margin: 0; color: #102f57; text-align: center; font-size: clamp(1.35rem, 3vw, 2rem); font-weight: 800; }
+.umrah-visa-document-guide h2 span { color: #e7192b; }
+.umrah-visa-document-guide > div > p { margin: 4px 0 18px; color: #536174; text-align: center; font-size: 1rem; }
+.umrah-visa-document-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.umrah-visa-document-card { background: #fff; border-radius: 10px; padding: 10px; box-shadow: 0 7px 20px rgba(3, 31, 76, .06); }
+.umrah-visa-document-image { height: 190px; position: relative; border-radius: 7px; background: #f3f7fb; overflow: hidden; }
+.umrah-visa-document-card h3 { margin: 9px 0 5px; font-size: .9rem; text-align: center; }
+.umrah-visa-document-card.is-good h3 { color: #159447; }
+.umrah-visa-document-card.is-bad h3 { color: #e7192b; }
+.umrah-visa-document-card ul { margin: 0; padding-left: 18px; color: #536174; font-size: .875rem; line-height: 1.45; }
+.umrah-visa-document-card.is-good li::marker { color: #159447; }
+.umrah-visa-document-card.is-bad li::marker { color: #e7192b; }
+@media (max-width: 900px) { .umrah-visa-document-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .umrah-visa-document-cards { grid-template-columns: 1fr; } }

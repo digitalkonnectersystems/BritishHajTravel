@@ -23,6 +23,9 @@ interface DynamicSiteFormProps {
   forceNoPadding?: boolean;
   cardContainer?: boolean;
   className?: string;
+  fields?: any[];
+  submitLabel?: string;
+  preferFormConfig?: boolean;
 }
 
 // ── Dropdown options keyed by field label (case-insensitive partial match) ──
@@ -63,6 +66,9 @@ export default function DynamicSiteForm({
   forceNoPadding,
   cardContainer = false,
   className = "",
+  fields: fieldsOverride,
+  submitLabel,
+  preferFormConfig = false,
 }: DynamicSiteFormProps) {
   const [mounted, setMounted] = useState(false);
   const [fieldsList, setFieldsList] = useState<any[]>([]);
@@ -94,7 +100,12 @@ export default function DynamicSiteForm({
         const settings = await getFormsSettings();
         if (settings) {
           // Extract fields list
-          if (settings.formFieldsState && settings.formFieldsState[formKey]) {
+          if (fieldsOverride?.length && !preferFormConfig) {
+            setFieldsList(fieldsOverride);
+            const initialData: Record<string, string> = {};
+            fieldsOverride.forEach((f: any) => { initialData[f.id] = ""; });
+            setFormData(initialData);
+          } else if (settings.formFieldsState && settings.formFieldsState[formKey]) {
             setFieldsList(settings.formFieldsState[formKey]);
             const initialData: Record<string, string> = {};
             settings.formFieldsState[formKey].forEach((f: any) => {
@@ -123,7 +134,7 @@ export default function DynamicSiteForm({
       }
     };
     fetchSettings();
-  }, [formKey]);
+  }, [formKey, fieldsOverride, preferFormConfig]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -170,6 +181,8 @@ export default function DynamicSiteForm({
       const fullName = getVal(["1", "passenger_name", "full_name", "fullName", "name"]);
       const email = getVal(["2", "email", "email_address"]);
       const phone = getVal(["3", "phone", "contact_phone", "mobile"]);
+      const quantity = getVal(["quantity", "travelersCount", "passengers", "adults"], "1");
+      const travelDate = getVal(["travelDate", "travel_date", "departureDate", "travel date"]);
       const packageType = getVal(["package_type", "packageType", "trip_type"]);
       const message = getVal(["11", "message", "special_request", "details"]);
       const website = getVal(["website", "url"]);
@@ -213,14 +226,14 @@ export default function DynamicSiteForm({
           infants: parseNumberSafe(getVal(["infants"], "0"), 0),
           startDate: getVal(["departureDate", "travel_date", "start_date"]),
         });
-      } else if (formKey === "visaConsultation") {
+      } else if (formKey === "visaConsultation" || formKey === "umrahVisaOrder") {
         res = await submitVisaEnquiryAction({
           fullName,
           email,
           phone,
-          travelersCount: parseNumberSafe(getVal(["travelersCount", "passengers", "adults"], "1"), 1),
+          travelersCount: parseNumberSafe(quantity, 1),
           nationality: getVal(["nationality"], "British"),
-          message,
+          message: [message, travelDate ? `Travel date: ${travelDate}` : ""].filter(Boolean).join("\n"),
         });
       } else if (formKey === "contact" || formKey === "dropUsMessage") {
         res = await submitContactEnquiryAction({
@@ -275,8 +288,8 @@ export default function DynamicSiteForm({
   const finalBgColor = bgColor === "transparent" || !bgColor ? "transparent" : bgColor;
   const finalMaxWidth = maxWidth || "1280px";
 
-  const displayTitle = title || formConfig?.title || "Enquiry Form";
-  const displayDesc = description || formConfig?.subtitle || "Please fill in your details below.";
+  const displayTitle = (preferFormConfig && formConfig?.title) || title || formConfig?.title || "Enquiry Form";
+  const displayDesc = (preferFormConfig && formConfig?.subtitle) || description || formConfig?.subtitle || "Please fill in your details below.";
 
   // Separate message/richtext field out for full-width rendering below grid
   const mainFields = fieldsList.filter((f) => f.type !== "richtext" && f.type !== "textarea");
@@ -290,7 +303,7 @@ export default function DynamicSiteForm({
             {eyebrow}
           </div>
         )}
-        <h2 className="text-3xl md:text-4xl font-extrabold text-primary mb-4 uppercase">
+        <h2 className="text-2xl md:text-3xl font-extrabold text-primary mb-4 uppercase">
           {displayTitle}
         </h2>
         <p className="text-slate-700 font-sans text-sm max-w-2xl mx-auto uppercase tracking-wider">
@@ -526,7 +539,7 @@ export default function DynamicSiteForm({
         >
           {isSubmitting
             ? "Submitting Request..."
-            : formConfig?.buttonText || "Submit Request"}
+            : (preferFormConfig ? formConfig?.buttonText : submitLabel) || formConfig?.buttonText || "Submit Request"}
         </button>
       </form>
     </>
@@ -544,7 +557,7 @@ export default function DynamicSiteForm({
 
   return (
     <div style={{ backgroundColor: finalBgColor }} className={`w-full bg-white ${className}`}>
-      <div style={{ maxWidth: finalMaxWidth }} className={`mx-auto px-4 ${forceNoPadding ? "py-8" : "py-10"}`}>
+      <div style={{ maxWidth: finalMaxWidth }} className={`mx-auto px-4 ${forceNoPadding ? "pt-4 pb-8" : "py-10"}`}>
         {formInnerContent}
       </div>
     </div>

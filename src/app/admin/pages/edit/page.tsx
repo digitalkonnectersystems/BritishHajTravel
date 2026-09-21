@@ -192,6 +192,11 @@ const SECTION_CATALOG: SectionCategory[] = [
 
     items: [
 
+      { type: 'Umrah Visa Requirements', description: 'Editable requirements list, notes, and notices for the Umrah Visa page.', pages: ['Saudi Visa'] },
+      { type: 'Umrah Visa Order Form', description: 'Editable Umrah Visa order form and help panel.', pages: ['Saudi Visa'] },
+      { type: 'Umrah Visa Services Overview', description: 'Editable Umrah visa service comparison table and document image.', pages: ['Saudi Visa'] },
+      { type: 'Umrah Visa Document Guide', description: 'Editable passport/document correct-format guide with four examples.', pages: ['Saudi Visa'] },
+
       { type: 'Visa Process Steps', description: '3-step visual process block (Apply → Review → Confirmed) for visa applicants.', pages: ['Saudi Visa'] },
 
     ],
@@ -338,6 +343,37 @@ const DEFAULT_HOMEPAGE_VISA_CARDS = [
 
   { country: 'ETA. Saudi Visa', passportLabel: '', price: '£29', flag: '🇸🇦', flagImage: '', slug: 'eta-saudi-visa' },
 
+];
+
+const DEFAULT_UMRAH_VISA_FORM_FIELDS = [
+  { id: 'name', label: 'Name', type: 'text', placeholder: 'Enter your full name', required: true },
+  { id: 'email', label: 'Email', type: 'email', placeholder: 'Enter your email address', required: true },
+  { id: 'mobile', label: 'Mobile Number', type: 'tel', placeholder: 'Enter your mobile number', required: true },
+  { id: 'quantity', label: 'Quantity', type: 'number', placeholder: 'Enter number of travellers', required: true },
+  { id: 'travelDate', label: 'Travel Date', type: 'date', placeholder: 'mm/dd/yyyy', required: true },
+];
+
+const UMRAH_VISA_ICON_OPTIONS = [
+  'FileText', 'Image', 'Contact', 'CalendarDays', 'Fingerprint', 'Smartphone',
+  'Info', 'Zap', 'MessageCircle', 'ShieldCheck', 'UserRound', 'Plane',
+  'MapPin', 'Clock', 'CreditCard', 'CheckCircle', 'ClipboardList', 'Headphones',
+  'Globe', 'BookOpen', 'Building2', 'BadgeCheck', 'HeartHandshake', 'FileCheck2',
+];
+
+const DEFAULT_UMRAH_VISA_REQUIREMENTS = [
+  { icon: 'FileText', title: 'All Nationality Passport Holders', description: 'Passport copy in PDF format.' },
+  { icon: 'Image', title: 'Photo', description: 'Passport size photo with white background (1).' },
+  { icon: 'Contact', title: 'Non UK-British Passport Holders', description: 'UK Visa BRP card front page required (Biometric UK Residence Permit).' },
+  { icon: 'CalendarDays', title: 'Passport Validity', description: 'Your passport must be valid for at least 7 months from the date of departure.' },
+  { icon: 'Fingerprint', title: 'Saudi Biometric Application', description: 'Fingerprints confirmation is compulsory for all nationalities (including British-UK passport holders).' },
+  { icon: 'Smartphone', title: 'Mobile Application', description: 'Both iOS users and Android users can use this application.' },
+];
+
+const DEFAULT_UMRAH_VISA_DOCUMENT_CARDS = [
+  { image: '/img/saudi-visa-2.webp', tone: 'good', title: 'Good Example', bullets: ['Shows all 4 corners', 'All details are fully legible', 'Passport is signed'] },
+  { image: '/img/saudi-visa-2.webp', tone: 'bad', title: 'Photo is Cut Off', bullets: ["A portion of your passport isn't visible."] },
+  { image: '/img/saudi-visa-2.webp', tone: 'bad', title: 'Missing Signature', bullets: ['Passport is not signed.', "If your signature is on a separate page, make sure it's in the photo."] },
+  { image: '/img/saudi-visa-2.webp', tone: 'bad', title: 'Text is Hard to Read', bullets: ['Light reflections', 'Shadows', 'Blurry text', 'Please take your photo in a well-lit area.'] },
 ];
 
 
@@ -648,17 +684,13 @@ function PageBuilderContent() {
 
             try {
 
-              const parsed = typeof p.seoSettings === 'string' ? JSON.parse(p.seoSettings) : p.seoSettings;
-
-              setSeoSettings(parsed);
-
-              const savedHero = parsed?.innerHero || parsed?.saudiVisaHero;
-
-              if (savedHero?.eyebrow !== undefined) setSaudiVisaEyebrow(savedHero.eyebrow);
-
-              if (Array.isArray(savedHero?.features) && savedHero.features.length > 0) {
-                setSaudiVisaFeatures(savedHero.features.slice(0, 3));
-              }
+                const parsed = typeof p.seoSettings === 'string' ? JSON.parse(p.seoSettings) : p.seoSettings;
+                setSeoSettings(parsed);
+                const savedHero = parsed?.innerHero || parsed?.saudiVisaHero;
+                if (savedHero?.eyebrow !== undefined) setSaudiVisaEyebrow(savedHero.eyebrow);
+                if (Array.isArray(savedHero?.features) && savedHero.features.length > 0) {
+                  setSaudiVisaFeatures(savedHero.features.slice(0, 3));
+                }
 
             } catch (e) { }
 
@@ -674,7 +706,30 @@ function PageBuilderContent() {
 
               if (Array.isArray(parsed) && parsed.length > 0) {
 
-                setSections(parsed);
+                const loadedSections = [...parsed];
+                const isSaudiVisaPage = p.slug === '/saudi-visa' || pageId === 5;
+                  if (isSaudiVisaPage) {
+                  const combinedSection = loadedSections.find((section: any) => section.type === 'Umrah Visa Application');
+                  if (combinedSection) {
+                    const combinedIndex = loadedSections.indexOf(combinedSection);
+                    loadedSections.splice(combinedIndex, 1,
+                      { ...combinedSection, id: 'sv-requirements-1', type: 'Umrah Visa Requirements', title: 'Umrah Visa Requirements', data: combinedSection.data || {} },
+                      { ...combinedSection, id: 'sv-order-form-1', type: 'Umrah Visa Order Form', title: 'Umrah Visa Order Form', data: combinedSection.data || {} },
+                    );
+                  } else {
+                    if (!loadedSections.some((section: any) => section.type === 'Umrah Visa Requirements')) loadedSections.unshift({ id: 'sv-requirements-1', type: 'Umrah Visa Requirements', title: 'Umrah Visa Requirements', data: { title: 'Requirements for Umrah Visa Application' } });
+                    if (!loadedSections.some((section: any) => section.type === 'Umrah Visa Order Form')) loadedSections.splice(1, 0, { id: 'sv-order-form-1', type: 'Umrah Visa Order Form', title: 'Umrah Visa Order Form', data: { formTitle: 'Umrah Visa Order Form', formDescription: 'Please fill in your information to order your Umrah Visa', formKey: 'umrahVisaOrder', submitLabel: 'Request Umrah Visa' } });
+                    if (!loadedSections.some((section: any) => section.type === 'Umrah Visa Services Overview')) loadedSections.splice(2, 0, { id: 'sv-overview-1', type: 'Umrah Visa Services Overview', title: 'Umrah Visa Services Overview', data: {} });
+                  }
+                  if (!loadedSections.some((section: any) => section.type === 'Umrah Visa Services Overview')) {
+                    loadedSections.splice(2, 0, { id: 'sv-overview-1', type: 'Umrah Visa Services Overview', title: 'Umrah Visa Services Overview', data: {} });
+                  }
+                  if (!loadedSections.some((section: any) => section.type === 'Umrah Visa Document Guide')) {
+                    loadedSections.splice(2, 0, { id: 'sv-document-guide-1', type: 'Umrah Visa Document Guide', title: 'Document / Passport Correct Format', data: {} });
+                  }
+                }
+
+                setSections(loadedSections);
 
                 const heroSec = parsed.find((s: any) => s.type === 'Homepage Hero Banner' || s.type === 'Hero Slider');
 
@@ -741,43 +796,36 @@ function PageBuilderContent() {
                 setSections([
 
                   {
-
                     id: 'sv-1',
-
-                    type: 'Visa Solutions',
-
-                    title: 'Saudi Visa Solutions',
-
+                    type: 'Umrah Visa Requirements',
+                    title: 'Umrah Visa Requirements',
                     data: {
-
-                      eyebrow: 'EXPLORE OUR',
-
-                      title: 'Saudi Visa Solutions'
-
+                      title: 'Requirements for Umrah Visa Application',
                     }
-
                   },
-
                   {
-
                     id: 'sv-2',
-
-                    type: 'Visa Process Steps',
-
-                    title: 'Saudi Visa Process Steps',
-
+                    type: 'Umrah Visa Order Form',
+                    title: 'Umrah Visa Order Form',
                     data: {
-
-                      eyebrow: 'IN 3 EASY STEPS',
-
-                      title: 'Get Your Saudi Visa',
-
-                      email: 'saudivisa@britishhajjtravel.com',
-
-                      phone: '+1 905-624-8344'
-
+                      formTitle: 'Umrah Visa Order Form',
+                      formDescription: 'Please fill in your information to order your Umrah Visa',
+                      formKey: 'umrahVisaOrder',
+                      submitLabel: 'Request Umrah Visa',
+                      formFields: DEFAULT_UMRAH_VISA_FORM_FIELDS,
                     }
-
+                  },
+                  {
+                    id: 'sv-overview-1',
+                    type: 'Umrah Visa Services Overview',
+                    title: 'Umrah Visa Services Overview',
+                    data: {},
+                  },
+                  {
+                    id: 'sv-document-guide-1',
+                    type: 'Umrah Visa Document Guide',
+                    title: 'Document / Passport Correct Format',
+                    data: {},
                   }
 
                 ]);
@@ -1759,6 +1807,15 @@ function PageBuilderContent() {
         ]
 
       };
+
+    } else if (type === 'Umrah Visa Requirements') {
+      defaultData = { title: 'Requirements for Umrah Visa Application', subtitle: 'Please make sure you have the following documents and information ready:', requirements: DEFAULT_UMRAH_VISA_REQUIREMENTS, importantNotes: [] };
+    } else if (type === 'Umrah Visa Order Form') {
+      defaultData = { formKey: 'umrahVisaOrder', formTitle: 'Umrah Visa Order Form', formDescription: 'Please fill in your information to order your Umrah Visa', formFields: DEFAULT_UMRAH_VISA_FORM_FIELDS, submitLabel: 'Request Umrah Visa' };
+    } else if (type === 'Umrah Visa Services Overview') {
+      defaultData = { title: 'British Hajj Travel Limited – Umrah Visa Services', subtitle: 'Approved by Ministry of Hajj / Umrah | Saudi Arabia Visa Services Overview', image: '/img/saudi-visa-2.webp', rows: [] };
+    } else if (type === 'Umrah Visa Document Guide') {
+      defaultData = { title: 'Document / Passport <span>Correct Format</span>', subtitle: 'Please check the examples below to make sure your document is clear and complete.', cards: [] };
 
     } else if (type === 'Certifications Flip Cards') {
 
@@ -8002,6 +8059,163 @@ function PageBuilderContent() {
                             )}
 
 
+
+                            {(sec.type === 'Umrah Visa Application' || sec.type === 'Umrah Visa Requirements' || sec.type === 'Umrah Visa Order Form') && (
+                              <div className="bg-white border border-slate-200 rounded-xl p-3 flex flex-col gap-3 mt-1">
+                                <span className="text-[11px] font-extrabold text-primary uppercase">{sec.type === 'Umrah Visa Order Form' ? 'Umrah Visa Order Form' : 'Umrah Visa Requirements & Order Form'}</span>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                  {[
+                                    ['title', 'REQUIREMENTS TITLE', 'Requirements for Umrah Visa Application'],
+                                    ['subtitle', 'REQUIREMENTS SUBTITLE', 'Please make sure you have the following documents and information ready:'],
+                                    ['formTitle', 'FORM TITLE', 'Umrah Visa Order Form'],
+                                    ['formDescription', 'FORM DESCRIPTION', 'Please fill in your information to order your Umrah Visa'],
+                                    ['formKey', 'FORM CONFIGURATION KEY', 'umrahVisaOrder'],
+                                    ['submitLabel', 'SUBMIT BUTTON LABEL', 'Request Umrah Visa'],
+                                    ['notesTitle', 'NOTES TITLE', 'Important Notes'],
+                                    ['redNoticeTitle', 'RED NOTICE TITLE', "Receive Umrah Visa Same Day within 24 hour's."],
+                                    ['redNoticeText', 'RED NOTICE TEXT', 'Fast and hassle-free processing with expert support.'],
+                                    ['greenNoticeTitle', 'GREEN NOTICE TITLE', 'WhatsApp us for Umrah Visa Price'],
+                                    ['greenNoticeText', 'GREEN NOTICE TEXT', 'Get the latest price and guidance on your application.'],
+                                    ['helpTitle', 'HELP TITLE', 'Need Help?'],
+                                    ['helpText', 'HELP TEXT', 'Our team is available to assist you with your Umrah visa application.'],
+                                    ['helpLink', 'WHATSAPP HELP LINK', 'https://wa.me/447957197390'],
+                                  ].map(([field, label, placeholder]) => (
+                                    <label key={field} className="block text-[9px] font-bold text-slate-500">
+                                      {label}
+                                      <input
+                                        type="text"
+                                        value={sec.data?.[field] || ''}
+                                        placeholder={placeholder}
+                                        onChange={(e) => updateSectionData(sec.id, field, e.target.value)}
+                                        className="mt-0.5 w-full px-2.5 py-1.5 rounded-md border border-slate-300 text-[11px] font-normal"
+                                      />
+                                    </label>
+                                  ))}
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                  {(sec.data?.formFields || DEFAULT_UMRAH_VISA_FORM_FIELDS).map((field: any, fieldIndex: number) => (
+                                    <div key={field.id || fieldIndex} className="rounded-lg border border-slate-200 p-2">
+                                      <div className="text-[9px] font-extrabold text-slate-500 uppercase mb-1">FORM FIELD {fieldIndex + 1}</div>
+                                      <div className="grid grid-cols-2 gap-2">
+                                        <input type="text" value={field.label || ''} placeholder="Label" onChange={(e) => { const fields = [...(sec.data?.formFields || DEFAULT_UMRAH_VISA_FORM_FIELDS)]; fields[fieldIndex] = { ...(fields[fieldIndex] || field), label: e.target.value }; updateSectionData(sec.id, 'formFields', fields); }} className="w-full px-2 py-1.5 rounded-md border border-slate-300 text-[11px]" />
+                                        <input type="text" value={field.placeholder || ''} placeholder="Placeholder" onChange={(e) => { const fields = [...(sec.data?.formFields || DEFAULT_UMRAH_VISA_FORM_FIELDS)]; fields[fieldIndex] = { ...(fields[fieldIndex] || field), placeholder: e.target.value }; updateSectionData(sec.id, 'formFields', fields); }} className="w-full px-2 py-1.5 rounded-md border border-slate-300 text-[11px]" />
+                                      </div>
+                                      <div className="flex items-center gap-3 mt-2">
+                                        <select value={field.type || 'text'} onChange={(e) => { const fields = [...(sec.data?.formFields || DEFAULT_UMRAH_VISA_FORM_FIELDS)]; fields[fieldIndex] = { ...(fields[fieldIndex] || field), type: e.target.value }; updateSectionData(sec.id, 'formFields', fields); }} className="px-2 py-1 rounded-md border border-slate-300 text-[10px]"><option value="text">Text</option><option value="email">Email</option><option value="tel">Mobile</option><option value="number">Number</option><option value="date">Date</option></select>
+                                        <label className="text-[10px] text-slate-600"><input type="checkbox" checked={field.required !== false} onChange={(e) => { const fields = [...(sec.data?.formFields || DEFAULT_UMRAH_VISA_FORM_FIELDS)]; fields[fieldIndex] = { ...(fields[fieldIndex] || field), required: e.target.checked }; updateSectionData(sec.id, 'formFields', fields); }} className="mr-1" />Required</label>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                                <div className="border-t border-slate-100 pt-3">
+                                  <div className="flex items-center justify-between mb-2">
+                                    <div>
+                                      <div className="text-[9px] font-extrabold text-slate-500 uppercase">REQUIREMENTS ITEMS</div>
+                                      <div className="text-[10px] text-slate-400">Search and select an icon, then edit the title and description.</div>
+                                    </div>
+                                    <button
+                                      type="button"
+                                      onClick={() => updateSectionData(sec.id, 'requirements', [...(sec.data?.requirements || DEFAULT_UMRAH_VISA_REQUIREMENTS), { icon: 'Info', title: 'New requirement', description: 'Add requirement details.' }])}
+                                      className="inline-flex items-center gap-1 rounded-md bg-primary px-2.5 py-1.5 text-[10px] font-bold text-white"
+                                    >
+                                      <Plus className="h-3 w-3" /> Add item
+                                    </button>
+                                  </div>
+                                  <div className="space-y-2">
+                                    {(sec.data?.requirements || DEFAULT_UMRAH_VISA_REQUIREMENTS).map((item: any, itemIndex: number) => {
+                                      const iconListId = `umrah-visa-icons-${sec.id}-${itemIndex}`;
+                                      return (
+                                        <div key={itemIndex} className="grid grid-cols-1 md:grid-cols-[190px_1fr_1fr_28px] gap-2 rounded-lg border border-slate-200 bg-slate-50/60 p-2">
+                                          <div>
+                                            <label className="block text-[9px] font-bold text-slate-500">ICON SEARCH</label>
+                                            <input list={iconListId} value={item.icon || 'Info'} onChange={(e) => { const items = [...(sec.data?.requirements || DEFAULT_UMRAH_VISA_REQUIREMENTS)]; items[itemIndex] = { ...(items[itemIndex] || item), icon: e.target.value }; updateSectionData(sec.id, 'requirements', items); }} placeholder="Search icons..." className="w-full rounded-md border border-slate-300 bg-white px-2 py-1.5 text-[10px]" />
+                                            <datalist id={iconListId}>{UMRAH_VISA_ICON_OPTIONS.map((icon) => <option key={icon} value={icon} />)}</datalist>
+                                          </div>
+                                          <label className="block text-[9px] font-bold text-slate-500">TITLE<input type="text" value={item.title || ''} onChange={(e) => { const items = [...(sec.data?.requirements || DEFAULT_UMRAH_VISA_REQUIREMENTS)]; items[itemIndex] = { ...(items[itemIndex] || item), title: e.target.value }; updateSectionData(sec.id, 'requirements', items); }} className="mt-1 w-full rounded-md border border-slate-300 bg-white px-2 py-1.5 text-[11px] font-normal" /></label>
+                                          <label className="block text-[9px] font-bold text-slate-500">DESCRIPTION<textarea rows={2} value={item.description || ''} onChange={(e) => { const items = [...(sec.data?.requirements || DEFAULT_UMRAH_VISA_REQUIREMENTS)]; items[itemIndex] = { ...(items[itemIndex] || item), description: e.target.value }; updateSectionData(sec.id, 'requirements', items); }} className="mt-1 w-full rounded-md border border-slate-300 bg-white px-2 py-1.5 text-[11px] font-normal" /></label>
+                                          <button type="button" aria-label={`Remove requirement ${itemIndex + 1}`} onClick={() => { const items = [...(sec.data?.requirements || DEFAULT_UMRAH_VISA_REQUIREMENTS)]; items.splice(itemIndex, 1); updateSectionData(sec.id, 'requirements', items); }} className="mt-5 flex h-7 w-7 items-center justify-center rounded-md bg-red-50 text-red-600"><Trash2 className="h-3.5 w-3.5" /></button>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                                <label className="block text-[9px] font-bold text-slate-500">
+                                  IMPORTANT NOTES (one note per line)
+                                  <textarea
+                                    rows={4}
+                                    value={(sec.data?.importantNotes || [
+                                      'The Umrah visa & E Waiver visa process is online; no need to submit the passport physically.',
+                                      'British Hajj Travel is the Ministry of Umrah & Hajj approved Umrah visa agency in UK.',
+                                      'Females above the age of 60 can perform Umrah without a Mahram.',
+                                      'All non-UK passport holders must be resident in the UK.',
+                                    ]).join('\n')}
+                                    onChange={(e) => updateSectionData(sec.id, 'importantNotes', e.target.value.split('\n').filter(Boolean))}
+                                    className="mt-0.5 w-full px-2.5 py-1.5 rounded-md border border-slate-300 text-[11px] font-normal"
+                                  />
+                                </label>
+                              </div>
+                            )}
+
+                            {sec.type === 'Umrah Visa Services Overview' && (
+                              <div className="bg-white border border-slate-200 rounded-xl p-3 flex flex-col gap-3 mt-1">
+                                <span className="text-[11px] font-extrabold text-primary uppercase">Umrah Visa Services Overview</span>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                  {[
+                                    ['title', 'TITLE', 'British Hajj Travel Limited – Umrah Visa Services'],
+                                    ['subtitle', 'SUBTITLE', 'Approved by Ministry of Hajj / Umrah | Saudi Arabia Visa Services Overview'],
+                                    ['image', 'DOCUMENT IMAGE URL', '/img/saudi-visa-2.webp'],
+                                  ].map(([field, label, placeholder]) => (
+                                    <label key={field} className="block text-[9px] font-bold text-slate-500">{label}
+                                      <input type="text" value={sec.data?.[field] || ''} placeholder={placeholder} onChange={(e) => updateSectionData(sec.id, field, e.target.value)} className="mt-1 w-full rounded-md border border-slate-300 px-2.5 py-1.5 text-[11px] font-normal" />
+                                    </label>
+                                  ))}
+                                </div>
+                                <div className="border-t border-slate-100 pt-3">
+                                  <div className="flex items-center justify-between mb-2">
+                                    <span className="text-[9px] font-extrabold text-slate-500 uppercase">SERVICE TABLE ROWS</span>
+                                    <button type="button" onClick={() => updateSectionData(sec.id, 'rows', [...(sec.data?.rows || []), ['New service', 'Add service details']])} className="inline-flex items-center gap-1 rounded-md bg-primary px-2.5 py-1.5 text-[10px] font-bold text-white"><Plus className="h-3 w-3" /> Add row</button>
+                                  </div>
+                                  <div className="space-y-2">
+                                    {(sec.data?.rows || []).map((row: any, rowIndex: number) => (
+                                      <div key={rowIndex} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_28px] gap-2">
+                                        <input type="text" value={row[0] || ''} placeholder="Service label" onChange={(e) => { const rows = [...(sec.data?.rows || [])]; rows[rowIndex] = [e.target.value, rows[rowIndex]?.[1] || '']; updateSectionData(sec.id, 'rows', rows); }} className="w-full rounded-md border border-slate-300 px-2.5 py-1.5 text-[11px]" />
+                                        <input type="text" value={row[1] || ''} placeholder="Service details" onChange={(e) => { const rows = [...(sec.data?.rows || [])]; rows[rowIndex] = [rows[rowIndex]?.[0] || '', e.target.value]; updateSectionData(sec.id, 'rows', rows); }} className="w-full rounded-md border border-slate-300 px-2.5 py-1.5 text-[11px]" />
+                                        <button type="button" aria-label={`Remove service row ${rowIndex + 1}`} onClick={() => { const rows = [...(sec.data?.rows || [])]; rows.splice(rowIndex, 1); updateSectionData(sec.id, 'rows', rows); }} className="flex h-7 w-7 items-center justify-center rounded-md bg-red-50 text-red-600"><Trash2 className="h-3.5 w-3.5" /></button>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
+                            {sec.type === 'Umrah Visa Document Guide' && (
+                              <div className="bg-white border border-slate-200 rounded-xl p-3 flex flex-col gap-3 mt-1">
+                                <span className="text-[11px] font-extrabold text-primary uppercase">Document / Passport Correct Format</span>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                  <label className="block text-[9px] font-bold text-slate-500">TITLE (HTML ALLOWED)
+                                    <input type="text" value={sec.data?.title || ''} placeholder="Document / Passport Correct Format" onChange={(e) => updateSectionData(sec.id, 'title', e.target.value)} className="mt-1 w-full rounded-md border border-slate-300 px-2.5 py-1.5 text-[11px]" />
+                                  </label>
+                                  <label className="block text-[9px] font-bold text-slate-500">SUBTITLE
+                                    <input type="text" value={sec.data?.subtitle || ''} placeholder="Please check the examples below..." onChange={(e) => updateSectionData(sec.id, 'subtitle', e.target.value)} className="mt-1 w-full rounded-md border border-slate-300 px-2.5 py-1.5 text-[11px]" />
+                                  </label>
+                                </div>
+                                <div className="flex items-center justify-between border-t border-slate-100 pt-3">
+                                  <span className="text-[9px] font-extrabold text-slate-500 uppercase">EXAMPLE CARDS</span>
+                                  <button type="button" onClick={() => updateSectionData(sec.id, 'cards', [...(sec.data?.cards || DEFAULT_UMRAH_VISA_DOCUMENT_CARDS), { image: '/img/saudi-visa-2.webp', tone: 'bad', title: 'New example', bullets: ['Add guidance'] }])} className="inline-flex items-center gap-1 rounded-md bg-primary px-2.5 py-1.5 text-[10px] font-bold text-white"><Plus className="h-3 w-3" /> Add card</button>
+                                </div>
+                                <div className="space-y-2">
+                                  {(sec.data?.cards || DEFAULT_UMRAH_VISA_DOCUMENT_CARDS).map((card: any, cardIndex: number) => (
+                                    <div key={cardIndex} className="grid grid-cols-1 md:grid-cols-[1.4fr_100px_1fr_1fr_28px] gap-2 rounded-lg border border-slate-200 p-2">
+                                      <ImageUploadWidget value={card.image || ''} onChange={(url) => { const cards = [...(sec.data?.cards || DEFAULT_UMRAH_VISA_DOCUMENT_CARDS)]; cards[cardIndex] = { ...(cards[cardIndex] || card), image: url }; updateSectionData(sec.id, 'cards', cards); }} subfolder="sections" compact />
+                                      <select value={card.tone || 'bad'} onChange={(e) => { const cards = [...(sec.data?.cards || DEFAULT_UMRAH_VISA_DOCUMENT_CARDS)]; cards[cardIndex] = { ...(cards[cardIndex] || card), tone: e.target.value }; updateSectionData(sec.id, 'cards', cards); }} className="rounded-md border border-slate-300 px-2 py-1.5 text-[10px]"><option value="good">Good</option><option value="bad">Warning</option></select>
+                                      <input type="text" value={card.title || ''} placeholder="Card title" onChange={(e) => { const cards = [...(sec.data?.cards || DEFAULT_UMRAH_VISA_DOCUMENT_CARDS)]; cards[cardIndex] = { ...(cards[cardIndex] || card), title: e.target.value }; updateSectionData(sec.id, 'cards', cards); }} className="rounded-md border border-slate-300 px-2 py-1.5 text-[11px]" />
+                                      <textarea rows={2} value={(card.bullets || []).join('\n')} placeholder="One bullet per line" onChange={(e) => { const cards = [...(sec.data?.cards || DEFAULT_UMRAH_VISA_DOCUMENT_CARDS)]; cards[cardIndex] = { ...(cards[cardIndex] || card), bullets: e.target.value.split('\n').filter(Boolean) }; updateSectionData(sec.id, 'cards', cards); }} className="rounded-md border border-slate-300 px-2 py-1.5 text-[11px]" />
+                                      <button type="button" aria-label={`Remove example card ${cardIndex + 1}`} onClick={() => { const cards = [...(sec.data?.cards || DEFAULT_UMRAH_VISA_DOCUMENT_CARDS)]; cards.splice(cardIndex, 1); updateSectionData(sec.id, 'cards', cards); }} className="flex h-7 w-7 items-center justify-center rounded-md bg-red-50 text-red-600"><Trash2 className="h-3.5 w-3.5" /></button>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
 
                             {(sec.type === 'Visa Process Steps' || sec.type === '3 Easy Steps') && (
 

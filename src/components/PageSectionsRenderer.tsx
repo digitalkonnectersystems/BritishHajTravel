@@ -20,6 +20,9 @@ import Banner4GridsSection from '@/components/Banner4GridsSection';
 import PackageBrochuresSection from '@/components/PackageBrochuresSection';
 import GallerySection from '@/components/GallerySection';
 import DynamicSiteForm from '@/components/DynamicSiteForm';
+import UmrahVisaVisaApplicationSection, { RequirementsContentSection, UmrahVisaOrderFormSection } from '@/components/UmrahVisaApplicationSection';
+import UmrahVisaServicesOverviewSection from '@/components/UmrahVisaServicesOverviewSection';
+import UmrahVisaDocumentGuideSection from '@/components/UmrahVisaDocumentGuideSection';
 import FaqSection from '@/components/FaqSection';
 import DestinationsGrid from '@/components/DestinationsGrid';
 import LatestBlogsSection from '@/components/LatestBlogsSection';
@@ -35,6 +38,21 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         if (sec.hidden === true || sec.visible === false) return null;
         if (sec.type === 'Destinations Grid') {
           return <DestinationsGrid key={idx} destinations={initialDestinationData || []} title={sec.data?.title} />;
+        }
+        if (sec.type === 'Umrah Visa Application') {
+          return <UmrahVisaVisaApplicationSection key={idx} data={sec.data || {}} />;
+        }
+        if (sec.type === 'Umrah Visa Requirements') {
+          return <RequirementsContentSection key={idx} data={sec.data || {}} />;
+        }
+        if (sec.type === 'Umrah Visa Order Form') {
+          return <UmrahVisaOrderFormSection key={idx} data={sec.data || {}} />;
+        }
+        if (sec.type === 'Umrah Visa Services Overview') {
+          return <UmrahVisaServicesOverviewSection key={idx} data={sec.data || {}} />;
+        }
+        if (sec.type === 'Umrah Visa Document Guide') {
+          return <UmrahVisaDocumentGuideSection key={idx} data={sec.data || {}} />;
         }
         if (sec.type === 'Latest Blogs Grid' || sec.type === 'Blog Posts Carousel') {
           return <LatestBlogsSection key={idx} data={sec.data || {}} blogs={initialBlogData || []} isHomepage={pageData?.slug === '/'} />;

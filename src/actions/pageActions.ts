@@ -861,6 +861,13 @@ const DEFAULT_FORM_FIELDS_STATE: Record<string, Array<{ id: string; label: strin
     { id: '5', label: 'Phone Number', type: 'tel', placeholder: '+1 (555) 000-0000', required: true },
     { id: '6', label: 'Consultation Details', type: 'textarea', placeholder: 'Describe your visa needs...', required: false },
   ],
+  umrahVisaOrder: [
+    { id: 'name', label: 'Name', type: 'text', placeholder: 'Enter your full name', required: true },
+    { id: 'email', label: 'Email', type: 'email', placeholder: 'Enter your email address', required: true },
+    { id: 'mobile', label: 'Mobile Number', type: 'tel', placeholder: 'Enter your mobile number', required: true },
+    { id: 'quantity', label: 'Quantity', type: 'number', placeholder: 'Enter number of travellers', required: true },
+    { id: 'travelDate', label: 'Travel Date', type: 'date', placeholder: 'mm/dd/yyyy', required: true },
+  ],
   flightInquiry: [
     { id: '1', label: 'Full Name (As per Passport)', type: 'text', placeholder: 'Full Name', required: true },
     { id: '2', label: 'Email Address', type: 'email', placeholder: 'example@email.com', required: true },
@@ -956,6 +963,15 @@ const DEFAULT_FORMS_DATA: Record<string, any> = {
     buttonText: 'Submit Visa Request',
     fieldsCount: 6,
   },
+  umrahVisaOrder: {
+    title: 'Umrah Visa Order Form',
+    subtitle: 'Please fill in your information to order your Umrah Visa.',
+    recipientEmail: 'visas@britishhajjtravel.com',
+    successMessage: 'Umrah Visa request submitted! We will contact you shortly.',
+    enabled: true,
+    buttonText: 'Request Umrah Visa',
+    fieldsCount: 5,
+  },
   flightInquiry: {
     title: 'Flights Page — Booking Inquiry Form',
     subtitle: 'Flight quote & booking assistance form on the flights page.',
@@ -999,7 +1015,7 @@ const DEFAULT_EMAIL_CONFIGS: any = {
   formRoutingRules: [
     { id: 'rule_1', forms: ['quoteForm', 'hajjCustomizeForm', 'contact', 'dropUsMessage'], sendTo: 'saudivisa@britishhajjtravel.com', cc: '', bcc: '' },
     { id: 'rule_2', forms: ['packageDetailForm', 'hajjPackageDetailForm', 'packageInquiry', 'blogSidebarForm'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
-    { id: 'rule_3', forms: ['visaConsultation'], sendTo: 'visas@britishhajjtravel.com', cc: '', bcc: '' },
+    { id: 'rule_3', forms: ['visaConsultation', 'umrahVisaOrder'], sendTo: 'visas@britishhajjtravel.com', cc: '', bcc: '' },
     { id: 'rule_4', forms: ['flightInquiry'], sendTo: 'flights@britishhajjtravel.com', cc: '', bcc: '' },
   ],
 };
@@ -1030,6 +1046,11 @@ export async function getFormsSettings() {
           cc: r.cc || '',
           bcc: r.bcc || '',
         }));
+
+        const visaRule = normalizedRules.find((rule: any) => rule.forms.includes('visaConsultation'));
+        if (visaRule && !visaRule.forms.includes('umrahVisaOrder')) {
+          visaRule.forms.push('umrahVisaOrder');
+        }
 
         const mergedEmailConfigs = {
           ...DEFAULT_EMAIL_CONFIGS,

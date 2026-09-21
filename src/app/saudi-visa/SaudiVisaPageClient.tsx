@@ -6,6 +6,9 @@ import PageBanner from "@/components/PageBanner";
 
 import VisaSolutionsSection from "@/components/VisaSolutionsSection";
 import PageSectionsRenderer from "@/components/PageSectionsRenderer";
+import UmrahVisaApplicationSection from "@/components/UmrahVisaApplicationSection";
+import UmrahVisaServicesOverviewSection from "@/components/UmrahVisaServicesOverviewSection";
+import UmrahVisaDocumentGuideSection from "@/components/UmrahVisaDocumentGuideSection";
 
 function VisaProcessStepsSection({ data }: { data?: any }) {
   return (
@@ -113,6 +116,13 @@ export default function SaudiVisaPageClient({ initialPageData }: { initialPageDa
 
         return (
           <>
+            <UmrahVisaApplicationSection
+              data={sections.find((s: any) => s.type === "Umrah Visa Application")?.data}
+              requirementsData={sections.find((s: any) => s.type === "Umrah Visa Requirements")?.data}
+              formData={sections.find((s: any) => s.type === "Umrah Visa Order Form")?.data}
+            />
+            <UmrahVisaDocumentGuideSection data={sections.find((s: any) => s.type === "Umrah Visa Document Guide")?.data} />
+            <UmrahVisaServicesOverviewSection data={sections.find((s: any) => s.type === "Umrah Visa Services Overview")?.data} />
             {hasVisaSolutions ? (
               sections
                 .filter((s: any) => s.type === "Visa Solutions Grid" || s.type === "Visa Cards" || s.type === "Visa Solutions")
@@ -130,7 +140,7 @@ export default function SaudiVisaPageClient({ initialPageData }: { initialPageDa
             )}
 
             {(() => {
-              const handledTypes = ["Visa Solutions Grid", "Visa Cards", "Visa Solutions", "Visa Process Steps", "3 Easy Steps"];
+              const handledTypes = ["Umrah Visa Application", "Umrah Visa Requirements", "Umrah Visa Order Form", "Umrah Visa Document Guide", "Umrah Visa Services Overview", "Visa Solutions Grid", "Visa Cards", "Visa Solutions", "Visa Process Steps", "3 Easy Steps"];
               const unhandled = sections.filter((s: any) => !handledTypes.includes(s.type));
               if (unhandled.length > 0) {
                 return <PageSectionsRenderer sections={unhandled} pageData={pageData} />;

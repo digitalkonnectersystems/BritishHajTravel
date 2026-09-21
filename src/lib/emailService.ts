@@ -58,6 +58,7 @@ export async function dispatchFormEmails(
           'Pilgrimage Package — Custom Inquiry Form': 'packageInquiry',
           'Visa Consultation Form': 'visaConsultation',
           'Visa Services — Consultation Form': 'visaConsultation',
+          'Umrah Visa Order Form': 'umrahVisaOrder',
           'Flight Booking Form': 'flightInquiry',
           'Flights Page — Booking Inquiry Form': 'flightInquiry',
           'Drop Us A Message Form': 'dropUsMessage',
