@@ -86,7 +86,8 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
                     key={item.id || itemHref}
                     href={itemHref}
                     onClick={() => setMenuActive(false)}
-                    className={`text-[#333333] text-[16px] max-xl:text-[14px] max-xl:w-full max-xl:py-[8px] max-xl:border-b max-xl:border-[#eee] font-semibold uppercase tracking-normal transition-all duration-300 hover:text-red ${isActive ? "!text-red font-bold" : ""} ${isActive && itemHref === '/saudi-visa' ? 'border border-red px-1.5 py-0.5 max-xl:border-x-0 max-xl:border-t-0' : ''}`}
+                    // className={`text-[#333333] text-[16px] max-xl:text-[14px] max-xl:w-full max-xl:py-[8px] max-xl:border-b max-xl:border-[#eee] font-semibold uppercase tracking-normal transition-all duration-300 hover:text-red ${isActive ? "!text-red font-bold" : ""} ${isActive && itemHref === '/saudi-visa' ? 'border border-red px-1.5 py-0.5 max-xl:border-x-0 max-xl:border-t-0' : ''}`}
+                    className={`text-[#333333] text-[16px] max-xl:text-[14px] max-xl:w-full max-xl:py-[8px] max-xl:border-b max-xl:border-[#eee] font-semibold uppercase tracking-normal transition-all duration-300 hover:text-red ${isActive ? "!text-red font-bold" : ""}`}
                   >
                     {itemLabel}
                   </Link>
