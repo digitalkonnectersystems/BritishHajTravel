@@ -23,6 +23,8 @@ import DynamicSiteForm from '@/components/DynamicSiteForm';
 import FaqSection from '@/components/FaqSection';
 import DestinationsGrid from '@/components/DestinationsGrid';
 import LatestBlogsSection from '@/components/LatestBlogsSection';
+import AvailableFlightsSection from '@/components/AvailableFlightsSection';
+import AvailableSeatsSection from '@/components/AvailableSeatsSection';
 import { RICH_TEXT_PROSE_CLASS } from '@/lib/richTextProseClass';
 import { useEffect, useRef, useState } from "react";
 export default function PageSectionsRenderer({ sections, pageData, initialPackageData, initialDestinationData, initialBlogData }: { sections: any[], pageData?: any, initialPackageData?: any, initialDestinationData?: any[], initialBlogData?: any[] }) {
@@ -87,6 +89,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         }
 
         if (sec.type === "Available Flights Grid" || sec.type === "Flights Cards") {
+          return <AvailableFlightsSection key={idx} data={sec.data || {}} bookingTarget={pageData?.slug === "/cheap-flights-air-tickets" || pageData?.slug === "cheap-flights-air-tickets" ? "/contact" : undefined} />;
           const flights = (sec.data?.items && Array.isArray(sec.data.items) && sec.data.items.length > 0)
             ? sec.data.items
             : [
@@ -102,7 +105,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                     {sec.data?.eyebrow || "AVAILABLE FLIGHTS"}
                   </span>
                   <h2 className="section-heading text-primary font-serif tracking-tight">
-                    {sec.data?.title || "BEST FARES, LIMITED AVAILABILITY FROM LONDON"}
+                    {sec.data?.title || ""}
                   </h2>
                 </div>
                 <div className="space-y-6">
@@ -186,6 +189,9 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
               </div>
             </section>
           );
+        }
+        if (sec.type === "Available Seats") {
+          return <AvailableSeatsSection key={idx} data={sec.data || {}} />;
         }
 
         if (sec.type === "Flight Assistance CTA" || sec.type === "Flight Desk CTA") {

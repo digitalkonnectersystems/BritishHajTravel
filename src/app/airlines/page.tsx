@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import PageSectionsRenderer from "@/components/PageSectionsRenderer";
+import AvailableFlightsSection from "@/components/AvailableFlightsSection";
+import AvailableSeatsSection from "@/components/AvailableSeatsSection";
 import MarqueeTrack from "@/components/MarqueeTrack";
 import PageBanner from "@/components/PageBanner";
 import { getPageBySlug } from "@/actions/pageActions";
@@ -91,7 +93,7 @@ export default function AirlinesPage() {
 
       {/* ================= DYNAMIC SECTIONS OR FALLBACK ================= */}
       {(() => {
-        const handledTypes = ["Available Flights Grid", "Flights Cards", "Airlines Marquee", "Partners Marquee", "Logo Carousel", "Airlines Logo Carousel", "Flight Assistance CTA", "Flight Desk CTA"];
+        const handledTypes = ["Available Flights Grid", "Flights Cards", "Available Seats", "Airlines Marquee", "Partners Marquee", "Logo Carousel", "Airlines Logo Carousel", "Flight Assistance CTA", "Flight Desk CTA"];
         const unhandledSections = sections.filter(s => !handledTypes.includes(s.type));
 
         return (
@@ -99,6 +101,7 @@ export default function AirlinesPage() {
             {sections.length > 0 ? (
               sections.map((sec: any, idx: number) => {
                 if (sec.type === "Available Flights Grid" || sec.type === "Flights Cards") {
+                  return <AvailableFlightsSection key={idx} data={sec.data || {}} />;
                   const flights = (sec.data?.items && Array.isArray(sec.data.items) && sec.data.items.length > 0)
                     ? sec.data.items
                     : defaultFlights;
@@ -107,7 +110,7 @@ export default function AirlinesPage() {
                     <section key={idx} className="pt-14">
                       <div className="max-w-5xl mx-auto px-4">
                         <div className="text-center mb-8">
-                          <span className="text-emerald-800 font-semibold uppercase tracking-wider text-sm block mb-1">
+                          <span className="text-primary font-semibold uppercase tracking-wider text-sm block mb-1">
                             {sec.data?.eyebrow || "AVAILABLE FLIGHTS"}
                           </span>
                           <h2 className="text-3xl font-serif text-gray-900 tracking-tight">
@@ -124,7 +127,7 @@ export default function AirlinesPage() {
                               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6">
                                 {/* Left: Airline Info */}
                                 <div className="flex items-center gap-4 min-w-[280px]">
-                                  <div className="bg-emerald-900 text-white font-bold px-3 py-2 rounded text-base tracking-wide flex items-center justify-center min-w-[54px] h-[44px]">
+                                  <div className="bg-primary text-white font-bold px-3 py-2 rounded text-base tracking-wide flex items-center justify-center min-w-[54px] h-[44px]">
                                     {flight.code || "PIA"}
                                   </div>
                                   <div>
@@ -187,6 +190,9 @@ export default function AirlinesPage() {
                       </div>
                     </section>
                   );
+                }
+                if (sec.type === "Available Seats") {
+                  return <AvailableSeatsSection key={idx} data={sec.data || {}} />;
                 }
 
                 if (sec.type === "Airlines Marquee" || sec.type === "Partners Marquee" || sec.type === "Logo Carousel" || sec.type === "Airlines Logo Carousel") {

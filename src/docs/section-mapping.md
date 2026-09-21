@@ -69,9 +69,24 @@ Every section uses this structure in the database:
 **Fields:**
 - `eyebrow`
 - `title`
-- `items`: Array (`code`, `name`, `operatedBy`, `originCode`, `originCity`, `destCode`, `destCity`, `time`, `price`)
+- `items`: Array of editable flight cards. Each card supports:
+  - `logo`, `code`, `name`, `operatedBy`
+  - `price`, `priceSubtext`, `seatsText`, `bookingLabel`, `bookingUrl`
+  - `outbound` and `return` direction objects with `date`, `className`, `first`, `second`, `layoverText`, and `layoverDuration`
+  - `first` and `second` points support `code`, `city`, `time`, and `flightNumber`
+  - Legacy summary fields (`originCode`, `originCity`, `destCode`, `destCity`, `time`) remain supported as fallbacks
+- Airline logos are uploaded from the admin editor to the `flights` media folder.
 
-### 10. Flight Assistance CTA
+### 10. Available Seats
+**Used on:** Airlines Page, Any Page
+**Fields:**
+- `eyebrow`
+- `title`
+- `subtitle`
+- `items`: Array (`logo`, `airline`, `flightLabel`, `departure`, `returnDate`, `route`, `seats`, `baggage`, `price`, `bookingLabel`, `bookingUrl`)
+- Seat-card logos are uploaded from the admin editor to the `flights` media folder.
+
+### 11. Flight Assistance CTA
 **Used on:** Airlines Page
 **Fields:**
 - `title`
