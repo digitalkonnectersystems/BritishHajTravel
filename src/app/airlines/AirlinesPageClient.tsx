@@ -4,6 +4,8 @@ import Link from "next/link";
 import MarqueeTrack from "@/components/MarqueeTrack";
 import PageBanner from "@/components/PageBanner";
 import PageSectionsRenderer from "@/components/PageSectionsRenderer";
+import AvailableFlightsSection from "@/components/AvailableFlightsSection";
+import AvailableSeatsSection from "@/components/AvailableSeatsSection";
 
 const airlineLogos = [
   { src: "/img/a-1.png", alt: "Saudi Airlines" },
@@ -81,6 +83,7 @@ export default function AirlinesPageClient({ initialPageData }: { initialPageDat
       {sections.length > 0 ? (
         sections.map((sec: any, idx: number) => {
           if (sec.type === "Available Flights Grid" || sec.type === "Flights Cards") {
+            return <AvailableFlightsSection key={idx} data={sec.data || {}} />;
             const flights = (sec.data?.items && Array.isArray(sec.data.items) && sec.data.items.length > 0)
               ? sec.data.items
               : defaultFlights;
@@ -167,6 +170,9 @@ export default function AirlinesPageClient({ initialPageData }: { initialPageDat
                 </div>
               </section>
             );
+          }
+          if (sec.type === "Available Seats") {
+            return <AvailableSeatsSection key={idx} data={sec.data || {}} />;
           }
 
           if (sec.type === "Airlines Marquee" || sec.type === "Partners Marquee" || sec.type === "Logo Carousel" || sec.type === "Airlines Logo Carousel") {
@@ -266,7 +272,7 @@ export default function AirlinesPageClient({ initialPageData }: { initialPageDat
       )}
 
       {(() => {
-        const handledTypes = ["Available Flights Grid", "Airlines", "Flight Assistance CTA"];
+        const handledTypes = ["Available Flights Grid", "Available Seats", "Airlines", "Flight Assistance CTA"];
         const unhandled = sections.filter((s: any) => !handledTypes.includes(s.type));
         if (unhandled.length > 0) {
           return <PageSectionsRenderer sections={unhandled} pageData={pageData} />;

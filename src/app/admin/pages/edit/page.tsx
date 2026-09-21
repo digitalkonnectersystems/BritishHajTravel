@@ -2,7 +2,7 @@
 
 
 
-import { useState, useEffect, useRef, Suspense } from 'react';
+import { Fragment, useState, useEffect, useRef, Suspense } from 'react';
 
 import Link from 'next/link';
 
@@ -212,6 +212,7 @@ const SECTION_CATALOG: SectionCategory[] = [
     items: [
 
       { type: 'Available Flights Grid', description: 'Live flight route cards with fare, airline, and availability status.', pages: ['Airlines'] },
+      { type: 'Available Seats', description: 'Responsive flight seat availability cards with airline logos, dates, routes, baggage, fares, and booking links.', pages: ['Airlines', 'Any Page'] },
 
       { type: 'Flight Assistance CTA', description: 'Full-width CTA encouraging visitors to contact the flight desk.', pages: ['Airlines'] },
 
@@ -582,7 +583,7 @@ function PageBuilderContent() {
 
     return [
 
-      { code: "PIA", name: "Pakistan International Airlines", operatedBy: "Operated By PIA", originCode: "LHR", originCity: "London", destCode: "JED", destCity: "Jeddah", time: "14:20", price: "£ 1,250.00" },
+      { code: "PIA", name: "Pakistan International Airlines", operatedBy: "Operated By PIA", originCode: "LHR", originCity: "London", destCode: "JED", destCity: "Jeddah", time: "14:20", price: "£ 1,250.00", seatsText: "Available Seats: Confirmed", seatsValue: "Confirmed (HK20)", badgeText: "1A/E", outbound: { date: "2026-08-01", dateEnd: "2026-08-02", first: { code: "MAN", city: "Manchester", time: "2:30 PM", flightNumber: "MS 782", className: "1A/E" }, via: { code: "CAI", city: "Cairo", arrivalTime: "9:40 PM", departureTime: "12:30 AM", flightNumber: "MS 782", className: "1A/E" }, second: { code: "JED", city: "Jeddah", time: "2:40 AM", flightNumber: "MS 663", className: "1A/E" }, layoverText: "Layover in Cairo", layoverDuration: "5h 00m" }, return: { date: "2026-08-14", first: { code: "MED", city: "Madinah", time: "5:20 AM", flightNumber: "MS 694", className: "1A/E" }, via: { code: "CAI", city: "Cairo", arrivalTime: "7:15 AM", departureTime: "10:05 AM", flightNumber: "MS 694", className: "1A/E" }, second: { code: "MAN", city: "Manchester", time: "1:30 PM", flightNumber: "MS 781", className: "1A/E" }, layoverText: "Layover in Cairo", layoverDuration: "2h 50m" } },
 
       { code: "PIA", name: "Pakistan International Airlines", operatedBy: "Operated By PIA", originCode: "LHR", originCity: "London", destCode: "JED", destCity: "Jeddah", time: "14:20", price: "£ 1,250.00" },
 
@@ -621,6 +622,45 @@ function PageBuilderContent() {
     );
 
   };
+
+  const updateFlightField = (sectionId: string, flightIndex: number, path: string, value: string) => {
+    const flights = [...getFlightsOrDefault(sections.find((section) => section.id === sectionId)?.data?.items)];
+    const updatedFlight = { ...(flights[flightIndex] || {}) };
+    const parts = path.split('.');
+    let target = updatedFlight;
+    parts.slice(0, -1).forEach((part) => {
+      target[part] = { ...(target[part] || {}) };
+      target = target[part];
+    });
+    target[parts[parts.length - 1]] = value;
+    flights[flightIndex] = updatedFlight;
+    updateSectionData(sectionId, 'items', flights);
+  };
+
+  const getFlightField = (flight: any, path: string) => path.split('.').reduce((value, part) => value?.[part], flight) || '';
+
+  const toTimeInputValue = (value: string) => {
+    if (!value) return '';
+    if (/^\d{2}:\d{2}$/.test(value)) return value;
+    const match = value.trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+    if (!match) return '';
+    let hour = Number(match[1]);
+    const minutes = match[2];
+    const meridiem = match[3].toUpperCase();
+    if (meridiem === 'AM' && hour === 12) hour = 0;
+    if (meridiem === 'PM' && hour !== 12) hour += 12;
+    return `${String(hour).padStart(2, '0')}:${minutes}`;
+  };
+
+  const timeOptions = Array.from({ length: 96 }, (_, index) => {
+    const hour = Math.floor(index / 4);
+    const minutes = (index % 4) * 15;
+    const value = `${String(hour).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+    const displayHour = hour % 12 || 12;
+    return { value, label: `${displayHour}:${String(minutes).padStart(2, '0')} ${hour >= 12 ? 'PM' : 'AM'}` };
+  });
+
+  const toDateInputValue = (value: string) => /^\d{4}-\d{2}-\d{2}$/.test(value || '') ? value : '';
 
 
 
@@ -1714,6 +1754,15 @@ function PageBuilderContent() {
 
         items: []
 
+      };
+
+    } else if (type === 'Available Seats') {
+
+      defaultData = {
+        eyebrow: 'AVAILABLE SEATS',
+        title: 'UMRAH ALLOCATION SEATS 2025 - 2026',
+        subtitle: 'On First come first serve basis HURRY as LIMITED STOCK',
+        items: []
       };
 
     } else if (type === 'Flight Assistance CTA') {
@@ -8415,6 +8464,51 @@ function PageBuilderContent() {
 
 
 
+                            {sec.type === 'Available Seats' && (
+                              <div className="mt-1 flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-3">
+                                <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                                  <div>
+                                    <span className="text-[11px] font-extrabold uppercase text-primary">💺 Available Seats Cards Manager</span>
+                                    <p className="mt-1 text-[10px] text-slate-500">Add compact availability cards. Airline logos upload to the flights folder.</p>
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const items = Array.isArray(sec.data?.items) ? [...sec.data.items] : [];
+                                      items.push({ logo: '', airline: 'Wizz Air', flightLabel: `Flight ${items.length + 1}`, departure: '', returnDate: '', route: 'LGW - JED', seats: '40 Seats Available', baggage: '32 KG Baggage', price: '£TBC / Person', bookingLabel: 'Book Now', bookingUrl: '/contact' });
+                                      updateSectionData(sec.id, 'items', items);
+                                    }}
+                                    className="rounded-md bg-primary px-3 py-1.5 text-[11px] font-bold text-white"
+                                  >+ Add Seat Card</button>
+                                </div>
+                                <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
+                                  {(Array.isArray(sec.data?.items) ? sec.data.items : []).map((item: any, itemIndex: number, allItems: any[]) => (
+                                    <div key={itemIndex} className="relative rounded-lg border border-slate-200 bg-slate-50 p-3">
+                                      <button type="button" onClick={() => updateSectionData(sec.id, 'items', allItems.filter((_, index) => index !== itemIndex))} className="absolute right-2 top-2 rounded bg-red-50 p-1 text-red-600" title="Remove seat card"><Trash2 className="h-3.5 w-3.5" /></button>
+                                      <div className="mb-2 flex items-center gap-3 pr-8">
+                                        <ImageUploadWidget value={item.logo || ''} onChange={(url) => { const updated = [...allItems]; updated[itemIndex] = { ...updated[itemIndex], logo: url }; updateSectionData(sec.id, 'items', updated); }} subfolder="flights" compact hideManualUrl />
+                                        <span className="text-xs font-extrabold uppercase text-slate-700">Seat card #{itemIndex + 1}</span>
+                                      </div>
+                                      <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
+                                        {[
+                                          ['AIRLINE', 'airline', 'Wizz Air'], ['FLIGHT LABEL', 'flightLabel', 'Flight 1'],
+                                          ['DEPART DATE', 'departure', '18 Dec 2025'], ['RETURN DATE', 'returnDate', '02 Jan 2026'],
+                                          ['OUTBOUND ROUTE', 'route', 'LGW - JED'], ['SEATS AVAILABLE', 'seats', '40 Seats Available'],
+                                          ['BAGGAGE', 'baggage', '32 KG Baggage'], ['FARE', 'price', '£TBC / Person'],
+                                          ['BUTTON LABEL', 'bookingLabel', 'Book Now'], ['BOOKING URL', 'bookingUrl', '/contact'],
+                                        ].map(([label, key, placeholder]) => (
+                                          <label key={key} className="text-[9px] font-bold text-slate-600">
+                                            {label}
+                                            <input type="text" value={item[key] || ''} placeholder={placeholder} onChange={(e) => { const updated = [...allItems]; updated[itemIndex] = { ...updated[itemIndex], [key]: e.target.value }; updateSectionData(sec.id, 'items', updated); }} className="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-[11px] font-normal text-slate-800 outline-none focus:border-primary" />
+                                          </label>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
                             {(sec.type === 'Available Flights Grid' || sec.type === 'Flights Cards') && (
 
                               <div className="bg-white border border-slate-200 rounded-xl p-3 flex flex-col gap-3 mt-1">
@@ -8473,7 +8567,15 @@ function PageBuilderContent() {
 
                                 {getFlightsOrDefault(sec.data?.items).map((fl: any, fIdx: number) => (
 
-                                  <div key={fIdx} className="bg-white border border-slate-200 shadow-sm rounded-xl p-4 flex flex-col gap-4 relative mt-2 group">
+                                  <div key={fIdx} className="bg-slate-50 border border-slate-200 shadow-sm rounded-xl p-3 md:p-4 flex flex-col gap-3 relative mt-2 group">
+
+                                    <div className="flex items-center justify-between border-b border-slate-200 pb-2 pr-10">
+                                      <div>
+                                        <h3 className="text-xs font-extrabold uppercase tracking-wide text-slate-900">Flight card {fIdx + 1}</h3>
+                                        <p className="text-[10px] text-slate-500">Complete the compact fields below</p>
+                                      </div>
+                                      <span className="rounded-full bg-blue-100 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-primary">Editable</span>
+                                    </div>
 
                                     <div className="absolute top-2 right-2">
 
@@ -8503,13 +8605,23 @@ function PageBuilderContent() {
 
 
 
-                                    <div className="flex flex-col md:flex-row items-center gap-6">
+                                    <div className="grid grid-cols-1 gap-3 lg:grid-cols-[minmax(260px,1.05fr)_minmax(320px,1.35fr)_minmax(150px,.65fr)]">
 
                                       {/* Left Side: Logo & Airline */}
 
-                                      <div className="flex items-center gap-4 w-full md:w-[35%] pr-2">
+                                      <div className="flex items-start gap-3 rounded-lg border border-slate-200 bg-white p-3">
 
-                                        <div className="w-14 h-14 bg-primary text-white rounded flex items-center justify-center font-bold text-sm shrink-0">
+                                        <div className="w-16 shrink-0 pt-1">
+                                          <ImageUploadWidget
+                                            value={fl.logo || ''}
+                                            onChange={(url) => updateFlightField(sec.id, fIdx, 'logo', url)}
+                                            subfolder="flights"
+                                            compact={true}
+                                            hideManualUrl={true}
+                                          />
+                                        </div>
+
+                                        <div className="w-14 h-14 bg-gray-300 text-white rounded flex items-center justify-center font-bold text-sm shrink-0">
 
                                           <input
 
@@ -8527,7 +8639,7 @@ function PageBuilderContent() {
 
                                             }}
 
-                                            className="bg-transparent text-white text-center w-full font-bold outline-none placeholder:text-white/50 uppercase"
+                                            className="bg-gray-300 text-white text-center w-full font-bold outline-none placeholder:text-white uppercase"
 
                                             placeholder="PIA"
 
@@ -8537,7 +8649,17 @@ function PageBuilderContent() {
 
                                         </div>
 
-                                        <div className="flex flex-col gap-1 w-full relative">
+                                        <div className="flex flex-col gap-1.5 w-full min-w-0 pt-1">
+                                          <label className="text-[10px] font-bold uppercase tracking-wide text-slate-500">
+                                            Card badge
+                                            <input
+                                              type="text"
+                                              value={fl.badgeText || ''}
+                                              onChange={(e) => updateFlightField(sec.id, fIdx, 'badgeText', e.target.value)}
+                                              className="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1 text-xs text-slate-800 outline-none focus:border-primary"
+                                              placeholder="1A/E"
+                                            />
+                                          </label>
 
                                           <input
 
@@ -8595,7 +8717,7 @@ function PageBuilderContent() {
 
                                       {/* Middle: Route & Time */}
 
-                                      <div className="flex items-center justify-between flex-1 w-full gap-2">
+                                      <div className="flex items-center justify-between w-full gap-2 rounded-lg border border-slate-200 bg-white px-3 py-3">
 
                                         <div className="flex flex-col items-center flex-1">
 
@@ -8781,55 +8903,40 @@ function PageBuilderContent() {
 
                                       {/* Right Side: Price & Button */}
 
-                                      <div className="flex flex-col items-end justify-center w-full md:w-1/4 shrink-0 gap-1.5 md:pl-2">
+                                      <div className="flex flex-col items-end justify-center w-full gap-1.5 rounded-lg border border-slate-200 bg-white p-3">
 
-                                        <input
+                                        <label className="w-full text-[10px] font-bold uppercase tracking-wide text-slate-500">
+                                          Fare
+                                          <input
+                                            type="text"
+                                            value={fl.price || ''}
+                                            onChange={(e) => {
+                                              const currentFlights = [...getFlightsOrDefault(sec.data?.items)];
+                                              currentFlights[fIdx] = { ...currentFlights[fIdx], price: e.target.value };
+                                              updateSectionData(sec.id, 'items', currentFlights);
+                                            }}
+                                            className="mt-1 w-full border-b border-slate-300 bg-transparent p-0 text-right text-lg font-bold text-slate-900 outline-none focus:border-primary md:text-xl"
+                                            placeholder="£ 1,250.00"
+                                            title="Price"
+                                          />
+                                        </label>
 
-                                          type="text"
+                                        <label className="w-full text-[10px] font-bold uppercase tracking-wide text-slate-500">
+                                          Booking URL
+                                          <input
+                                            type="text"
+                                            value={fl.bookingUrl || ''}
+                                            onChange={(e) => {
+                                              const currentFlights = [...getFlightsOrDefault(sec.data?.items)];
+                                              currentFlights[fIdx] = { ...currentFlights[fIdx], bookingUrl: e.target.value };
+                                              updateSectionData(sec.id, 'items', currentFlights);
+                                            }}
 
-                                          value={fl.price || ''}
-
-                                          onChange={(e) => {
-
-                                            const currentFlights = [...getFlightsOrDefault(sec.data?.items)];
-
-                                            currentFlights[fIdx] = { ...currentFlights[fIdx], price: e.target.value };
-
-                                            updateSectionData(sec.id, 'items', currentFlights);
-
-                                          }}
-
-                                          className="font-bold text-lg md:text-xl text-slate-900 text-right w-full border-b border-transparent hover:border-slate-300 focus:border-primary outline-none bg-transparent p-0 placeholder:text-slate-300"
-
-                                          placeholder="£ 1,250.00"
-
-                                          title="Price"
-
-                                        />
-
-                                        <input
-
-                                          type="text"
-
-                                          value={fl.bookingUrl || ''}
-
-                                          onChange={(e) => {
-
-                                            const currentFlights = [...getFlightsOrDefault(sec.data?.items)];
-
-                                            currentFlights[fIdx] = { ...currentFlights[fIdx], bookingUrl: e.target.value };
-
-                                            updateSectionData(sec.id, 'items', currentFlights);
-
-                                          }}
-
-                                          className="text-xs bg-primary text-white text-center font-bold px-3 py-2 rounded-md outline-none w-full border border-transparent focus:border-emerald-300 placeholder:text-white/50"
-
-                                          placeholder="Booking URL..."
-
-                                          title="Booking URL"
-
-                                        />
+                                            className="mt-1 w-full rounded-md border border-slate-300 bg-white px-2 py-2 text-xs font-normal text-slate-700 outline-none focus:border-primary"
+                                            placeholder="/airline-tickets-booking"
+                                            title="Booking URL"
+                                          />
+                                        </label>
 
                                       </div>
 
@@ -8837,32 +8944,95 @@ function PageBuilderContent() {
 
 
 
-                                    <div className="border-t border-dashed border-slate-200 pt-3 mt-1 flex justify-between items-center text-[10px] text-slate-400 gap-4">
-
-                                      <span className="whitespace-nowrap">FLIGHT #{fIdx + 1}</span>
-
-                                      <input
-
-                                        type="text"
-
-                                        value={fl.priceSubtext || ''}
-
-                                        onChange={(e) => {
-
-                                          const currentFlights = [...getFlightsOrDefault(sec.data?.items)];
-
-                                          currentFlights[fIdx] = { ...currentFlights[fIdx], priceSubtext: e.target.value };
-
-                                          updateSectionData(sec.id, 'items', currentFlights);
-
-                                        }}
-
-                                        className="text-right w-full border-b border-transparent hover:border-slate-300 focus:border-primary outline-none bg-transparent p-0"
-
-                                        placeholder="Price Per Person (Incl. Taxes & Fees)"
-
-                                      />
-
+                                    <div className="rounded-lg border border-blue-100 bg-blue-50/50 p-3">
+                                      <div className="mb-2 flex items-center justify-between">
+                                        <div>
+                                          <h4 className="text-xs font-extrabold uppercase tracking-wide text-primary">Detailed itinerary</h4>
+                                          <p className="text-[10px] text-slate-500">Dates, legs, classes and layovers</p>
+                                        </div>
+                                      </div>
+                                      <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
+                                      {[
+                                        { label: 'OUT DATE FROM', path: 'outbound.date', placeholder: '', inputType: 'date' },
+                                        { label: 'OUT DATE TO', path: 'outbound.dateEnd', placeholder: '', inputType: 'date' },
+                                        { label: 'OUT 1 CLASS', path: 'outbound.first.className', placeholder: '1A/E' },
+                                        { label: 'OUT 1 CODE', path: 'outbound.first.code', placeholder: 'LHR' },
+                                        { label: 'OUT 1 CITY', path: 'outbound.first.city', placeholder: 'London' },
+                                        { label: 'OUT 1 TIME', path: 'outbound.first.time', placeholder: '', inputType: 'time' },
+                                        { label: 'OUT 1 FLIGHT', path: 'outbound.first.flightNumber', placeholder: 'PK 782' },
+                                        { label: 'OUT VIA CODE', path: 'outbound.via.code', placeholder: 'CAI' },
+                                        { label: 'OUT VIA CITY', path: 'outbound.via.city', placeholder: 'Cairo' },
+                                        { label: 'OUT VIA ARRIVAL', path: 'outbound.via.arrivalTime', placeholder: '', inputType: 'time' },
+                                        { label: 'OUT VIA DEPART', path: 'outbound.via.departureTime', placeholder: '', inputType: 'time' },
+                                        { label: 'OUT 2 FLIGHT', path: 'outbound.via.flightNumber', placeholder: 'MS 782' },
+                                        { label: 'OUT 2 CLASS', path: 'outbound.via.className', placeholder: '1A/E' },
+                                        { label: 'OUT FINAL CODE', path: 'outbound.second.code', placeholder: 'JED' },
+                                        { label: 'OUT FINAL CITY', path: 'outbound.second.city', placeholder: 'Jeddah' },
+                                        { label: 'OUT FINAL TIME', path: 'outbound.second.time', placeholder: '', inputType: 'time' },
+                                        { label: 'OUT FINAL FLIGHT', path: 'outbound.second.flightNumber', placeholder: 'MS 663' },
+                                        { label: 'OUT FINAL CLASS', path: 'outbound.second.className', placeholder: '1A/E' },
+                                        { label: 'OUT LAYOVER', path: 'outbound.layoverText', placeholder: 'Layover in Cairo' },
+                                        { label: 'OUT DURATION', path: 'outbound.layoverDuration', placeholder: '5h 00m' },
+                                        { label: 'RET DATE', path: 'return.date', placeholder: '', inputType: 'date' },
+                                        { label: 'RET 1 CLASS', path: 'return.first.className', placeholder: '1A/E' },
+                                        { label: 'RET 1 CODE', path: 'return.first.code', placeholder: 'MED' },
+                                        { label: 'RET 1 CITY', path: 'return.first.city', placeholder: 'Madinah' },
+                                        { label: 'RET 1 TIME', path: 'return.first.time', placeholder: '', inputType: 'time' },
+                                        { label: 'RET 1 FLIGHT', path: 'return.first.flightNumber', placeholder: 'MS 694' },
+                                        { label: 'RET VIA CODE', path: 'return.via.code', placeholder: 'CAI' },
+                                        { label: 'RET VIA CITY', path: 'return.via.city', placeholder: 'Cairo' },
+                                        { label: 'RET VIA ARRIVAL', path: 'return.via.arrivalTime', placeholder: '', inputType: 'time' },
+                                        { label: 'RET VIA DEPART', path: 'return.via.departureTime', placeholder: '', inputType: 'time' },
+                                        { label: 'RET 2 FLIGHT', path: 'return.via.flightNumber', placeholder: 'MS 694' },
+                                        { label: 'RET 2 CLASS', path: 'return.via.className', placeholder: '1A/E' },
+                                        { label: 'RET FINAL CODE', path: 'return.second.code', placeholder: 'MAN' },
+                                        { label: 'RET FINAL CITY', path: 'return.second.city', placeholder: 'Manchester' },
+                                        { label: 'RET FINAL TIME', path: 'return.second.time', placeholder: '', inputType: 'time' },
+                                        { label: 'RET FINAL FLIGHT', path: 'return.second.flightNumber', placeholder: 'MS 781' },
+                                        { label: 'RET FINAL CLASS', path: 'return.second.className', placeholder: '1A/E' },
+                                        { label: 'RET LAYOVER', path: 'return.layoverText', placeholder: 'Layover in Cairo' },
+                                        { label: 'RET DURATION', path: 'return.layoverDuration', placeholder: '2h 50m' },
+                                        { label: 'AVAILABLE SEATS', path: 'seatsValue', placeholder: 'Confirmed (HK20)' },
+                                        { label: 'PRICE NOTE', path: 'priceSubtext', placeholder: 'per person, round trip' },
+                                        { label: 'BUTTON TEXT', path: 'bookingLabel', placeholder: 'Select this route' },
+                                      ].map((field, fieldIndex) => (
+                                        <Fragment key={field.path}>
+                                          {fieldIndex === 0 && (
+                                            <div className="col-span-2 border-b border-blue-200 pb-1 text-[10px] font-extrabold uppercase tracking-wider text-primary md:col-span-4">
+                                              Outbound journey
+                                            </div>
+                                          )}
+                                          {field.path === 'return.date' && (
+                                            <div className="col-span-2 mt-2 border-b border-blue-200 pb-1 text-[10px] font-extrabold uppercase tracking-wider text-primary md:col-span-4">
+                                              Return journey
+                                            </div>
+                                          )}
+                                          <label className="text-[10px] font-bold text-slate-600">
+                                            {field.label}
+                                            {field.inputType === 'time' ? (
+                                              <select
+                                                value={toTimeInputValue(getFlightField(fl, field.path))}
+                                                onChange={(e) => updateFlightField(sec.id, fIdx, field.path, e.target.value)}
+                                                className="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-[11px] font-normal text-slate-800 outline-none focus:border-primary"
+                                              >
+                                                <option value="">Select time</option>
+                                                {timeOptions.map((option) => (
+                                                  <option key={option.value} value={option.value}>{option.label}</option>
+                                                ))}
+                                              </select>
+                                            ) : (
+                                              <input
+                                                type={field.inputType === 'date' ? 'date' : 'text'}
+                                                value={field.inputType === 'date' ? toDateInputValue(getFlightField(fl, field.path)) : getFlightField(fl, field.path)}
+                                                onChange={(e) => updateFlightField(sec.id, fIdx, field.path, e.target.value)}
+                                                placeholder={field.placeholder}
+                                                className="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-[11px] font-normal text-slate-800 outline-none focus:border-primary"
+                                              />
+                                            )}
+                                          </label>
+                                        </Fragment>
+                                      ))}
+                                      </div>
                                     </div>
 
                                   </div>
