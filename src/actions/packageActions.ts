@@ -160,6 +160,10 @@ export async function createPackage(formData: FormData): Promise<{ success: bool
     const cardDataStr = formData.get('cardData') as string || '';
     const cardData = cardDataStr ? JSON.parse(cardDataStr) : null;
 
+    // Optional category assignment (Umrah/Hajj package categories)
+    const rawCategoryId = formData.get('categoryId') as string | null;
+    const categoryId = rawCategoryId ? Number(rawCategoryId) : null;
+
     // Umrah-only gallery. Hajj creation does not read or write this field.
     const packagesGalleryStr = formData.get('packagesGallery') as string || '';
     const packagesGallery = packagesGalleryStr
@@ -180,6 +184,7 @@ export async function createPackage(formData: FormData): Promise<{ success: bool
       title,
       type,
       slug,
+      categoryId: categoryId && !isNaN(categoryId) ? categoryId : null,
       month: sanitizedMonth,
       startingPrice,
       starRating,
@@ -230,6 +235,7 @@ export async function updatePackageAction(
     featuredImage?: string;
     departureCity?: string;
     destination?: string;
+    categoryId?: number | null;
     cardData?: any;
     detailPageData?: any;
     packagesGallery?: string[];
@@ -255,6 +261,7 @@ export async function updatePackageAction(
       title: data.title,
       slug: data.slug,
       type: data.type,
+      categoryId: data.categoryId !== undefined ? (data.categoryId || null) : undefined,
       month: sanitizedMonth !== undefined ? sanitizedMonth : data.month,
       startingPrice: data.startingPrice,
       starRating: data.starRating,

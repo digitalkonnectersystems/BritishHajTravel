@@ -1,9 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { createPackage, updatePackageAction, deletePackage, updatePackageStatus, updatePackageOrderAction } from '@/actions/packageActions';
+import {
+  getPackageCategories,
+  createPackageCategoryAction,
+  updatePackageCategoryAction,
+  deletePackageCategoryAction,
+  updatePackageCategoryOrderAction,
+  updatePackageCategoryAssignmentAction,
+  PackageCategoryWithCount,
+} from '@/actions/packageCategoryActions';
 import ConfirmModal, { ConfirmModalConfig } from '@/components/ui/ConfirmModal';
-import { Trash2, Edit2, Plus, Sparkles, Sliders, X, BookOpen, Hotel, Plane, GripVertical, Utensils } from 'lucide-react';
+import { Trash2, Edit2, Plus, Sparkles, Sliders, X, BookOpen, Hotel, Plane, GripVertical, Utensils, Tags, ChevronUp, ChevronDown, Pencil, Check } from 'lucide-react';
 import SeoCenterModal from '@/components/admin/SeoCenterModal';
 import ImageUploadWidget from '@/components/admin/ImageUploadWidget';
 import DetailPageDataFields from '@/components/admin/DetailPageDataFields';
@@ -553,6 +562,28 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
   const [activeTab, setActiveTab] = useState<'umrah' | 'hajj'>(defaultTab);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
+  // ── Package Categories state ───────────────────────────────────────────────
+  const [categories, setCategories] = useState<PackageCategoryWithCount[]>([]);
+  const [showCategories, setShowCategories] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
+  const [editingCategoryId, setEditingCategoryId] = useState<number | null>(null);
+  const [editingCategoryName, setEditingCategoryName] = useState('');
+  const [catBusy, setCatBusy] = useState(false);
+  const [newPkgCategoryId, setNewPkgCategoryId] = useState<string>('');
+
+  const loadCategories = useCallback(async (type: 'umrah' | 'hajj') => {
+    try {
+      const list = await getPackageCategories(type);
+      setCategories(list || []);
+    } catch (err) {
+      console.error('Failed to load package categories', err);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadCategories(activeTab);
+  }, [activeTab, loadCategories]);
+
   const blankPkg = (type: 'hajj' | 'umrah') => ({
     title: '',
     slug: '',
@@ -612,6 +643,7 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
     formData.append('shortDescription', newPkg.shortDescription);
     formData.append('fullDescription', newPkg.fullDescription);
     formData.append('inclusions', newPkg.inclusions);
+    if (newPkgCategoryId) formData.append('categoryId', newPkgCategoryId);
     if (newPkg.cardData) formData.append('cardData', JSON.stringify(newPkg.cardData));
     const gallery = (Array.isArray(newPkg.packagesGallery) ? newPkg.packagesGallery : []).filter(Boolean);
     formData.append('packagesGallery', JSON.stringify(gallery));
@@ -653,6 +685,80 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
     setPackagesList(prev => prev.map(p => (p.id === id ? { ...p, status: nextStatus } : p)));
   };
 
+  // ── Category handlers ──────────────────────────────────────────────────────
+  const handleCreateCategory = async () => {
+    const name = newCategoryName.trim();
+    if (!name || catBusy) return;
+    setCatBusy(true);
+    const res = await createPackageCategoryAction({ name, type: activeTab });
+    setCatBusy(false);
+    if (res.success) {
+      setNewCategoryName('');
+      await loadCategories(activeTab);
+      setSaveMsg('✓ Category created!');
+      setTimeout(() => setSaveMsg(null), 3000);
+    } else {
+      alert(res.error || 'Failed to create category.');
+    }
+  };
+
+  const handleRenameCategory = async (id: number) => {
+    const name = editingCategoryName.trim();
+    if (!name || catBusy) return;
+    setCatBusy(true);
+    const res = await updatePackageCategoryAction(id, { name });
+    setCatBusy(false);
+    if (res.success) {
+      setEditingCategoryId(null);
+      setEditingCategoryName('');
+      await loadCategories(activeTab);
+      setSaveMsg('✓ Category updated!');
+      setTimeout(() => setSaveMsg(null), 3000);
+    } else {
+      alert(res.error || 'Failed to update category.');
+    }
+  };
+
+  const handleDeleteCategory = (id: number, name: string, count: number) => {
+    setConfirmConfig({
+      icon: <Trash2 className="w-4 h-4 text-red-600" />,
+      title: `Delete category "${name}"?`,
+      message: count > 0
+        ? `${count} package(s) are assigned to this category. They will become uncategorised — the packages themselves are NOT deleted.`
+        : 'Are you sure you want to delete this category? This cannot be undone.',
+      confirmText: 'Yes, Delete Category',
+      cancelText: 'Cancel',
+      variant: 'danger',
+      onConfirm: async () => {
+        await deletePackageCategoryAction(id);
+        await loadCategories(activeTab);
+        setSaveMsg('Category deleted.');
+        setTimeout(() => setSaveMsg(null), 3000);
+      },
+    });
+  };
+
+  const handleMoveCategory = async (index: number, direction: -1 | 1) => {
+    const next = [...categories];
+    const target = index + direction;
+    if (target < 0 || target >= next.length) return;
+    [next[index], next[target]] = [next[target], next[index]];
+    setCategories(next);
+    await updatePackageCategoryOrderAction(next.map(c => c.id));
+  };
+
+  const handleAssignCategory = async (packageId: number, categoryId: string) => {
+    setPackagesList(prev => prev.map(p => (p.id === packageId ? { ...p, categoryId: categoryId ? Number(categoryId) : null } : p)));
+    const res = await updatePackageCategoryAssignmentAction(packageId, categoryId ? Number(categoryId) : null);
+    if (res.success) {
+      setSaveMsg('✓ Category assigned!');
+      setTimeout(() => setSaveMsg(null), 2500);
+      await loadCategories(activeTab);
+    } else {
+      alert(res.error || 'Failed to assign category.');
+    }
+  };
+
   // ── render ─────────────────────────────────────────────────────────────────
 
   const filteredPkgs = packagesList.filter(pkg => pkg.type === activeTab);
@@ -673,6 +779,17 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
         </div>
         <div className="flex items-center gap-3">
           {saveMsg && <span className="text-xs font-bold text-primary animate-in fade-in">{saveMsg}</span>}
+          <button
+            type="button"
+            onClick={() => setShowCategories(!showCategories)}
+            className={`px-5 py-2.5 rounded-full text-xs font-extrabold transition-colors cursor-pointer border shadow-md flex items-center gap-2 ${showCategories
+              ? 'bg-primary text-white border-primary hover:bg-white hover:text-primary'
+              : 'bg-white text-slate-700 border-slate-200 hover:border-primary hover:text-primary'
+              }`}
+          >
+            <Tags className="w-4 h-4" />
+            {showCategories ? 'Hide Categories' : 'Manage Categories'}
+          </button>
           <button
             type="button"
             onClick={() => {
@@ -780,6 +897,20 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
                     </select>
                   </div>
 
+                  <div>
+                    <label className="text-xs font-bold text-slate-700 block mb-1">Package Category</label>
+                    <select
+                      value={newPkgCategoryId}
+                      onChange={e => setNewPkgCategoryId(e.target.value)}
+                      className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-xs outline-none focus:border-primary bg-white"
+                    >
+                      <option value="">Uncategorised</option>
+                      {categories.map(cat => (
+                        <option key={cat.id} value={String(cat.id)}>{cat.name}</option>
+                      ))}
+                    </select>
+                  </div>
+
                   <div className="col-span-full">
                     <label className="text-xs font-bold text-slate-700 block mb-1">Short Summary</label>
                     <input
@@ -820,6 +951,136 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
         )
       }
 
+      {/* ── Package Categories Panel ────────────────────────────────────────── */}
+      {
+        showCategories && (
+          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm animate-in fade-in">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-4">
+              <h3 className="text-sm font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-2 m-0">
+                <Tags className="w-4 h-4 text-primary" />
+                {activeTab === 'hajj' ? 'Hajj' : 'Umrah'} Package Categories
+              </h3>
+              <span className="text-[10px] text-slate-400 font-medium">Group packages into categories — assign them per package in the table below</span>
+            </div>
+
+            {/* Add category */}
+            <div className="flex items-center gap-2 mb-4">
+              <input
+                type="text"
+                placeholder="e.g. Ramadan Umrah, Luxury 5-Star, Budget, Family, December Group..."
+                value={newCategoryName}
+                onChange={e => setNewCategoryName(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleCreateCategory(); } }}
+                className="flex-1 px-3.5 py-2.5 border border-slate-200 rounded-xl text-xs outline-none focus:border-primary"
+              />
+              <button
+                type="button"
+                onClick={handleCreateCategory}
+                disabled={catBusy || !newCategoryName.trim()}
+                className="bg-primary text-white px-4 py-2.5 rounded-full text-xs font-extrabold border-none cursor-pointer shadow-md hover:bg-white hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 shrink-0"
+              >
+                <Plus className="w-3.5 h-3.5" /> Add Category
+              </button>
+            </div>
+
+            {/* Category list */}
+            {categories.length === 0 ? (
+              <p className="text-xs text-slate-400 italic py-6 text-center border border-dashed border-slate-200 rounded-xl">
+                No categories yet. Add your first {activeTab === 'hajj' ? 'Hajj' : 'Umrah'} package category above.
+              </p>
+            ) : (
+              <div className="divide-y divide-slate-100 border border-slate-100 rounded-2xl overflow-hidden">
+                {categories.map((cat, idx) => (
+                  <div key={cat.id} className="flex items-center gap-3 px-4 py-3 bg-white hover:bg-slate-50/60 transition-colors">
+                    {/* Reorder */}
+                    <div className="flex flex-col gap-0.5 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => handleMoveCategory(idx, -1)}
+                        disabled={idx === 0}
+                        title="Move up"
+                        className="w-5 h-4 rounded bg-slate-100 hover:bg-primary hover:text-white text-slate-500 flex items-center justify-center border-none cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                      >
+                        <ChevronUp className="w-3 h-3" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleMoveCategory(idx, 1)}
+                        disabled={idx === categories.length - 1}
+                        title="Move down"
+                        className="w-5 h-4 rounded bg-slate-100 hover:bg-primary hover:text-white text-slate-500 flex items-center justify-center border-none cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                      >
+                        <ChevronDown className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    {/* Name */}
+                    {editingCategoryId === cat.id ? (
+                      <input
+                        type="text"
+                        value={editingCategoryName}
+                        onChange={e => setEditingCategoryName(e.target.value)}
+                        onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleRenameCategory(cat.id); } }}
+                        autoFocus
+                        className="flex-1 min-w-0 px-3 py-1.5 border border-primary rounded-lg text-xs outline-none"
+                      />
+                    ) : (
+                      <div className="flex-1 min-w-0">
+                        <div className="text-xs font-bold text-slate-900 truncate">{cat.name}</div>
+                        <div className="text-[10px] font-mono text-slate-400 truncate">/{cat.slug}</div>
+                      </div>
+                    )}
+
+                    {/* Package count */}
+                    <span className="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200 whitespace-nowrap shrink-0">
+                      {cat.packageCount} pkg{cat.packageCount === 1 ? '' : 's'}
+                    </span>
+
+                    {/* Published badge */}
+                    <span className={`text-[10px] font-extrabold px-2.5 py-1 rounded-full border whitespace-nowrap shrink-0 ${cat.isPublished
+                      ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                      : 'bg-slate-100 text-slate-500 border-slate-200'
+                      }`}
+                    >
+                      {cat.isPublished ? '● Published' : '● Hidden'}
+                    </span>
+
+                    {/* Actions */}
+                    {editingCategoryId === cat.id ? (
+                      <button
+                        type="button"
+                        onClick={() => handleRenameCategory(cat.id)}
+                        title="Save name"
+                        className="w-7 h-7 rounded-full bg-emerald-50 hover:bg-primary text-emerald-700 hover:text-white flex items-center justify-center border-none cursor-pointer transition-all shrink-0"
+                      >
+                        <Check className="w-3.5 h-3.5" />
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => { setEditingCategoryId(cat.id); setEditingCategoryName(cat.name); }}
+                        title="Rename category"
+                        className="w-7 h-7 rounded-full bg-slate-100 hover:bg-primary text-slate-600 hover:text-white flex items-center justify-center border-none cursor-pointer transition-all shrink-0"
+                      >
+                        <Pencil className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteCategory(cat.id, cat.name, cat.packageCount)}
+                      title="Delete category"
+                      className="w-7 h-7 rounded-full bg-red-50 hover:bg-red-600 text-red-600 hover:text-white flex items-center justify-center border-none cursor-pointer transition-all shrink-0"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )
+      }
+
       {/* ── Packages Table ──────────────────────────────────────────────────── */}
       <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
@@ -829,6 +1090,7 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
                 <th className="py-3 px-3 w-10 text-center text-slate-400" title="Drag to reorder">⋮⋮</th>
                 <th className="py-3 px-4">Package Title</th>
                 <th className="py-3 px-4">Type</th>
+                <th className="py-3 px-4">Category</th>
                 <th className="py-3 px-4">Month</th>
                 <th className="py-3 px-4">Starting Price</th>
                 <th className="py-3 px-4">Status</th>
@@ -838,7 +1100,7 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
             <tbody className="divide-y divide-slate-100">
               {filteredPkgs.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-slate-400 text-xs">
+                  <td colSpan={8} className="py-12 text-center text-slate-400 text-xs">
                     No packages found. Click "Create New {activeTab === 'hajj' ? 'Hajj' : 'Umrah'} Package" to add one.
                   </td>
                 </tr>
@@ -878,6 +1140,19 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
                           }`}>
                           {pkg.type === 'hajj' ? '🕌 Hajj' : '🕋 Umrah'}
                         </span>
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <select
+                          value={pkg.categoryId ? String(pkg.categoryId) : ''}
+                          onChange={(e) => handleAssignCategory(pkg.id, e.target.value)}
+                          title="Assign package category"
+                          className="px-2 py-1.5 rounded-lg border border-slate-200 bg-white text-[11px] font-semibold text-slate-700 outline-none focus:border-primary cursor-pointer max-w-[150px] truncate hover:border-primary transition-colors"
+                        >
+                          <option value="">Uncategorised</option>
+                          {categories.map(cat => (
+                            <option key={cat.id} value={String(cat.id)}>{cat.name}</option>
+                          ))}
+                        </select>
                       </td>
                       <td className={`py-3.5 px-4 font-medium ${isSoldOut ? 'text-red-400 line-through' : 'text-slate-600'}`}>
                         {formatTravelMonth(pkg.month) || 'Flexible'}

@@ -18,6 +18,8 @@ import { getPageById, savePageAction } from '@/actions/pageActions';
 
 import { getAllPackages } from '@/actions/packageActions';
 
+import { getPackageCategories } from '@/actions/packageCategoryActions';
+
 import ConfirmModal, { ConfirmModalConfig } from '@/components/ui/ConfirmModal';
 
 import { Trash2, Upload, Settings, MoveUp, MoveDown, ArrowUp, ArrowDown, GripVertical, ArrowLeft, ArrowRight, Plus, RefreshCw, Image as ImageIcon } from 'lucide-react';
@@ -69,6 +71,38 @@ function getYouTubeVideoId(value: string): string | null {
     return /^[a-zA-Z0-9_-]{11}$/.test(trimmed) ? trimmed : null;
 
   }
+
+}
+
+
+
+/** Filter packages for the Packages Selector dropdown based on the chosen category. */
+
+function filterPackagesForCategory(secType: string, selectedCategory: string, packages: any[]): any[] {
+
+  const isHajjSection = secType === 'Hajj Packages' || secType === 'Upcoming Hajj Packages';
+
+  return (packages || []).filter((p) => {
+
+    if (secType === 'Sold Out Packages') {
+
+      if (p.status !== 'sold_out') return false;
+
+    } else if (p.type !== (isHajjSection ? 'hajj' : 'umrah')) {
+
+      return false;
+
+    }
+
+    if (!selectedCategory) return false;
+
+    if (selectedCategory === 'all') return true;
+
+    if (selectedCategory === 'none') return p.categoryId == null;
+
+    return Number(p.categoryId) === Number(selectedCategory);
+
+  });
 
 }
 
@@ -511,6 +545,10 @@ function PageBuilderContent() {
 
   const [allPackages, setAllPackages] = useState<any[]>([]);
 
+  const [packageCategories, setPackageCategories] = useState<any[]>([]);
+
+  const [selectedCategoryBySection, setSelectedCategoryBySection] = useState<Record<string, string>>({});
+
   const [draggedPackageIdx, setDraggedPackageIdx] = useState<number | null>(null);
 
   const [draggedBrochure, setDraggedBrochure] = useState<{ secId: string; index: number } | null>(null);
@@ -520,6 +558,12 @@ function PageBuilderContent() {
   useEffect(() => {
 
     getAllPackages().then(setAllPackages).catch(console.error);
+
+    Promise.all([getPackageCategories('umrah'), getPackageCategories('hajj')])
+
+      .then(([umrahCats, hajjCats]) => setPackageCategories([...(umrahCats || []), ...(hajjCats || [])]))
+
+      .catch(console.error);
 
   }, []);
 
@@ -6283,7 +6327,7 @@ function PageBuilderContent() {
 
                                 <div className="text-[11px] text-white mb-2">
 
-                                  Add packages from the dropdown below. Drag and drop to reorder.
+                                  Select a category first — all packages in that category will appear. Pick one to add it, or use "Add all". Drag and drop to reorder.
 
                                 </div>
 
@@ -6291,23 +6335,75 @@ function PageBuilderContent() {
 
                                 <div className="flex flex-col gap-2">
 
-                                  {/* Dropdown to add new packages */}
+                                  {/* Category dropdown: pick a category to reveal all packages in it */}
 
                                   <select
 
                                     className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs outline-none focus:border-primary bg-slate-50"
 
+                                    value={selectedCategoryBySection[sec.id] || ''}
+
+                                    onChange={(e) => setSelectedCategoryBySection((prev) => ({ ...prev, [sec.id]: e.target.value }))}
+
+                                  >
+
+                                    <option value="">+ Select a category to view packages</option>
+
+                                    <option value="all">All packages</option>
+
+                                    <option value="none">Uncategorised packages</option>
+
+                                    {packageCategories
+
+                                      .filter(c => (sec.type === 'Sold Out Packages') ? true : c.type === ((sec.type === 'Hajj Packages' || sec.type === 'Upcoming Hajj Packages') ? 'hajj' : 'umrah'))
+
+                                      .map(c => (
+
+                                        <option key={c.id} value={String(c.id)}>
+
+                                          {sec.type === 'Sold Out Packages' ? `${c.type === 'hajj' ? 'Hajj' : 'Umrah'} - ` : ''}{c.name} ({c.packageCount} {c.packageCount === 1 ? 'package' : 'packages'})
+
+                                        </option>
+
+                                      ))
+
+                                    }
+
+                                  </select>
+
+                                  {/* Packages belonging to the selected category */}
+
+                                  <select
+
+                                    className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs outline-none focus:border-primary bg-slate-50"
+
+                                    disabled={!selectedCategoryBySection[sec.id]}
+
                                     onChange={(e) => {
 
                                       if (!e.target.value) return;
 
-                                      const pkgId = Number(e.target.value);
-
                                       const currentIds = sec.data?.packageIds || [];
 
-                                      if (!currentIds.includes(pkgId)) {
+                                      const available = filterPackagesForCategory(sec.type, selectedCategoryBySection[sec.id] || '', allPackages).filter(p => !currentIds.includes(p.id));
 
-                                        updateSectionData(sec.id, 'packageIds', [...currentIds, pkgId]);
+                                      if (e.target.value === '__add_all__') {
+
+                                        if (available.length > 0) {
+
+                                          updateSectionData(sec.id, 'packageIds', [...currentIds, ...available.map(p => p.id)]);
+
+                                        }
+
+                                      } else {
+
+                                        const pkgId = Number(e.target.value);
+
+                                        if (!currentIds.includes(pkgId)) {
+
+                                          updateSectionData(sec.id, 'packageIds', [...currentIds, pkgId]);
+
+                                        }
 
                                       }
 
@@ -6319,19 +6415,17 @@ function PageBuilderContent() {
 
                                     <option value="">+ Select a package to add</option>
 
-                                    {allPackages
+                                    {selectedCategoryBySection[sec.id] ? (
 
-                                      .filter(p => {
+                                      <option value="__add_all__">
 
-                                        if (sec.type === 'Sold Out Packages') {
+                                        + Add all {filterPackagesForCategory(sec.type, selectedCategoryBySection[sec.id], allPackages).filter(p => !(sec.data?.packageIds || []).includes(p.id)).length} packages from this category
 
-                                          return p.status === 'sold_out';
+                                      </option>
 
-                                        }
+                                    ) : null}
 
-                                        return p.type === ((sec.type === 'Hajj Packages' || sec.type === 'Upcoming Hajj Packages') ? 'hajj' : 'umrah');
-
-                                      })
+                                    {filterPackagesForCategory(sec.type, selectedCategoryBySection[sec.id] || '', allPackages)
 
                                       .filter(p => !(sec.data?.packageIds || []).includes(p.id))
 

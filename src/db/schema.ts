@@ -36,10 +36,24 @@ export const sessions = mysqlTable('sessions', {
   expiresAt: timestamp('expires_at').notNull(),
 });
 
+// 2a. Package Categories (admin-managed grouping for Umrah/Hajj packages)
+export const packageCategories = mysqlTable('package_categories', {
+  id: int('id').autoincrement().primaryKey(),
+  type: mysqlEnum('type', ['umrah', 'hajj']).notNull().default('umrah'),
+  name: varchar('name', { length: 120 }).notNull(),
+  slug: varchar('slug', { length: 120 }).notNull().unique(),
+  description: varchar('description', { length: 255 }),
+  displayOrder: int('display_order').notNull().default(0),
+  isPublished: boolean('is_published').notNull().default(true),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow().onUpdateNow(),
+});
+
 // 3. Packages (Hajj & Umrah)
 export const packages = mysqlTable('packages', {
   id: int('id').autoincrement().primaryKey(),
   type: mysqlEnum('type', ['umrah', 'hajj']).notNull(),
+  categoryId: int('category_id').references(() => packageCategories.id, { onDelete: 'set null' }),
   title: varchar('title', { length: 255 }).notNull(),
   slug: varchar('slug', { length: 128 }).notNull().unique(),
   shortDescription: text('short_description'),
