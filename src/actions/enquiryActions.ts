@@ -68,6 +68,7 @@ export async function submitQuoteEnquiryAction(data: {
     return {
       success: true,
       enquiryNumber,
+      emailWarning: emailResult.error,
       message: 'Thank you! Your quote request has been submitted. Our specialist will contact you shortly.',
     };
   } catch (error: any) {
@@ -172,6 +173,7 @@ export async function submitPackageBookingEnquiryAction(data: {
     return {
       success: true,
       bookingNumber,
+      emailWarning: emailResult.error,
       message: 'Your package booking request has been sent successfully!',
     };
   } catch (error: any) {
@@ -226,7 +228,7 @@ export async function submitContactEnquiryAction(data: {
     });
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
-    dispatchFormEmails('Contact Us Form', {
+    const emailResult = await dispatchFormEmails('Contact Us Form', {
       ticketNumber,
       fullName,
       email,
@@ -241,6 +243,7 @@ export async function submitContactEnquiryAction(data: {
     return {
       success: true,
       ticketNumber,
+      emailWarning: emailResult.error,
       message: 'Thank you!.',
     };
   } catch (error: any) {
@@ -308,7 +311,7 @@ export async function submitVisaEnquiryAction(data: {
     });
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
-    dispatchFormEmails('Visa Consultation Form', {
+    const emailResult = await dispatchFormEmails('Visa Consultation Form', {
       enquiryNumber,
       visaTitle,
       fullName,
@@ -321,7 +324,7 @@ export async function submitVisaEnquiryAction(data: {
 
     revalidatePath('/admin/enquiries');
     revalidatePath('/admin/dashboard');
-    return { success: true, enquiryNumber, message: 'Visa consultation request received!' };
+    return { success: true, enquiryNumber, emailWarning: emailResult.error, message: 'Visa consultation request received!' };
   } catch (error: any) {
     console.error('Error submitting visa enquiry:', error);
     return { success: false, error: 'Failed to submit visa enquiry.' };
@@ -448,7 +451,7 @@ export async function submitFlightInquiry(data: {
     });
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
-    dispatchFormEmails('Flight Booking Form', {
+    const emailResult = await dispatchFormEmails('Flight Booking Form', {
       enquiryNumber,
       fullName,
       email,
@@ -465,7 +468,7 @@ export async function submitFlightInquiry(data: {
 
     revalidatePath('/admin/enquiries');
     revalidatePath('/admin/dashboard');
-    return { success: true, enquiryNumber, message: 'Flight booking request received!' };
+    return { success: true, enquiryNumber, emailWarning: emailResult.error, message: 'Flight booking request received!' };
   } catch (error: any) {
     console.error('Error submitting flight enquiry:', error);
     return { success: false, error: 'Failed to submit flight enquiry.' };

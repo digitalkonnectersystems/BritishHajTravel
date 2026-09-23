@@ -47,6 +47,7 @@ export default function PageBanner({
     try { parsedHeroSettings = JSON.parse(heroSettings); } catch { parsedHeroSettings = null; }
   }
   const storedHeroSettings = parsedHeroSettings?.innerHero || parsedHeroSettings?.saudiVisaHero || {};
+  const showHeroSupport = storedHeroSettings.showSupport !== false;
   const resolvedEyebrow = eyebrow || storedHeroSettings.eyebrow;
   const saudiFeatures = (features?.length ? features : storedHeroSettings.features)?.length
     ? (features?.length ? features : storedHeroSettings.features)
@@ -70,7 +71,7 @@ export default function PageBanner({
         : 'text-center py-20 !px-5 h-[420px] max-h-[420px] flex flex-col items-center justify-center'}`}
     >
       <div className={`w-full z-10 ${isInnerBanner ? 'max-w-[1400px] px-5 sm:px-10 lg:px-14' : 'mx-auto'}`}>
-        {isInnerBanner && (
+        {isInnerBanner && showHeroSupport && (
           <div className="mb-7 inline-flex items-center gap-3 rounded-full bg-[#173b8e] px-5 py-3 text-sm font-bold uppercase tracking-wide text-white shadow-lg">
             <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current" strokeWidth="2">
               <path d="M2.5 16.5 21 9l-6.5 5.5-3.5 7-2-6-6.5 1Z" />
@@ -90,10 +91,10 @@ export default function PageBanner({
             {description}
           </p>
         )}
-        {isInnerBanner && (
+        {isInnerBanner && showHeroSupport && (
           <div className="mt-9 flex max-w-[760px] items-center gap-7 text-left max-sm:grid max-sm:grid-cols-1 max-sm:gap-4">
             {saudiFeatures.map(({ icon = 'document', first = '', second = '' }, index: number) => (
-              <React.Fragment key={icon}>
+              <React.Fragment key={`${icon}-${index}`}>
                 {index > 0 && <span className="h-14 w-px bg-white/25 max-sm:hidden" />}
                 <div className="flex items-center gap-4">
                   <span className="flex h-[72px] w-[72px] shrink-0 items-center justify-center rounded-full bg-[#12357f] text-white shadow-inner">

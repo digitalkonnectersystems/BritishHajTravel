@@ -7,36 +7,39 @@ import UmrahVisaApplicationSection from "@/components/UmrahVisaApplicationSectio
 import UmrahVisaServicesOverviewSection from "@/components/UmrahVisaServicesOverviewSection";
 import UmrahVisaDocumentGuideSection from "@/components/UmrahVisaDocumentGuideSection";
 
-function VisaProcessStepsSection({ data }: { data?: any }) {
+function ProcessStepsSection({ data }: { data?: any }) {
   return (
-    <section className="visa-section py-12 bg-emerald-950 text-white">
+    <section
+      className="py-12 bg-white text-white"
+      style={data?.backgroundImage ? { backgroundImage: `linear-gradient(90deg, rgba(3, 19, 65, .0), rgba(3, 19, 65, .0)), url("${String(data.backgroundImage).replace(/"/g, "'")}")`, backgroundPosition: data.backgroundPosition || 'center', backgroundSize: data.backgroundSize || 'cover' } : undefined}
+    >
       <div className="max-w-[1400px] mx-auto px-5 visa-grid-bottom grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
         <div className="visa-info-pane space-y-6">
           <span className="eyebrow">
             {data?.eyebrow || "IN 3 EASY STEPS"}
           </span>
-          <h2 className="text-3xl font-serif text-white">
+          <h2 className="text-3xl font-serif text-primary">
             {data?.title || "Get Your Saudi Visa"}
           </h2>
-          <p className="visa-description text-sm opacity-90 leading-relaxed font-light">
+          <p className="visa-description text-md text-primary opacity-90 leading-relaxed font-light">
             Our Saudi visa services cover everything from application to approval, including tourist visas, Umrah visas, and visit visas. With expert guidance and fast processing, we make getting your Saudi Arabia visa simple and stress-free.
           </p>
 
           <div className="visa-contact-details space-y-3">
-            <div className="contact-item flex items-center gap-3 text-sm">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#DB9E30" strokeWidth="2">
+            <div className="contact-item flex text-primary items-center gap-3 text-md">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#b50007" strokeWidth="2">
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                 <polyline points="22,6 12,13 2,6" />
               </svg>
-              <a href={`mailto:${data?.email || "saudivisa@britishhajjtravel.com"}`} className="hover:underline text-slate-200">
+              <a href={`mailto:${data?.email || "saudivisa@britishhajjtravel.com"}`} className="!text-primary hover:!text-red-700 hover:underline">
                 {data?.email || "saudivisa@britishhajjtravel.com"}
               </a>
             </div>
-            <div className="contact-item flex items-center gap-3 text-sm">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#DB9E30" strokeWidth="2">
+            <div className="contact-item flex text-primary items-center gap-3 text-md">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#b50007" strokeWidth="2">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
               </svg>
-              <a href={`tel:${(data?.phone || "+19056248344").replace(/\s+/g, '')}`} className="hover:underline text-slate-200">
+              <a href={`tel:${(data?.phone || "+19056248344").replace(/\s+/g, '')}`} className="!text-primary hover:!text-red-700 hover:underline">
                 {data?.phone || "+1 905-624-8344"}
               </a>
             </div>
@@ -112,8 +115,8 @@ export default async function SaudiVisaPage() {
       {/* ================= DYNAMIC OR FALLBACK SECTIONS ================= */}
       {(() => {
         const hasVisaSolutions = sections.some((s: any) => s.type === "Visa Solutions Grid" || s.type === "Visa Cards" || s.type === "Visa Solutions");
-        const hasVisaSteps = sections.some((s: any) => s.type === "Visa Process Steps" || s.type === "3 Easy Steps");
-        const handledTypes = ["Umrah Visa Application", "Umrah Visa Requirements", "Umrah Visa Order Form", "Umrah Visa Document Guide", "Umrah Visa Services Overview", "Visa Solutions Grid", "Visa Cards", "Visa Solutions", "Visa Process Steps", "3 Easy Steps"];
+        const hasVisaSteps = sections.some((s: any) => s.type === "ProcessStepsSection" || s.type === "Visa Process Steps" || s.type === "3 Easy Steps");
+        const handledTypes = ["Umrah Visa Application", "Umrah Visa Requirements", "Umrah Visa Order Form", "Umrah Visa Document Guide", "Umrah Visa Services Overview", "Visa Solutions Grid", "Visa Cards", "Visa Solutions", "ProcessStepsSection", "Visa Process Steps", "3 Easy Steps"];
         const unhandledSections = sections.filter(s => !handledTypes.includes(s.type));
 
         return (
@@ -135,10 +138,10 @@ export default async function SaudiVisaPage() {
 
             {hasVisaSteps ? (
               sections
-                .filter((s: any) => s.type === "Visa Process Steps" || s.type === "3 Easy Steps")
-                .map((sec: any, idx: number) => <VisaProcessStepsSection key={idx} data={sec.data} />)
+                .filter((s: any) => s.type === "ProcessStepsSection" || s.type === "Visa Process Steps" || s.type === "3 Easy Steps")
+                .map((sec: any, idx: number) => <ProcessStepsSection key={idx} data={sec.data} />)
             ) : (
-              <VisaProcessStepsSection />
+              <ProcessStepsSection />
             )}
 
             {unhandledSections.length > 0 && (

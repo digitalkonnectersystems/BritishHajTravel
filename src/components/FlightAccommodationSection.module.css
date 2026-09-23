@@ -1,0 +1,29 @@
+.section { background: #fff; padding: 32px 20px 48px; }
+.grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.panel { overflow: hidden; border: 2px solid #0a2b69; border-radius: 12px; background: #fff; box-shadow: 0 8px 20px rgba(3,31,76,.08); }
+.header { min-height: 116px; display: flex; align-items: center; gap: 22px; padding: 22px 34px; color: #fff; background: #061d67; }
+.header svg { width: 58px; height: 58px; flex: 0 0 58px; }
+.header h2 { margin: 0; font-size: 1.5rem; font-weight: 800; }
+.header p { margin: 3px 0 0; color: rgba(255,255,255,.85); font-size: .95rem; font-weight: 600; }
+.body { display: flex; flex-direction: column; gap: 18px; padding: 20px; }
+.detail { display: flex; align-items: flex-start; gap: 16px; padding: 17px; border: 1px solid #dfe7f1; border-radius: 11px; background: linear-gradient(110deg,#fff,#fbfdff); color: #0b2c68; }
+.detail > svg { width: 29px; height: 29px; flex: 0 0 29px; color: #d1161d; }
+.detail small { display: block; color: #6880a0; font-size: .8rem; font-weight: 700; }
+.detail strong { display: block; margin-top: 3px; color: #102e68; font-size: 1rem; }
+.wide { min-width: 0; flex: 1; }
+.dates { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; margin-top: 10px; }
+.dates span, .hotelRow { padding: 10px 12px; border: 1px solid #dfe7f1; border-radius: 9px; background: #f7faff; }
+.dates strong { font-size: .85rem; }
+.hotelRow { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; }
+.hotelRow b { color: #d1161d; font-size: 1.8rem; line-height: .7; }
+@media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+@media (max-width: 480px) {
+  .section { padding: 22px 12px 32px; }
+  .header { min-height: 92px; gap: 14px; padding: 17px 20px; }
+  .header svg { width: 44px; height: 44px; flex-basis: 44px; }
+  .header h2 { font-size: 1.2rem; }
+  .header p { font-size: .8rem; }
+  .body { gap: 12px; padding: 12px; }
+  .detail { gap: 11px; padding: 13px; }
+  .detail strong { font-size: .88rem; }
+}

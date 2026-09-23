@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getPageBySlug } from "@/actions/pageActions";
+import { getGuidesList, getPageBySlug } from "@/actions/pageActions";
 import { getPackagesByType } from "@/actions/packageActions";
 import PageBanner from "@/components/PageBanner";
 import PageSeoHead from "@/components/PageSeoHead";
@@ -60,6 +60,10 @@ export default async function DynamicPage({
     ["Hajj Packages", "Packages Grid"].includes(sec?.type)
   );
   const isGalleryPage = sections.some((sec: any) => sec?.type === "Gallery");
+  const guideCategories = Array.from(new Set(sections.map((sec: any) => sec?.type === "Guide" ? sec.data?.guideCategory : null).filter(Boolean)));
+  const initialGuideData = guideCategories.length > 0
+    ? (await Promise.all(guideCategories.map((category) => getGuidesList(category, false)))).flat()
+    : [];
 
   const [umrahPackages, hajjPackages] = await Promise.all([
     needsUmrah ? getPackagesByType("umrah") : Promise.resolve([]),
@@ -93,6 +97,7 @@ export default async function DynamicPage({
               hajj: needsHajj ? hajjPackages : undefined,
               all: hasSoldOut ? [...umrahPackages, ...hajjPackages] : undefined,
             }}
+            initialGuideData={initialGuideData}
           />
         </div>
       ) : page.richText ? (

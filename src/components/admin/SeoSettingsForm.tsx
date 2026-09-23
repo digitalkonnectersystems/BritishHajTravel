@@ -11,6 +11,11 @@ export interface SeoSettings {
   noIndex?: boolean;
   noFollow?: boolean;
   lastModifiedOverride?: string;
+  innerHero?: {
+    eyebrow?: string;
+    showSupport?: boolean;
+    features?: Array<{ icon?: string; first?: string; second?: string }>;
+  };
 }
 
 interface Props {

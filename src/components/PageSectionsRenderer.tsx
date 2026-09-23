@@ -28,9 +28,12 @@ import DestinationsGrid from '@/components/DestinationsGrid';
 import LatestBlogsSection from '@/components/LatestBlogsSection';
 import AvailableFlightsSection from '@/components/AvailableFlightsSection';
 import AvailableSeatsSection from '@/components/AvailableSeatsSection';
+import GuideSection from '@/components/GuideSection';
+import FlightAccommodationSection from '@/components/FlightAccommodationSection';
+import ProcessStepsSection from '@/components/ProcessStepsSection';
 import { RICH_TEXT_PROSE_CLASS } from '@/lib/richTextProseClass';
 import { useEffect, useRef, useState } from "react";
-export default function PageSectionsRenderer({ sections, pageData, initialPackageData, initialDestinationData, initialBlogData }: { sections: any[], pageData?: any, initialPackageData?: any, initialDestinationData?: any[], initialBlogData?: any[] }) {
+export default function PageSectionsRenderer({ sections, pageData, initialPackageData, initialDestinationData, initialBlogData, initialGuideData }: { sections: any[], pageData?: any, initialPackageData?: any, initialDestinationData?: any[], initialBlogData?: any[], initialGuideData?: any[] }) {
   if (!sections || !Array.isArray(sections)) return null;
 
   return (
@@ -55,6 +58,15 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         }
         if (sec.type === 'Umrah Visa Document Guide') {
           return <UmrahVisaDocumentGuideSection key={idx} data={sec.data || {}} />;
+        }
+        if (sec.type === 'Guide') {
+          return <GuideSection key={idx} data={{ ...(sec.data || {}), guides: initialGuideData || [] }} />;
+        }
+        if (sec.type === 'Flight & Accommodation') {
+          return <FlightAccommodationSection key={idx} data={sec.data || {}} />;
+        }
+        if (sec.type === 'ProcessStepsSection' || sec.type === 'Visa Process Steps' || sec.type === '3 Easy Steps') {
+          return <ProcessStepsSection key={idx} data={sec.data || {}} />;
         }
         if (sec.type === 'Latest Blogs Grid' || sec.type === 'Blog Posts Carousel') {
           return <LatestBlogsSection key={idx} data={sec.data || {}} blogs={initialBlogData || []} isHomepage={pageData?.slug === '/'} />;
@@ -97,7 +109,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
           }
 
           return (
-            <section key={idx} className="section-rich bg-white rounded-3xl p-4 md:p-8 max-w-[1360px] mx-auto w-full">
+            <section key={idx} className="section-rich bg-white rounded-3xl p-4 md:p-8 max-w-[1400px] mx-auto w-full">
               <div
                 className={`${RICH_TEXT_PROSE_CLASS} max-w-none text-sm leading-relaxed`}
                 dangerouslySetInnerHTML={{ __html: content }}

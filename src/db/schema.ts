@@ -305,6 +305,8 @@ export const sitePages = mysqlTable('site_pages', {
   status: mysqlEnum('status', ['published', 'draft']).notNull().default('published'),
   showInMenu: boolean('show_in_menu').notNull().default(true),
   parentPage: varchar('parent_page', { length: 128 }),
+  guideCategory: varchar('guide_category', { length: 20 }),
+  guideCardData: text('guide_card_data'),
   bannerBgImage: text('banner_bg_image'),
   bannerPosition: varchar('banner_position', { length: 50 }).default('center center'),
   bannerSize: varchar('banner_size', { length: 50 }).default('cover'),

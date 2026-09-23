@@ -226,7 +226,15 @@ export async function dispatchFormEmails(
       console.log(`ℹ️ [Email Dispatcher] No user email entered. User confirmation email skipped.`);
     }
 
-    return { adminSent, userSent };
+    return {
+      adminSent,
+      userSent,
+      error: !adminSent
+        ? 'Admin notification email failed to send.'
+        : (isValidUserEmail && !userSent
+          ? 'User confirmation email failed to send.'
+          : undefined),
+    };
   } catch (err: any) {
     console.error('dispatchFormEmails error:', err);
     return { adminSent: false, userSent: false, error: err.message };

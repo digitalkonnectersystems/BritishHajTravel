@@ -82,6 +82,11 @@ const navItems = [
     icon: <BookOpen className="w-4 h-4" />,
   },
   {
+    label: 'Guides',
+    href: '/admin/guides',
+    icon: <BookOpen className="w-4 h-4" />,
+  },
+  {
     label: 'Settings',
     href: '/admin/settings',
     icon: <Settings className="w-4 h-4" />,
@@ -133,7 +138,7 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
 
   // Active page title indicator
   const currentPageItem = navItems.find(
-    (item) => pathname === item.href || (item.href === '/admin/pages' && pathname.startsWith('/admin/pages'))
+    (item) => pathname === item.href || (item.href === '/admin/pages' && pathname.startsWith('/admin/pages')) || (item.href === '/admin/guides' && pathname.startsWith('/admin/guides'))
   );
   const pageTitle = currentPageItem ? currentPageItem.label : 'Admin Portal';
 
@@ -160,7 +165,7 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
         <nav className="flex-1 pt-4 flex flex-col gap-1">
           {navItems.map((item) => {
             const isActive =
-              pathname === item.href || (item.href === '/admin/pages' && pathname.startsWith('/admin/pages'));
+              pathname === item.href || (item.href === '/admin/pages' && pathname.startsWith('/admin/pages')) || (item.href === '/admin/guides' && pathname.startsWith('/admin/guides'));
             return (
               <Link
                 key={item.href}

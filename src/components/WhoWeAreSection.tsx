@@ -4,30 +4,34 @@ import { useEffect, useState } from "react";
 
 export default function WhoWeAreSection({ data }: { data: any }) {
   // CMS content
+  const configuredValue = (key: string, fallback: string) =>
+    data && Object.prototype.hasOwnProperty.call(data, key)
+      ? String(data[key] ?? "")
+      : fallback;
+
   const eyebrow =
-    data?.eyebrow || "ABOUT BHT BRITISH HAJ TRAVEL LTD";
+    configuredValue("eyebrow", "ABOUT BHT BRITISH HAJ TRAVEL LTD");
 
   const title =
-    data?.title ||
-    "We provide and offer Hajj & Umrah packages from the UK";
+    configuredValue("title", "We provide and offer Hajj & Umrah packages from the UK");
 
   const description1 =
-    data?.description1 ||
-    "BHT British Haj Travel Ltd is a trusted, family-run travel organisation from the UK. We provide fully ATOL protected Hajj and Umrah packages with a focus on care, comfort and spiritual fulfilment.";
+    configuredValue(
+      "description1",
+      "BHT British Haj Travel Ltd is a trusted, family-run travel organisation from the UK. We provide fully ATOL protected Hajj and Umrah packages with a focus on care, comfort and spiritual fulfilment."
+    );
 
   const image =
-    data?.image || "uploads\\sections\\hajj_1.jpg";
+    configuredValue("image", "uploads\\sections\\hajj_1.jpg");
 
   const backgroundImage =
-    data?.backgroundImage || "/upload/sections/who-we-are-bg.webp";
+    configuredValue("backgroundImage", "/upload/sections/who-we-are-bg.webp");
 
   const featuresTitle =
-    data?.featuresTitle || "Why Choose BHT British Haj Travel Ltd?";
+    configuredValue("featuresTitle", "Why Choose BHT British Haj Travel Ltd?");
 
   const rawItems =
-    data?.items &&
-    Array.isArray(data.items) &&
-    data.items.length > 0
+    Array.isArray(data?.items)
       ? data.items
       : [
           { value: "25+", label: "Years of Service" },
@@ -37,9 +41,7 @@ export default function WhoWeAreSection({ data }: { data: any }) {
         ];
 
   const features =
-    data?.features &&
-    Array.isArray(data.features) &&
-    data.features.length > 0
+    Array.isArray(data?.features)
       ? data.features
       : [
           {
@@ -166,6 +168,22 @@ export default function WhoWeAreSection({ data }: { data: any }) {
             <path d="M15 15c3.2 0 5 1.8 5.5 5" />
           </svg>
         );
+
+      case "plane":
+      return (
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          className="w-6 h-6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M22 2L11 13" />
+          <path d="M22 2L15 22L11 13L2 9L22 2Z" />
+        </svg>
+      );
 
       default:
         return (

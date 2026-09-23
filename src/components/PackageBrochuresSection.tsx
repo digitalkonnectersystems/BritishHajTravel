@@ -114,7 +114,7 @@ export default function PackageBrochuresSection({ data, pageData }: PackageBroch
 
   return (
     <>
-      <section className="pt-12 md:pt-16 pb-0 bg-blue-lt">
+      <section className="pt-12 md:pt-16 md:pb-16 pb-0 bg-blue-lt">
         <div className="max-w-[1400px] mx-auto px-5">
           {(eyebrow || title || description) && (
             <div className="flex flex-col items-center text-center mb-10 md:mb-12">

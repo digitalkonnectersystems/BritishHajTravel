@@ -2,7 +2,7 @@
 
 import { db } from '@/db';
 import { sitePages, siteSettings } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import { revalidatePath, revalidateTag, unstable_cache } from 'next/cache';
 import { getResponsiveEmailTemplateHtml } from '@/lib/emailTemplate';
 import { logAdminActivityAction } from '@/actions/activityActions';
@@ -26,6 +26,7 @@ function safeJsonParse<T>(jsonStr: any, fallback: T): T {
 
 export async function getPagesList() {
   try {
+    await ensureGuideColumns();
     const destinationsPage = await db.select({ id: sitePages.id }).from(sitePages).where(eq(sitePages.slug, '/destinations')).limit(1);
     if (destinationsPage.length === 0) {
       await db.insert(sitePages).values({
@@ -47,6 +48,7 @@ export async function getPagesList() {
         metaDescription: 'Explore British Hajj Travel destinations and available packages.',
       });
     }
+
     const mainGalleryPage = await db.select({ id: sitePages.id }).from(sitePages).where(eq(sitePages.slug, '/gallery')).limit(1);
     if (mainGalleryPage.length === 0) {
       await db.insert(sitePages).values({
@@ -87,8 +89,70 @@ export async function getPagesList() {
   }
 }
 
+export type GuideCategory = 'hajj' | 'umrah';
+
+let guideColumnsReady: Promise<void> | null = null;
+
+async function ensureGuideColumns() {
+  if (!guideColumnsReady) {
+    guideColumnsReady = (async () => {
+      const databaseName = process.env.DB_NAME || 'bht_travel_db';
+      const columns = ['guide_category', 'guide_card_data'];
+      for (const column of columns) {
+        const existing = await db.execute(sql`
+          SELECT COLUMN_NAME
+          FROM information_schema.columns
+          WHERE table_schema = ${databaseName}
+            AND table_name = 'site_pages'
+            AND column_name = ${column}
+          LIMIT 1
+        `);
+        const rows = Array.isArray(existing) ? existing[0] : [];
+        if (Array.isArray(rows) && rows.length > 0) continue;
+
+        const statement = column === 'guide_category'
+          ? sql`ALTER TABLE site_pages ADD COLUMN guide_category varchar(20) NULL`
+          : sql`ALTER TABLE site_pages ADD COLUMN guide_card_data text NULL`;
+        try {
+          await db.execute(statement);
+        } catch (error: any) {
+          const errorText = JSON.stringify(error, Object.getOwnPropertyNames(error)).toLowerCase();
+          const isDuplicateColumn = error?.code === 'ER_DUP_FIELDNAME'
+            || error?.errno === 1060
+            || errorText.includes('duplicate column');
+          if (!isDuplicateColumn) {
+            guideColumnsReady = null;
+            throw error;
+          }
+        }
+      }
+    })();
+  }
+  return guideColumnsReady;
+}
+
+export async function getGuidesList(category?: GuideCategory, includeDrafts = false) {
+  try {
+    await ensureGuideColumns();
+    const filters = [];
+    if (category) filters.push(eq(sitePages.guideCategory, category));
+    if (!includeDrafts) filters.push(eq(sitePages.status, 'published'));
+    const guides = filters.length > 0
+      ? await db.select().from(sitePages).where(and(...filters))
+      : await db.select().from(sitePages);
+    return guides.map((guide) => ({
+      ...guide,
+      guideCard: safeJsonParse(guide.guideCardData, {}),
+    }));
+  } catch (err) {
+    console.error('getGuidesList DB query failed:', err);
+    throw new Error('Failed to fetch guides from database');
+  }
+}
+
 export async function getPageById(id: number) {
   try {
+    await ensureGuideColumns();
     const pages = await db.select().from(sitePages).where(eq(sitePages.id, id)).limit(1);
     if (pages && pages.length > 0) {
       const p = pages[0];
@@ -102,6 +166,7 @@ export async function getPageById(id: number) {
 }
 
 async function fetchPageBySlugFromDb(slug: string) {
+  await ensureGuideColumns();
   const pages = await db.select().from(sitePages).where(eq(sitePages.slug, slug)).limit(1);
   if (pages && pages.length > 0) {
     const p = pages[0];
@@ -128,10 +193,14 @@ export async function getPageBySlug(slug: string) {
 export async function savePageAction(formData: FormData) {
   const id = formData.get('id') ? Number(formData.get('id')) : null;
   const title = String(formData.get('title') || 'Untitled Page');
-  const slug = String(formData.get('slug') || '/');
+  const rawSlug = String(formData.get('slug') || '/').trim();
+  const slug = rawSlug.startsWith('/') ? rawSlug : `/${rawSlug}`;
   const status = (String(formData.get('status')) === 'draft' ? 'draft' : 'published') as 'published' | 'draft';
   const showInMenu = formData.get('showInMenu') === 'on' || formData.get('showInMenu') === 'true';
   const parentPage = formData.get('parentPage') ? String(formData.get('parentPage')) : null;
+  const guideCategoryValue = String(formData.get('guideCategory') || '').toLowerCase();
+  const guideCategory = guideCategoryValue === 'hajj' || guideCategoryValue === 'umrah' ? guideCategoryValue : null;
+  const guideCardData = formData.get('guideCardData') ? String(formData.get('guideCardData')) : null;
   const sections = formData.get('sections') ? String(formData.get('sections')) : null;
   const richText = formData.get('richText') ? String(formData.get('richText')) : null;
   const metaTitle = formData.get('metaTitle') ? String(formData.get('metaTitle')) : null;
@@ -145,6 +214,33 @@ export async function savePageAction(formData: FormData) {
   const seoSettings = formData.get('seoSettings') as string;
 
   try {
+    await ensureGuideColumns();
+    if (slug.length > 128) {
+      return { success: false, error: 'The page slug must be 128 characters or fewer.' };
+    }
+
+    let parsedSeoSettings = null;
+    if (seoSettings) {
+      try {
+        parsedSeoSettings = JSON.parse(seoSettings);
+      } catch {
+        return { success: false, error: 'The SEO settings contain invalid JSON. Please reload the editor and try again.' };
+      }
+    }
+
+    const duplicate = await db
+      .select({ id: sitePages.id, title: sitePages.title })
+      .from(sitePages)
+      .where(eq(sitePages.slug, slug))
+      .limit(1);
+
+    if (duplicate.length > 0 && duplicate[0].id !== id) {
+      return {
+        success: false,
+        error: `A page already exists with the slug "${slug}" ("${duplicate[0].title}"). Choose a different slug before saving.`,
+      };
+    }
+
     let savedId = id;
     if (id) {
       await db.update(sitePages).set({
@@ -153,6 +249,8 @@ export async function savePageAction(formData: FormData) {
         status,
         showInMenu,
         parentPage: parentPage || null,
+        guideCategory,
+        guideCardData,
         bannerBgImage,
         bannerPosition,
         bannerSize,
@@ -162,7 +260,7 @@ export async function savePageAction(formData: FormData) {
         richText: richText || null,
         metaTitle: metaTitle || null,
         metaDescription: metaDescription || null,
-        seoSettings: seoSettings ? JSON.parse(seoSettings) : null,
+        seoSettings: parsedSeoSettings,
         updatedAt: new Date(),
       }).where(eq(sitePages.id, id));
     } else {
@@ -172,6 +270,8 @@ export async function savePageAction(formData: FormData) {
         status,
         showInMenu,
         parentPage: parentPage || null,
+        guideCategory,
+        guideCardData,
         bannerBgImage,
         bannerPosition,
         bannerSize,
@@ -181,7 +281,7 @@ export async function savePageAction(formData: FormData) {
         richText: richText || null,
         metaTitle: metaTitle || null,
         metaDescription: metaDescription || null,
-        seoSettings: seoSettings ? JSON.parse(seoSettings) : null,
+        seoSettings: parsedSeoSettings,
       }).$returningId();
       if (inserted && inserted.length > 0) {
         savedId = inserted[0].id;
@@ -221,6 +321,7 @@ export async function savePageAction(formData: FormData) {
     });
 
     revalidatePath('/admin/pages');
+    revalidatePath('/admin/guides');
     revalidatePath(slug);
     revalidatePath('/', 'layout');
     revalidateTag('pages', 'max');
@@ -228,7 +329,75 @@ export async function savePageAction(formData: FormData) {
     return { success: true, pageId: savedId, error: undefined };
   } catch (err: any) {
     console.error('savePageAction DB query failed:', err);
+    if (err?.code === 'ER_DUP_ENTRY' || String(err?.message || '').includes('Duplicate entry')) {
+      return {
+        success: false,
+        error: `A page already exists with the slug "${slug}". Choose a different slug before saving.`,
+      };
+    }
     return { success: false, error: err.message || 'Failed to save page' };
+  }
+}
+
+export async function saveGuideAction(formData: FormData) {
+  const id = formData.get('id') ? Number(formData.get('id')) : null;
+  const title = String(formData.get('title') || '').trim();
+  const rawSlug = String(formData.get('slug') || '').trim();
+  const slug = rawSlug.startsWith('/') ? rawSlug : `/${rawSlug}`;
+  const categoryValue = String(formData.get('guideCategory') || '').toLowerCase();
+  const guideCategory = categoryValue === 'hajj' || categoryValue === 'umrah' ? categoryValue : null;
+  const status = String(formData.get('status')) === 'draft' ? 'draft' : 'published';
+  const guideCardData = String(formData.get('guideCardData') || '{}');
+  const sections = String(formData.get('sections') || '[]');
+  const metaDescription = String(formData.get('metaDescription') || '').trim();
+
+  if (!title) return { success: false, error: 'Guide title is required.' };
+  if (!guideCategory) return { success: false, error: 'Select Hajj or Umrah as the guide category.' };
+  if (!rawSlug || slug === '/') return { success: false, error: 'Guide slug is required.' };
+  if (slug.length > 128) return { success: false, error: 'The guide slug must be 128 characters or fewer.' };
+
+  try {
+    await ensureGuideColumns();
+    const duplicate = await db.select({ id: sitePages.id, title: sitePages.title }).from(sitePages).where(eq(sitePages.slug, slug)).limit(1);
+    if (duplicate.length > 0 && duplicate[0].id !== id) {
+      return { success: false, error: `A page already exists with the slug "${slug}" ("${duplicate[0].title}").` };
+    }
+
+    const values = {
+      title,
+      slug,
+      status: status as 'published' | 'draft',
+      guideCategory,
+      guideCardData,
+      sections,
+      richText: null,
+      metaTitle: title,
+      metaDescription: metaDescription || null,
+      showInMenu: false,
+      updatedAt: new Date(),
+    };
+
+    let savedId = id;
+    if (id) {
+      await db.update(sitePages).set(values).where(eq(sitePages.id, id));
+    } else {
+      const inserted = await db.insert(sitePages).values(values).$returningId();
+      savedId = inserted[0]?.id || null;
+    }
+
+    await logAdminActivityAction({
+      type: 'pages',
+      action: id ? 'Updated Guide' : 'Created Guide',
+      details: `Guide "${title}" (${slug}) - Category: ${guideCategory}`,
+    });
+    revalidatePath('/admin/guides');
+    revalidatePath(slug);
+    revalidateTag('pages', 'max');
+    revalidateTag(`page-slug-${slug}`, 'max');
+    return { success: true, pageId: savedId };
+  } catch (err: any) {
+    console.error('saveGuideAction DB query failed:', err);
+    return { success: false, error: err?.message || 'Failed to save guide.' };
   }
 }
 
@@ -1628,8 +1797,3 @@ export async function generateSeoSectionAction(
     usedFallback: true,
   };
 }
-
-
-
-
-

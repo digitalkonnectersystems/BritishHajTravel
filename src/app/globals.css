@@ -1753,11 +1753,11 @@ section#flights {
 }
 
 /* Saudi Step Layout */
-.visa-section {
+/* .visa-section {
   background: linear-gradient(rgb(26 23 1 / 75%), rgb(21 22 16 / 94%)), url('https://img.magnific.com/free-photo/flag-saudi-arabia_1401-215.jpg?t=st=1784206123~exp=1784209723~hmac=d433eb4d0392c4a5c7c9592a479a3b8c1baf56355edce3d9278c4e39e692331f&w=2000') no-repeat center center / cover;
   /* padding: 100px 0; */
-  color: #ffffff;
-}
+  /*color: #ffffff;
+} */
 
 .visa-grid-bottom {
   display: grid;
@@ -1793,8 +1793,9 @@ section#flights {
 
 .visa-description {
   font-size: 1rem;
+  font-weight: bold;
   line-height: 1.7;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--primary);
   margin-bottom: 35px;
 }
 
@@ -3077,3 +3078,101 @@ hr {
 .umrah-visa-document-card.is-bad li::marker { color: #e7192b; }
 @media (max-width: 900px) { .umrah-visa-document-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 520px) { .umrah-visa-document-cards { grid-template-columns: 1fr; } }
+
+.guide-section { background: #fff; }
+.guide-section__card {
+  min-height: 232px;
+  display: flex;
+  align-items: flex-start;
+  gap: 28px;
+  padding: 26px 28px;
+  border: 2px solid #102f57;
+  border-radius: 10px;
+  background: #fff;
+  color: #102f57;
+  box-shadow: 0 5px 18px rgba(3, 31, 76, .04);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.guide-section__card:hover { transform: translateY(-3px); border-color: #c9141c; box-shadow: 0 12px 26px rgba(3, 31, 76, .14); }
+.guide-section__content { min-width: 0; flex: 1; min-height: 176px; display: flex; flex-direction: column; }
+.guide-section__icon {
+  width: 106px;
+  height: 106px;
+  flex: 0 0 106px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #f0f5fb;
+  color: #102f57;
+}
+.guide-section__icon svg { width: 64px; height: 64px; }
+.guide-section__step { margin: 0 0 4px; color: #c9141c; font-size: 1rem; font-weight: 800; }
+.guide-section__title { height: 2.5em; overflow: hidden; margin: 0; color: #102f57; font-size: clamp(1.1rem, 1.45vw, 1.45rem); font-weight: 800; line-height: 1.25; }
+.guide-section__detail { height: 4.35em; overflow: hidden; max-width: 290px; margin: 7px 0 16px; color: #536174; font-size: .98rem; line-height: 1.45; }
+.guide-section__button {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  border-radius: 8px;
+  padding: 10px 20px;
+  background: #c9141c;
+  color: #fff;
+  font-size: .9rem;
+  font-weight: 800;
+  box-shadow: 0 4px 10px rgba(201, 20, 28, .16);
+  transition: background-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+.guide-section__button:hover { background: #a80f16; box-shadow: 0 7px 15px rgba(201, 20, 28, .28); transform: translateY(-1px); }
+.guide-section__button span { font-size: 1.25rem; line-height: .8; transition: transform .2s ease; }
+.guide-section__button:hover span { transform: translateX(3px); }
+.guide-section__card:focus-visible { outline: 3px solid rgba(201, 20, 28, .35); outline-offset: 3px; }
+@media (max-width: 640px) {
+  .guide-section { padding-top: 28px; padding-bottom: 28px; }
+  .guide-section__card { min-height: 0; gap: 18px; padding: 20px; }
+  .guide-section__content { min-height: 0; }
+  .guide-section__title { height: auto; }
+  .guide-section__detail { height: auto; }
+  .guide-section__icon { width: 82px; height: 82px; flex-basis: 82px; }
+  .guide-section__icon svg { width: 50px; height: 50px; }
+}
+@media (max-width: 420px) {
+  .guide-section__card { gap: 14px; padding: 16px; }
+  .guide-section__icon { width: 68px; height: 68px; flex-basis: 68px; }
+  .guide-section__icon svg { width: 42px; height: 42px; }
+  .guide-section__step { font-size: .88rem; }
+  .guide-section__title { font-size: 1.05rem; }
+  .guide-section__detail { font-size: .88rem; }
+  .guide-section__button { padding: 9px 14px; font-size: .82rem; }
+}
+
+.flight-accommodation-section { background: #fff; padding: 32px 20px 48px; }
+.flight-accommodation-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.flight-accommodation-panel { overflow: hidden; border: 2px solid #0a2b69; border-radius: 12px; background: #fff; box-shadow: 0 8px 20px rgba(3, 31, 76, .08); }
+.flight-accommodation-header { min-height: 116px; display: flex; align-items: center; gap: 22px; padding: 22px 34px; color: #fff; background: #061d67; }
+.flight-accommodation-header svg { width: 58px; height: 58px; flex: 0 0 58px; color: #fff; }
+.flight-accommodation-header h2 { margin: 0; font-size: 1.5rem; font-weight: 800; }
+.flight-accommodation-header p { margin: 3px 0 0; font-size: .95rem; font-weight: 600; color: rgba(255,255,255,.85); }
+.flight-accommodation-body { display: flex; flex-direction: column; gap: 18px; padding: 20px; }
+.travel-detail-card { display: flex; align-items: flex-start; gap: 16px; padding: 17px; border: 1px solid #dfe7f1; border-radius: 11px; background: linear-gradient(110deg, #fff, #fbfdff); color: #0b2c68; }
+.travel-detail-card > svg { width: 29px; height: 29px; flex: 0 0 29px; color: #d1161d; }
+.travel-detail-card small { display: block; color: #6880a0; font-size: .8rem; font-weight: 700; }
+.travel-detail-card strong { display: block; margin-top: 3px; color: #102e68; font-size: 1rem; }
+.travel-detail-wide { min-width: 0; flex: 1; }
+.travel-date-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 10px; }
+.travel-date-grid span { padding: 10px 12px; border: 1px solid #dfe7f1; border-radius: 9px; background: #fbfdff; }
+.travel-date-grid strong { font-size: .85rem; }
+.travel-detail-stack { align-items: flex-start; }
+.hotel-location-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; padding: 10px 12px; border: 1px solid #dfe7f1; border-radius: 9px; background: #f7faff; }
+.hotel-location-row b { color: #d1161d; font-size: 1.8rem; line-height: .7; }
+@media (max-width: 800px) { .flight-accommodation-grid { grid-template-columns: 1fr; } }
+@media (max-width: 480px) {
+  .flight-accommodation-section { padding: 22px 12px 32px; }
+  .flight-accommodation-header { min-height: 92px; gap: 14px; padding: 17px 20px; }
+  .flight-accommodation-header svg { width: 44px; height: 44px; flex-basis: 44px; }
+  .flight-accommodation-header h2 { font-size: 1.2rem; }
+  .flight-accommodation-header p { font-size: .8rem; }
+  .flight-accommodation-body { gap: 12px; padding: 12px; }
+  .travel-detail-card { gap: 11px; padding: 13px; }
+  .travel-detail-card strong { font-size: .88rem; }
+}

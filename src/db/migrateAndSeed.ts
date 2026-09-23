@@ -152,6 +152,8 @@ async function runMigrationAndSeed() {
     const alterStatements = [
       "ALTER TABLE `users` ADD COLUMN `badge_bg` varchar(32) DEFAULT '#0F766E';",
       "ALTER TABLE `users` ADD COLUMN `badge_text_color` varchar(32) DEFAULT '#FFFFFF';",
+      "ALTER TABLE `site_pages` ADD COLUMN `guide_category` varchar(20) NULL;",
+      "ALTER TABLE `site_pages` ADD COLUMN `guide_card_data` text NULL;",
     ];
     for (const alterSql of alterStatements) {
       try {

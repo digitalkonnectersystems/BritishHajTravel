@@ -14,7 +14,7 @@ import { Field, FieldLabel } from '@/components/ui/field';
 
 import { Switch } from '@/components/ui/switch';
 
-import { getPageById, savePageAction } from '@/actions/pageActions';
+import { getPageById, getGuidesList, savePageAction, type GuideCategory } from '@/actions/pageActions';
 
 import { getAllPackages } from '@/actions/packageActions';
 
@@ -231,7 +231,7 @@ const SECTION_CATALOG: SectionCategory[] = [
       { type: 'Umrah Visa Services Overview', description: 'Editable Umrah visa service comparison table and document image.', pages: ['Saudi Visa'] },
       { type: 'Umrah Visa Document Guide', description: 'Editable passport/document correct-format guide with four examples.', pages: ['Saudi Visa'] },
 
-      { type: 'Visa Process Steps', description: '3-step visual process block (Apply → Review → Confirmed) for visa applicants.', pages: ['Saudi Visa'] },
+      { type: 'ProcessStepsSection', description: 'Process step cards with editable contact details and a background image.', pages: ['Saudi Visa', 'Any Page'] },
 
     ],
 
@@ -247,6 +247,8 @@ const SECTION_CATALOG: SectionCategory[] = [
 
       { type: 'Available Flights Grid', description: 'Live flight route cards with fare, airline, and availability status.', pages: ['Airlines'] },
       { type: 'Available Seats', description: 'Responsive flight seat availability cards with airline logos, dates, routes, baggage, fares, and booking links.', pages: ['Airlines', 'Any Page'] },
+
+      { type: 'Flight & Accommodation', description: 'Two-panel travel summary with editable flights, dates, hotels, transport, and tent details.', pages: ['Hajj Packages', 'Umrah Packages', 'Any Page'] },
 
       { type: 'Flight Assistance CTA', description: 'Full-width CTA encouraging visitors to contact the flight desk.', pages: ['Airlines'] },
 
@@ -334,7 +336,9 @@ const SECTION_CATALOG: SectionCategory[] = [
 
         { type: 'FAQ', description: 'Responsive accordion FAQ block with editable questions and answers.', pages: ['Any Page'] },
 
-      { type: 'Services Grid', description: 'Icon + heading + description service tiles in a responsive grid.', pages: ['About', 'Any Page'] },
+        { type: 'Guide', description: 'Responsive step-by-step guide cards with selectable SVG icons and Learn More links.', pages: ['Any Page', 'Homepage'] },
+
+        { type: 'Services Grid', description: 'Icon + heading + description service tiles in a responsive grid.', pages: ['About', 'Any Page'] },
 
       { type: 'Image+Text', description: 'Split image-and-text block with eyebrow, heading, body, and optional CTA.', pages: ['Any Page'] },
 
@@ -409,6 +413,21 @@ const DEFAULT_UMRAH_VISA_DOCUMENT_CARDS = [
   { image: '/img/saudi-visa-2.webp', tone: 'bad', title: 'Photo is Cut Off', bullets: ["A portion of your passport isn't visible."] },
   { image: '/img/saudi-visa-2.webp', tone: 'bad', title: 'Missing Signature', bullets: ['Passport is not signed.', "If your signature is on a separate page, make sure it's in the photo."] },
   { image: '/img/saudi-visa-2.webp', tone: 'bad', title: 'Text is Hard to Read', bullets: ['Light reflections', 'Shadows', 'Blurry text', 'Please take your photo in a well-lit area.'] },
+];
+
+const GUIDE_ICON_OPTIONS = [
+  'FilePenLine', 'WalletCards', 'Package', 'ShoppingCart', 'Fingerprint',
+  'HeartPulse', 'FileText', 'ShieldCheck', 'UserRound', 'Plane', 'MapPin',
+  'CalendarDays', 'CreditCard', 'CheckCircle', 'BookOpen', 'Building2',
+];
+
+const DEFAULT_GUIDE_STEPS = [
+  { number: 1, icon: 'FilePenLine', title: 'Registration', detail: 'Create your account and get started in just a few clicks.', buttonLabel: 'Learn More', slug: '#' },
+  { number: 2, icon: 'WalletCards', title: 'Verification & eWallet', detail: 'Verify your identity and set up your eWallet securely.', buttonLabel: 'Learn More', slug: '#' },
+  { number: 3, icon: 'Package', title: 'Choosing Package Category', detail: 'Select the package category that fits your needs.', buttonLabel: 'Learn More', slug: '#' },
+  { number: 4, icon: 'ShoppingCart', title: 'Purchasing a Package', detail: 'Complete your purchase and activate your package.', buttonLabel: 'Learn More', slug: '#' },
+  { number: 5, icon: 'Fingerprint', title: 'Submitting Biometrics', detail: 'Provide your biometric details for added security.', buttonLabel: 'Learn More', slug: '#' },
+  { number: 6, icon: 'HeartPulse', title: 'Health', detail: 'Access your health services and stay well.', buttonLabel: 'Learn More', slug: '#' },
 ];
 
 
@@ -516,6 +535,9 @@ function PageBuilderContent() {
   const [showInMenu, setShowInMenu] = useState(true);
 
   const [parentPage, setParentPage] = useState('');
+  const [guideCategory, setGuideCategory] = useState<GuideCategory | ''>('');
+  const [guideCardData, setGuideCardData] = useState({ number: 1, icon: 'FileText', detail: '', buttonLabel: 'Learn More' });
+  const [guideOptions, setGuideOptions] = useState<any[]>([]);
 
   const [richText, setRichText] = useState('');
 
@@ -526,6 +548,8 @@ function PageBuilderContent() {
   const [seoSettings, setSeoSettings] = useState<SeoSettings>({});
 
   const [saudiVisaEyebrow, setSaudiVisaEyebrow] = useState('Saudi Visa Services');
+
+  const [showInnerHeroSupport, setShowInnerHeroSupport] = useState(true);
 
   const [saudiVisaFeatures, setSaudiVisaFeatures] = useState([
     { icon: 'document', first: 'Clear', second: 'Guidance' },
@@ -540,6 +564,32 @@ function PageBuilderContent() {
   const [sectionSearch, setSectionSearch] = useState('');
 
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const guideCategoryParam = searchParams.get('guideCategory') as GuideCategory | null;
+
+  useEffect(() => {
+    if (guideCategoryParam === 'hajj' || guideCategoryParam === 'umrah') setGuideCategory(guideCategoryParam);
+  }, [guideCategoryParam]);
+
+  useEffect(() => {
+    if (!guideCategory) {
+      setGuideOptions([]);
+      return;
+    }
+    getGuidesList(guideCategory, true).then(setGuideOptions).catch((error: unknown) => {
+      console.error('Failed to load guide options:', error);
+      setGuideOptions([]);
+    });
+  }, [guideCategory]);
+
+  useEffect(() => {
+    const categories = Array.from(new Set(
+      sections.map((section) => section.type === 'Guide' ? section.data?.guideCategory : null).filter(Boolean)
+    )) as GuideCategory[];
+    if (categories.length === 0 || guideCategory) return;
+    Promise.all(categories.map((category) => getGuidesList(category, true))).then((results) => {
+      setGuideOptions(results.flat());
+    }).catch((error) => console.error('Failed to load guide section options:', error));
+  }, [sections, guideCategory]);
 
 
 
@@ -745,6 +795,13 @@ function PageBuilderContent() {
           setShowInMenu(p.showInMenu);
 
           setParentPage(p.parentPage || '');
+          setGuideCategory((p.guideCategory === 'hajj' || p.guideCategory === 'umrah') ? p.guideCategory : (guideCategoryParam || ''));
+          try {
+            const parsedGuideCard = p.guideCardData ? JSON.parse(p.guideCardData) : {};
+            setGuideCardData({ number: parsedGuideCard.number || 1, icon: parsedGuideCard.icon || 'FileText', detail: parsedGuideCard.detail || '', buttonLabel: parsedGuideCard.buttonLabel || 'Learn More' });
+          } catch {
+            setGuideCardData({ number: 1, icon: 'FileText', detail: '', buttonLabel: 'Learn More' });
+          }
 
           setRichText(p.richText || '');
 
@@ -771,6 +828,7 @@ function PageBuilderContent() {
                 const parsed = typeof p.seoSettings === 'string' ? JSON.parse(p.seoSettings) : p.seoSettings;
                 setSeoSettings(parsed);
                 const savedHero = parsed?.innerHero || parsed?.saudiVisaHero;
+                if (savedHero?.showSupport !== undefined) setShowInnerHeroSupport(savedHero.showSupport !== false);
                 if (savedHero?.eyebrow !== undefined) setSaudiVisaEyebrow(savedHero.eyebrow);
                 if (Array.isArray(savedHero?.features) && savedHero.features.length > 0) {
                   setSaudiVisaFeatures(savedHero.features.slice(0, 3));
@@ -1526,6 +1584,28 @@ function PageBuilderContent() {
 
       };
 
+    } else if (type === 'ProcessStepsSection' || type === 'Visa Process Steps' || type === '3 Easy Steps') {
+      defaultData = {
+        eyebrow: 'IN 3 EASY STEPS',
+        title: 'Get Your Saudi Visa',
+        description: 'Our Saudi visa services cover everything from application to approval. With expert guidance and fast processing, we make the process simple and stress-free.',
+        backgroundImage: '',
+        steps: [
+          { number: 1, title: 'Apply & Share Your Details', description: 'Fill out our quick application form and share your travel details.' },
+          { number: 2, title: 'Submit Required Documents', description: 'Provide the necessary documents such as your passport and photos.' },
+          { number: 3, title: 'Sit Back & Get Your Visa', description: 'We handle the complete visa processing on your behalf.' },
+        ],
+      };
+    } else if (type === 'Guide') {
+
+      defaultData = {
+
+        buttonLabel: 'Learn More',
+
+        steps: DEFAULT_GUIDE_STEPS,
+
+      };
+
     } else if (type === 'FAQ') {
 
       defaultData = {
@@ -1798,6 +1878,15 @@ function PageBuilderContent() {
 
         items: []
 
+      };
+
+    } else if (type === 'Flight & Accommodation') {
+
+      defaultData = {
+        flight: { title: 'Flight Details', subtitle: 'Custom Flights', airline: 'Custom Airline', departure: 'May 21st 2026', returnDate: 'May 21st 2026', duration: '14 Days / 13 Nights' },
+        accommodation: { title: 'Accommodation', subtitle: 'Hotels & Transportation', makkah: 'Pullman Zamzam Makkah', madinah: 'Pullman Zamzam Madina', transport: 'High Speed Train', transportSubtitle: 'Madinah to Makkah', tentLocation: 'Maqtar Al Kabsh / Al Muaisam' },
+        flightIcon: 'Plane',
+        accommodationIcon: 'Building2',
       };
 
     } else if (type === 'Available Seats') {
@@ -2119,6 +2208,8 @@ function PageBuilderContent() {
         fd.append('showInMenu', String(showInMenu));
 
         fd.append('parentPage', parentPage);
+        fd.append('guideCategory', guideCategory);
+        fd.append('guideCardData', JSON.stringify(guideCardData));
 
         fd.append('sections', JSON.stringify(updatedSections));
 
@@ -2129,7 +2220,7 @@ function PageBuilderContent() {
         fd.append('metaDescription', metaDescription);
 
         const updatedSeoSettings = slug !== '/' && pageId !== 1
-          ? { ...seoSettings, innerHero: { eyebrow: saudiVisaEyebrow, features: saudiVisaFeatures } }
+          ? { ...seoSettings, innerHero: { ...(seoSettings?.innerHero || {}), eyebrow: saudiVisaEyebrow, features: saudiVisaFeatures, showSupport: showInnerHeroSupport } }
           : seoSettings;
 
         fd.append('seoSettings', JSON.stringify(updatedSeoSettings));
@@ -3955,7 +4046,7 @@ function PageBuilderContent() {
                 <p className="text-[10px] md:text-xs text-white/85 leading-relaxed font-light mt-2 max-w-[520px]">
                   {bannerDescription || 'Page header description'}
                 </p>
-                <div className="mt-4 flex items-center gap-3 max-w-[560px]">
+                {showInnerHeroSupport && <div className="mt-4 flex items-center gap-3 max-w-[560px]">
                   {saudiVisaFeatures.map((feature, index) => (
                     <div key={index} className="flex min-w-0 items-center gap-1.5 text-[9px] leading-tight text-white/90">
                       {index > 0 && <span className="mr-1 h-7 w-px shrink-0 bg-white/30" />}
@@ -3965,7 +4056,7 @@ function PageBuilderContent() {
                       <span>{feature.first || ''}<br />{feature.second || ''}</span>
                     </div>
                   ))}
-                </div>
+                </div>}
               </div>
 
             </div>
@@ -4160,6 +4251,15 @@ function PageBuilderContent() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                <label className="md:col-span-4 flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] font-bold text-slate-600">
+                  <input
+                    type="checkbox"
+                    checked={showInnerHeroSupport}
+                    onChange={(e) => setShowInnerHeroSupport(e.target.checked)}
+                    className="h-4 w-4 accent-[var(--primary)]"
+                  />
+                  SHOW BADGE AND TRUST POINTS ON INNER PAGE BANNER
+                </label>
                 <div>
                   <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">BADGE LABEL</label>
                   <input
@@ -4295,6 +4395,32 @@ function PageBuilderContent() {
               />
 
             </div>
+
+            {(guideCategory || guideCategoryParam) && (
+              <div className="mt-4 border-t border-slate-100 pt-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                  <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">GUIDE CATEGORY
+                    <select value={guideCategory} onChange={(e) => setGuideCategory(e.target.value as GuideCategory)} className="mt-1 w-full px-3 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs">
+                      <option value="">Select category</option><option value="hajj">Hajj Guides</option><option value="umrah">Umrah Guides</option>
+                    </select>
+                  </label>
+                  <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">CARD NUMBER
+                    <input type="number" min="1" value={guideCardData.number} onChange={(e) => setGuideCardData((current) => ({ ...current, number: Number(e.target.value) || 1 }))} className="mt-1 w-full px-3 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs" />
+                  </label>
+                  <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">SVG ICON
+                    <select value={guideCardData.icon} onChange={(e) => setGuideCardData((current) => ({ ...current, icon: e.target.value }))} className="mt-1 w-full px-3 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs">
+                      {GUIDE_ICON_OPTIONS.map((icon) => <option key={icon} value={icon}>{icon}</option>)}
+                    </select>
+                  </label>
+                  <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">CARD BUTTON
+                    <input type="text" value={guideCardData.buttonLabel} onChange={(e) => setGuideCardData((current) => ({ ...current, buttonLabel: e.target.value }))} className="mt-1 w-full px-3 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs" />
+                  </label>
+                </div>
+                <label className="mt-3 block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">CARD DESCRIPTION
+                  <textarea value={guideCardData.detail} onChange={(e) => setGuideCardData((current) => ({ ...current, detail: e.target.value }))} rows={2} className="mt-1 w-full px-3 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs" />
+                </label>
+              </div>
+            )}
 
           </div>
 
@@ -4446,11 +4572,11 @@ function PageBuilderContent() {
 
                                   </div>
 
-                                ) : results.map(item => (
+                                ) : results.map((item, itemIndex) => (
 
                                   <button
 
-                                    key={item.type}
+                                    key={`search-${item.type}-${itemIndex}`}
 
                                     type="button"
 
@@ -4492,11 +4618,11 @@ function PageBuilderContent() {
 
                                   </div>
 
-                                  {cat.items.map(item => (
+                                  {cat.items.map((item, itemIndex) => (
 
                                     <button
 
-                                      key={item.type}
+                                      key={`${cat.category}-${item.type}-${itemIndex}`}
 
                                       type="button"
 
@@ -5508,7 +5634,7 @@ function PageBuilderContent() {
 
                                     </div>
 
-                                    {((sec.data?.items && Array.isArray(sec.data.items) && sec.data.items.length > 0) ? sec.data.items : [
+                                    {(Array.isArray(sec.data?.items) ? sec.data.items : [
 
                                       { value: '25+', label: 'Years Serving UK' },
 
@@ -8331,6 +8457,84 @@ function PageBuilderContent() {
                               </div>
                             )}
 
+                            {sec.type === 'Guide' && (
+                              <div className="bg-white border border-slate-200 rounded-xl p-3 flex flex-col gap-3 mt-1">
+                                <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                                  <div>
+                                    <span className="text-[11px] font-extrabold text-primary uppercase">Guide step cards</span>
+                                    <p className="mt-1 text-[10px] text-slate-500">Choose a Lucide SVG icon, edit the step content, and set the destination slug.</p>
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const steps = Array.isArray(sec.data?.steps) ? [...sec.data.steps] : [...DEFAULT_GUIDE_STEPS];
+                                      steps.push({ number: steps.length + 1, icon: 'FileText', title: `New Step ${steps.length + 1}`, detail: 'Add step details...', buttonLabel: sec.data?.buttonLabel || 'Learn More', slug: '#' });
+                                      updateSectionData(sec.id, 'steps', steps);
+                                    }}
+                                    className="inline-flex items-center gap-1 rounded-md bg-primary px-2.5 py-1.5 text-[10px] font-bold text-white"
+                                  ><Plus className="h-3 w-3" /> Add step</button>
+                                </div>
+                                <label className="block text-[9px] font-bold text-slate-500">GUIDE CATEGORY
+                                  <select value={sec.data?.guideCategory || ''} onChange={(e) => { const value = e.target.value as GuideCategory; setGuideCategory(value); updateSectionData(sec.id, 'guideCategory', value); }} className="mt-1 w-full rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-[11px]">
+                                    <option value="">Select category</option>
+                                    <option value="hajj">Hajj Guides</option>
+                                    <option value="umrah">Umrah Guides</option>
+                                  </select>
+                                </label>
+                                {sec.data?.guideCategory && (
+                                  <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+                                    <p className="mb-2 text-[9px] font-extrabold uppercase text-slate-500">SELECT GUIDES TO DISPLAY</p>
+                                    <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+                                      {guideOptions.filter((guide) => guide.guideCategory === sec.data?.guideCategory).map((guide) => {
+                                        const selected = Array.isArray(sec.data?.guideIds) && sec.data.guideIds.includes(guide.id);
+                                        return (
+                                          <label key={guide.id} className="flex items-center gap-2 rounded-md border border-slate-200 bg-white px-2.5 py-2 text-[10px]">
+                                            <input type="checkbox" checked={selected} onChange={(e) => { const current = Array.isArray(sec.data?.guideIds) ? sec.data.guideIds : []; updateSectionData(sec.id, 'guideIds', e.target.checked ? [...current, guide.id] : current.filter((id: number) => id !== guide.id)); }} />
+                                            <span className="font-semibold text-slate-700">{guide.title}</span>
+                                          </label>
+                                        );
+                                      })}
+                                    </div>
+                                    {guideOptions.filter((guide) => guide.guideCategory === sec.data?.guideCategory).length === 0 && <p className="text-[10px] text-slate-400">Create a guide in the selected category first.</p>}
+                                  </div>
+                                )}
+                                <label className="block text-[9px] font-bold text-slate-500">DEFAULT BUTTON LABEL
+                                  <input type="text" value={sec.data?.buttonLabel || 'Learn More'} onChange={(e) => updateSectionData(sec.id, 'buttonLabel', e.target.value)} className="mt-1 w-full rounded-md border border-slate-300 px-2.5 py-1.5 text-[11px]" />
+                                </label>
+                                <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
+                                  {(Array.isArray(sec.data?.steps) ? sec.data.steps : DEFAULT_GUIDE_STEPS).map((step: any, stepIndex: number, allSteps: any[]) => (
+                                    <div key={stepIndex} className="relative rounded-lg border border-slate-200 bg-slate-50 p-3">
+                                      <button type="button" onClick={() => updateSectionData(sec.id, 'steps', allSteps.filter((_, index) => index !== stepIndex))} className="absolute right-2 top-2 rounded bg-red-50 p-1 text-red-600" title="Remove guide step"><Trash2 className="h-3.5 w-3.5" /></button>
+                                      <div className="grid grid-cols-[80px_1fr] gap-2 pr-8">
+                                        <label className="block text-[9px] font-bold text-slate-500">STEP NO.
+                                          <input type="number" min="1" value={step.number || stepIndex + 1} onChange={(e) => { const steps = [...allSteps]; steps[stepIndex] = { ...steps[stepIndex], number: e.target.value }; updateSectionData(sec.id, 'steps', steps); }} className="mt-1 w-full rounded-md border border-slate-300 px-2 py-1.5 text-[11px]" />
+                                        </label>
+                                        <label className="block text-[9px] font-bold text-slate-500">SVG ICON
+                                          <select value={step.icon || 'FileText'} onChange={(e) => { const steps = [...allSteps]; steps[stepIndex] = { ...steps[stepIndex], icon: e.target.value }; updateSectionData(sec.id, 'steps', steps); }} className="mt-1 w-full rounded-md border border-slate-300 bg-white px-2 py-1.5 text-[11px]">
+                                            {GUIDE_ICON_OPTIONS.map((icon) => <option key={icon} value={icon}>{icon}</option>)}
+                                          </select>
+                                        </label>
+                                      </div>
+                                      <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
+                                        <label className="block text-[9px] font-bold text-slate-500">TITLE
+                                          <input type="text" value={step.title || ''} onChange={(e) => { const steps = [...allSteps]; steps[stepIndex] = { ...steps[stepIndex], title: e.target.value }; updateSectionData(sec.id, 'steps', steps); }} className="mt-1 w-full rounded-md border border-slate-300 px-2 py-1.5 text-[11px]" />
+                                        </label>
+                                        <label className="block text-[9px] font-bold text-slate-500">LEARN MORE SLUG
+                                          <input type="text" value={step.slug || ''} placeholder="/your-page" onChange={(e) => { const steps = [...allSteps]; steps[stepIndex] = { ...steps[stepIndex], slug: e.target.value }; updateSectionData(sec.id, 'steps', steps); }} className="mt-1 w-full rounded-md border border-slate-300 px-2 py-1.5 text-[11px]" />
+                                        </label>
+                                      </div>
+                                      <label className="mt-2 block text-[9px] font-bold text-slate-500">DETAIL
+                                        <textarea rows={2} value={step.detail || step.description || ''} onChange={(e) => { const steps = [...allSteps]; steps[stepIndex] = { ...steps[stepIndex], detail: e.target.value }; updateSectionData(sec.id, 'steps', steps); }} className="mt-1 w-full rounded-md border border-slate-300 px-2 py-1.5 text-[11px]" />
+                                      </label>
+                                      <label className="mt-2 block text-[9px] font-bold text-slate-500">BUTTON LABEL
+                                        <input type="text" value={step.buttonLabel || ''} placeholder={sec.data?.buttonLabel || 'Learn More'} onChange={(e) => { const steps = [...allSteps]; steps[stepIndex] = { ...steps[stepIndex], buttonLabel: e.target.value }; updateSectionData(sec.id, 'steps', steps); }} className="mt-1 w-full rounded-md border border-slate-300 px-2 py-1.5 text-[11px]" />
+                                      </label>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
                             {sec.type === 'Umrah Visa Document Guide' && (
                               <div className="bg-white border border-slate-200 rounded-xl p-3 flex flex-col gap-3 mt-1">
                                 <span className="text-[11px] font-extrabold text-primary uppercase">Document / Passport Correct Format</span>
@@ -8360,7 +8564,7 @@ function PageBuilderContent() {
                               </div>
                             )}
 
-                            {(sec.type === 'Visa Process Steps' || sec.type === '3 Easy Steps') && (
+                            {(sec.type === 'ProcessStepsSection' || sec.type === 'Visa Process Steps' || sec.type === '3 Easy Steps') && (
 
                               <div className="bg-white border border-slate-200 rounded-xl p-3 flex flex-col gap-3 mt-1">
 
@@ -8430,6 +8634,16 @@ function PageBuilderContent() {
 
                                     />
 
+                                  </div>
+                                  <div>
+                                    <label className="block text-[9px] font-bold text-slate-500 mb-0.5">SECTION BACKGROUND IMAGE</label>
+                                    <ImageUploadWidget
+                                      value={sec.data?.backgroundImage || ''}
+                                      onChange={(url) => updateSectionData(sec.id, 'backgroundImage', url)}
+                                      subfolder="sections"
+                                      compact
+                                    />
+                                    <span className="mt-1 block text-[10px] text-slate-400">Upload a JPG, PNG, or WebP image used behind the process steps.</span>
                                   </div>
 
                                   <div>
@@ -8557,6 +8771,36 @@ function PageBuilderContent() {
                             )}
 
 
+
+                            {sec.type === 'Flight & Accommodation' && (
+                              <div className="mt-1 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-3">
+                                <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                                  <span className="text-[11px] font-extrabold uppercase text-primary">Flight &amp; Accommodation Details</span>
+                                </div>
+                                {[
+                                  ['flight', 'FLIGHT DETAILS', [['title', 'Panel title'], ['subtitle', 'Panel subtitle'], ['airline', 'Airline'], ['departure', 'Departure date'], ['returnDate', 'Return date'], ['duration', 'Duration']]],
+                                  ['accommodation', 'ACCOMMODATION', [['title', 'Panel title'], ['subtitle', 'Panel subtitle'], ['makkah', 'Makkah hotel'], ['madinah', 'Madinah hotel'], ['transport', 'Transport'], ['transportSubtitle', 'Transport subtitle'], ['tentLocation', 'Tent location']]],
+                                ].map(([group, heading, fields]: any) => (
+                                  <div key={group} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+                                    <span className="mb-2 block text-[10px] font-extrabold uppercase text-slate-600">{heading}</span>
+                                    <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+                                      {fields.map(([field, label]: string[]) => (
+                                        <label key={field} className="block text-[9px] font-bold text-slate-500">{label}
+                                          <input type="text" value={sec.data?.[group]?.[field] || ''} onChange={(e) => updateSectionData(sec.id, group, { ...(sec.data?.[group] || {}), [field]: e.target.value })} className="mt-1 w-full rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-[11px]" />
+                                        </label>
+                                      ))}
+                                    </div>
+                                  </div>
+                                ))}
+                                <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+                                  {['flightIcon', 'accommodationIcon'].map((field) => (
+                                    <label key={field} className="block text-[9px] font-bold uppercase text-slate-500">{field === 'flightIcon' ? 'Flight icon' : 'Accommodation icon'}
+                                      <input type="text" value={sec.data?.[field] || ''} onChange={(e) => updateSectionData(sec.id, field, e.target.value)} className="mt-1 w-full rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-[11px]" placeholder="Lucide icon name" />
+                                    </label>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
 
                             {sec.type === 'Available Seats' && (
                               <div className="mt-1 flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-3">
