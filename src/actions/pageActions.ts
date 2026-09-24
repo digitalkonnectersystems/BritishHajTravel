@@ -2,7 +2,7 @@
 
 import { db } from '@/db';
 import { sitePages, siteSettings } from '@/db/schema';
-import { and, eq, sql } from 'drizzle-orm';
+import { and, eq, isNull, sql } from 'drizzle-orm';
 import { revalidatePath, revalidateTag, unstable_cache } from 'next/cache';
 import { getResponsiveEmailTemplateHtml } from '@/lib/emailTemplate';
 import { logAdminActivityAction } from '@/actions/activityActions';
@@ -63,7 +63,7 @@ export async function getPagesList() {
         metaDescription: 'Explore British Hajj Travel journey highlights and videos.',
       });
     }
-    let pages = await db.select().from(sitePages);
+    let pages = await db.select().from(sitePages).where(isNull(sitePages.guideCategory));
 
     // Apply stored reordering sequence if available
     try {
@@ -140,6 +140,19 @@ export async function getGuidesList(category?: GuideCategory, includeDrafts = fa
     const guides = filters.length > 0
       ? await db.select().from(sitePages).where(and(...filters))
       : await db.select().from(sitePages);
+    const orderSettingKey = category ? `ordered_guides_${category}` : '';
+    let orderedIds: number[] = [];
+    if (orderSettingKey) {
+      const orderSetting = await db.select().from(siteSettings).where(eq(siteSettings.key, orderSettingKey)).limit(1);
+      orderedIds = orderSetting.length > 0 ? safeJsonParse<number[]>(orderSetting[0].value, []) : [];
+    }
+    const orderMap = new Map(orderedIds.map((id, index) => [id, index]));
+    guides.sort((a, b) => {
+      const orderA = orderMap.get(a.id) ?? Number.MAX_SAFE_INTEGER;
+      const orderB = orderMap.get(b.id) ?? Number.MAX_SAFE_INTEGER;
+      return orderA - orderB || a.id - b.id;
+    });
+
     return guides.map((guide) => ({
       ...guide,
       guideCard: safeJsonParse(guide.guideCardData, {}),
@@ -147,6 +160,38 @@ export async function getGuidesList(category?: GuideCategory, includeDrafts = fa
   } catch (err) {
     console.error('getGuidesList DB query failed:', err);
     throw new Error('Failed to fetch guides from database');
+  }
+
+}
+
+export async function reorderGuidesAction(category: GuideCategory, guideIds: number[]) {
+  try {
+    await ensureGuideColumns();
+    const guides = await db
+      .select({ id: sitePages.id })
+      .from(sitePages)
+      .where(eq(sitePages.guideCategory, category));
+    const validIds = new Set(guides.map((guide) => guide.id));
+    const orderedIds = Array.from(new Set(guideIds.filter((id) => validIds.has(id))));
+    guides.forEach((guide) => {
+      if (!orderedIds.includes(guide.id)) orderedIds.push(guide.id);
+    });
+
+    await db.insert(siteSettings)
+      .values({
+        key: `ordered_guides_${category}`,
+        value: JSON.stringify(orderedIds),
+      })
+      .onDuplicateKeyUpdate({
+        set: { value: JSON.stringify(orderedIds), updatedAt: new Date() },
+      });
+
+    revalidatePath('/admin/guides');
+    revalidateTag('pages', 'max');
+    return { success: true };
+  } catch (err) {
+    console.error('reorderGuidesAction failed:', err);
+    return { success: false, error: 'Failed to save guide order.' };
   }
 }
 
@@ -603,6 +648,9 @@ export async function deletePageAction(id: number) {
   try {
     const pages = await db.select().from(sitePages).where(eq(sitePages.id, id)).limit(1);
     if (pages && pages.length > 0) {
+      if (pages[0].guideCategory) {
+        return { success: false, error: 'Guide pages can only be deleted from Admin Guides.' };
+      }
       const pageTitle = pages[0].title || `ID #${id}`;
       await db.delete(sitePages).where(eq(sitePages.id, id));
 
@@ -616,6 +664,7 @@ export async function deletePageAction(id: number) {
       revalidatePath('/admin/pages');
       revalidatePath('/', 'layout');
     }
+
     return { success: true };
   } catch (err: any) {
     console.error('deletePageAction DB query failed:', err);
@@ -623,6 +672,71 @@ export async function deletePageAction(id: number) {
   }
 }
 
+export async function deleteGuideAction(id: number) {
+  try {
+    const guides = await db
+      .select()
+      .from(sitePages)
+      .where(and(eq(sitePages.id, id), isNull(sitePages.guideCategory)))
+      .limit(1);
+    if (guides.length > 0) {
+      return { success: false, error: 'This record is not a categorized guide.' };
+    }
+
+    const pages = await db.select().from(sitePages).where(eq(sitePages.id, id)).limit(1);
+    if (pages.length === 0 || !pages[0].guideCategory) {
+      return { success: false, error: 'Guide not found.' };
+    }
+
+    await db.delete(sitePages).where(eq(sitePages.id, id));
+    await logAdminActivityAction({
+      type: 'pages',
+      action: 'Deleted Guide',
+      details: `Removed guide: "${pages[0].title}" (${pages[0].slug})`,
+    });
+    revalidatePath('/admin/guides');
+    revalidatePath('/', 'layout');
+    revalidateTag('pages', 'max');
+    revalidateTag(`page-slug-${pages[0].slug}`, 'max');
+    return { success: true };
+  } catch (err: any) {
+    console.error('deleteGuideAction DB query failed:', err);
+    return { success: false, error: err.message || 'Failed to delete guide' };
+  }
+}
+
+export async function moveGuideToPagesAction(id: number) {
+  try {
+    const pages = await db.select().from(sitePages).where(eq(sitePages.id, id)).limit(1);
+    const page = pages[0];
+    if (!page || !page.guideCategory) {
+      return { success: false, error: 'Guide not found.' };
+    }
+
+    await db.update(sitePages).set({
+      guideCategory: null,
+      guideCardData: null,
+      updatedAt: new Date(),
+    }).where(eq(sitePages.id, id));
+
+    await logAdminActivityAction({
+      type: 'pages',
+      action: 'Moved Guide to Pages',
+      details: `Moved "${page.title}" (${page.slug}) from Guides to Pages.`,
+    });
+
+    revalidatePath('/admin/guides');
+    revalidatePath('/admin/pages');
+    revalidatePath(page.slug);
+    revalidatePath('/', 'layout');
+    revalidateTag('pages', 'max');
+    revalidateTag(`page-slug-${page.slug}`, 'max');
+    return { success: true };
+  } catch (err: any) {
+    console.error('moveGuideToPagesAction failed:', err);
+    return { success: false, error: err?.message || 'Failed to move guide to Pages.' };
+  }
+}
 
 export async function getDefaultSiteIdentity() {
   return {
@@ -1174,8 +1288,8 @@ const DEFAULT_EMAIL_CONFIGS: any = {
   sendToEmail: 'saudivisa@britishhajjtravel.com',
   emailSubjectLine: 'New Pilgrimage Form Submission',
   fromName: 'British Hajj Travel UK',
-  fromEmail: 'no-reply@britishhajjtravel.com',
-  replyTo: 'no-reply@britishhajjtravel.com',
+  fromEmail: 'no-reply@digitalkonnecter.com',
+  replyTo: 'no-reply@digitalkonnecter.com',
   successHeading: 'Message Sent Successfully!',
   successDescription: 'Thank you for contacting British Hajj Travel UK. We will respond within 24 hours.',
   formRoutes: {},

@@ -77,7 +77,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
       });
 
       if (res.success) {
-        const msg = data.successMessage || res.message || "Thank you! Your message has been received. Our team will contact you shortly.";
+        const msg = `${data.successMessage || res.message || "Thank you! Your message has been received. Our team will contact you shortly."}${res.emailWarning ? ` ${res.emailWarning}` : ""}`;
         setModalMsg(msg);
         if (res.ticketNumber) setModalRef(res.ticketNumber);
         setModalOpen(true);

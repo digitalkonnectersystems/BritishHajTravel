@@ -193,6 +193,10 @@ export default function HotelsClient() {
               <input className={fieldClass()} value={hotelForm.name} onChange={(e) => setHotelForm({ ...hotelForm, name: e.target.value })} placeholder="Hotel name" required />
               <input className={fieldClass()} value={hotelForm.city} onChange={(e) => setHotelForm({ ...hotelForm, city: e.target.value })} placeholder="City or place" required />
               <input className={fieldClass()} value={hotelForm.websiteUrl} onChange={(e) => setHotelForm({ ...hotelForm, websiteUrl: e.target.value })} placeholder="https://hotel-website.com" type="url" required />
+              <select className={fieldClass()} value={hotelForm.priceLabel?.toUpperCase() === 'TBC' ? 'tbc' : 'numeric'} onChange={(e) => setHotelForm({ ...hotelForm, priceLabel: e.target.value === 'tbc' ? 'TBC' : '' })}>
+                <option value="numeric">Numeric price</option>
+                <option value="tbc">TBC</option>
+              </select>
               <input className={fieldClass()} value={hotelForm.priceLabel} onChange={(e) => setHotelForm({ ...hotelForm, priceLabel: e.target.value })} placeholder="Price label, e.g. £180" />
               <input className={fieldClass()} value={hotelForm.pricePeriod} onChange={(e) => setHotelForm({ ...hotelForm, pricePeriod: e.target.value })} placeholder="per Night" />
               <input className={fieldClass()} value={hotelForm.rating} onChange={(e) => setHotelForm({ ...hotelForm, rating: e.target.value })} placeholder="Rating 0-5" type="number" min="0" max="5" step="0.1" />

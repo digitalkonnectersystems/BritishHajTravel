@@ -31,6 +31,7 @@ import AvailableSeatsSection from '@/components/AvailableSeatsSection';
 import GuideSection from '@/components/GuideSection';
 import FlightAccommodationSection from '@/components/FlightAccommodationSection';
 import ProcessStepsSection from '@/components/ProcessStepsSection';
+import GuideVideoSection from '@/components/GuideVideoSection';
 import { RICH_TEXT_PROSE_CLASS } from '@/lib/richTextProseClass';
 import { useEffect, useRef, useState } from "react";
 export default function PageSectionsRenderer({ sections, pageData, initialPackageData, initialDestinationData, initialBlogData, initialGuideData }: { sections: any[], pageData?: any, initialPackageData?: any, initialDestinationData?: any[], initialBlogData?: any[], initialGuideData?: any[] }) {
@@ -61,6 +62,12 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         }
         if (sec.type === 'Guide') {
           return <GuideSection key={idx} data={{ ...(sec.data || {}), guides: initialGuideData || [] }} />;
+        }
+        if (sec.type === 'Video') {
+          return <GuideVideoSection key={idx} data={sec.data || {}} />;
+        }
+        if (sec.type === 'FAQ') {
+          return <FaqSection key={idx} data={{ ...(sec.data || {}), title: sec.data?.heading || sec.data?.title }} />;
         }
         if (sec.type === 'Flight & Accommodation') {
           return <FlightAccommodationSection key={idx} data={sec.data || {}} />;

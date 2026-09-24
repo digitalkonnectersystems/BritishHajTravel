@@ -23,6 +23,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
   const [newPkg, setNewPkg] = useState({
     title: '',
     slug: '',
+    packageCode: '',
     type: 'umrah' as 'umrah' | 'hajj',
     month: '',
     packagePrices: [
@@ -50,7 +51,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
     });
   };
 
-  const updatePackagePriceRow = (idx: number, field: 'packageType' | 'price', value: string) => {
+  const updatePackagePriceRow = (idx: number, field: 'packageType' | 'price' | 'priceStatus', value: string) => {
     setNewPkg((prev: any) => {
       const updated = [...(prev.packagePrices || [])];
       updated[idx] = { ...updated[idx], [field]: value };
@@ -65,6 +66,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
       .map((row: any) => ({
         packageType: (row.packageType || '').trim(),
         price: String(row.price || '').trim(),
+        priceStatus: row.priceStatus === 'tbc' ? 'tbc' : 'numeric',
       }))
       .filter((row: any) => row.packageType || row.price);
 
@@ -79,7 +81,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
         return;
       }
       const num = Number(row.price);
-      if (isNaN(num) || num <= 0) {
+      if (row.priceStatus !== 'tbc' && (isNaN(num) || num <= 0)) {
         alert(`Please enter a valid positive £ price for "${row.packageType}".`);
         return;
       }
@@ -90,6 +92,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
 
     const cardDataWithPrices = {
       packagePrices: validRows,
+      packageCode: newPkg.packageCode.trim(),
     };
 
     const formData = new FormData();
@@ -111,6 +114,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
       setNewPkg({
         title: '',
         slug: '',
+        packageCode: '',
         type: 'umrah',
         month: '',
         packagePrices: [
@@ -228,6 +232,16 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
               </select>
             </div>
             <div>
+              <label className="text-xs font-bold text-slate-700 block mb-1">Package Code</label>
+              <input
+                type="text"
+                placeholder="e.g. BHT-02"
+                value={newPkg.packageCode}
+                onChange={(e) => setNewPkg({ ...newPkg, packageCode: e.target.value })}
+                className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs outline-none focus:border-primary"
+              />
+            </div>
+            <div>
               <label className="text-xs font-bold text-slate-700 block mb-1">Travel Month *</label>
               <MonthYearPicker
                 value={newPkg.month}
@@ -270,10 +284,12 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
                     </div>
                     <div className="w-40 sm:w-48">
                       <label className="text-[9px] font-bold text-ink-lt mb-0.5 block">PRICE (£)</label>
+                      <select value={row.priceStatus || 'numeric'} onChange={e => updatePackagePriceRow(idx, 'priceStatus', e.target.value)} className="mb-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold"><option value="numeric">Numeric price</option><option value="tbc">TBC</option></select>
                       <input
                         type="text"
                         placeholder="2795.00"
                         value={row.price || ''}
+                        disabled={row.priceStatus === 'tbc'}
                         onChange={e => updatePackagePriceRow(idx, 'price', e.target.value)}
                         className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-bold text-slate-900 outline-none focus:border-primary"
                       />

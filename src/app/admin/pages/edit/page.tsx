@@ -9245,9 +9245,22 @@ function PageBuilderContent() {
 
                                         <label className="w-full text-[10px] font-bold uppercase tracking-wide text-slate-500">
                                           Fare
+                                          <select
+                                            value={String(fl.price || '').toUpperCase() === 'TBC' ? 'tbc' : 'numeric'}
+                                            onChange={(e) => {
+                                              const currentFlights = [...getFlightsOrDefault(sec.data?.items)];
+                                              currentFlights[fIdx] = { ...currentFlights[fIdx], price: e.target.value === 'tbc' ? 'TBC' : '' };
+                                              updateSectionData(sec.id, 'items', currentFlights);
+                                            }}
+                                            className="mt-1 w-full rounded border border-slate-200 bg-white px-2 py-1 text-xs font-semibold"
+                                          >
+                                            <option value="numeric">Numeric price</option>
+                                            <option value="tbc">TBC</option>
+                                          </select>
                                           <input
                                             type="text"
                                             value={fl.price || ''}
+                                            disabled={String(fl.price || '').toUpperCase() === 'TBC'}
                                             onChange={(e) => {
                                               const currentFlights = [...getFlightsOrDefault(sec.data?.items)];
                                               currentFlights[fIdx] = { ...currentFlights[fIdx], price: e.target.value };

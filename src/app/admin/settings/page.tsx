@@ -464,12 +464,12 @@ export default function AdminSettingsPage() {
     sendToEmail: 'saudivisa@britishhajjtravel.com',
     emailSubjectLine: 'New Pilgrimage Form Submission',
     fromName: 'British Hajj Travel UK',
-    fromEmail: 'no-reply@britishhajjtravel.com',
-    replyTo: 'no-reply@britishhajjtravel.com',
+    fromEmail: 'no-reply@digitalkonnecter.com',
+    replyTo: 'no-reply@digitalkonnecter.com',
     successHeading: 'Message Sent Successfully!',
     successDescription: 'Thank you for contacting British Hajj Travel UK. We will respond within 24 hours.',
     smtpHost: '',
-    smtpPort: '587',
+    smtpPort: '465',
     smtpUsername: '',
     smtpPassword: '',
     smtpEncryption: 'tls',
@@ -4761,7 +4761,7 @@ export default function AdminSettingsPage() {
                             SMTP SERVER HOST
                           </span>
                           <span className="text-xs font-mono font-bold text-white block truncate">
-                            smtp.britishhajjtravel.com
+                            smtp.hostinger.com
                           </span>
                           <span className="text-[10px] text-ink-lt mt-0.5 block">Configured in process.env.SMTP_HOST</span>
                         </div>
@@ -4771,7 +4771,7 @@ export default function AdminSettingsPage() {
                             PORT &amp; ENCRYPTION
                           </span>
                           <span className="text-xs font-mono font-bold text-emerald-300 block">
-                            Port 587 (STARTTLS)
+                            Port 465 (SSL/TLS)
                           </span>
                           <span className="text-[10px] text-ink-lt mt-0.5 block">Configured in process.env.SMTP_PORT</span>
                         </div>
@@ -4781,7 +4781,7 @@ export default function AdminSettingsPage() {
                             AUTHENTICATED ACCOUNT
                           </span>
                           <span className="text-xs font-mono font-bold text-white block truncate">
-                            no-reply@britishhajjtravel.com
+                            no-reply@digitalkonnecter.com
                           </span>
                           <span className="text-[10px] text-ink-lt mt-0.5 block">Configured in process.env.SMTP_USER</span>
                         </div>

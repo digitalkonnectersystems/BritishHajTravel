@@ -142,6 +142,16 @@ async function runMigrationAndSeed() {
         CONSTRAINT \`destinations_id\` PRIMARY KEY(\`id\`),
         CONSTRAINT \`destinations_slug_unique\` UNIQUE(\`slug\`)
       );`,
+
+      `CREATE TABLE IF NOT EXISTS \`email_delivery_logs\` (
+        \`id\` int AUTO_INCREMENT NOT NULL,
+        \`form_id\` varchar(255) NOT NULL,
+        \`status\` enum('Delivered','Failed') NOT NULL,
+        \`sent_to\` varchar(255) NOT NULL,
+        \`details\` text,
+        \`created_at\` timestamp DEFAULT (now()),
+        CONSTRAINT \`email_delivery_logs_id\` PRIMARY KEY(\`id\`)
+      );`,
     ];
 
     console.log('Executing table creation SQL statements...');

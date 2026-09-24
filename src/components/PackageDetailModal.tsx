@@ -5,6 +5,7 @@ import Image from "next/image";
 import { X, Calendar, User, Check, Star, MapPin, Utensils, Plane, AlertCircle, ChevronDown, ChevronUp, ArrowLeft, Sun, MoonStar } from "lucide-react";
 import DynamicIcon from "./ui/DynamicIcon";
 import { getDurationUnit } from "@/lib/packageHelpers";
+import { isTbcPrice } from "@/lib/priceDisplay";
 
 export interface PackageDetailData {
   id?: string;
@@ -79,7 +80,7 @@ export default function PackageDetailModal({ isOpen, onClose, pkg }: PackageDeta
   const cardData = pkg ? parseJsonSafe(pkg.cardData) : {};
 
   // Extract packagePrices from packageData, cardData, detailPageData, or relation
-  const packagePrices: { packageType: string; price: number }[] = (() => {
+  const packagePrices: { packageType: string; price: number; priceStatus?: string }[] = (() => {
     if (!pkg) return [];
     const rawList =
       cardData?.packagePrices ||
@@ -106,8 +107,9 @@ export default function PackageDetailModal({ isOpen, onClose, pkg }: PackageDeta
         .map((item: any) => ({
           packageType: (typeof item === 'object' ? item.packageType || item.type || '' : '').trim(),
           price: Number(String(typeof item === 'object' ? item.price || item.amount || 0 : item).replace(/[^0-9.]/g, '')) || 0,
+          priceStatus: typeof item === 'object' ? item.priceStatus : undefined,
         }))
-        .filter((item: any) => item.packageType && item.price > 0);
+        .filter((item: any) => item.packageType && (item.price > 0 || item.priceStatus === 'tbc'));
     }
 
     const legacyBase = Number(String(pkg.startingPrice ?? pkg.price ?? '2795').replace(/[^0-9.]/g, '')) || 2795;
@@ -119,8 +121,9 @@ export default function PackageDetailModal({ isOpen, onClose, pkg }: PackageDeta
   })();
 
   // Find the minimum priced package type deterministically
+  const numericPackagePrices = packagePrices.filter((item) => !isTbcPrice(item.price, item.priceStatus) && item.price > 0);
   const minPriceItem = packagePrices.length > 0
-    ? packagePrices.reduce((min, curr) => (curr.price < min.price ? curr : min), packagePrices[0])
+    ? (numericPackagePrices.length > 0 ? numericPackagePrices.reduce((min, curr) => (curr.price < min.price ? curr : min), numericPackagePrices[0]) : packagePrices[0])
     : { packageType: 'QUAD OCCUPANCY', price: Number(String(pkg?.startingPrice ?? pkg?.price ?? '2795').replace(/[^0-9.]/g, '')) || 2795 };
 
   // Default selected package type is the minimum priced package (or single price if only 1)
@@ -137,10 +140,10 @@ export default function PackageDetailModal({ isOpen, onClose, pkg }: PackageDeta
   const title = pkg.title || "ECONOMY HAJJ PACKAGE 2027";
   const isHajj = pkg.type === "hajj" || /hajj/i.test(title);
   const durationText = detailData.durationText || cardData.duration || pkg.durationText || `${pkg.duration || pkg.month || "14 DAYS"} / 13 NIGHTS`;
-  const departure = detailData.departure || cardData.departure || pkg.departure || "CANADA";
+  const departure = detailData.departure || cardData.departure || pkg.departure || "UK";
   const destination = detailData.destination || cardData.destination || pkg.destination || "SAUDIA";
 
-  const minFormattedPrice = minPriceItem.price.toLocaleString("en-CA", {
+  const minFormattedPrice = isTbcPrice(minPriceItem.price, minPriceItem.priceStatus) ? "TBC" : minPriceItem.price.toLocaleString("en-CA", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   });
@@ -152,7 +155,7 @@ export default function PackageDetailModal({ isOpen, onClose, pkg }: PackageDeta
 
   // Selected package type price for booking calculation
   const selectedPriceItem = packagePrices.find((p) => p.packageType === effectivePackageType);
-  const selectedPackagePrice = selectedPriceItem ? selectedPriceItem.price : null;
+  const selectedPackagePrice = selectedPriceItem && !isTbcPrice(selectedPriceItem.price, selectedPriceItem.priceStatus) ? selectedPriceItem.price : null;
   const estimatedTotalFormatted = selectedPackagePrice !== null
     ? selectedPackagePrice.toLocaleString("en-CA", {
       minimumFractionDigits: 0,

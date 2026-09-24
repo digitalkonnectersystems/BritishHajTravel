@@ -33,7 +33,7 @@ const defaultHajjCardData = {
   bannerImage: '',
   badgeTag: 'HAJJ 2027',
   duration: '14Days',
-  flightRoute: 'FROM CANADA ➔ TO SAUDIA',
+  flightRoute: 'FROM UK ➔ TO SAUDIA',
   operatorName: 'British Hajj Travel',
   operatorRating: '4.4/5',
   btnLabel: 'Book Hajj 2027',

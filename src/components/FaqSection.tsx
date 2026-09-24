@@ -1,10 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import { getGuideVideoEmbedUrl } from "@/components/GuideVideoSection";
 
 interface FaqItem {
   question?: string;
   answer?: string;
+  answerBlocks?: FaqAnswerBlock[];
+}
+
+interface FaqAnswerBlock {
+  type: "text" | "image" | "video";
+  content?: string;
+  url?: string;
+  alt?: string;
 }
 
 interface FaqSectionProps {
@@ -72,7 +81,30 @@ export default function FaqSection({ data = {} }: FaqSectionProps) {
                 </button>
                 {isOpen && (
                   <div className="px-5 py-7 text-sm leading-7 text-slate-600 md:px-5 md:py-8">
-                    <div className="whitespace-pre-line">{item.answer}</div>
+                    {Array.isArray(item.answerBlocks) && item.answerBlocks.length > 0 ? (
+                      <div className="space-y-5">
+                        {item.answerBlocks.map((block, blockIndex) => {
+                          if (block.type === "image" && block.url) {
+                            return <img key={blockIndex} src={block.url} alt={block.alt || ""} className="mx-auto max-h-[520px] w-full rounded-xl object-contain" />;
+                          }
+                          if (block.type === "video" && block.url) {
+                            const embedUrl = getGuideVideoEmbedUrl(block.url);
+                            return embedUrl ? (
+                              <div key={blockIndex} className="aspect-video overflow-hidden rounded-xl bg-slate-950">
+                                <iframe className="h-full w-full" src={embedUrl} title="FAQ video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />
+                              </div>
+                            ) : (
+                              <video key={blockIndex} className="aspect-video w-full rounded-xl bg-slate-950" controls preload="metadata">
+                                <source src={block.url} />
+                              </video>
+                            );
+                          }
+                          return block.content ? <div key={blockIndex} className="prose prose-slate max-w-none" dangerouslySetInnerHTML={{ __html: block.content }} /> : null;
+                        })}
+                      </div>
+                    ) : (
+                      <div className="whitespace-pre-line">{item.answer}</div>
+                    )}
                   </div>
                 )}
               </div>

@@ -32,7 +32,7 @@ export default function AdminPackageDetailModal({
 
   useEffect(() => {
     if (pkg) {
-      setDeparture(pkg.departure || "CANADA");
+      setDeparture(pkg.departure || "UK");
       setDestination(pkg.destination || "SAUDIA");
       setExclusiveBadge(pkg.exclusiveBadge || "EXCLUSIVE PACKAGE");
       setCurrencyCode(pkg.currencyCode || "£");
@@ -213,7 +213,7 @@ Side trips to Pakistan or any other destination available with an additional cos
                       DURATION: {durationText || `${pkg.duration || "14 DAYS"} / 13 NIGHTS`}
                     </p>
                     <div className="flex flex-wrap gap-3 text-[11px] font-bold text-emerald-100 mt-3">
-                      <span>🛫 DEPARTURE: <strong className="text-white">{departure || "CANADA"}</strong></span>
+                      <span>🛫 DEPARTURE: <strong className="text-white">{departure || "UK"}</strong></span>
                       <span>🛫 DESTINATION: <strong className="text-white">{destination || "SAUDIA"}</strong></span>
                     </div>
                   </div>
@@ -242,7 +242,7 @@ Side trips to Pakistan or any other destination available with an additional cos
                     type="text"
                     value={departure}
                     onChange={(e) => setDeparture(e.target.value)}
-                    placeholder="e.g. CANADA"
+                    placeholder="e.g. UK"
                     className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-800"
                   />
                 </div>

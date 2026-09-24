@@ -28,6 +28,8 @@ import {
   LayoutDashboard,
   BookOpen,
   Building2,
+  Menu,
+  X,
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -99,6 +101,7 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
   const [profileOpen, setProfileOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const profileRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
@@ -110,6 +113,18 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
     });
     return () => {
       isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+    const previousBodyOverflow = document.body.style.overflow;
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.documentElement.style.overflow = previousHtmlOverflow;
+      document.body.style.overflow = previousBodyOverflow;
     };
   }, []);
 
@@ -143,9 +158,10 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
   const pageTitle = currentPageItem ? currentPageItem.label : 'Admin Portal';
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#1C1F26] font-sans">
+    <div className="fixed inset-0 flex min-w-0 overflow-hidden bg-[#1C1F26] font-sans">
       {/* ── Left Sidebar ── */}
-      <aside className="w-[220px] min-w-[220px] bg-white border-r border-white/5 flex flex-col p-6 px-3 gap-0 overflow-y-auto z-20">
+      {sidebarOpen && <button type="button" aria-label="Close navigation" onClick={() => setSidebarOpen(false)} className="fixed inset-0 z-30 bg-slate-900/40 md:hidden" />}
+      <aside className={`${sidebarOpen ? 'flex' : 'hidden'} fixed inset-y-0 left-0 z-40 w-[220px] min-w-[220px] bg-white border-r border-white/5 p-6 px-3 gap-0 overflow-y-auto md:static md:flex md:flex-col`}>
         {/* Brand */}
         <div className="px-2 pb-6 border-b border-white/5">
           <Image
@@ -174,6 +190,7 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
                   ? 'text-ink font-bold bg-primary text-white shadow-md border-l-4 border-primary pl-2.5'
                   : 'text-ink font-medium group hover:bg-primary/5 hover:text-ink/80 hover:shadow-sm'
                   }`}
+                  onClick={() => setSidebarOpen(false)}
               >
                 <span className={`shrink-0 ${isActive ? 'text-white' : 'text-ink/80 group-hover:text-ink'}`}>
                   {item.icon}
@@ -187,9 +204,12 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
       </aside>
 
       {/* ── Right Panel ── */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
         {/* ── Redesigned Sleek Top Header Bar ── */}
-        <header className="bg-white border-b border-slate-200/80 px-6 py-3 flex items-center justify-between gap-4 shrink-0 shadow-xs z-30 relative">
+        <header className="flex shrink-0 flex-wrap items-center justify-between gap-3 overflow-visible bg-white px-4 py-3 shadow-xs relative z-30 sm:px-6">
+          <button type="button" aria-label="Open navigation" onClick={() => setSidebarOpen(true)} className="rounded-lg border border-slate-200 p-2 text-slate-700 md:hidden">
+            {sidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+          </button>
 
           {/* Left Side: Page Context & Live Indicator */}
           <div className="flex items-center gap-4">
@@ -361,7 +381,7 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
         </header>
 
         {/* Main scrollable content — light canvas */}
-        <main className="flex-1 overflow-y-auto bg-blue-lt p-7 px-8 text-slate-800">
+        <main className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto bg-blue-lt p-4 text-slate-800 sm:p-7 sm:px-8">
           {children}
         </main>
       </div>

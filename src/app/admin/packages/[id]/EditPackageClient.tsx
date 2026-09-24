@@ -14,9 +14,10 @@ import { formatTravelMonth, formatDuration } from '@/lib/packageHelpers';
 
 const defaultHajjCardData = {
   bannerImage: '',
+  packageCode: '',
   badgeTag: 'HAJJ 2027',
   duration: '14Days',
-  flightRoute: 'FROM CANADA ➔ TO SAUDIA',
+  flightRoute: 'FROM UK ➔ TO SAUDIA',
   operatorName: 'British Hajj Travel',
   operatorRating: '4.4/5',
   btnLabel: 'Book Hajj 2027',
@@ -170,6 +171,10 @@ export function HajjCardFields({ pkgData, setPkgData, includePackageMeta = false
             <label className="text-[10px] font-bold text-ink-lt mb-1 block">TOP LEFT BADGE</label>
             <input type="text" value={cd.badgeTag || ''} onChange={e => updateCD('badgeTag', e.target.value)} className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs" />
           </div>}
+          <div>
+            <label className="text-[10px] font-bold text-ink-lt mb-1 block">PACKAGE CODE</label>
+            <input type="text" value={cd.packageCode || ''} onChange={e => updateCD('packageCode', e.target.value)} placeholder="e.g. BHT-02" className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs" />
+          </div>
           <div>
             <label className="text-[10px] font-bold text-ink-lt mb-1 block">DURATION BADGE</label>
             <DurationInput
@@ -677,7 +682,7 @@ export default function EditPackageClient({ packageData }: EditPackageClientProp
     });
   };
 
-  const updatePackagePriceRow = (idx: number, field: 'packageType' | 'price', value: string) => {
+  const updatePackagePriceRow = (idx: number, field: 'packageType' | 'price' | 'priceStatus', value: string) => {
     setEditingPkg((prev: any) => {
       const updated = [...(prev.packagePrices || [])];
       updated[idx] = { ...updated[idx], [field]: value };
@@ -694,6 +699,7 @@ export default function EditPackageClient({ packageData }: EditPackageClientProp
       .map((row: any) => ({
         packageType: (row.packageType || '').trim(),
         price: String(row.price || '').trim(),
+        priceStatus: row.priceStatus === 'tbc' ? 'tbc' : 'numeric',
       }))
       .filter((row: any) => row.packageType || row.price);
 
@@ -708,7 +714,7 @@ export default function EditPackageClient({ packageData }: EditPackageClientProp
         return;
       }
       const num = Number(row.price);
-      if (isNaN(num) || num <= 0) {
+      if (row.priceStatus !== 'tbc' && (isNaN(num) || num <= 0)) {
         alert(`Please enter a valid positive £ price for "${row.packageType}".`);
         return;
       }
@@ -718,13 +724,19 @@ export default function EditPackageClient({ packageData }: EditPackageClientProp
     const numericPrices = validRows.map((r: any) => Number(r.price)).filter((n: number) => !isNaN(n) && n > 0);
     const minPrice = numericPrices.length > 0 ? Math.min(...numericPrices).toFixed(2) : '1995.00';
 
+    const existingCardData = typeof editingPkg.cardData === 'string'
+      ? parseJSON(editingPkg.cardData, {})
+      : (editingPkg.cardData || {});
+    const existingDetailPageData = typeof editingPkg.detailPageData === 'string'
+      ? parseJSON(editingPkg.detailPageData, {})
+      : (editingPkg.detailPageData || {});
     const updatedCardData = {
-      ...(editingPkg.cardData || {}),
+      ...existingCardData,
       packagePrices: validRows,
     };
 
     const updatedDetailPageData = {
-      ...(editingPkg.detailPageData || {}),
+      ...existingDetailPageData,
       packagePrices: validRows,
     };
 
@@ -898,10 +910,12 @@ export default function EditPackageClient({ packageData }: EditPackageClientProp
                       </div>
                       <div className="w-40 sm:w-48">
                         <label className="text-[9px] font-bold text-ink-lt mb-0.5 block">PRICE (£)</label>
+                        <select value={row.priceStatus || 'numeric'} onChange={e => updatePackagePriceRow(idx, 'priceStatus', e.target.value)} className="mb-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold"><option value="numeric">Numeric price</option><option value="tbc">TBC</option></select>
                         <input
                           type="text"
                           placeholder="2795.00"
                           value={row.price || ''}
+                          disabled={row.priceStatus === 'tbc'}
                           onChange={e => updatePackagePriceRow(idx, 'price', e.target.value)}
                           className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-bold text-slate-900 outline-none focus:border-primary"
                         />

@@ -179,6 +179,21 @@ Every section uses this structure in the database:
 - `title`
 - (Usually pulls from `blog_posts` table dynamically, but may have override settings)
 
+### 22. Guide Video
+**Used on:** Guide Pages
+**Fields:**
+- `source`: `embed` for YouTube/Vimeo or `upload` for an uploaded video
+- `url`: YouTube/Vimeo URL or uploaded media URL
+- `title` (optional — displayed above the video)
+- `caption` (optional)
+
+### 23. Guide FAQ
+**Used on:** Guide Pages
+**Fields:**
+- `eyebrow`, `heading`, `description`
+- `items`: Array of FAQ items with `question` and ordered `answerBlocks`
+- `answerBlocks`: Array of `{ type: 'text', content }`, `{ type: 'image', url, alt }`, or `{ type: 'video', url }`
+
 ## Plan for Implementation
 1. Go through `src/app/admin/pages/edit/page.tsx` and ensure ALL these section types exist in `SECTION_CATALOG`.
 2. Add comprehensive default data to the catalog.

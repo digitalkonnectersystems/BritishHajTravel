@@ -113,7 +113,7 @@ export default function DetailPageDataFields({
         </div>
         <div>
           <label className="text-[10px] font-bold text-ink-lt mb-1 block">DEPARTURE</label>
-          <input type="text" value={d.departure || ''} onChange={e => update('departure', e.target.value)} placeholder="e.g. CANADA" className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs" />
+          <input type="text" value={d.departure || ''} onChange={e => update('departure', e.target.value)} placeholder="e.g. UK" className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs" />
         </div>
         <div>
           <label className="text-[10px] font-bold text-ink-lt mb-1 block">DESTINATION</label>

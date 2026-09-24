@@ -323,7 +323,7 @@ export default function AboutPageClient({ initialPageData }: { initialPageData?:
                         </span>
                       </div>
                       <div className="absolute bottom-3 left-3 right-3">
-                        <span className="text-emerald-300 text-[10px] font-bold uppercase tracking-wider block mb-0.5">FROM CANADA → TO SAUDIA</span>
+                        <span className="text-emerald-300 text-[10px] font-bold uppercase tracking-wider block mb-0.5">FROM UK → TO SAUDIA</span>
                         <h3 className="text-lg font-bold text-white leading-tight">{pkg.title}</h3>
                       </div>
                     </div>

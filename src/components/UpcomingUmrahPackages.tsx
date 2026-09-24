@@ -155,7 +155,11 @@ export default function UpcomingUmrahPackages({
                 cd.bannerImage || pkg.featuredImage || "";
               const starRating = pkg.starRating || cd.starRating || "5 Star";
               const month = pkg.month || "";
-              const price = pkg.startingPrice
+              const packagePrices = Array.isArray(cd.packagePrices) ? cd.packagePrices : [];
+              const quadPrice = packagePrices.find((item: any) => /quad/i.test(item.packageType || item.type || ""));
+              const price = (quadPrice?.priceStatus === "tbc" || String(pkg.startingPrice || "").toLowerCase() === "tbc")
+                ? "TBC"
+                : pkg.startingPrice
                 ? Number(pkg.startingPrice).toLocaleString("en-CA", {
                   minimumFractionDigits: 0,
                   maximumFractionDigits: 0,

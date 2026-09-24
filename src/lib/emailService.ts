@@ -20,10 +20,11 @@ export async function dispatchFormEmails(
     let adminCcEmail = '';
     let adminBccEmail = '';
     let smtpHost = process.env.SMTP_HOST || '';
-    let smtpPort = parseInt(process.env.SMTP_PORT || '587', 10);
+    let smtpPort = parseInt(process.env.SMTP_PORT || '465', 10);
     let smtpUser = process.env.SMTP_USER || '';
     let smtpPass = process.env.SMTP_PASS || '';
-    let fromEmail = process.env.SMTP_FROM || 'no-reply@britishhajjtravel.com';
+    const authenticatedSender = (process.env.SMTP_USER || '').trim().toLowerCase();
+    let fromEmail = (process.env.SMTP_FROM || authenticatedSender || 'no-reply@digitalkonnecter.com').trim();
 
     try {
       const res = await db.select().from(siteSettings).where(eq(siteSettings.key, 'forms_settings')).limit(1);
@@ -33,7 +34,17 @@ export async function dispatchFormEmails(
           adminRecipientEmail = config.emailConfigs.sendToEmail;
         }
         if (config?.emailConfigs?.fromEmail) {
-          fromEmail = config.emailConfigs.fromEmail;
+          const configuredFromEmail = String(config.emailConfigs.fromEmail).trim();
+          if (
+            !authenticatedSender ||
+            configuredFromEmail.toLowerCase() === authenticatedSender
+          ) {
+            fromEmail = configuredFromEmail;
+          } else {
+            console.warn(
+              `[Email Dispatcher] Ignoring stored From address ${configuredFromEmail}; it does not match the authenticated SMTP user.`
+            );
+          }
         }
 
         // Form-specific recipient routing — new formRoutingRules (multi-form per rule)
@@ -119,6 +130,16 @@ export async function dispatchFormEmails(
       console.error(
         `[Email Dispatcher] SMTP is not configured.`
       );
+      try {
+        await db.insert(emailDeliveryLogs).values({
+          formId: formName,
+          status: 'Failed',
+          sentTo: adminRecipientEmail,
+          details: 'SMTP is not configured.',
+        });
+      } catch (logErr) {
+        console.error('[Email Dispatcher] Failed to log missing SMTP configuration:', logErr);
+      }
 
       return {
         adminSent: false,
@@ -153,6 +174,7 @@ export async function dispatchFormEmails(
       to: adminRecipientEmail,
       subject: adminSubject,
       html: adminHtml,
+      text: `A new inquiry was submitted via ${formName}.`,
     };
     if (adminCcEmail) {
       adminMailOptions.cc = adminCcEmail;
@@ -169,6 +191,7 @@ export async function dispatchFormEmails(
         to: userEmail.trim(),
         subject: userSubject,
         html: userHtml,
+        text: `Thank you for contacting British Hajj Travel UK. We have received your inquiry submitted via ${formName}.`,
       })
       : Promise.resolve(null);
 
@@ -229,14 +252,43 @@ export async function dispatchFormEmails(
     return {
       adminSent,
       userSent,
-      error: !adminSent
-        ? 'Admin notification email failed to send.'
-        : (isValidUserEmail && !userSent
-          ? 'User confirmation email failed to send.'
-          : undefined),
+      error: !adminSent || (isValidUserEmail && !userSent)
+        ? getEmailDeliveryError(adminResult, userResult)
+        : undefined,
     };
   } catch (err: any) {
     console.error('dispatchFormEmails error:', err);
+    try {
+      const fallbackRecipient = submittedData.email || submittedData.emailAddress || submittedData.userEmail || 'unknown';
+      await db.insert(emailDeliveryLogs).values({
+        formId: formName,
+        status: 'Failed',
+        sentTo: String(fallbackRecipient),
+        details: err?.message || 'Unexpected email dispatcher error',
+      });
+    } catch (logErr) {
+      console.error('[Email Dispatcher] Failed to log dispatcher error:', logErr);
+    }
+
     return { adminSent: false, userSent: false, error: err.message };
   }
+}
+
+function getEmailDeliveryError(
+  adminResult: PromiseSettledResult<unknown>,
+  userResult: PromiseSettledResult<unknown>,
+): string {
+  const reasons = [adminResult, userResult]
+    .filter((result): result is PromiseRejectedResult => result.status === 'rejected')
+    .map((result) => result.reason);
+
+  const accountDisabled = reasons.some((reason) =>
+    String(reason?.message || reason).toLowerCase().includes('outbound sending is disabled'),
+  );
+
+  if (accountDisabled) {
+    return 'Email could not be sent because outbound SMTP sending is disabled for the configured mailbox. Contact the email provider to re-enable outbound sending.';
+  }
+
+  return 'Email delivery failed. Check the email delivery logs for details.';
 }

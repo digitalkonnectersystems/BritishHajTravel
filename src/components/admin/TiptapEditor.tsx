@@ -10,7 +10,36 @@ import Link from '@tiptap/extension-link';
 import { TextStyle } from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
 import Highlight from '@tiptap/extension-highlight';
+import Image from '@tiptap/extension-image';
+import { NodeSelection } from '@tiptap/pm/state';
 import { RICH_TEXT_PROSE_CLASS } from '@/lib/richTextProseClass';
+
+const RichImage = Image.extend({
+  name: 'image',
+
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      width: {
+        default: null,
+        parseHTML: (element) => element.getAttribute('width') || element.style.width || null,
+        renderHTML: (attributes) => attributes.width ? { width: attributes.width } : {},
+      },
+      imageAlign: {
+        default: 'left',
+        parseHTML: (element) => element.getAttribute('data-align') || 'left',
+        renderHTML: (attributes) => ({
+          'data-align': attributes.imageAlign || 'left',
+          style: attributes.imageAlign === 'center'
+            ? 'display: inline-block; margin-left: auto; margin-right: auto; vertical-align: middle;'
+            : attributes.imageAlign === 'right'
+              ? 'display: inline-block; margin-left: 0.5rem; margin-right: 0; vertical-align: middle;'
+              : 'display: inline-block; margin-left: 0; margin-right: 0.5rem; vertical-align: middle;',
+        }),
+      },
+    };
+  },
+});
 
 const TextStyleCustomAttributes = Extension.create({
   name: 'textStyleCustomAttributes',
@@ -67,8 +96,8 @@ const HEADING_FONT_STYLES: Record<string, { fontSize: string; fontWeight: string
 const COLOR_OPTIONS = [
   { id: 'default', label: 'Default Ink', value: '', previewBg: '#132723' },
   { id: 'primary', label: 'Primary', value: '#020e43', previewBg: '#020e43' },
-  { id: 'gold', label: 'Gold', value: '#b50007', previewBg: '#b50007' },
-  { id: 'gold-lt', label: 'Gold Light', value: '#910006', previewBg: '#910006' },
+  { id: 'red', label: 'Red', value: '#b50007', previewBg: '#b50007' },
+  { id: 'red-lt', label: 'Red Light', value: '#910006', previewBg: '#910006' },
   { id: 'ink-lt', label: 'Ink Light', value: '#899391', previewBg: '#899391' },
 ];
 
@@ -177,9 +206,11 @@ export default function TiptapEditor({
 
   const [sourceMode, setSourceMode] = useState(false);
   const [htmlSource, setHtmlSource] = useState('');
-  const [, setSelectionTick] = useState(0);
+  const [selectionTick, setSelectionTick] = useState(0);
+  const [imageWidthDraft, setImageWidthDraft] = useState('');
 
   const highlightColorInputRef = useRef<HTMLInputElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
 
   const editor = useEditor({
     extensions: [
@@ -204,6 +235,10 @@ export default function TiptapEditor({
       Highlight.configure({
         multicolor: true,
       }),
+      RichImage.configure({
+        inline: true,
+        allowBase64: false,
+      }),
       TextAlign.configure({
         types: ['heading', 'paragraph'],
       }),
@@ -213,6 +248,32 @@ export default function TiptapEditor({
     editorProps: {
       attributes: {
         class: `${RICH_TEXT_PROSE_CLASS} px-4 py-3 focus:outline-none min-h-full`,
+      },
+      handleClick: (view, pos, event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLImageElement)) return false;
+
+        event.preventDefault();
+        event.stopPropagation();
+        try {
+          const resolved = view.state.doc.resolve(Math.max(0, Math.min(pos, view.state.doc.content.size)));
+          const imageBefore = resolved.nodeBefore?.type.name === 'image' ? resolved.nodeBefore : null;
+          const imageAfter = resolved.nodeAfter?.type.name === 'image' ? resolved.nodeAfter : null;
+          const imagePosition = imageAfter
+            ? resolved.pos
+            : imageBefore
+              ? resolved.pos - imageBefore.nodeSize
+              : null;
+
+          if (imagePosition !== null) {
+            view.dispatch(view.state.tr.setSelection(NodeSelection.create(view.state.doc, imagePosition)));
+            return true;
+          }
+        } catch (selectionError) {
+          console.warn('Unable to select editor image:', selectionError);
+        }
+
+        return false;
       },
     },
     onUpdate({ editor: ed }) {
@@ -248,6 +309,12 @@ export default function TiptapEditor({
       editor.commands.setContent(incoming || '<p></p>', { emitUpdate: false });
     }
   }, [value, editor]);
+
+  useEffect(() => {
+    if (!editor || !editor.isActive('image')) return;
+    const width = editor.getAttributes('image').width;
+    setImageWidthDraft(width ? String(width).replace(/px$/, '') : '');
+  }, [editor, selectionTick]);
 
   if (!editor) return null;
 
@@ -289,8 +356,8 @@ export default function TiptapEditor({
     if (!rawColor) return 'default';
     if (rawColor === '#020e43' || rawColor.includes('var(--primary)') || rawColor === 'rgb(2, 14, 67)') return 'primary';
     if (rawColor === '#b50007' || rawColor.includes('var(--red)') || rawColor === 'rgb(181, 0, 7)') 
-    return 'gold';
-    if (rawColor === '#e7be6e' || rawColor.includes('var(--red-lt)') || rawColor === 'rgb(231, 190, 110)') return 'gold-lt';
+    return 'red';
+    if (rawColor === '#e7be6e' || rawColor.includes('var(--red-lt)') || rawColor === 'rgb(231, 190, 110)')     return 'red-lt';
     if (rawColor === '#132723' || rawColor.includes('var(--ink)') || rawColor === 'rgb(19, 39, 35)') 
     return 'ink';
     if (rawColor === '#899391' || rawColor.includes('var(--ink-light)') || rawColor.includes('var(--ink-lt)')) return 'ink-lt';
@@ -371,6 +438,53 @@ export default function TiptapEditor({
     }
   };
 
+  const uploadImage = async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('subfolder', 'uploads');
+
+    try {
+      const response = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const result = await response.json();
+      if (!response.ok || !result.success || !result.url) {
+        throw new Error(result.error || 'Image upload failed.');
+      }
+
+      editor.chain().focus().setImage({
+        src: result.url,
+        alt: file.name.replace(/\.[^/.]+$/, ''),
+        title: file.name,
+      }).run();
+      editor.chain().focus().updateAttributes('image', { imageAlign: 'left' }).run();
+    } catch (error) {
+      console.error('Tiptap image upload failed:', error);
+      window.alert(error instanceof Error ? error.message : 'Image upload failed.');
+    }
+  };
+
+  const selectedNode = editor.state.selection instanceof NodeSelection
+    ? editor.state.selection.node
+    : null;
+  const activeImage = editor.isActive('image') || selectedNode?.type.name === 'image';
+  const imageAttributes = (selectedNode?.type.name === 'image'
+    ? selectedNode.attrs
+    : editor.getAttributes('image')) as { width?: string | number; imageAlign?: string };
+  const imageWidth = imageAttributes.width ? String(imageAttributes.width).replace(/px$/, '') : '';
+  const setImageWidth = (width: string) => {
+    if (!activeImage) return;
+    editor.commands.updateAttributes('image', {
+      width: width ? `${Math.max(40, Math.min(1200, Number(width) || 40))}px` : null,
+    });
+  };
+
+  const setImageAlign = (imageAlign: 'left' | 'center' | 'right') => {
+    if (!activeImage) return;
+    editor.commands.updateAttributes('image', { imageAlign });
+  };
+
   const toggleSourceMode = () => {
     if (!sourceMode) {
       // Visual editor -> HTML source
@@ -391,7 +505,7 @@ export default function TiptapEditor({
   return (
     <div className="flex flex-col rounded-xl border border-red/50 overflow-hidden bg-red-lt/10 text-ink focus-within:border-primary transition-colors">
       {/* ── Toolbar ── */}
-      <div className="shrink-0 flex flex-wrap items-center gap-1 px-2.5 py-2 bg-paper border-b border-line">
+      <div className="shrink-0 flex flex-nowrap items-center gap-1 overflow-x-auto px-2.5 py-2 bg-paper border-b border-line [scrollbar-width:thin]">
         {/* Paragraph / Heading picker */}
         <select
           value={activeBlockType}
@@ -496,7 +610,7 @@ export default function TiptapEditor({
             title="Highlight color"
             className={[
               'inline-flex items-center justify-center w-7 h-7 rounded-md text-xs font-bold transition-colors border-none cursor-pointer select-none hover:bg-red/20',
-              hasHighlight ? 'bg-amber-200 text-amber-950' : 'bg-transparent text-ink',
+              hasHighlight ? 'bg-red-100 text-red-900' : 'bg-transparent text-ink',
             ]
               .filter(Boolean)
               .join(' ')}
@@ -611,6 +725,67 @@ export default function TiptapEditor({
 
         <Sep />
 
+        <input
+          ref={imageInputRef}
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml,image/avif"
+          className="sr-only"
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+            if (file) void uploadImage(file);
+            event.target.value = '';
+          }}
+        />
+        <ToolbarButton
+          onClick={() => imageInputRef.current?.click()}
+          title="Upload image"
+        >
+          🖼
+        </ToolbarButton>
+        {activeImage && (
+          <>
+            <label className="inline-flex items-center gap-1 text-[10px] font-semibold text-slate-700" title="Image width">
+              Width
+              <input
+                type="number"
+                min="40"
+                max="1200"
+                value={imageWidthDraft}
+                placeholder="auto"
+                onChange={(event) => setImageWidthDraft(event.target.value.replace(/\D/g, '').slice(0, 4))}
+                onBlur={() => setImageWidth(imageWidthDraft)}
+                onMouseDown={(event) => event.stopPropagation()}
+                onKeyDown={(event) => event.stopPropagation()}
+                className="w-16 rounded border border-slate-300 px-1.5 py-1 text-[11px] outline-none focus:border-primary"
+              />
+              <span>px</span>
+            </label>
+            <ToolbarButton
+              onClick={() => setImageAlign('left')}
+              active={imageAttributes.imageAlign === 'left' || !imageAttributes.imageAlign}
+              title="Align image left"
+            >
+              L
+            </ToolbarButton>
+            <ToolbarButton
+              onClick={() => setImageAlign('center')}
+              active={imageAttributes.imageAlign === 'center'}
+              title="Center image"
+            >
+              C
+            </ToolbarButton>
+            <ToolbarButton
+              onClick={() => setImageAlign('right')}
+              active={imageAttributes.imageAlign === 'right'}
+              title="Align image right"
+            >
+              R
+            </ToolbarButton>
+          </>
+        )}
+
+        <Sep />
+
         <ToolbarButton
           onClick={() => editor.chain().focus().setHorizontalRule().run()}
           title="Horizontal rule"
@@ -628,7 +803,7 @@ export default function TiptapEditor({
 
       {/* ── Editable content area ── */}
       <div
-        className="w-full overflow-y-auto bg-white transition-[height] duration-150 [scrollbar-gutter:stable] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-slate-50 [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-slate-400"
+        className="w-full min-w-0 overflow-y-auto overflow-x-hidden bg-white transition-[height] duration-150"
         style={{ minHeight, maxHeight }}
       >
         {sourceMode ? (
@@ -640,7 +815,7 @@ export default function TiptapEditor({
             }}
             spellCheck={false}
             style={{ minHeight }}
-            className="w-full min-h-full h-full resize-none outline-none border-none bg-white text-slate-800 font-mono text-xs leading-relaxed p-4"
+            className="w-full h-full resize-none outline-none border-none bg-white text-slate-800 font-mono text-xs leading-relaxed p-4"
           />
         ) : (
           <EditorContent

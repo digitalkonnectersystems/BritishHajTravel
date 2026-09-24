@@ -187,7 +187,7 @@ export default function DynamicSiteForm({
       const message = getVal(["11", "message", "special_request", "details"]);
       const website = getVal(["website", "url"]);
 
-      let res: { success: boolean; error?: string; message?: string } = {
+      let res: { success: boolean; error?: string; message?: string; emailWarning?: string } = {
         success: false,
         error: "Unknown form action.",
       };
@@ -247,12 +247,12 @@ export default function DynamicSiteForm({
       }
 
       if (res.success) {
+        const deliveryWarning = res.emailWarning
+          ? ` ${res.emailWarning}`
+          : "";
         setStatus({
           type: "success",
-          msg:
-            formConfig?.successMessage ||
-            res.message ||
-            "Your request has been submitted successfully!",
+          msg: `${formConfig?.successMessage || res.message || "Your request has been submitted successfully!"}${deliveryWarning}`,
         });
         // Reset form
         const initialData: Record<string, string> = {};

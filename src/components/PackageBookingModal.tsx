@@ -47,7 +47,7 @@ export default function PackageBookingModal({
     }
   }
 
-  const packagePrices: { packageType: string; price: number }[] = (() => {
+  const packagePrices: { packageType: string; price: number; priceStatus?: string }[] = (() => {
     if (!pkg) return [];
     const rawList =
       cd?.packagePrices ||
@@ -66,6 +66,7 @@ export default function PackageBookingModal({
                     ? 'Single Occupancy'
                     : p.notes || 'Package Type',
           price: Number(p.amount) || 0,
+          priceStatus: String(p.priceStatus || '').toLowerCase(),
         }))
         : null);
 
@@ -74,8 +75,13 @@ export default function PackageBookingModal({
         .map((item: any) => ({
           packageType: (typeof item === 'object' ? item.packageType || item.type || '' : '').trim(),
           price: Number(String(typeof item === 'object' ? item.price || item.amount || 0 : item).replace(/[^0-9.]/g, '')) || 0,
+          priceStatus: typeof item === 'object' ? String(item.priceStatus || '').toLowerCase() : '',
         }))
-        .filter((item: any) => item.packageType && item.price > 0);
+        .filter((item: any) => item.packageType && (item.price > 0 || item.priceStatus === 'tbc'));
+    }
+
+    if (String(pkg?.startingPrice ?? '').trim().toLowerCase() === 'tbc') {
+      return [{ packageType: 'Quad Occupancy', price: 0, priceStatus: 'tbc' }];
     }
 
     const legacyBase = Number(String(pkg?.startingPrice ?? pkg?.price ?? '2795').replace(/[^0-9.]/g, '')) || 2795;
@@ -87,8 +93,11 @@ export default function PackageBookingModal({
   })();
 
   // Find the minimum priced package type deterministically
+  const numericPackagePrices = packagePrices.filter((item) => item.priceStatus !== 'tbc' && item.price > 0);
   const minPriceItem = packagePrices.length > 0
-    ? packagePrices.reduce((min, curr) => (curr.price < min.price ? curr : min), packagePrices[0])
+    ? (numericPackagePrices.length > 0
+      ? numericPackagePrices.reduce((min, curr) => (curr.price < min.price ? curr : min), numericPackagePrices[0])
+      : packagePrices[0])
     : null;
 
   // Default selected package type is the minimum priced package (or single price if only 1)
@@ -102,7 +111,8 @@ export default function PackageBookingModal({
 
   const effectivePackageType = selectedPackageType || (minPriceItem ? minPriceItem.packageType : (packagePrices[0]?.packageType || ""));
   const selectedPriceItem = packagePrices.find((p) => p.packageType === effectivePackageType);
-  const selectedPackagePrice = selectedPriceItem ? selectedPriceItem.price : null;
+  const selectedPackagePrice = selectedPriceItem && selectedPriceItem.priceStatus !== 'tbc' ? selectedPriceItem.price : null;
+  const selectedPriceIsTbc = selectedPriceItem?.priceStatus === 'tbc';
   const estimatedTotalFormatted = selectedPackagePrice !== null
     ? selectedPackagePrice.toLocaleString("en-CA", {
       minimumFractionDigits: 0,
@@ -168,7 +178,7 @@ export default function PackageBookingModal({
 
         startDate: selectedDate,
 
-        totalPrice: estimatedTotalFormatted ? `${currencyCode} ${estimatedTotalFormatted}` : String(pkg?.startingPrice ?? pkg?.price ?? "7,499"),
+        totalPrice: selectedPriceIsTbc ? "TBC" : estimatedTotalFormatted ? `${currencyCode} ${estimatedTotalFormatted}` : String(pkg?.startingPrice ?? pkg?.price ?? "7,499"),
       });
 
       if (res.success) {
@@ -571,7 +581,7 @@ export default function PackageBookingModal({
                     >
                       {packagePrices.map((item, idx) => (
                         <option key={idx} value={item.packageType} className="bg-white text-ink">
-                          £ {item.price ? item.price.toLocaleString("en-CA") : ""} - {item.packageType}
+                          {item.priceStatus === "tbc" ? "TBC" : `£ ${item.price.toLocaleString("en-CA")}`} - {item.packageType}
                         </option>
                       ))}
                     </select>
@@ -602,7 +612,7 @@ export default function PackageBookingModal({
                 </span>
 
                 <span className="text-xl font-black text-primary font-serif">
-                  {estimatedTotalFormatted ? `${currencyCode} ${estimatedTotalFormatted}` : "—"}
+                  {selectedPriceIsTbc ? "TBC" : estimatedTotalFormatted ? `${currencyCode} ${estimatedTotalFormatted}` : "—"}
                 </span>
 
               </div>

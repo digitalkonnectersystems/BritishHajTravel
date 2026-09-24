@@ -8,6 +8,7 @@ import { getDurationUnit } from "@/lib/packageHelpers";
 import { getPackagesByType, getPackagesByIds } from "@/actions/packageActions";
 import PackageBookingModal from "@/components/PackageBookingModal";
 import PackageDetailModal from "@/components/PackageDetailModal";
+import { isTbcPrice } from "@/lib/priceDisplay";
 export default function HajjPackagesSection({
   data,
   initialPackages,
@@ -137,31 +138,44 @@ export default function HajjPackagesSection({
                   cd = {};
                 }
               }
+              let detailData = pkg.detailPageData || {};
+              if (typeof detailData === "string") {
+                try {
+                  detailData = JSON.parse(detailData);
+                } catch {
+                  detailData = {};
+                }
+              }
               const heroImage =
                 cd.bannerImage ||
                 pkg.image ||
                 pkg.featuredImage ||
                 "/uploads/sections/hajj_1.jpg";
+              const cleanText = (value: unknown) => String(value ?? "").trim();
               const titleCandidate = String(
                 pkg.title || pkg.packageTitle || cd.packageTitle || ""
               ).trim();
               const packageTitle = data?.isDestinationSection && titleCandidate.length < 2
-                ? String(pkg.destinationTitle || "Travel Package").trim()
-                : titleCandidate || String(pkg.destinationTitle || "Travel Package").trim();
-              const badgeTag = cd.badgeTag || data?.badgeTag || pkg.destinationTitle?.toUpperCase() || (data?.destinationName ? data.destinationName.toUpperCase() : "HAJJ 2027");
-              const duration = cd.duration || `${pkg.durationDays || 14}Days`;
-              const flightRoute =
-                cd.flightRoute || pkg.flightRoute || "FROM CANADA ➔ TO SAUDIA";
-              const operatorName = cd.operatorName || "British Hajj Travel";
-              const operatorRating = cd.operatorRating || "4.4/5";
-              const priceSubtext =
-                cd.priceSubtext || "From £ / QUAD OCCUPANCY";
-              const price = pkg.startingPrice
+                ? cleanText(pkg.destinationTitle)
+                : titleCandidate || cleanText(pkg.destinationTitle);
+              const badgeTag = cleanText(cd.badgeTag || data?.badgeTag || pkg.destinationTitle);
+              const duration = cleanText(cd.duration || (pkg.durationDays ? `${pkg.durationDays} Days` : ""));
+              const flightRoute = cleanText(cd.flightRoute || pkg.flightRoute);
+              const operatorName = cleanText(cd.operatorName);
+              const operatorRating = cleanText(cd.operatorRating);
+              const priceSubtext = cleanText(cd.priceSubtext);
+              const packageCode = cleanText(
+                cd.packageCode || pkg.packageCode || detailData.packageCode
+              );
+              const quadPrice = Array.isArray(cd.packagePrices) ? cd.packagePrices.find((item: any) => /quad/i.test(item.packageType || item.type || "")) : null;
+              const price = isTbcPrice(pkg.startingPrice, quadPrice?.priceStatus)
+                ? "TBC"
+                : pkg.startingPrice
                 ? Number(pkg.startingPrice).toLocaleString("en-CA", {
                   minimumFractionDigits: 0,
                   maximumFractionDigits: 0,
                 })
-                : "12,995";
+                : "";
               const makkahHotel = cd.makkahHotel;
               const madinahHotel = cd.madinahHotel;
               const aziziyaHotel = cd.aziziyaHotel;
@@ -229,7 +243,7 @@ export default function HajjPackagesSection({
                 return Boolean(acc.subtitle || acc.location || acc.image || (acc.durationEnabled && acc.nights) || (acc.badgeEnabled && acc.badge));
               });
 
-              const inclusionsList = Array.isArray(cd.inclusions) && cd.inclusions.length > 0
+              const inclusionsList = (Array.isArray(cd.inclusions)
                 ? cd.inclusions
                 : [
                   { icon: 'Plane', text: 'Return\nAir Tickets' },
@@ -238,21 +252,21 @@ export default function HajjPackagesSection({
                   { icon: 'Utensils', text: 'All Meals\nIncluded' },
                   { icon: 'Bus', text: 'Transport in\nSaudi Arabia' },
                   { icon: 'MessageCircle', text: 'Guidance &\nSupport' },
-                ];
+                ]).filter((inc: any) => cleanText(typeof inc === "string" ? inc : inc?.text));
 
-              const eligibilityList = Array.isArray(cd.eligibility) && cd.eligibility.length > 0
+              const eligibilityList = (Array.isArray(cd.eligibility)
                 ? cd.eligibility
                 : [
                   'British & U.S. citizens with Pakistani passports.',
                   'Pakistani passport holders with British PR or American Green Card.',
                   'All foreign passport holders with Pakistan passport.',
                   'Side trip to Pakistan or any other destination available with an additional cost.',
-                ];
+                ]).map(cleanText).filter(Boolean);
 
               return (
                 <div
                   key={pkg.id || idx}
-                  className="bg-white rounded-[2rem] overflow-hidden shadow-[0_4px_25px_rgb(0,0,0,0.07)] border border-gray-100 flex flex-col"
+                  className="h-full bg-white rounded-[2rem] overflow-hidden shadow-[0_4px_25px_rgb(0,0,0,0.07)] border border-gray-100 flex flex-col"
                 >
                   {/* Hero image */}
                   <div className="relative h-[230px] w-full">
@@ -264,87 +278,96 @@ export default function HajjPackagesSection({
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
 
                     {/* Badges */}
-                    {!data?.isDestinationSection && <div className="absolute top-4 left-4 flex items-center gap-1.5 text-white text-[11px] font-bold tracking-wider">
+                    {!data?.isDestinationSection && badgeTag && <div className="absolute top-4 left-4 flex items-center gap-1.5 text-white text-[11px] font-bold tracking-wider">
                       <LucideIcons.Shield className="w-3.5 h-3.5" /> {badgeTag}
                     </div>}
-                    <div className="absolute top-4 right-4 bg-red text-white px-3 py-1 rounded-full text-[11px] font-black tracking-wider flex items-center gap-1.5 shadow-sm">
+                    {duration && <div className="absolute top-4 right-4 bg-red text-white px-3 py-1 rounded-full text-[11px] font-black tracking-wider flex items-center gap-1.5 shadow-sm">
                       <LucideIcons.Calendar className="w-3.5 h-3.5" /> {duration}
-                    </div>
+                    </div>}
 
                     {/* Bottom text */}
                     <div className="absolute bottom-4 left-5 right-5">
-                      <div className="text-white text-[11px] font-black tracking-widest mb-1 flex items-center gap-1.5">
+                      {flightRoute && <div className="text-white text-[11px] font-black tracking-widest mb-1 flex items-center gap-1.5">
                         <LucideIcons.Plane className="w-3.5 h-3.5" /> {flightRoute}
-                      </div>
-                      <h3 className="max-w-full whitespace-normal break-words text-white font-serif text-2xl leading-tight font-bold">
+                      </div>}
+                      {packageTitle && <h3 className="max-w-full whitespace-normal break-words text-white font-serif text-2xl leading-tight font-bold">
                         {packageTitle}
-                      </h3>
+                      </h3>}
                     </div>
                   </div>
 
                   <div className="p-5 flex-1 flex flex-col">
-                    <div className="text-[11px] font-black text-primary uppercase tracking-widest mb-3">
-                      ACCOMMODATIONS
-                    </div>
-
-                    {/* 2x2 Accommodations Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
-                      {defaultAccommodations.map((acc, aIdx) => (
-                        <div
-                          key={aIdx}
-                          className="flex gap-3 p-2.5 rounded-2xl border border-[#eef0e4] bg-[#fcfdf9] items-start"
-                        >
-                          <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 bg-slate-100 relative flex items-center justify-center">
-                            {acc.image ? (
-                              <img
-                                src={acc.image}
-                                alt={acc.city}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <LucideIcons.Hotel className="w-6 h-6 text-slate-400" />
-                            )}
-                          </div>
-                          <div className="flex flex-col justify-center min-w-0 flex-1">
-                            <h4 className="text-primary font-black text-xs uppercase tracking-wider leading-none mb-0.5">
-                              {acc.city}
-                            </h4>
-                            <div className="text-red font-serif font-bold text-[10px] uppercase tracking-wide truncate">
-                              {acc.subtitle}
-                            </div>
-                            <div className="text-ink-soft text-[10px] flex items-center gap-1 mb-1.5 truncate">
-                              <LucideIcons.MapPin className="w-3 h-3 text-ink-soft shrink-0" />
-                              <span className="truncate">{acc.location}</span>
-                            </div>
-                            <div className="flex items-center gap-1.5 flex-wrap">
-                              {acc.badgeEnabled !== false && acc.badge && (
-                                <span className="bg-primary text-white text-[9px] px-1.5 py-0.5 rounded font-bold tracking-wider flex items-center gap-1 shrink-0">
-                                  <DynamicIcon name={acc.badgeIcon || 'Utensils'} className="w-2.5 h-2.5" />
-                                  {acc.badge}
-                                </span>
-                              )}
-                              {acc.durationEnabled !== false && acc.nights && (
-                                <span className="bg-red-lt text-white text-[9px] px-1.5 py-0.5 rounded font-bold tracking-wider flex items-center gap-1 shrink-0">
-                                  {getDurationUnit(acc.nights) === 'days' ? (
-                                    <LucideIcons.Sun className="w-2.5 h-2.5 text-white" />
-                                  ) : (
-                                    <LucideIcons.MoonStar className="w-2.5 h-2.5 text-white" />
-                                  )}
-                                  {acc.nights}
-                                </span>
-                              )}
-                            </div>
-                          </div>
+                    <div className={defaultAccommodations.length > 0 ? "min-[768px]:h-[250px]" : "hidden"}>
+                      <div className="flex items-center justify-between gap-3 mb-3">
+                        <div className="text-[11px] font-black text-primary uppercase tracking-widest">
+                          ACCOMMODATIONS
                         </div>
-                      ))}
+                        {packageCode && (
+                          <span className="shrink-0 rounded-full bg-primary px-3 py-1 text-[9px] font-black uppercase tracking-wide text-white">
+                            PKG CODE: {packageCode}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* 2x2 Accommodations Grid */}
+                      <div className="grid grid-cols-1 min-[420px]:grid-cols-2 gap-3">
+                        {defaultAccommodations.map((acc, aIdx) => (
+                          <div
+                            key={aIdx}
+                            className="flex min-w-0 gap-2 p-2 rounded-2xl border border-[#eef0e4] bg-[#fcfdf9] items-start"
+                          >
+                            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden shrink-0 bg-slate-100 relative flex items-center justify-center">
+                              {acc.image ? (
+                                <img
+                                  src={acc.image}
+                                  alt={acc.city}
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <LucideIcons.Hotel className="w-6 h-6 text-slate-400" />
+                              )}
+                            </div>
+                            <div className="flex flex-col justify-center min-w-0 flex-1">
+                              <h4 className="text-primary font-black text-xs uppercase tracking-wider leading-none mb-0.5">
+                                {acc.city}
+                              </h4>
+                              {acc.subtitle && <div className="text-red font-serif font-bold text-[10px] uppercase tracking-wide truncate">
+                                {acc.subtitle}
+                              </div>}
+                              {acc.location && <div className="text-ink-soft text-[10px] flex items-center gap-1 mb-1.5 truncate">
+                                <LucideIcons.MapPin className="w-3 h-3 text-ink-soft shrink-0" />
+                                <span className="truncate">{acc.location}</span>
+                              </div>}
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                {acc.badgeEnabled !== false && acc.badge && (
+                                  <span className="bg-primary text-white text-[9px] px-1.5 py-0.5 rounded font-bold tracking-wider flex items-center gap-1 shrink-0">
+                                    <DynamicIcon name={acc.badgeIcon || 'Utensils'} className="w-2.5 h-2.5" />
+                                    {acc.badge}
+                                  </span>
+                                )}
+                                {acc.durationEnabled !== false && acc.nights && (
+                                  <span className="bg-red-lt text-white text-[9px] px-1.5 py-0.5 rounded font-bold tracking-wider flex items-center gap-1 shrink-0">
+                                    {getDurationUnit(acc.nights) === 'days' ? (
+                                      <LucideIcons.Sun className="w-2.5 h-2.5 text-white" />
+                                    ) : (
+                                      <LucideIcons.MoonStar className="w-2.5 h-2.5 text-white" />
+                                    )}
+                                    {acc.nights}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
 
                     {/* PACKAGE INCLUSIONS (6 Badges Card) */}
-                    <div className="relative mb-4 pt-3">
+                    {inclusionsList.length > 0 && <div className="relative min-h-[108px] mb-4 pt-3 flex flex-col shrink-0">
                       <div className="absolute top-0 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-primary uppercase font-serif tracking-wide px-4 py-1 rounded-full z-10 shadow-sm whitespace-nowrap">
                         PACKAGE INCLUSIONS
                       </div>
-                      <div className="rounded-2xl border border-[#e5ebe3] bg-[#f9faf7] pt-6 pb-4 px-2">
+                      <div className="flex-1 rounded-2xl border border-[#e5ebe3] bg-[#f9faf7] pt-6 pb-4 px-2 flex items-center">
                         <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 text-center">
                           {inclusionsList.map((inc: any, iIdx: number) => {
                             const iconName = inc.icon || 'CheckCircle';
@@ -361,8 +384,8 @@ export default function HajjPackagesSection({
                             );
                           })}
                         </div>
-                      </div>
-                    </div>
+                        </div>
+                    </div>}
 
                     {/* Eligibility Checklist */}
                     {eligibilityList.length > 0 && (
@@ -380,29 +403,29 @@ export default function HajjPackagesSection({
                       </div>
                     )}
 
-                    <div className="border-t border-gray-100 pt-4 flex items-end justify-between mb-5">
-                      <div>
+                    {(operatorName || operatorRating || priceSubtext || price) && <div className="mt-auto min-h-[64px] border-t border-gray-100 pt-4 flex items-end justify-between gap-4 mb-5">
+                      {(operatorName || operatorRating) && <div className="min-w-0">
                         <div className="text-[10px] font-bold text-ink-soft uppercase tracking-widest mb-1">
                           OPERATOR
                         </div>
-                        <div className="text-sm font-bold text-ink flex items-center gap-2 whitespace-nowrap">
-                          {operatorName}{" "}
-                          <span className="bg-red text-white text-[10px] px-1.5 py-0.5 rounded font-black">
+                        <div className="text-sm font-bold text-ink flex items-center gap-2 flex-wrap">
+                          {operatorName && <span>{operatorName}</span>}
+                          {operatorRating && <span className="bg-red text-white text-[10px] px-1.5 py-0.5 rounded font-black">
                             {operatorRating}
-                          </span>
+                          </span>}
                         </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-[10px] font-bold text-red uppercase tracking-widest mb-1">
+                      </div>}
+                      {(priceSubtext || price) && <div className="text-right shrink-0">
+                        {priceSubtext && <div className="text-[10px] font-bold text-red uppercase tracking-widest mb-1">
                           {priceSubtext}
-                        </div>
-                        <div className="text-2xl font-black text-primary leading-none">
+                        </div>}
+                        {price && <div className="text-2xl font-black text-primary leading-none">
                           {price}
-                        </div>
-                      </div>
-                    </div>
+                        </div>}
+                      </div>}
+                    </div>}
 
-                    <div className="flex flex-col sm:flex-row gap-2.5">
+                    <div className="flex flex-col sm:flex-row gap-2.5 [&>button]:min-h-[46px]">
                       <button
                         type="button"
                         onClick={() => {

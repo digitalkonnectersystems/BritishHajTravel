@@ -31,7 +31,8 @@ const SUBFOLDER_ALIASES: Record<string, string> = {
   visas: 'umrah',
 };
 
-const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10MB limit
+const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10MB image/document limit
+const MAX_VIDEO_SIZE_BYTES = 100 * 1024 * 1024;
 
 function isValidSubfolder(value: string) {
   return ALLOWED_SUBFOLDERS.has(value) || /^gallery\/[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value);
@@ -63,28 +64,31 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Validate file size
-    if (file.size > MAX_FILE_SIZE_BYTES) {
+    // Sanitize extension and base filename
+    const originalExt = path.extname(file.name) || '.png';
+    const imageDocumentExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg', '.pdf', '.ico', '.avif'];
+    const videoExtensions = ['.mp4', '.webm', '.mov'];
+    const cleanExt = originalExt.toLowerCase();
+    const isVideo = videoExtensions.includes(cleanExt);
+    const allowedExtensions = [...imageDocumentExtensions, ...videoExtensions];
+
+    if (!allowedExtensions.includes(cleanExt)) {
       return NextResponse.json(
-        { success: false, error: 'File size exceeds maximum allowed limit of 10MB.' },
+        { success: false, error: `Unsupported file type: ${cleanExt}. Allowed: images, PDF, SVG, MP4, WebM, or MOV.` },
+        { status: 400 }
+      );
+    }
+
+    const maxFileSize = isVideo ? MAX_VIDEO_SIZE_BYTES : MAX_FILE_SIZE_BYTES;
+    if (file.size > maxFileSize) {
+      return NextResponse.json(
+        { success: false, error: `File size exceeds maximum allowed limit of ${isVideo ? '100MB' : '10MB'}.` },
         { status: 400 }
       );
     }
 
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-
-    // Sanitize extension and base filename
-    const originalExt = path.extname(file.name) || '.png';
-    const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg', '.pdf', '.ico', '.avif'];
-    const cleanExt = originalExt.toLowerCase();
-
-    if (!allowedExtensions.includes(cleanExt)) {
-      return NextResponse.json(
-        { success: false, error: `Unsupported file type: ${cleanExt}. Allowed: images, PDF, SVG.` },
-        { status: 400 }
-      );
-    }
 
     const cleanBaseName = path
       .basename(file.name, originalExt)
