@@ -561,6 +561,7 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
   const [confirmConfig, setConfirmConfig] = useState<ConfirmModalConfig | null>(null);
   const [activeTab, setActiveTab] = useState<'umrah' | 'hajj'>(defaultTab);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [sortBy, setSortBy] = useState<'code-asc' | 'code-desc' | null>(null);
 
   // ── Package Categories state ───────────────────────────────────────────────
   const [categories, setCategories] = useState<PackageCategoryWithCount[]>([]);
@@ -761,7 +762,19 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
 
   // ── render ─────────────────────────────────────────────────────────────────
 
-  const filteredPkgs = packagesList.filter(pkg => pkg.type === activeTab);
+  const getPackageCode = (pkg: any): string =>
+    (pkg.cardData?.packageCode || '').toString().trim().toUpperCase();
+
+  const filteredPkgs = (() => {
+    const base = packagesList.filter(pkg => pkg.type === activeTab);
+    if (!sortBy) return base;
+    return [...base].sort((a, b) => {
+      const aCode = getPackageCode(a);
+      const bCode = getPackageCode(b);
+      const cmp = aCode.localeCompare(bCode, undefined, { sensitivity: 'base' });
+      return sortBy === 'code-asc' ? cmp : -cmp;
+    });
+  })();
 
   return (
     <div className="flex flex-col gap-6">
@@ -1089,6 +1102,33 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
               <tr className="bg-slate-900 text-slate-300 font-extrabold text-[10px] uppercase tracking-wider">
                 <th className="py-3 px-3 w-10 text-center text-slate-400" title="Drag to reorder">⋮⋮</th>
                 <th className="py-3 px-4">Package Title</th>
+                <th className="py-3 px-4">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSortBy(prev =>
+                        prev === null ? 'code-asc' : prev === 'code-asc' ? 'code-desc' : null
+                      );
+                    }}
+                    title="Sort by Package Code"
+                    className="inline-flex items-center gap-1 cursor-pointer hover:text-white transition-colors group"
+                  >
+                    Package Code
+                    <span className="flex flex-col leading-none opacity-60 group-hover:opacity-100">
+                      <ChevronUp className={`w-2.5 h-2.5 -mb-0.5 ${sortBy === 'code-asc' ? 'text-amber-400 opacity-100' : ''}`} />
+                      <ChevronDown className={`w-2.5 h-2.5 ${sortBy === 'code-desc' ? 'text-amber-400 opacity-100' : ''}`} />
+                    </span>
+                    {sortBy && (
+                      <span
+                        onClick={e => { e.stopPropagation(); setSortBy(null); }}
+                        title="Clear sort"
+                        className="ml-1 text-[9px] text-amber-400 hover:text-red-400 font-extrabold cursor-pointer"
+                      >
+                        ✕
+                      </span>
+                    )}
+                  </button>
+                </th>
                 <th className="py-3 px-4">Type</th>
                 <th className="py-3 px-4">Category</th>
                 <th className="py-3 px-4">Month</th>
@@ -1100,13 +1140,14 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
             <tbody className="divide-y divide-slate-100">
               {filteredPkgs.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-slate-400 text-xs">
+                  <td colSpan={9} className="py-12 text-center text-slate-400 text-xs">
                     No packages found. Click "Create New {activeTab === 'hajj' ? 'Hajj' : 'Umrah'} Package" to add one.
                   </td>
                 </tr>
               ) : (
                 filteredPkgs.map((pkg, idx) => {
                   const isSoldOut = pkg.status === 'sold_out';
+                  const pkgCode = getPackageCode(pkg);
                   return (
                     <tr
                       key={pkg.id}
@@ -1131,6 +1172,16 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
                           <span className="inline-flex items-center gap-1 mt-0.5 text-[9px] font-extrabold text-red-500 uppercase tracking-wider">
                             <span className="w-1.5 h-1.5 bg-red-500 rounded-full inline-block" /> Sold Out
                           </span>
+                        )}
+                      </td>
+                      {/* ── Package Code cell (read-only) ── */}
+                      <td className="py-3.5 px-4">
+                        {pkgCode ? (
+                          <span className="inline-block text-[10px] font-mono font-extrabold px-2.5 py-0.5 rounded-md uppercase border tracking-widest whitespace-nowrap bg-slate-100 text-slate-700 border-slate-300">
+                            {pkgCode}
+                          </span>
+                        ) : (
+                          <span className="text-[10px] text-slate-300">—</span>
                         )}
                       </td>
                       <td className="py-3.5 px-4">
