@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { createPackage, updatePackageAction, deletePackage, updatePackageStatus, updatePackageOrderAction } from '@/actions/packageActions';
+import { createPackage, updatePackageAction, deletePackage, updatePackageStatus, updatePackageOrderAction, bulkGeneratePackageCodesAction } from '@/actions/packageActions';
 import {
   getPackageCategories,
   createPackageCategoryAction,
@@ -171,6 +171,16 @@ function HajjCardFields({ pkgData, setPkgData }: { pkgData: any; setPkgData: (v:
           <div>
             <label className="text-[10px] font-bold text-ink-lt mb-1 block">TOP LEFT BADGE</label>
             <input type="text" value={cd.badgeTag || ''} onChange={e => updateCD('badgeTag', e.target.value)} className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs" />
+          </div>
+          <div>
+            <label className="text-[10px] font-bold text-ink-lt mb-1 block">PACKAGE CODE</label>
+            <input
+              type="text"
+              value={cd.packageCode || ''}
+              onChange={e => updateCD('packageCode', e.target.value)}
+              placeholder="e.g. BHT-H01"
+              className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs"
+            />
           </div>
           <div>
             <label className="text-[10px] font-bold text-ink-lt mb-1 block">DURATION BADGE</label>
@@ -416,7 +426,16 @@ function UmrahCardFields({ pkgData, setPkgData }: { pkgData: any; setPkgData: (v
             <label className="text-[10px] font-bold text-ink-lt mb-1 block">BUTTON LABEL</label>
             <input type="text" value={cd.btnLabel || ''} onChange={e => updateCD('btnLabel', e.target.value)} className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs" />
           </div>
-
+          <div>
+            <label className="text-[10px] font-bold text-ink-lt mb-1 block">PACKAGE CODE</label>
+            <input
+              type="text"
+              value={cd.packageCode || ''}
+              onChange={e => updateCD('packageCode', e.target.value)}
+              placeholder="e.g. BHT-U01"
+              className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs"
+            />
+          </div>
         </div>
       </div>
 
@@ -762,8 +781,28 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
 
   // ── render ─────────────────────────────────────────────────────────────────
 
-  const getPackageCode = (pkg: any): string =>
-    (pkg.cardData?.packageCode || '').toString().trim().toUpperCase();
+  const getPackageCode = (pkg: any): string => {
+    if (!pkg) return '';
+    let cd = pkg.cardData;
+    if (typeof cd === 'string') {
+      try { cd = JSON.parse(cd); } catch { cd = {}; }
+    }
+    if (cd && typeof cd === 'object' && cd['0'] !== undefined) {
+      if (cd.packageCode) return String(cd.packageCode).trim().toUpperCase();
+      try {
+        const numKeys = Object.keys(cd).filter(k => /^\d+$/.test(k)).sort((a,b) => Number(a)-Number(b));
+        const str = numKeys.map(k => cd[k]).join('');
+        const inner = JSON.parse(str);
+        if (inner?.packageCode) return String(inner.packageCode).trim().toUpperCase();
+      } catch {}
+    }
+    let dp = pkg.detailPageData;
+    if (typeof dp === 'string') {
+      try { dp = JSON.parse(dp); } catch { dp = {}; }
+    }
+    const code = cd?.packageCode || dp?.packageCode || pkg.packageCode || pkg.code || '';
+    return String(code).trim().toUpperCase();
+  };
 
   const filteredPkgs = (() => {
     const base = packagesList.filter(pkg => pkg.type === activeTab);
@@ -802,6 +841,25 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
           >
             <Tags className="w-4 h-4" />
             {showCategories ? 'Hide Categories' : 'Manage Categories'}
+          </button>
+          <button
+            type="button"
+            onClick={async () => {
+              setSaveMsg('Generating codes…');
+              const res = await bulkGeneratePackageCodesAction(activeTab);
+              if (res.success) {
+                setSaveMsg(`✓ ${res.updated} code${res.updated !== 1 ? 's' : ''} generated. Reloading…`);
+                setTimeout(() => window.location.reload(), 1200);
+              } else {
+                setSaveMsg(null);
+                alert(res.error || 'Failed to generate codes.');
+              }
+            }}
+            title="Auto-assign BHT-H01, BHT-H02… codes to packages that don't have one yet"
+            className="px-5 py-2.5 rounded-full text-xs font-extrabold transition-colors cursor-pointer border shadow-md flex items-center gap-2 bg-white text-amber-700 border-amber-300 hover:bg-amber-50 hover:border-amber-500"
+          >
+            <Sparkles className="w-4 h-4" />
+            Auto-generate codes
           </button>
           <button
             type="button"
@@ -1174,14 +1232,19 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
                           </span>
                         )}
                       </td>
-                      {/* ── Package Code cell (read-only) ── */}
+                      {/* ── Package Code cell (read-only badge) ── */}
                       <td className="py-3.5 px-4">
                         {pkgCode ? (
-                          <span className="inline-block text-[10px] font-mono font-extrabold px-2.5 py-0.5 rounded-md uppercase border tracking-widest whitespace-nowrap bg-slate-100 text-slate-700 border-slate-300">
+                          <span
+                            title={`Package Code: ${pkgCode}`}
+                            className="inline-flex items-center px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold tracking-wider uppercase bg-slate-100 text-slate-800 border border-slate-300 shadow-2xs select-all"
+                          >
                             {pkgCode}
                           </span>
                         ) : (
-                          <span className="text-[10px] text-slate-300">—</span>
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] text-slate-400 bg-slate-50 border border-dashed border-slate-200">
+                            No Code
+                          </span>
                         )}
                       </td>
                       <td className="py-3.5 px-4">

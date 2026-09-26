@@ -461,7 +461,16 @@ function UmrahCardFields({ pkgData, setPkgData }: { pkgData: any; setPkgData: (v
             <label className="text-[10px] font-bold text-ink-lt mb-1 block">BUTTON LABEL</label>
             <input type="text" value={cd.btnLabel || ''} onChange={e => updateCD('btnLabel', e.target.value)} className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs" />
           </div>
-
+          <div>
+            <label className="text-[10px] font-bold text-ink-lt mb-1 block">PACKAGE CODE</label>
+            <input
+              type="text"
+              value={cd.packageCode || ''}
+              onChange={e => updateCD('packageCode', e.target.value)}
+              placeholder="e.g. BHT-U01"
+              className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs"
+            />
+          </div>
         </div>
       </div>
 

@@ -157,6 +157,29 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
     setPackagesList((prev) => prev.map((p) => (p.id === id ? { ...p, status: nextStatus } : p)));
   };
 
+  const getPackageCode = (pkg: any): string => {
+    if (!pkg) return '';
+    let cd = pkg.cardData;
+    if (typeof cd === 'string') {
+      try { cd = JSON.parse(cd); } catch { cd = {}; }
+    }
+    if (cd && typeof cd === 'object' && cd['0'] !== undefined) {
+      if (cd.packageCode) return String(cd.packageCode).trim().toUpperCase();
+      try {
+        const numKeys = Object.keys(cd).filter(k => /^\d+$/.test(k)).sort((a, b) => Number(a) - Number(b));
+        const str = numKeys.map(k => cd[k]).join('');
+        const inner = JSON.parse(str);
+        if (inner?.packageCode) return String(inner.packageCode).trim().toUpperCase();
+      } catch {}
+    }
+    let dp = pkg.detailPageData;
+    if (typeof dp === 'string') {
+      try { dp = JSON.parse(dp); } catch { dp = {}; }
+    }
+    const code = cd?.packageCode || dp?.packageCode || pkg.packageCode || pkg.code || '';
+    return String(code).trim().toUpperCase();
+  };
+
   return (
     <div className="flex flex-col gap-6">
       {/* Header Bar */}
@@ -361,6 +384,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
             <thead>
               <tr className="bg-slate-900 text-slate-300 font-extrabold text-[10px] uppercase tracking-wider">
                 <th className="py-3 px-4">Package Title</th>
+                <th className="py-3 px-4">Package Code</th>
                 <th className="py-3 px-4">Type</th>
                 <th className="py-3 px-4">Month</th>
                 <th className="py-3 px-4">Starting Price</th>
@@ -371,16 +395,32 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
             <tbody className="divide-y divide-slate-100">
               {packagesList.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-12 text-center text-slate-400 text-xs">
+                  <td colSpan={7} className="py-12 text-center text-slate-400 text-xs">
                     No packages in database yet.
                   </td>
                 </tr>
               ) : (
-                packagesList.map((pkg) => (
+                packagesList.map((pkg) => {
+                  const pkgCode = getPackageCode(pkg);
+                  return (
                   <tr key={pkg.id} className="hover:bg-slate-50/60 transition-colors">
                     <td className="py-3.5 px-4 font-bold text-slate-900">
                       <div>{pkg.title}</div>
                       <div className="text-[10px] font-mono text-slate-400">{pkg.slug}</div>
+                    </td>
+                    <td className="py-3.5 px-4">
+                      {pkgCode ? (
+                        <span
+                          title={`Package Code: ${pkgCode}`}
+                          className="inline-flex items-center px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold tracking-wider uppercase bg-slate-100 text-slate-800 border border-slate-300 shadow-2xs select-all"
+                        >
+                          {pkgCode}
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] text-slate-400 bg-slate-50 border border-dashed border-slate-200">
+                          No Code
+                        </span>
+                      )}
                     </td>
                     <td className="py-3.5 px-4">
                       <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase border ${pkg.type === 'hajj'
@@ -437,7 +477,8 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
                       </div>
                     </td>
                   </tr>
-                ))
+                );
+              })
               )}
             </tbody>
           </table>

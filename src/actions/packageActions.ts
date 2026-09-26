@@ -7,15 +7,51 @@ import { revalidatePath } from 'next/cache';
 import { logAdminActivityAction } from '@/actions/activityActions';
 import { parseLegacyTravelMonth } from '@/lib/packageHelpers';
 
+function parseJsonField(val: any, fallback: any = {}) {
+  if (!val) return fallback;
+  if (typeof val === 'string') {
+    try {
+      const parsed = JSON.parse(val);
+      if (parsed && typeof parsed === 'object' && parsed['0'] !== undefined) {
+        const numKeys = Object.keys(parsed).filter((k) => /^\d+$/.test(k)).sort((a, b) => Number(a) - Number(b));
+        const str = numKeys.map((k) => parsed[k]).join('');
+        const outerCode = parsed.packageCode;
+        try {
+          const inner = JSON.parse(str);
+          if (outerCode && !inner.packageCode) inner.packageCode = outerCode;
+          return inner;
+        } catch {}
+      }
+      return parsed;
+    } catch {
+      return fallback;
+    }
+  }
+  return val;
+}
+
+function normalizePackageRow(row: any) {
+  if (!row) return row;
+  return {
+    ...row,
+    cardData: parseJsonField(row.cardData, {}),
+    detailPageData: parseJsonField(row.detailPageData, {}),
+    packagesGallery: parseJsonField(row.packagesGallery, []),
+    seoSettings: parseJsonField(row.seoSettings, null),
+  };
+}
+
 /**
  * Fetch every non-draft package of a given type ('umrah' | 'hajj'), newest first.
  * Used by public-facing sections that should automatically show every package an
  * admin creates, without needing a separate manual "add to section" step.
  */
 function sortPackagesByOrderedList(pkgList: any[], orderIds: number[]): any[] {
-  if (!orderIds || orderIds.length === 0 || !pkgList || pkgList.length === 0) return pkgList;
+  if (!pkgList || pkgList.length === 0) return [];
+  const normalized = pkgList.map(normalizePackageRow);
+  if (!orderIds || orderIds.length === 0) return normalized;
   const orderMap = new Map(orderIds.map((id, index) => [id, index]));
-  return [...pkgList].sort((a, b) => {
+  return [...normalized].sort((a, b) => {
     const orderA = orderMap.has(a.id) ? (orderMap.get(a.id) as number) : 9999;
     const orderB = orderMap.has(b.id) ? (orderMap.get(b.id) as number) : 9999;
     if (orderA !== orderB) return orderA - orderB;
@@ -120,8 +156,9 @@ export async function getPackagesByIds(ids: number[]): Promise<any[]> {
   try {
     const { inArray } = await import('drizzle-orm');
     const rows = await db.select().from(packages).where(inArray(packages.id, ids));
+    const normalizedRows = rows.map(normalizePackageRow);
     // Preserve the caller-specified order
-    const map = new Map(rows.map((r) => [r.id, r]));
+    const map = new Map(normalizedRows.map((r) => [r.id, r]));
     return ids.map((id) => map.get(id)).filter(Boolean) as any[];
   } catch (err) {
     console.error('getPackagesByIds DB error:', err);
@@ -134,7 +171,7 @@ export async function getPackageBySlug(slug: string) {
     const pkgList = await db.select().from(packages).where(eq(packages.slug, slug)).limit(1);
     if (!pkgList.length) return null;
 
-    const pkg = pkgList[0];
+    const pkg = normalizePackageRow(pkgList[0]);
     const prices = await db.select().from(packagePrices).where(eq(packagePrices.packageId, pkg.id));
     const hotels = await db.select().from(packageHotels).where(eq(packageHotels.packageId, pkg.id));
 
@@ -360,5 +397,61 @@ export async function deletePackage(id: number): Promise<void> {
     revalidatePath('/umrah-packages');
   } catch (error) {
     console.error('Error deleting package:', error);
+  }
+}
+
+/**
+ * Auto-generate sequential BHT-Hxx / BHT-Uxx package codes for all packages
+ * of a given type that don't already have one set in cardData.packageCode.
+ */
+export async function bulkGeneratePackageCodesAction(
+  type: 'hajj' | 'umrah'
+): Promise<{ success: boolean; updated: number; error?: string }> {
+  try {
+    const prefix = type === 'hajj' ? 'BHT-H' : 'BHT-U';
+    const rows = await db.select().from(packages).where(eq(packages.type, type));
+
+    // Find highest existing code number for this prefix so we don't collide
+    let maxNum = 0;
+    for (const row of rows) {
+      const cd = parseJsonField(row.cardData, {});
+      const code: string = (cd.packageCode || '').toString().toUpperCase();
+      if (code.startsWith(prefix)) {
+        const num = parseInt(code.slice(prefix.length), 10);
+        if (!isNaN(num) && num > maxNum) maxNum = num;
+      } else if (code.startsWith('BHT-')) {
+        const num = parseInt(code.slice(4), 10);
+        if (!isNaN(num) && num > maxNum) maxNum = num;
+      }
+    }
+
+    // Assign sequential codes only to packages missing one
+    const orderIds = await getStoredPackageOrderIds();
+    const sorted = sortPackagesByOrderedList(rows, orderIds);
+    let nextNum = maxNum + 1;
+    let updated = 0;
+
+    for (const row of sorted) {
+      const cd = parseJsonField(row.cardData, {});
+      if (cd.packageCode && String(cd.packageCode).trim() !== '') continue; // already has code
+      const code = `${prefix}${String(nextNum).padStart(2, '0')}`;
+      await db
+        .update(packages)
+        .set({ cardData: { ...cd, packageCode: code }, updatedAt: new Date() })
+        .where(eq(packages.id, row.id));
+      nextNum++;
+      updated++;
+    }
+
+    revalidatePath('/admin/packages');
+    revalidatePath('/admin/hajj-packages');
+    revalidatePath('/admin/umrah-packages');
+    revalidatePath('/hajj-packages');
+    revalidatePath('/umrah-packages');
+    revalidatePath('/');
+    return { success: true, updated };
+  } catch (error: any) {
+    console.error('bulkGeneratePackageCodesAction error:', error);
+    return { success: false, updated: 0, error: error?.message || 'Unknown error' };
   }
 }
