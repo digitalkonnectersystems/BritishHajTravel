@@ -204,19 +204,19 @@ export function getResponsiveEmailTemplateHtml(
           
           <!-- Header -->
           <tr>
-            <td align="center" style="background: linear-gradient(135deg, #004B39 0%, #003326 100%); padding: 32px 24px; border-bottom: 4px solid #DB9E30;">
+            <td align="center" style="padding: 32px 24px; border-bottom: 4px solid #b50007;">
               <table border="0" cellpadding="0" cellspacing="0" width="100%">
                 <tr>
                   <td align="center">
-                    <div style="display: inline-block; background-color: rgba(219, 158, 48, 0.15); border: 1px solid #DB9E30; color: #DB9E30; font-size: 10px; font-weight: 800; padding: 4px 12px; border-radius: 50px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">
+                    <div style="display: inline-block; background-color: #020e43; border: 1px solid #020e43; color: #ffff; font-size: 10px; font-weight: 800; padding: 4px 12px; border-radius: 50px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">
                       ${badgeText}
                     </div>
                     <div style="margin: 8px 0 4px 0;">
                       <a href="https://britishhajjtravel.com" target="_blank" style="text-decoration: none; display: inline-block;">
-                        <img src="https://britishhajjtravel.com/images_BHT/logos/2026-08/logo.png" alt="British Hajj Travel UK" width="220" style="display: block; width: 220px; max-width: 100%; height: auto; border: 0; outline: none; text-decoration: none; margin: 0 auto;" />
+                        <img src="/images_BHT/branding/footer-logo-1788411772195.png" alt="British Hajj Travel UK" width="220" style="display: block; width: 220px; max-width: 100%; height: auto; border: 0; outline: none; text-decoration: none; margin: 0 auto;" />
                       </a>
                     </div>
-                    <p style="color: #a7f3d0; font-size: 12px; margin: 6px 0 0 0; font-weight: 600;">
+                    <p style="font-size: 12px; margin: 6px 0 0 0; font-weight: 600;">
                       Licensed Hajj &amp; Umrah Travel Operator
                     </p>
                   </td>
@@ -252,7 +252,7 @@ export function getResponsiveEmailTemplateHtml(
 
                 <tr>
                   <td style="padding-bottom: 12px;">
-                    <h3 style="color: #004B39; font-size: 14px; font-weight: 800; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">
+                    <h3 style="color: #020e43; font-size: 14px; font-weight: 800; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">
                       Submitted Form Details
                     </h3>
                   </td>
@@ -272,11 +272,11 @@ export function getResponsiveEmailTemplateHtml(
 
           <!-- Footer -->
           <tr>
-            <td align="center" style="background-color: #000000; padding: 28px 24px; border-top: 1px solid #1e293b; color: #ffffff; font-size: 12px;">
+            <td align="center" style="background-color: #020e43; padding: 28px 24px; border-top: 1px solid #1e293b; color: #ffffff; font-size: 12px;">
               <table border="0" cellpadding="0" width="100%">
                 <tr>
                   <td align="center" style="padding-bottom: 12px;">
-                    <p style="color:#ffffff; font-weight: 800; font-size: 14px; margin: 0 0 4px 0;">
+                    <p style="color:#fff; font-weight: 800; font-size: 14px; margin: 0 0 4px 0;">
                       British Hajj Travel UK Ltd.
                     </p>
                     <p style="color: #ffffff; font-size: 11px; margin: 0; line-height: 1.5;">
@@ -287,7 +287,7 @@ export function getResponsiveEmailTemplateHtml(
                 </tr>
                 <tr>
                   <td align="center" style="padding-bottom: 16px;">
-                    <a href="https://britishhajjtravel.com" target="_blank" style="color: #DB9E30; text-decoration: none; font-weight: 700; font-size: 12px; margin: 0 8px;">
+                    <a href="https://britishhajjtravel.com" target="_blank" style="color: #b50007; text-decoration: none; font-weight: 700; font-size: 12px; margin: 0 8px;">
                       Visit Official Website →
                     </a>
                   </td>
@@ -295,6 +295,11 @@ export function getResponsiveEmailTemplateHtml(
                 <tr>
                   <td align="center" style="border-top: 1px solid #1e293b; padding-top: 16px; font-size: 11px; color: #ffffff;">
                     © ${new Date().getFullYear()} British Hajj Travel UK Ltd. All Rights Reserved.
+                  </td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;">Powered by <a style="color:#fff; text-decoration:none;"      href="https://www.dks.com.pk" target="_blank">DKS</a></td></tr>
+                    </table>
                   </td>
                 </tr>
               </table>
@@ -326,7 +331,7 @@ export const FORM_SAMPLE_DATA: Record<CanonicalFormSubject, Record<string, unkno
   'Get a Free Quote Form': {
     fullName: 'Ahmed Khan',
     email: 'ahmed@example.com',
-    phone: '+1 416 555 0123',
+    phone: '+44 20 7946 0123',
     packageType: 'Umrah Package',
     departureMonth: 'December 2026',
     numberOfPilgrims: 2,
@@ -334,7 +339,7 @@ export const FORM_SAMPLE_DATA: Record<CanonicalFormSubject, Record<string, unkno
   'Umrah Package Booking Form': {
     fullName: 'Fatima Ali',
     email: 'fatima@example.com',
-    phone: '+1 647 555 0145',
+    phone: '+44 20 7946 0145',
     packageName: 'Premium Umrah Package',
     departureDate: '2026-12-10',
     adults: 2,
@@ -343,7 +348,7 @@ export const FORM_SAMPLE_DATA: Record<CanonicalFormSubject, Record<string, unkno
   'Hajj Package Booking Form': {
     fullName: 'Omar Hassan',
     email: 'omar@example.com',
-    phone: '+1 905 555 0167',
+    phone: '+44 20 7946 0167',
     packageName: 'Hajj 2027 Package',
     numberOfPilgrims: 4,
     nationality: 'British',
@@ -351,13 +356,13 @@ export const FORM_SAMPLE_DATA: Record<CanonicalFormSubject, Record<string, unkno
   'Contact Inquiry Form': {
     name: 'Sarah Ahmed',
     email: 'sarah@example.com',
-    phone: '+1 289 555 0189',
+    phone: '+44 20 7946 0189',
     message: 'I would like more information about your pilgrimage packages.',
   },
   'Flights Booking Inquiry Form': {
     passengerName: 'Bilal Mahmood',
     email: 'bilal@example.com',
-    phone: '+1 416 555 0190',
+    phone: '+44 20 7946 0190',
     originCity: 'Toronto',
     destinationCity: 'Jeddah',
     travelDates: '2027-05-20 to 2027-06-05',
@@ -366,13 +371,13 @@ export const FORM_SAMPLE_DATA: Record<CanonicalFormSubject, Record<string, unkno
   'Drop Us A Message Form': {
     name: 'Aisha Rahman',
     email: 'aisha@example.com',
-    phone: '+1 647 555 0191',
+    phone: '+44 20 7946 0191',
     message: 'Please contact me about arranging a private group trip.',
   },
   'Blog Detail Page': {
     fullName: 'Yusuf Ibrahim',
     email: 'yusuf@example.com',
-    phone: '+1 905 555 0192',
+    phone: '+44 20 7946 0192',
     packageType: 'Hajj Package',
     message: 'I am interested in learning more about this package.',
   },

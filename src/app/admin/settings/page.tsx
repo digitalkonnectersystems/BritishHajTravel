@@ -4920,7 +4920,7 @@ export default function AdminSettingsPage() {
                               setEmailTemplateHtml(html);
                             }}
                             className={`p-3 rounded-2xl text-left border transition-all cursor-pointer flex flex-col gap-1.5 ${isSelected
-                              ? 'bg-emerald-900 text-white border-primary shadow-md ring-2 ring-emerald-500/20'
+                              ? 'bg-primary text-white border-primary shadow-md ring-2 ring-primary/30'
                               : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
                               }`}
                           >
