@@ -191,7 +191,7 @@ export default function AdminBlogsPage() {
                           </span>
                         )}
                       </div>
-                      <div className="text-[10px] text-slate-400 font-mono mt-0.5">/blogs/{b.slug}</div>
+                      <div className="text-[10px] text-slate-400 font-mono mt-0.5">{b.slug ? `/${b.slug}` : 'No slug'}</div>
                     </td>
 
                     {/* Category */}
@@ -260,7 +260,7 @@ export default function AdminBlogsPage() {
       <SeoCenterModal
         isOpen={seoModalOpen}
         onClose={() => { setSeoModalOpen(false); setSelectedSeoBlog(null); }}
-        pageData={selectedSeoBlog ? { id: selectedSeoBlog.id, title: selectedSeoBlog.title, slug: `/blogs/${selectedSeoBlog.slug}`, seoData: selectedSeoBlog.seoData } : null}
+        pageData={selectedSeoBlog ? { id: selectedSeoBlog.id, title: selectedSeoBlog.title, slug: selectedSeoBlog.slug ? `/${selectedSeoBlog.slug}` : '', seoData: selectedSeoBlog.seoData } : null}
         onSaveSuccess={async () => { const updated = await getBlogsList(); setBlogs(updated); }}
       />
     </AdminLayout>

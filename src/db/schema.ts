@@ -276,7 +276,7 @@ export const flightEnquiries = mysqlTable('flight_enquiries', {
 export const blogPosts = mysqlTable('blog_posts', {
   id: int('id').autoincrement().primaryKey(),
   title: varchar('title', { length: 255 }).notNull(),
-  slug: varchar('slug', { length: 128 }).notNull().unique(),
+  slug: varchar('slug', { length: 128 }).unique(),
   excerpt: text('excerpt'),
   content: text('content').notNull(),
   featuredImage: text('featured_image'),

@@ -18,7 +18,9 @@ function formatDate(value: unknown) {
 
 export default function LatestBlogsSection({ data, blogs, isHomepage = false }: { data?: any; blogs?: any[]; isHomepage?: boolean }) {
   const limit = Number(data?.limit) > 0 ? Number(data.limit) : 6;
-  const visibleBlogs = (blogs || []).slice(0, isHomepage ? 3 : limit);
+  const visibleBlogs = (blogs || [])
+    .filter((blog) => typeof blog.slug === 'string' && blog.slug.trim() !== '')
+    .slice(0, isHomepage ? 3 : limit);
   const bgImage = (data?.backgroundImage || data?.image || '').trim();
 
   return (
@@ -48,7 +50,7 @@ export default function LatestBlogsSection({ data, blogs, isHomepage = false }: 
             {visibleBlogs.map((blog) => (
               <Link
                 key={blog.id}
-                href={`/blogs/${blog.slug}`}
+                href={`/${blog.slug}`}
                 className="group flex flex-col overflow-hidden bg-white border border-slate-100 rounded-3xl shadow-sm no-underline"
               >
                 <div className="relative aspect-[1.75] overflow-hidden bg-slate-100">

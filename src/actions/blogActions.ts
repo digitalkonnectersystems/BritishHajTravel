@@ -132,15 +132,32 @@ export async function getBlogsList(publishedOnly = false) {
       const getCachedPublishedBlogs = unstable_cache(
         async () => {
           const rows = await db
-            .select()
+            .select({
+              id: blogPosts.id,
+              title: blogPosts.title,
+              slug: blogPosts.slug,
+              excerpt: blogPosts.excerpt,
+              featuredImage: blogPosts.featuredImage,
+              category: blogPosts.category,
+              authorName: blogPosts.authorName,
+              isPublished: blogPosts.isPublished,
+              publishedAt: blogPosts.publishedAt,
+              createdAt: blogPosts.createdAt,
+              updatedAt: blogPosts.updatedAt,
+            })
             .from(blogPosts)
             .where(eq(blogPosts.isPublished, true))
-            .orderBy(desc(blogPosts.createdAt));
-          return await sortWithOrderedIds(rows);
+            .orderBy(
+              desc(blogPosts.publishedAt),
+              desc(blogPosts.createdAt)
+            );
+
+          return rows;
         },
         ['published-blogs'],
         { tags: ['blogs'], revalidate: 300 }
       );
+
       return await getCachedPublishedBlogs();
     }
 
@@ -402,7 +419,9 @@ export async function getRelatedBlogs(excludeSlug: string, limit = 6) {
           .where(eq(blogPosts.isPublished, true))
           .orderBy(desc(blogPosts.createdAt))
           .limit(limit + 1);
-        return rows.filter((b) => b.slug !== excludeSlug).slice(0, limit);
+        return rows
+          .filter((b) => typeof b.slug === 'string' && b.slug.trim() !== '' && b.slug !== excludeSlug)
+          .slice(0, limit);
       },
       ['related-blogs', excludeSlug, String(limit)],
       { tags: ['blogs'], revalidate: 300 }

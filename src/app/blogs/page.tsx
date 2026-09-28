@@ -4,6 +4,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { getPageBySlug } from '@/actions/pageActions';
 import PageSectionsRenderer from '@/components/PageSectionsRenderer';
+import BlogsLoadMore from '@/components/BlogsLoadMore';
 
 export const metadata: Metadata = {
   title: 'Blog & Travel Guides | British Hajj Travel UK',
@@ -45,8 +46,12 @@ export default async function BlogsListingPage() {
     }
   }
 
-  const featured = allBlogs[0] ?? null;
-  const rest = allBlogs.slice(1);
+  const routableBlogs = allBlogs.filter(
+    (blog) => typeof blog.slug === 'string' && blog.slug.trim() !== ''
+  );
+
+  const featured = routableBlogs[0] ?? null;
+  const rest = routableBlogs.slice(1);
 
   return (
     <>
@@ -73,7 +78,7 @@ export default async function BlogsListingPage() {
           {/* ── Featured Hero Post ── */}
           {featured && (
             <Link
-              href={`/blogs/${featured.slug}`}
+              href={`/${featured.slug}`}
               className="group block mb-12 rounded-3xl overflow-hidden shadow-lg shadow-gray-200/60 hover:shadow-xl hover:shadow-gray-300/50 transition-all duration-500 no-underline bg-white"            >
               <div className="grid grid-cols-1 md:grid-cols-2 min-h-[380px]">
                 {/* Image */}
@@ -126,54 +131,7 @@ export default async function BlogsListingPage() {
               <h2 className="text-2xl md:text-3xl font-extrabold text-ink mb-6 flex items-center">
                 More Articles
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
-                {rest.map((blog) => {
-                  const displayDate = formatDate(blog.publishedAt || blog.createdAt);
-                  return (
-                    <Link
-                      key={blog.id}
-                      href={`/blogs/${blog.slug}`}
-                      className="group flex flex-col rounded-2xl overflow-hidden bg-white border border-slate-100 shadow-lg shadow-gray-200/60 hover:shadow-xl hover:shadow-gray-300/50 hover:-translate-y-1 transition-all duration-400 no-underline blog-card"                    >
-                      {/* Thumbnail */}
-                      <div className="relative overflow-hidden h-52">
-                        <img
-                          src={blog.featuredImage || FALLBACK_THUMB}
-                          alt={blog.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-600"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-                        <span className={`absolute top-3 left-3 text-[10px] font-extrabold px-2.5 py-1 rounded-full ${CATEGORY_COLORS[blog.category ?? ''] ?? 'bg-primary text-white'}`}>
-                          {blog.category || 'Article'}
-                        </span>
-                      </div>
-
-                      {/* Body */}
-                      <div className="flex flex-col flex-1 p-5">
-                        <h3 className="text-xl font-bold text-primary leading-snug mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-                          {blog.title}
-                        </h3>
-                        <div className="flex items-center justify-between pb-3">
-                          {/* <div className="flex items-center gap-2 text-[11px] text-slate-400">
-                            <span className="w-5 h-5 rounded-full bg-primary flex items-center justify-center text-white font-bold text-[9px]">
-                              {blog.authorName?.charAt(0) || 'K'}
-                            </span>
-                            <span className="font-medium text-slate-500 truncate max-w-[90px]">{blog.authorName?.split(' ')[0] || 'British Hajj Travel'}</span>
-                          </div> */}
-                          {displayDate && (
-                            <span className="date-display">{displayDate}</span>
-                          )}
-                        </div>
-                        {blog.excerpt && (
-                          <p className="text-sm normal-text">
-                            {blog.excerpt}
-                          </p>
-                        )}
-
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
+              <BlogsLoadMore blogs={rest} initialCount={11} />
             </>
           )}
 

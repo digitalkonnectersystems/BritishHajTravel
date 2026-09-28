@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import AdminLayout from '@/components/admin/AdminLayout';
@@ -118,6 +118,13 @@ function BlogEditorInner() {
     </label>
   );
 
+  const handleCategoryChange = useCallback((val: string) => {
+    setForm((p) => ({
+      ...p,
+      category: val,
+    }));
+  }, []);
+
   return (
     <AdminLayout user={{ name: 'Admin User', role: 'Super Admin' }}>
       <form onSubmit={handleSave} className="flex flex-col gap-6">
@@ -136,7 +143,7 @@ function BlogEditorInner() {
           <div className="flex items-center gap-2">
             {isEdit && form.slug && (
               <a
-                href={`/blogs/${form.slug}`}
+                href={`/${form.slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold border border-slate-200 text-slate-600 hover:border-primary hover:text-primary no-underline transition-all"
@@ -183,7 +190,7 @@ function BlogEditorInner() {
               <div className="mt-2 items-center gap-2">
                 {fieldLabel('Slug')}
                 <div className="flex-1 flex items-center gap-0 border border-slate-200 rounded-xl overflow-hidden">
-                  <span className="px-3 py-2 text-[11px] font-mono text-slate-400 bg-slate-50 border-r border-slate-200">/blogs/</span>
+                  <span className="px-3 py-2 text-[11px] font-mono text-slate-400 bg-slate-50 border-r border-slate-200">/</span>
                   <input
                     type="text"
                     value={form.slug}
@@ -273,7 +280,7 @@ function BlogEditorInner() {
                 {fieldLabel('Category')}
                 <CategoryDropdown
                   value={form.category}
-                  onChange={(val) => setForm((p) => ({ ...p, category: val }))}
+                  onChange={handleCategoryChange}
                 />
               </div>
               <div>
@@ -317,7 +324,7 @@ function BlogEditorInner() {
           pageData={{
             id: blogId!,
             title: form.title,
-            slug: `/blogs/${form.slug}`,
+            slug: `/${form.slug}`,
             seoData: null,
           }}
           onSaveSuccess={() => { }}

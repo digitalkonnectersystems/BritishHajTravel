@@ -14,7 +14,7 @@ interface CategoryDropdownProps {
 export default function CategoryDropdown({ value, onChange, className = '' }: CategoryDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [categories, setCategories] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [newCategory, setNewCategory] = useState('');
   const [saving, setSaving] = useState(false);
   const [confirmModal, setConfirmModal] = useState<ConfirmModalConfig | null>(null);
@@ -22,19 +22,36 @@ export default function CategoryDropdown({ value, onChange, className = '' }: Ca
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    let cancelled = false;
+
     const fetchCats = async () => {
       setLoading(true);
-      const cats = await getBlogCategories();
-      setCategories(cats);
-      if (value && cats.length > 0 && !cats.includes(value)) {
-        // Do nothing, just display the current value even if not in DB yet
-      } else if (!value && cats.length > 0) {
-        onChange(cats[0]);
+
+      try {
+        const cats = await getBlogCategories();
+
+        if (!cancelled) {
+          setCategories(cats);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
-      setLoading(false);
     };
+
     fetchCats();
-  }, [value, onChange]);
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!value && categories.length > 0) {
+      onChange(categories[0]);
+    }
+  }, [value, categories, onChange]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

@@ -169,6 +169,7 @@ export async function gatherAllSitemapItems(baseUrl: string): Promise<SitemapIte
     try {
       const posts = await db.select().from(blogPosts).where(eq(blogPosts.isPublished, true));
       for (const post of posts) {
+        if (!post.slug || !post.slug.trim()) continue;
         const seo = parseSeoSettings(post.seoSettings);
         if (seo.includeInSitemap === false || seo.noIndex === true) continue;
         
@@ -179,7 +180,7 @@ export async function gatherAllSitemapItems(baseUrl: string): Promise<SitemapIte
         } else if (rawUrl && rawUrl.startsWith('/')) {
           url = `${baseUrl.replace(/\/+$/, '')}${rawUrl}`;
         } else {
-          url = `${baseUrl}/blog/${post.slug}`;
+          url = `${baseUrl}/${post.slug}`;
         }
         
         items.push({
