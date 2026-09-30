@@ -1,12 +1,12 @@
 import PageSectionsRenderer from "@/components/PageSectionsRenderer";
 import { getPageBySlug } from "@/actions/pageActions";
-import { getBlogsList } from "@/actions/blogActions";
+import { getLatestBlogs } from "@/actions/blogActions";
 import PageSeoHead from "@/components/PageSeoHead";
 
 export default async function Home() {
   const [pageData, blogs] = await Promise.all([
     getPageBySlug("/"),
-    getBlogsList(true),
+    getLatestBlogs(3),
   ]);
 
   const homeSeo = pageData?.seoData || null;

@@ -172,6 +172,51 @@ export async function getBlogsList(publishedOnly = false) {
   }
 }
 
+// ─── GET LATEST BLOGS FOR HOMEPAGE ─────────────────────────────────────────
+export async function getLatestBlogs(limit = 3) {
+  try {
+    const safeLimit = Math.max(1, Math.min(Number(limit) || 3, 12));
+
+    const getCachedLatestBlogs = unstable_cache(
+      async () => {
+        const rows = await db
+          .select({
+            id: blogPosts.id,
+            title: blogPosts.title,
+            slug: blogPosts.slug,
+            excerpt: blogPosts.excerpt,
+            featuredImage: blogPosts.featuredImage,
+            category: blogPosts.category,
+            authorName: blogPosts.authorName,
+            isPublished: blogPosts.isPublished,
+            publishedAt: blogPosts.publishedAt,
+            createdAt: blogPosts.createdAt,
+            updatedAt: blogPosts.updatedAt,
+          })
+          .from(blogPosts)
+          .where(eq(blogPosts.isPublished, true))
+          .orderBy(
+            desc(blogPosts.publishedAt),
+            desc(blogPosts.createdAt)
+          )
+          .limit(safeLimit);
+
+        return rows;
+      },
+      ['latest-published-blogs', String(safeLimit)],
+      {
+        tags: ['blogs'],
+        revalidate: 300,
+      }
+    );
+
+    return await getCachedLatestBlogs();
+  } catch (err) {
+    console.error('getLatestBlogs DB error:', err);
+    return [];
+  }
+}
+
 // ─── UPDATE BLOG ORDER ─────────────────────────────────────────────────────
 export async function updateBlogOrderAction(orderedIds: number[]) {
   try {
