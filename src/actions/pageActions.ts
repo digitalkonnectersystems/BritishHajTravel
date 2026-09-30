@@ -211,13 +211,25 @@ export async function getPageById(id: number) {
 }
 
 async function fetchPageBySlugFromDb(slug: string) {
-  await ensureGuideColumns();
-  const pages = await db.select().from(sitePages).where(eq(sitePages.slug, slug)).limit(1);
+  const pages = await db
+    .select()
+    .from(sitePages)
+    .where(eq(sitePages.slug, slug))
+    .limit(1);
+
   if (pages && pages.length > 0) {
     const p = pages[0];
-    const seoData = p.seoSettings ? safeJsonParse(p.seoSettings, null) : null;
-    return { ...p, seoData };
+
+    const seoData = p.seoSettings
+      ? safeJsonParse(p.seoSettings, null)
+      : null;
+
+    return {
+      ...p,
+      seoData,
+    };
   }
+
   return null;
 }
 

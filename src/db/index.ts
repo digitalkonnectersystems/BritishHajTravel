@@ -13,7 +13,16 @@ const globalForDb = globalThis as unknown as {
   poolConnection?: mysql.Pool;
 };
 
-// Reuse connection pool across Next.js Hot Module Reloads to prevent ER_CON_COUNT_ERROR
+/**
+ * IMPORTANT:
+ * Vercel/serverless can create multiple application instances.
+ * Do not allow every instance to open 10 DB connections.
+ */
+const connectionLimit = Math.max(
+  1,
+  Number(process.env.DB_CONNECTION_LIMIT || (process.env.VERCEL ? 2 : 5))
+);
+
 const poolConnection =
   globalForDb.poolConnection ||
   mysql.createPool({
@@ -22,19 +31,36 @@ const poolConnection =
     user,
     password,
     database,
-    ssl: useSsl ? { rejectUnauthorized: false } : undefined,
+
+    ssl: useSsl
+      ? {
+          rejectUnauthorized: false,
+        }
+      : undefined,
+
     waitForConnections: true,
-    connectionLimit: 10,
-    maxIdle: 10,
-    idleTimeout: 60000,
+
+    // Keep serverless connection usage low
+    connectionLimit,
+    maxIdle: connectionLimit,
+
+    idleTimeout: 30000,
+
     queueLimit: 0,
+
     enableKeepAlive: true,
     keepAliveInitialDelay: 0,
-    connectTimeout: 5000,
+
+    connectTimeout: 10000,
   });
 
-if (process.env.NODE_ENV !== 'production') {
-  globalForDb.poolConnection = poolConnection;
-}
+/**
+ * Reuse the pool whenever the same server instance stays warm.
+ * Do this in production too.
+ */
+globalForDb.poolConnection = poolConnection;
 
-export const db = drizzle(poolConnection, { schema, mode: 'default' });
+export const db = drizzle(poolConnection, {
+  schema,
+  mode: 'default',
+});

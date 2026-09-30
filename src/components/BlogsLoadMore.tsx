@@ -48,7 +48,7 @@ export default function BlogsLoadMore({ blogs, initialCount = 11 }: { blogs: any
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
                 <span className={`absolute top-3 left-3 text-[10px] font-extrabold px-2.5 py-1 rounded-full ${CATEGORY_COLORS[blog.category ?? ''] ?? 'bg-primary text-white'}`}>
-                  {blog.category || 'Article Name'}
+                  {blog.category || 'Article'}
                 </span>
               </div>
 

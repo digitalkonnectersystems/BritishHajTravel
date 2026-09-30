@@ -3,7 +3,11 @@
 import { db } from '@/db';
 import { hotelCategories, hotels } from '@/db/schema';
 import { asc, eq } from 'drizzle-orm';
-import { revalidatePath, revalidateTag } from 'next/cache';
+import {
+  revalidatePath,
+  revalidateTag,
+  unstable_cache,
+} from 'next/cache';
 import { logAdminActivityAction } from '@/actions/activityActions';
 
 function slugify(value: string) {
@@ -20,22 +24,44 @@ function cleanUrl(value: string) {
   return /^https?:\/\//i.test(url) ? url : `https://${url}`;
 }
 
-export async function getHotelDirectory() {
+async function fetchHotelDirectoryFromDb() {
   const categories = await db
     .select()
     .from(hotelCategories)
     .where(eq(hotelCategories.isPublished, true))
-    .orderBy(asc(hotelCategories.displayOrder), asc(hotelCategories.name));
+    .orderBy(
+      asc(hotelCategories.displayOrder),
+      asc(hotelCategories.name)
+    );
+
   const hotelRows = await db
     .select()
     .from(hotels)
     .where(eq(hotels.isPublished, true))
-    .orderBy(asc(hotels.displayOrder), asc(hotels.name));
+    .orderBy(
+      asc(hotels.displayOrder),
+      asc(hotels.name)
+    );
 
   return categories.map((category) => ({
     ...category,
-    hotels: hotelRows.filter((hotel) => hotel.categoryId === category.id),
+    hotels: hotelRows.filter(
+      (hotel) => hotel.categoryId === category.id
+    ),
   }));
+}
+
+export async function getHotelDirectory() {
+  const getCachedHotelDirectory = unstable_cache(
+    fetchHotelDirectoryFromDb,
+    ['hotel-directory'],
+    {
+      tags: ['hotel-directory'],
+      revalidate: 300,
+    }
+  );
+
+  return getCachedHotelDirectory();
 }
 
 export async function getHotelAdminData() {
