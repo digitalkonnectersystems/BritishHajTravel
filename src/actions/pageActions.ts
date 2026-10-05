@@ -1692,7 +1692,7 @@ RULES:
     outputSchema = `{\n  "heroAlt": "string (8-20 words)",\n  "ogCardAlt": "string (8-20 words)"\n}`;
   } else if (section === 'geo') {
     maxTokens = 300;
-    task = `Generate Generative Engine Optimization (GEO) structured summary and entity clusters for AI search engines (ChatGPT, Gemini, Perplexity).
+    task = `Generate Generative Engine Optimization (GEO) structured summary and entity clusters for AI engines (ChatGPT, Gemini, Perplexity).
 RULES:
 1. geoSummary: 2-3 self-contained factual sentences an LLM can cite verbatim. State what the page offers, who it is for, and key inclusions. No marketing fluff.
 2. geoClusters: comma-separated string of 6-10 real entities/topics (brand name, service names, location, and semantically associated terms).`;
