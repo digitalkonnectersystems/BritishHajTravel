@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Pencil, Plus, Trash2, X } from 'lucide-react';
+import { Eye, Pencil, Plus, Trash2, X } from 'lucide-react';
+import Link from 'next/link';
 import { deleteDestinationAction, saveDestinationAction, updateDestinationOrderAction } from '@/actions/destinationActions';
 import ImageUploadWidget from '@/components/admin/ImageUploadWidget';
 import { HajjCardFields } from '@/app/admin/packages/[id]/EditPackageClient';
@@ -119,7 +120,7 @@ export default function DestinationsClient({ initialDestinations }: { initialDes
       </form>}
 
       <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-xs">
-        {items.length === 0 ? <p className="p-8 text-center text-sm text-slate-400">No destination packages created yet.</p> : items.map((item, index) => { const pkg = getPackage(item); return <div key={item.id} draggable onDragStart={() => setDraggedIndex(index)} onDragOver={(event) => handleDragOver(event, index)} onDragEnd={handleDragEnd} className={`flex items-center gap-4 border-b border-slate-100 p-4 last:border-0 ${draggedIndex === index ? 'bg-emerald-50 opacity-60' : ''}`}><span className="cursor-grab select-none text-slate-400">⋮⋮</span><div className="w-20 h-14 bg-slate-100 rounded-lg overflow-hidden shrink-0">{pkg.cardData?.bannerImage && <img src={pkg.cardData.bannerImage} alt="" className="w-full h-full object-cover" />}</div><div className="min-w-0 flex-1"><div className="font-bold text-sm text-slate-900">{item.title}</div><div className="text-xs text-slate-400">/destinations/{item.slug} · {pkg.title || item.title} · {pkg.status || 'available'}</div></div><button type="button" onClick={() => beginEdit(item)} className="p-2 text-primary" title="Edit destination package"><Pencil className="w-4 h-4" /></button><button type="button" onClick={() => remove(item.id)} className="p-2 text-red-500" title="Delete destination package"><Trash2 className="w-4 h-4" /></button></div>; })}
+        {items.length === 0 ? <p className="p-8 text-center text-sm text-slate-400">No destination packages created yet.</p> : items.map((item, index) => { const pkg = getPackage(item); return <div key={item.id} draggable onDragStart={() => setDraggedIndex(index)} onDragOver={(event) => handleDragOver(event, index)} onDragEnd={handleDragEnd} className={`flex items-center gap-4 border-b border-slate-100 p-4 last:border-0 ${draggedIndex === index ? 'bg-emerald-50 opacity-60' : ''}`}><span className="cursor-grab select-none text-slate-400">⋮⋮</span><div className="w-20 h-14 bg-slate-100 rounded-lg overflow-hidden shrink-0">{pkg.cardData?.bannerImage && <img src={pkg.cardData.bannerImage} alt="" className="w-full h-full object-cover" />}</div><div className="min-w-0 flex-1"><div className="font-bold text-sm text-slate-900">{item.title}</div><div className="text-xs text-slate-400">/destinations/{item.slug} · {pkg.title || item.title} · {pkg.status || 'available'}</div></div>{item.slug && item.status === 'published' && <Link href={`/destinations/${item.slug}`} target="_blank" rel="noopener noreferrer" className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg" title="Preview public destination detail"><Eye className="w-4 h-4" /></Link>}<button type="button" onClick={() => beginEdit(item)} className="p-2 text-primary" title="Edit destination package"><Pencil className="w-4 h-4" /></button><button type="button" onClick={() => remove(item.id)} className="p-2 text-red-500" title="Delete destination package"><Trash2 className="w-4 h-4" /></button></div>; })}
       </div>
     </div>
   );

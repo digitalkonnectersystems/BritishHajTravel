@@ -6,15 +6,27 @@ import { dedupeRecipientChannels, includesRecipient } from './emailRecipients';
 
 export { getResponsiveEmailTemplateHtml, formatFieldLabel };
 
+export type FormEmailAudit = {
+  formName: string;
+  to: string[];
+  cc: string[];
+  bcc: string[];
+  subject: string;
+  html: string;
+  status: 'Delivered' | 'Failed' | 'Pending';
+};
+
 /**
- * Server-only Form Submission Dual Email Dispatcher
- * Sends Email #1 to Admin + Email #2 to User (if user email provided)
+ * Server-only Form Submission Dual Email Dispatcher.
+ * One admin message is sent with To/CC/BCC arrays. A separate submitter
+ * confirmation is optional and is skipped when the submitter is already in
+ * the admin recipient set.
  */
 export async function dispatchFormEmails(
   formName: string,
   submittedData: Record<string, any>,
   providedUserEmail?: string
-): Promise<{ adminSent: boolean; userSent: boolean; error?: string }> {
+): Promise<{ adminSent: boolean; userSent: boolean; error?: string; audit?: FormEmailAudit }> {
   try {
     // 1. Fetch saved email settings from DB or defaults
     let adminRecipientEmail = process.env.SMTP_TO || 'saudivisa@britishhajjtravel.com';
@@ -50,7 +62,7 @@ export async function dispatchFormEmails(
           }
         }
 
-        // Form-specific recipient routing — new formRoutingRules (multi-form per rule)
+        // Form-specific recipient routing. Each form is stored independently; legacy grouped rules remain readable.
         const formRoutingRules: Array<{ id: string; forms: string[]; sendTo: string; cc: string; bcc?: string }> =
           config?.emailConfigs?.formRoutingRules || [];
 
@@ -58,6 +70,7 @@ export async function dispatchFormEmails(
           'Get a Free Quote Form': 'quoteForm',
           'Homepage Hero Banner — Get a Free Quote Form': 'quoteForm',
           'Package Detail Page Booking Form': 'packageDetailForm',
+          'Umrah Package Booking Form': 'packageDetailForm',
           'Package Detail Booking Form': 'packageDetailForm',
           'Umrah Package Detail Page — Booking Form': 'packageDetailForm',
           'Umrah Package Booking — Popup Modal Form': 'packageDetailForm',
@@ -65,8 +78,11 @@ export async function dispatchFormEmails(
           'Hajj Package Detail Page — Booking Form': 'hajjPackageDetailForm',
           'Hajj Package Booking — Popup Modal Form': 'hajjPackageDetailForm',
           'Hajj Package Booking Form (Detail Page & Popup Modal)': 'hajjPackageDetailForm',
+          'Hajj Package Booking Form': 'hajjPackageDetailForm',
           'Hajj Page — Customize Your Hajj Package Form': 'hajjCustomizeForm',
+          'Hajj Customize Form': 'hajjCustomizeForm',
           'Contact Us Form': 'contact',
+          'Contact Inquiry Form': 'contact',
           'Contact Page — Enquiry Form': 'contact',
           'Package Inquiry Form': 'packageInquiry',
           'Pilgrimage Package — Custom Inquiry Form': 'packageInquiry',
@@ -74,11 +90,13 @@ export async function dispatchFormEmails(
           'Visa Services — Consultation Form': 'visaConsultation',
           'Umrah Visa Order Form': 'umrahVisaOrder',
           'Flight Booking Form': 'flightInquiry',
+          'Flights Booking Inquiry Form': 'flightInquiry',
           'Flights Page — Booking Inquiry Form': 'flightInquiry',
           'Drop Us A Message Form': 'dropUsMessage',
           'Drop Us A Message': 'dropUsMessage',
           'General — Drop Us A Message Form': 'dropUsMessage',
           'Blog Detail Page — Sidebar Booking Form': 'blogSidebarForm',
+          'Blog Detail Page': 'blogSidebarForm',
         };
         const mappedKey = formKeyMap[formName] || formName;
 
@@ -145,6 +163,15 @@ export async function dispatchFormEmails(
     // Auto-Selected Generic Subjects
     const adminSubject = `[British Hajj Travel UK] ${formName}`;
     const userSubject = `Thank you for Contacting British Hajj Travel UK — ${formName} Received`;
+    const emailAuditBase: FormEmailAudit = {
+      formName,
+      to: recipientChannels.to,
+      cc: recipientChannels.cc,
+      bcc: recipientChannels.bcc,
+      subject: adminSubject,
+      html: adminHtml,
+      status: 'Pending',
+    };
 
     // 2. Check if SMTP Credentials exist
     if (!smtpHost || !smtpUser || !smtpPass) {
@@ -166,6 +193,7 @@ export async function dispatchFormEmails(
         adminSent: false,
         userSent: false,
         error: 'SMTP is not configured.',
+        audit: { ...emailAuditBase, status: 'Failed' },
       };
     }
 
@@ -192,16 +220,16 @@ export async function dispatchFormEmails(
     // Prepare Email #1 (Admin) with optional CC and BCC
     const adminMailOptions: Record<string, any> = {
       from: `"${formName} - British Hajj Travel" <${fromEmail}>`,
-      to: adminRecipientEmail,
+      to: recipientChannels.to,
       subject: adminSubject,
       html: adminHtml,
       text: `A new inquiry was submitted via ${formName}.`,
     };
     if (adminCcEmail) {
-      adminMailOptions.cc = adminCcEmail;
+      adminMailOptions.cc = recipientChannels.cc;
     }
     if (adminBccEmail) {
-      adminMailOptions.bcc = adminBccEmail;
+      adminMailOptions.bcc = recipientChannels.bcc;
     }
     const adminPromise = transporter.sendMail(adminMailOptions);
 
@@ -276,6 +304,7 @@ export async function dispatchFormEmails(
       error: !adminSent || (isValidUserEmail && !userAlreadyReceivesAdminCopy && !userSent)
         ? getEmailDeliveryError(adminResult, userResult)
         : undefined,
+      audit: { ...emailAuditBase, status: adminSent ? 'Delivered' : 'Failed' },
     };
   } catch (err: any) {
     console.error('dispatchFormEmails error:', err);
@@ -306,6 +335,8 @@ function resolveEmailTemplateKey(formName: string, submittedData: Record<string,
   if (value.includes('hajj') && value.includes('custom')) return 'Hajj Customize Form';
   if (value.includes('package') && value.includes('inquiry')) return 'Package Inquiry Form';
   if (value.includes('package') && (value.includes('detail') || value.includes('booking'))) {
+    if (value.includes('hajj')) return 'Hajj Package Booking Form';
+    if (value.includes('umrah')) return 'Umrah Package Booking Form';
     return packageContext.includes('hajj') ? 'Hajj Package Booking Form' : 'Umrah Package Booking Form';
   }
   if (value.includes('drop us')) return 'Drop Us A Message Form';

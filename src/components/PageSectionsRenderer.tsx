@@ -279,13 +279,9 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         }
 
         if (sec.type === "Sold Out Packages") {
-          const ids = Array.isArray(sec.data?.packageIds) ? sec.data.packageIds.map(Number).filter(Boolean) : [];
-          let initialSoldOut = undefined;
-          if (initialPackageData?.all) {
-            initialSoldOut = ids.length > 0
-              ? ids.map((id: number) => initialPackageData.all?.find((pkg: any) => Number(pkg.id) === id)).filter(Boolean)
-              : initialPackageData.all.filter((pkg: any) => pkg.status === 'sold_out');
-          }
+          // Always use the database sold_out status. Do not use legacy manual packageIds.
+          const initialSoldOut = initialPackageData?.soldOut
+            ?? initialPackageData?.all?.filter((pkg: any) => pkg.status === 'sold_out');
           return <SoldOutPackagesSection key={idx} data={sec.data} initialPackages={initialSoldOut} />;
         }
 

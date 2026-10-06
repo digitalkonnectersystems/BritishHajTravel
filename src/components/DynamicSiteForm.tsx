@@ -207,7 +207,7 @@ export default function DynamicSiteForm({
           message,
           sourceFormName: 'Flights Booking Inquiry Form',
         });
-      } else if (formKey === "quoteForm") {
+      } else if (formKey === "quoteForm" || formKey === "hajjCustomizeForm") {
         res = await submitQuoteEnquiryAction({
           fullName,
           phone,
@@ -215,9 +215,9 @@ export default function DynamicSiteForm({
           packageType,
           numberOfPilgrims: parseNumberSafe(getVal(["adults", "passengers"], "1"), 1),
           message,
-          sourceFormName: 'Get a Free Quote Form',
+          sourceFormName: formKey === 'hajjCustomizeForm' ? 'Hajj Customize Form' : 'Get a Free Quote Form',
         });
-      } else if (formKey === "packageDetailForm" || formKey === "packageInquiry") {
+      } else if (formKey === "packageDetailForm" || formKey === "hajjPackageDetailForm" || formKey === "packageInquiry") {
         res = await submitPackageBookingEnquiryAction({
           fullName,
           email,
@@ -228,7 +228,7 @@ export default function DynamicSiteForm({
           children: parseNumberSafe(getVal(["children"], "0"), 0),
           infants: parseNumberSafe(getVal(["infants"], "0"), 0),
           startDate: getVal(["departureDate", "travel_date", "start_date"]),
-          sourceFormName: formKey === 'packageInquiry' ? 'Package Inquiry Form' : 'Umrah Package Booking Form',
+          sourceFormName: formKey === 'packageInquiry' ? 'Package Inquiry Form' : formKey === 'hajjPackageDetailForm' ? 'Hajj Package Booking Form' : 'Umrah Package Booking Form',
         });
       } else if (formKey === "visaConsultation" || formKey === "umrahVisaOrder") {
         res = await submitVisaEnquiryAction({

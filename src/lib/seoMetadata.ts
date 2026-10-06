@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { resolveCanonicalPublicOrigin } from '@/lib/urlResolver';
 
-export type SeoEntityType = 'page' | 'package' | 'blog' | 'visa';
+export type SeoEntityType = 'page' | 'package' | 'blog' | 'visa' | 'destination';
 
 const DEFAULT_ORIGIN = 'https://britishhajjtravel.com';
 const BRAND = 'British Hajj Travel UK';
@@ -121,10 +121,14 @@ function metadataFromParts({
     description,
     keywords: keywordValue,
     alternates: { canonical },
-    robots: {
-      index: !Boolean(noIndex),
-      follow: !Boolean(noFollow),
-    },
+    // Only emit restrictive per-entity robots directives. Normal index/follow is
+    // implicit, which lets the root-level global noindex setting remain authoritative.
+    robots: Boolean(noIndex) || Boolean(noFollow)
+      ? {
+          index: Boolean(noIndex) ? false : undefined,
+          follow: Boolean(noFollow) ? false : undefined,
+        }
+      : undefined,
     openGraph: {
       title,
       description,
@@ -238,6 +242,18 @@ export function buildVisaMetadata(visa: any, routePath?: string): Metadata {
   });
 }
 
+
+export function buildDestinationMetadata(destination: any, slug?: string): Metadata {
+  const cleanSlug = String(slug || destination?.slug || '').replace(/^\/+/, '');
+  return buildPageMetadata({
+    ...destination,
+    title: destination?.title || 'Destination',
+    metaDescription: destination?.description || undefined,
+    bannerBgImage: Array.isArray(destination?.bannerImages) ? destination.bannerImages[0] : destination?.bannerBgImage,
+    seoSettings: destination?.seoData ?? destination?.seoSettings,
+  }, `/destinations/${cleanSlug}`);
+}
+
 export function metadataSnapshot(metadata: Metadata) {
   const title = typeof metadata.title === 'string'
     ? metadata.title
@@ -248,21 +264,45 @@ export function metadataSnapshot(metadata: Metadata) {
     : canonicalValue instanceof URL
       ? canonicalValue.toString()
       : '';
-  const openGraphImages = metadata.openGraph && 'images' in metadata.openGraph ? metadata.openGraph.images : undefined;
+
+  const keywords = Array.isArray(metadata.keywords)
+    ? metadata.keywords.map(String).filter(Boolean)
+    : typeof metadata.keywords === 'string'
+      ? metadata.keywords.split(',').map((item) => item.trim()).filter(Boolean)
+      : [];
+
+  const openGraph: any = metadata.openGraph || {};
+  const openGraphImages = openGraph.images;
   let ogImage = '';
   if (Array.isArray(openGraphImages) && openGraphImages.length) {
     const first: any = openGraphImages[0];
     ogImage = typeof first === 'string' ? first : first instanceof URL ? first.toString() : String(first?.url || '');
   }
-  const robots: any = metadata.robots || {};
 
+  const twitter: any = metadata.twitter || {};
+  const twitterImages = twitter.images;
+  let twitterImage = '';
+  if (Array.isArray(twitterImages) && twitterImages.length) {
+    const first: any = twitterImages[0];
+    twitterImage = typeof first === 'string' ? first : first instanceof URL ? first.toString() : String(first?.url || '');
+  }
+
+  const robots: any = metadata.robots || {};
   return {
     title,
     description: String(metadata.description || ''),
+    keywords,
     canonical,
-    ogImage,
     robotsIndex: robots.index !== false,
     robotsFollow: robots.follow !== false,
+    ogTitle: String(openGraph.title || ''),
+    ogDescription: String(openGraph.description || ''),
+    ogUrl: String(openGraph.url || ''),
+    ogImage,
+    twitterCard: String(twitter.card || ''),
+    twitterTitle: String(twitter.title || ''),
+    twitterDescription: String(twitter.description || ''),
+    twitterImage,
   };
 }
 
@@ -270,5 +310,6 @@ export function buildEntityMetadata(entityType: SeoEntityType, entity: any): Met
   if (entityType === 'package') return buildPackageMetadata(entity, entity?.slug);
   if (entityType === 'blog') return buildBlogMetadata(entity, entity?.slug);
   if (entityType === 'visa') return buildVisaMetadata(entity);
+  if (entityType === 'destination') return buildDestinationMetadata(entity, entity?.slug);
   return buildPageMetadata(entity, entity?.slug);
 }

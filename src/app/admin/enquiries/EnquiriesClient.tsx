@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { updateEnquiryStatus, deleteEnquiryAction } from '@/actions/enquiryActions';
 import ConfirmModal, { ConfirmModalConfig } from '@/components/ui/ConfirmModal';
-import { Trash2, Search, Filter } from 'lucide-react';
+import { Trash2, Search, Filter, Eye, X, Mail } from 'lucide-react';
 
 interface EnquiriesClientProps {
   initialEnquiries: any[];
@@ -24,6 +24,7 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
   const [formTypeTab, setFormTypeTab] = useState('all');
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
   const [confirmConfig, setConfirmConfig] = useState<ConfirmModalConfig | null>(null);
+  const [selectedEnquiry, setSelectedEnquiry] = useState<any | null>(null);
 
   const filtered = enquiries.filter((e) => {
     const q = search.trim().toLowerCase();
@@ -217,14 +218,24 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
                         </select>
                       </td>
                       <td className="py-3.5 px-4 text-right">
-                        <button
-                          type="button"
-                          onClick={() => handleDelete(item.id, item.enquiryNumber || `QT-${item.id}`)}
-                          title="Delete Query"
-                          className="w-7 h-7 rounded-full bg-red-50 hover:bg-red-600 text-red-600 hover:text-white flex items-center justify-center border-none cursor-pointer transition-all ml-auto"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => setSelectedEnquiry(item)}
+                            title="View submitted enquiry and sent email"
+                            className="inline-flex h-7 items-center gap-1 rounded-full border border-sky-200 bg-sky-50 px-2.5 text-[10px] font-extrabold text-sky-700 hover:bg-sky-600 hover:text-white transition-all cursor-pointer"
+                          >
+                            <Eye className="w-3.5 h-3.5" /> View
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(item.id, item.enquiryNumber || `QT-${item.id}`)}
+                            title="Delete Query"
+                            className="w-7 h-7 rounded-full bg-red-50 hover:bg-red-600 text-red-600 hover:text-white flex items-center justify-center border-none cursor-pointer transition-all"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -234,6 +245,81 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
           </table>
         </div>
       </div>
+
+      {selectedEnquiry && (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/60 p-4" onClick={() => setSelectedEnquiry(null)}>
+          <div className="flex max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl" onClick={(event) => event.stopPropagation()}>
+            <div className="flex items-start justify-between gap-4 border-b border-slate-200 px-5 py-4">
+              <div>
+                <div className="flex items-center gap-2">
+                  <Mail className="h-5 w-5 text-primary" />
+                  <h2 className="m-0 text-lg font-extrabold text-slate-900">Enquiry &amp; Sent Email</h2>
+                </div>
+                <p className="mt-1 mb-0 text-xs text-slate-500">{selectedEnquiry.enquiryNumber} · {selectedEnquiry.sourceForm || 'Form source not recorded'}</p>
+              </div>
+              <button type="button" onClick={() => setSelectedEnquiry(null)} className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 hover:bg-slate-100 cursor-pointer" title="Close">
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="grid min-h-0 flex-1 grid-cols-1 overflow-hidden lg:grid-cols-[340px_minmax(0,1fr)]">
+              <div className="overflow-y-auto border-b border-slate-200 bg-slate-50 p-5 lg:border-b-0 lg:border-r">
+                <h3 className="mb-3 text-xs font-black uppercase tracking-wider text-slate-700">Submission</h3>
+                <div className="space-y-2 text-xs">
+                  {[
+                    ['Name', selectedEnquiry.fullName],
+                    ['Email', selectedEnquiry.email],
+                    ['Phone', selectedEnquiry.phone],
+                    ['Package / Details', selectedEnquiry.preferredPackageType],
+                    ['Travel / Departure', selectedEnquiry.departureMonth],
+                    ['Adults / Passengers', selectedEnquiry.adults],
+                    ['Children', selectedEnquiry.children],
+                    ['Infants', selectedEnquiry.infants],
+                    ['Message', selectedEnquiry.message],
+                  ].filter(([, value]) => value !== null && value !== undefined && String(value).trim() !== '').map(([label, value]) => (
+                    <div key={String(label)} className="rounded-xl border border-slate-200 bg-white p-3">
+                      <div className="text-[9px] font-black uppercase tracking-wider text-slate-400">{label}</div>
+                      <div className="mt-1 whitespace-pre-wrap break-words font-semibold text-slate-800">{String(value)}</div>
+                    </div>
+                  ))}
+                </div>
+
+                <h3 className="mb-3 mt-5 text-xs font-black uppercase tracking-wider text-slate-700">Email Routing</h3>
+                <div className="space-y-2 text-xs">
+                  {[
+                    ['To', selectedEnquiry.emailTo || 'Not recorded'],
+                    ['CC', selectedEnquiry.emailCc || 'None'],
+                    ['BCC', selectedEnquiry.emailBcc || 'None'],
+                    ['Subject', selectedEnquiry.emailSubject || 'Not recorded'],
+                    ['Delivery', selectedEnquiry.emailDeliveryStatus || 'Unknown'],
+                  ].map(([label, value]) => (
+                    <div key={String(label)} className="rounded-xl border border-slate-200 bg-white p-3">
+                      <div className="text-[9px] font-black uppercase tracking-wider text-slate-400">{label}</div>
+                      <div className="mt-1 break-words font-semibold text-slate-800">{String(value)}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex min-h-[520px] flex-col bg-white p-4">
+                <div className="mb-2 text-xs font-black uppercase tracking-wider text-slate-700">Exact Admin Email Preview</div>
+                {selectedEnquiry.emailHtml ? (
+                  <iframe
+                    title={`Email preview ${selectedEnquiry.enquiryNumber}`}
+                    srcDoc={selectedEnquiry.emailHtml}
+                    sandbox=""
+                    className="min-h-[500px] flex-1 rounded-2xl border border-slate-200 bg-white"
+                  />
+                ) : (
+                  <div className="flex min-h-[500px] flex-1 items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-sm text-slate-500">
+                    No stored email snapshot is available for this older enquiry. New submissions will store the exact sent email automatically.
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <ConfirmModal config={confirmConfig} onClose={() => setConfirmConfig(null)} />
     </div>

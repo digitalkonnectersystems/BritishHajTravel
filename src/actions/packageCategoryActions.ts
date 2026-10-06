@@ -112,6 +112,9 @@ export async function updatePackageCategoryAction(
   if (!name) return { success: false, error: 'Category name is required.' };
 
   try {
+    const beforeRows = await db.select().from(packageCategories).where(eq(packageCategories.id, id)).limit(1);
+    const previousEntry = beforeRows[0] || null;
+
     await db
       .update(packageCategories)
       .set({
@@ -124,10 +127,13 @@ export async function updatePackageCategoryAction(
       })
       .where(eq(packageCategories.id, id));
 
+    const afterRows = await db.select().from(packageCategories).where(eq(packageCategories.id, id)).limit(1);
     await logAdminActivityAction({
       type: 'packages',
       action: 'Updated Package Category',
       details: `Package category "${name}" updated`,
+      previousEntry,
+      newEntry: afterRows[0] || null,
     });
 
     revalidatePackageCategoryPaths();

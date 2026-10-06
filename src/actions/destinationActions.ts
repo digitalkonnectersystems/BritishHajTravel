@@ -30,19 +30,10 @@ async function ensureDestinationsTable() {
     package_data json,
     status enum('published','draft') NOT NULL DEFAULT 'published',
     display_order int NOT NULL DEFAULT 0,
+    seo_settings longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
     created_at timestamp DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
   )`);
-  try {
-    await db.execute(sql`ALTER TABLE destinations ADD COLUMN packages_data json AFTER package_ids`);
-  } catch {
-    // The column already exists on databases that have applied the migration.
-  }
-  try {
-    await db.execute(sql`ALTER TABLE destinations ADD COLUMN package_data json AFTER packages_data`);
-  } catch {
-    // The column already exists on databases that have applied the migration.
-  }
 }
 
 export async function getDestinations(includeDrafts = false) {
@@ -127,13 +118,29 @@ export async function saveDestinationAction(data: {
       updatedAt: new Date(),
     } as any;
 
+    const previousEntry = data.id
+      ? (await db.select().from(destinations).where(eq(destinations.id, data.id)).limit(1))[0] || null
+      : null;
+
+    let savedId = data.id;
     if (data.id) {
       await db.update(destinations).set(values).where(eq(destinations.id, data.id));
     } else {
-      await db.insert(destinations).values(values);
+      const result: any = await db.insert(destinations).values(values);
+      savedId = Number(result?.[0]?.insertId || result?.insertId || 0) || undefined;
     }
 
-    await logAdminActivityAction({ type: 'pages', action: data.id ? 'Updated Destination' : 'Created Destination', details: `${data.id ? 'Updated' : 'Created'} destination "${title}"` });
+    const newEntry = savedId
+      ? (await db.select().from(destinations).where(eq(destinations.id, savedId)).limit(1))[0] || values
+      : values;
+
+    await logAdminActivityAction({
+      type: 'destinations',
+      action: data.id ? 'Updated Destination' : 'Created Destination',
+      details: `${data.id ? 'Updated' : 'Created'} destination "${title}"`,
+      previousEntry,
+      newEntry,
+    });
     revalidatePath('/destinations');
     revalidatePath(`/destinations/${slug}`);
     revalidatePath('/', 'layout');
@@ -155,7 +162,15 @@ export async function saveDestinationAction(data: {
 export async function deleteDestinationAction(id: number) {
   try {
     await ensureDestinationsTable();
+    const previousEntry = (await db.select().from(destinations).where(eq(destinations.id, id)).limit(1))[0] || null;
     await db.delete(destinations).where(eq(destinations.id, id));
+    await logAdminActivityAction({
+      type: 'destinations',
+      action: 'Deleted Destination',
+      details: `Deleted destination ${previousEntry?.title || `#${id}`}`,
+      previousEntry,
+      newEntry: null,
+    });
     revalidatePath('/destinations');
     revalidatePath('/', 'layout');
     revalidateTag('nav-items', 'max');

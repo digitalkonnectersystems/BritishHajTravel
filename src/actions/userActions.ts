@@ -278,13 +278,22 @@ export async function updateUserAction(
       updateObj.passwordHash = hashPassword(data.password.trim());
     }
 
-    await db.update(users).set(updateObj).where(eq(users.id, id));
+    const beforeRows = await db.select().from(users).where(eq(users.id, id)).limit(1);
+    const sanitizeUserAudit = (row: any) => row ? ({
+      id: row.id, name: row.name, email: row.email, role: row.role, active: row.active,
+      badgeBg: row.badgeBg, badgeTextColor: row.badgeTextColor
+    }) : null;
+    const previousEntry = sanitizeUserAudit(beforeRows[0]);
 
-    // Log Activity
+    await db.update(users).set(updateObj).where(eq(users.id, id));
+    const afterRows = await db.select().from(users).where(eq(users.id, id)).limit(1);
+
     await logAdminActivityAction({
       type: 'users',
       action: 'Updated User Account',
       details: `Updated "${updateObj.name}" (${updateObj.role}) - Active: ${updateObj.active ? 'Yes' : 'No'}`,
+      previousEntry,
+      newEntry: sanitizeUserAudit(afterRows[0]),
     });
 
     revalidatePath('/admin/settings');

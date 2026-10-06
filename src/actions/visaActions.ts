@@ -153,6 +153,9 @@ export async function updateVisaServiceAction(
   }
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    const beforeRows = await db.select().from(visaServices).where(eq(visaServices.id, id)).limit(1);
+    const previousEntry = beforeRows[0] || null;
+
     await db.update(visaServices).set({
       title: data.title,
       shortDescription: data.shortDescription,
@@ -162,11 +165,13 @@ export async function updateVisaServiceAction(
       isPublished: data.isPublished,
     }).where(eq(visaServices.id, id));
 
-    // Log Activity
+    const afterRows = await db.select().from(visaServices).where(eq(visaServices.id, id)).limit(1);
     await logAdminActivityAction({
       type: 'visas',
       action: 'Updated Visa Service',
       details: `Updated visa service "${data.title}" (ID #${id})`,
+      previousEntry,
+      newEntry: afterRows[0] || null,
     });
 
     revalidatePath('/admin/visas');

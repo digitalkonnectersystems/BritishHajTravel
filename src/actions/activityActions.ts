@@ -8,6 +8,12 @@ import { headers } from 'next/headers';
 import { getCurrentSession } from '@/lib/auth';
 import { formatRelativeTime } from '@/lib/formatTime';
 
+export interface ActivityChange {
+  field: string;
+  before: unknown;
+  after: unknown;
+}
+
 export interface ActivityItem {
   id: string | number;
   type: 'pages' | 'users' | 'packages' | 'visas' | 'settings' | 'enquiries' | 'menus' | 'blogs' | 'auth' | string;
@@ -21,6 +27,7 @@ export interface ActivityItem {
   ipAddress?: string | null;
   previousEntry?: unknown;
   newEntry?: unknown;
+  changes?: ActivityChange[];
   timestamp: string;
   timeAgo?: string;
 }
@@ -57,6 +64,51 @@ function safeParse(value: string | null | undefined): any {
   } catch {
     return value;
   }
+}
+
+
+function valuesEqual(a: unknown, b: unknown): boolean {
+  if (a === b) return true;
+  try {
+    return JSON.stringify(a) === JSON.stringify(b);
+  } catch {
+    return false;
+  }
+}
+
+function buildActivityChanges(before: unknown, after: unknown, prefix = ''): ActivityChange[] {
+  if (valuesEqual(before, after)) return [];
+
+  const beforeIsObject = before !== null && typeof before === 'object' && !Array.isArray(before);
+  const afterIsObject = after !== null && typeof after === 'object' && !Array.isArray(after);
+
+  if (beforeIsObject || afterIsObject) {
+    const beforeObj = beforeIsObject ? (before as Record<string, unknown>) : {};
+    const afterObj = afterIsObject ? (after as Record<string, unknown>) : {};
+    const keys = Array.from(new Set([...Object.keys(beforeObj), ...Object.keys(afterObj)])).sort();
+    const changes: ActivityChange[] = [];
+
+    for (const key of keys) {
+      // updatedAt/createdAt change automatically and are noise in an audit diff.
+      if (key === 'updatedAt' || key === 'updated_at' || key === 'createdAt' || key === 'created_at') continue;
+      const field = prefix ? `${prefix}.${key}` : key;
+      const left = beforeObj[key];
+      const right = afterObj[key];
+
+      if (valuesEqual(left, right)) continue;
+
+      const leftNested = left !== null && typeof left === 'object' && !Array.isArray(left);
+      const rightNested = right !== null && typeof right === 'object' && !Array.isArray(right);
+      if (leftNested || rightNested) {
+        changes.push(...buildActivityChanges(left, right, field));
+      } else {
+        changes.push({ field, before: left ?? null, after: right ?? null });
+      }
+    }
+    return changes;
+  }
+
+  return [{ field: prefix || 'value', before: before ?? null, after: after ?? null }];
 }
 
 async function getRequestIp(): Promise<string | null> {
@@ -114,28 +166,33 @@ export async function getRecentActivities(limit: number = 100): Promise<Activity
     }
 
     return rows.map((row) => {
-      const newEntry = safeParse(row.newEntry);
+      const storedNewEntry = safeParse(row.newEntry);
       const previousEntry = safeParse(row.previousEntry);
+      const currentEntry = storedNewEntry && typeof storedNewEntry === 'object' && 'entry' in storedNewEntry
+        ? storedNewEntry.entry
+        : storedNewEntry;
       const userMeta = row.userId ? userMap.get(row.userId) : undefined;
       const timestamp = row.createdAt ? new Date(row.createdAt).toISOString() : new Date().toISOString();
+      const changes = buildActivityChanges(previousEntry, currentEntry);
 
       return {
         id: row.id,
-        type: newEntry?.type || 'settings',
+        type: storedNewEntry?.type || 'settings',
         action: row.name,
         status: row.status,
-        user: newEntry?.user || userMeta?.name || 'Administrator',
-        userEmail: newEntry?.userEmail || userMeta?.email || undefined,
-        badgeBg: newEntry?.badgeBg || userMeta?.badgeBg,
-        badgeTextColor: newEntry?.badgeTextColor || userMeta?.badgeTextColor,
-        details: typeof newEntry?.details === 'string'
-          ? newEntry.details
-          : newEntry?.details
-            ? JSON.stringify(newEntry.details)
+        user: storedNewEntry?.user || userMeta?.name || 'Administrator',
+        userEmail: storedNewEntry?.userEmail || userMeta?.email || undefined,
+        badgeBg: storedNewEntry?.badgeBg || userMeta?.badgeBg,
+        badgeTextColor: storedNewEntry?.badgeTextColor || userMeta?.badgeTextColor,
+        details: typeof storedNewEntry?.details === 'string'
+          ? storedNewEntry.details
+          : storedNewEntry?.details
+            ? JSON.stringify(storedNewEntry.details)
             : undefined,
         ipAddress: row.ipAddress,
         previousEntry,
-        newEntry,
+        newEntry: currentEntry,
+        changes,
         timestamp,
         timeAgo: formatRelativeTime(timestamp),
       };

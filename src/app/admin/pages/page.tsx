@@ -6,7 +6,7 @@ import { getPagesList, deletePageAction, updatePageOrderAction, updatePageStatus
 import Link from 'next/link';
 
 import ConfirmModal, { ConfirmModalConfig } from '@/components/ui/ConfirmModal';
-import { Trash2, Pencil, Copy, Check, Sliders } from 'lucide-react';
+import { Trash2, Pencil, Copy, Check, Sliders, Eye } from 'lucide-react';
 import SeoCenterModal from '@/components/admin/SeoCenterModal';
 
 export default function AdminPagesListPage() {
@@ -201,6 +201,17 @@ export default function AdminPagesListPage() {
                   </td>
                   <td className="py-4 px-5 text-right">
                     <div className="inline-flex gap-2 items-center">
+                      {p.slug && p.status === 'published' && (
+                        <Link
+                          href={p.slug.startsWith('/') ? p.slug : `/${p.slug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="Preview public page"
+                          className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-colors"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                        </Link>
+                      )}
                       <button
                         type="button"
                         onClick={() => {

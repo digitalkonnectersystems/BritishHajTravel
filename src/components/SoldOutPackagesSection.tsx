@@ -3,43 +3,35 @@
 import { useEffect, useState } from "react";
 import * as LucideIcons from "lucide-react";
 import DynamicIcon from "@/components/ui/DynamicIcon";
-import { getPackagesByIds, getSoldOutPackages } from "@/actions/packageActions";
+import { getSoldOutPackages } from "@/actions/packageActions";
 
 export default function SoldOutPackagesSection({ data, initialPackages }: { data: any; initialPackages?: any[] }) {
   const eyebrow = data?.eyebrow || "";
   const title = data?.title || "Packages Officially<br />Sold Out";
   const description = data?.description || "";
 
-  const packageIds: number[] = Array.isArray(data?.packageIds)
-    ? data.packageIds.map(Number).filter(Boolean)
-    : [];
-
-  const [pkgs, setPkgs] = useState<any[]>(initialPackages || []);
-  const [loading, setLoading] = useState(!(initialPackages && initialPackages.length > 0));
+  // Sold-out membership is driven only by the package status in the database.
+  // Legacy section.packageIds are intentionally ignored so admins never need to
+  // maintain a second manual list.
+  const hasServerPackages = Array.isArray(initialPackages);
+  const [pkgs, setPkgs] = useState<any[]>(() =>
+    (initialPackages || []).filter((pkg: any) => pkg?.status === 'sold_out')
+  );
+  const [loading, setLoading] = useState(!hasServerPackages);
 
   useEffect(() => {
-    if (initialPackages && initialPackages.length > 0) return;
-
-    if (packageIds.length === 0) {
-      getSoldOutPackages()
-        .then((rows) => setPkgs(rows))
-        .catch(() => setPkgs([]))
-        .finally(() => setLoading(false));
+    if (hasServerPackages) {
+      setPkgs((initialPackages || []).filter((pkg: any) => pkg?.status === 'sold_out'));
+      setLoading(false);
       return;
     }
 
-    getPackagesByIds(packageIds)
-      .then((rows) => {
-        if (rows.length === 0) {
-          // If the hardcoded IDs are deleted/invalid, fallback to all sold out packages
-          return getSoldOutPackages().then(setPkgs);
-        }
-        setPkgs(rows);
-      })
+    setLoading(true);
+    getSoldOutPackages()
+      .then((rows) => setPkgs((rows || []).filter((pkg: any) => pkg?.status === 'sold_out')))
       .catch(() => setPkgs([]))
       .finally(() => setLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.packageIds?.join?.(","), initialPackages]);
+  }, [hasServerPackages, initialPackages]);
 
   if (!loading && pkgs.length === 0) return null;
 

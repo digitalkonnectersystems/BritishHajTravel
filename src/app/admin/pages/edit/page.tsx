@@ -22,7 +22,7 @@ import { getPackageCategories } from '@/actions/packageCategoryActions';
 
 import ConfirmModal, { ConfirmModalConfig } from '@/components/ui/ConfirmModal';
 
-import { Trash2, Upload, Settings, MoveUp, MoveDown, ArrowUp, ArrowDown, GripVertical, ArrowLeft, ArrowRight, Plus, RefreshCw, Image as ImageIcon } from 'lucide-react';
+import { Trash2, Upload, Settings, MoveUp, MoveDown, ArrowUp, ArrowDown, GripVertical, ArrowLeft, ArrowRight, Plus, RefreshCw, Image as ImageIcon, Eye } from 'lucide-react';
 
 import AdminPackageDetailModal from '@/components/admin/AdminPackageDetailModal';
 
@@ -6435,7 +6435,7 @@ function PageBuilderContent() {
 
 
 
-                            {(sec.type === 'Umrah Packages' || sec.type === 'Hajj Packages' || sec.type === 'Umrah Packages Grid' || sec.type === 'Packages Grid' || sec.type === 'Upcoming Umrah Packages' || sec.type === 'Upcoming Hajj Packages' || sec.type === 'Sold Out Packages') && (
+                            {(sec.type === 'Umrah Packages' || sec.type === 'Hajj Packages' || sec.type === 'Umrah Packages Grid' || sec.type === 'Packages Grid' || sec.type === 'Upcoming Umrah Packages' || sec.type === 'Upcoming Hajj Packages') && (
 
                               <div className="bg-white border border-slate-200 rounded-xl p-3.5 flex flex-col gap-3 mt-1">
 
@@ -6701,7 +6701,19 @@ function PageBuilderContent() {
 
                             )}
 
-
+                            {sec.type === 'Sold Out Packages' && (
+                              <div className="mt-1 rounded-xl border border-red-200 bg-red-50 p-4">
+                                <div className="flex items-start gap-3">
+                                  <span className="text-lg">🛑</span>
+                                  <div>
+                                    <div className="text-xs font-extrabold uppercase tracking-wider text-red-800">Automatic Sold-Out Packages</div>
+                                    <p className="mt-1 mb-0 text-[11px] leading-relaxed text-red-700">
+                                      No manual package selection is required. This section automatically shows every package whose package status is <strong>Sold Out</strong>. Change the package status from the Packages admin page to add or remove it here.
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
 
                             {sec.type === 'Services Grid' && (
 
@@ -8912,7 +8924,20 @@ function PageBuilderContent() {
                                         <h3 className="text-xs font-extrabold uppercase tracking-wide text-slate-900">Flight card {fIdx + 1}</h3>
                                         <p className="text-[10px] text-slate-500">Complete the compact fields below</p>
                                       </div>
-                                      <span className="rounded-full bg-blue-100 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-primary">Editable</span>
+                                      <div className="flex items-center gap-2">
+                                        {fl.bookingUrl && (
+                                          <a
+                                            href={fl.bookingUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-white px-2 py-1 text-[10px] font-bold text-blue-700 hover:bg-blue-600 hover:text-white"
+                                            title="Preview flight detail / booking page"
+                                          >
+                                            <Eye className="w-3 h-3" /> Preview
+                                          </a>
+                                        )}
+                                        <span className="rounded-full bg-blue-100 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-primary">Editable</span>
+                                      </div>
                                     </div>
 
                                     <div className="absolute top-2 right-2">
@@ -12190,7 +12215,6 @@ function PageBuilderContent() {
                               </div>
 
                             )}
-
 
 
                             {(sec.type === 'Testimonials') && (

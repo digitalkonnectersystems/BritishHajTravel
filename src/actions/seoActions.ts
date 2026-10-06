@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '@/db';
-import { blogPosts, packages, sitePages, siteSettings, visaServices } from '@/db/schema';
+import { blogPosts, destinations, packages, sitePages, siteSettings, visaServices } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { getCurrentSession } from '@/lib/auth';
@@ -32,10 +32,18 @@ export type SeoAuditItem = {
   metadata: {
     title: string;
     description: string;
+    keywords: string[];
     canonical: string;
-    ogImage: string;
     robotsIndex: boolean;
     robotsFollow: boolean;
+    ogTitle: string;
+    ogDescription: string;
+    ogUrl: string;
+    ogImage: string;
+    twitterCard: string;
+    twitterTitle: string;
+    twitterDescription: string;
+    twitterImage: string;
   };
   seoData: Record<string, any>;
 };
@@ -97,6 +105,10 @@ export async function getEntitySeoAction(entityType: SeoEntityType, rawId: numbe
     const rows = await db.select({ seoSettings: visaServices.seoSettings }).from(visaServices).where(eq(visaServices.id, id)).limit(1);
     return rows.length ? parseSeoSettings(rows[0].seoSettings) : null;
   }
+  if (entityType === 'destination') {
+    const rows = await db.select({ seoSettings: destinations.seoSettings }).from(destinations).where(eq(destinations.id, id)).limit(1);
+    return rows.length ? parseSeoSettings(rows[0].seoSettings) : null;
+  }
   return null;
 }
 
@@ -104,19 +116,21 @@ export async function saveEntitySeoAction(entityType: SeoEntityType, rawId: numb
   try {
     await requireAdminSession();
     const id = toNumberId(rawId);
-    const cleanSeo = {
+    const cleanSeo: Record<string, any> = {
       ...parseSeoSettings(seoData),
       updatedAt: new Date().toISOString(),
     };
 
     let entityTitle = `${entityType} #${id}`;
     let publicPath = '/';
+    let previousSeo: unknown = null;
 
     if (entityType === 'page') {
       const rows = await db.select().from(sitePages).where(eq(sitePages.id, id)).limit(1);
       if (!rows.length) return { success: false, error: 'Page not found.' };
       entityTitle = rows[0].title;
       publicPath = rows[0].slug || '/';
+      previousSeo = parseSeoSettings(rows[0].seoSettings);
       await db.update(sitePages).set({
         metaTitle: cleanSeo.metaTitle || null,
         metaDescription: cleanSeo.metaDescription || null,
@@ -128,25 +142,36 @@ export async function saveEntitySeoAction(entityType: SeoEntityType, rawId: numb
       if (!rows.length) return { success: false, error: 'Package not found.' };
       entityTitle = rows[0].title;
       publicPath = `/package/${rows[0].slug}`;
+      previousSeo = parseSeoSettings(rows[0].seoSettings);
       await db.update(packages).set({ seoSettings: cleanSeo, updatedAt: new Date() }).where(eq(packages.id, id));
     } else if (entityType === 'blog') {
       const rows = await db.select().from(blogPosts).where(eq(blogPosts.id, id)).limit(1);
       if (!rows.length) return { success: false, error: 'Blog not found.' };
       entityTitle = rows[0].title;
       publicPath = `/${rows[0].slug || ''}`;
+      previousSeo = parseSeoSettings(rows[0].seoSettings);
       await db.update(blogPosts).set({ seoSettings: cleanSeo, updatedAt: new Date() }).where(eq(blogPosts.id, id));
     } else if (entityType === 'visa') {
       const rows = await db.select().from(visaServices).where(eq(visaServices.id, id)).limit(1);
       if (!rows.length) return { success: false, error: 'Visa service not found.' };
       entityTitle = rows[0].title;
       publicPath = '/saudi-visa';
+      previousSeo = parseSeoSettings(rows[0].seoSettings);
       await db.update(visaServices).set({ seoSettings: cleanSeo }).where(eq(visaServices.id, id));
+    } else if (entityType === 'destination') {
+      const rows = await db.select().from(destinations).where(eq(destinations.id, id)).limit(1);
+      if (!rows.length) return { success: false, error: 'Destination not found.' };
+      entityTitle = rows[0].title;
+      publicPath = `/destinations/${rows[0].slug}`;
+      previousSeo = parseSeoSettings(rows[0].seoSettings);
+      await db.update(destinations).set({ seoSettings: cleanSeo, updatedAt: new Date() }).where(eq(destinations.id, id));
     }
 
     await logAdminActivityAction({
-      type: entityType === 'package' ? 'packages' : entityType === 'visa' ? 'visas' : entityType === 'blog' ? 'blogs' : 'pages',
+      type: entityType === 'package' ? 'packages' : entityType === 'visa' ? 'visas' : entityType === 'blog' ? 'blogs' : entityType === 'destination' ? 'destinations' : 'pages',
       action: `Updated ${entityType[0].toUpperCase()}${entityType.slice(1)} SEO`,
       details: `SEO metadata updated for ${entityTitle}`,
+      previousEntry: previousSeo,
       newEntry: cleanSeo,
     });
 
@@ -168,7 +193,8 @@ export async function saveEntitySeoAction(entityType: SeoEntityType, rawId: numb
 
 function auditSingleItem(item: Omit<SeoAuditItem, 'score' | 'issues'>): SeoAuditItem {
   const issues: SeoAuditIssue[] = [];
-  const { title, description, canonical, ogImage, robotsIndex } = item.metadata;
+  const m = item.metadata;
+  const { title, description, canonical, robotsIndex, robotsFollow } = m;
 
   if (!title.trim()) issues.push({ code: 'missing_title', severity: 'error', message: 'Missing metadata title.' });
   else if (title.length < 30) issues.push({ code: 'short_title', severity: 'warning', message: `Title is short (${title.length} characters). Aim for about 30-60.` });
@@ -188,24 +214,39 @@ function auditSingleItem(item: Omit<SeoAuditItem, 'score' | 'issues'>): SeoAudit
     }
   }
 
-  if (!ogImage.trim()) issues.push({ code: 'missing_og_image', severity: 'warning', message: 'Missing Open Graph image.' });
+  if (!m.ogTitle.trim()) issues.push({ code: 'missing_og_title', severity: 'warning', message: 'Missing Open Graph title.' });
+  if (!m.ogDescription.trim()) issues.push({ code: 'missing_og_description', severity: 'warning', message: 'Missing Open Graph description.' });
+  if (!m.ogUrl.trim()) issues.push({ code: 'missing_og_url', severity: 'warning', message: 'Missing Open Graph URL.' });
+  if (!m.ogImage.trim()) issues.push({ code: 'missing_og_image', severity: 'warning', message: 'Missing Open Graph image.' });
+
+  if (!m.twitterCard.trim()) issues.push({ code: 'missing_twitter_card', severity: 'warning', message: 'Missing Twitter/X card type.' });
+  if (!m.twitterTitle.trim()) issues.push({ code: 'missing_twitter_title', severity: 'warning', message: 'Missing Twitter/X title.' });
+  if (!m.twitterDescription.trim()) issues.push({ code: 'missing_twitter_description', severity: 'warning', message: 'Missing Twitter/X description.' });
+  if (!m.twitterImage.trim()) issues.push({ code: 'missing_twitter_image', severity: 'warning', message: 'Missing Twitter/X image.' });
+
   if (!robotsIndex && item.status === 'published') issues.push({ code: 'published_noindex', severity: 'warning', message: 'Published content is set to noindex.' });
+  if (!robotsFollow && item.status === 'published') issues.push({ code: 'published_nofollow', severity: 'warning', message: 'Published content is set to nofollow.' });
+
+  // Meta keywords are surfaced for completeness because the admin explicitly manages
+  // them, but absence is informational only; modern search ranking does not require them.
+  if (m.keywords.length === 0) issues.push({ code: 'meta_keywords_empty', severity: 'info', message: 'No meta keywords are configured (optional).' });
 
   const seo = item.seoData || {};
   if (!seo.schemaType && !seo.jsonLdPayload) issues.push({ code: 'schema_missing', severity: 'info', message: 'No custom schema type/JSON-LD is configured.' });
   if (!seo.heroAlt) issues.push({ code: 'hero_alt_missing', severity: 'info', message: 'Hero image alt text is not configured in SEO Center.' });
 
-  const score = Math.max(0, 100 - issues.reduce((total, issue) => total + (issue.severity === 'error' ? 22 : issue.severity === 'warning' ? 10 : 4), 0));
+  const score = Math.max(0, 100 - issues.reduce((total, issue) => total + (issue.severity === 'error' ? 22 : issue.severity === 'warning' ? 8 : 2), 0));
   return { ...item, issues, score };
 }
 
 export async function getSeoAuditReportAction(): Promise<SeoAuditItem[]> {
   await requireAdminSession();
 
-  const [pageRows, packageRows, blogRows] = await Promise.all([
+  const [pageRows, packageRows, blogRows, destinationRows] = await Promise.all([
     db.select().from(sitePages),
     db.select().from(packages),
     db.select().from(blogPosts),
+    db.select().from(destinations),
   ]);
 
   const items: SeoAuditItem[] = [];
@@ -262,7 +303,29 @@ export async function getSeoAuditReportAction(): Promise<SeoAuditItem[]> {
     }));
   }
 
-  const appendDuplicateIssue = (field: 'title' | 'description', code: string, label: string) => {
+  // Destination detail URLs without a dedicated CMS page use destination SEO directly.
+  // If a CMS page exists for the same URL, audit only that page to avoid double-counting.
+  const cmsRoutes = new Set(pageRows.map((row) => String(row.slug || '/').replace(/\/+$/, '') || '/'));
+  for (const row of destinationRows) {
+    const route = `/destinations/${row.slug}`;
+    if (cmsRoutes.has(route)) continue;
+    const seoData = parseSeoSettings(row.seoSettings);
+    const entity = { ...row, seoData };
+    const metadata = metadataSnapshot(buildEntityMetadata('destination', entity));
+    items.push(auditSingleItem({
+      key: `destination:${row.id}`,
+      entityType: 'destination',
+      entityId: row.id,
+      title: row.title,
+      slug: row.slug,
+      route,
+      status: row.status,
+      metadata,
+      seoData,
+    }));
+  }
+
+  const appendDuplicateIssue = (field: 'title' | 'description' | 'canonical', code: string, label: string) => {
     const groups = new Map<string, SeoAuditItem[]>();
     for (const item of items) {
       const value = item.metadata[field].trim().toLowerCase();
@@ -283,6 +346,7 @@ export async function getSeoAuditReportAction(): Promise<SeoAuditItem[]> {
 
   appendDuplicateIssue('title', 'duplicate_title', 'Metadata title');
   appendDuplicateIssue('description', 'duplicate_description', 'Meta description');
+  appendDuplicateIssue('canonical', 'duplicate_canonical', 'Canonical URL');
 
   return items.sort((a, b) => a.score - b.score || a.route.localeCompare(b.route));
 }

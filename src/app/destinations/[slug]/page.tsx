@@ -15,6 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: destination?.title || 'Destination',
     metaDescription: destination?.description || undefined,
     bannerBgImage: Array.isArray(destination?.bannerImages) ? destination.bannerImages[0] : undefined,
+    seoSettings: destination?.seoSettings,
   }, `/destinations/${slug}`);
 }
 

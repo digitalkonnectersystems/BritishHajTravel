@@ -12,7 +12,7 @@ import {
   PackageCategoryWithCount,
 } from '@/actions/packageCategoryActions';
 import ConfirmModal, { ConfirmModalConfig } from '@/components/ui/ConfirmModal';
-import { Trash2, Edit2, Plus, Sparkles, Sliders, X, BookOpen, Hotel, Plane, GripVertical, Utensils, Tags, ChevronUp, ChevronDown, Pencil, Check } from 'lucide-react';
+import { Trash2, Edit2, Plus, Sparkles, Sliders, X, BookOpen, Hotel, Plane, GripVertical, Utensils, Tags, ChevronUp, ChevronDown, Pencil, Check, Eye } from 'lucide-react';
 import SeoCenterModal from '@/components/admin/SeoCenterModal';
 import ImageUploadWidget from '@/components/admin/ImageUploadWidget';
 import DetailPageDataFields from '@/components/admin/DetailPageDataFields';
@@ -1288,6 +1288,17 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
                       </td>
                       <td className="py-3.5 px-4 text-right">
                         <div className="flex items-center justify-end gap-1.5">
+                          {pkg.slug && pkg.status !== 'draft' && (
+                            <Link
+                              href={`/package/${pkg.slug}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              title="Preview public package detail"
+                              className="w-7 h-7 rounded-full bg-blue-50 hover:bg-blue-600 text-blue-600 hover:text-white flex items-center justify-center transition-all"
+                            >
+                              <Eye className="w-3.5 h-3.5" />
+                            </Link>
+                          )}
                           <button
                             type="button"
                             onClick={() => setSelectedSeoPkg(pkg)}

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import PageSectionsRenderer from "@/components/PageSectionsRenderer";
 import { getPageBySlug } from "@/actions/pageActions";
 import { getLatestBlogs } from "@/actions/blogActions";
+import { getSoldOutPackages } from "@/actions/packageActions";
 import { buildPageMetadata } from "@/lib/seoMetadata";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -28,10 +29,18 @@ export default async function Home() {
     } catch {}
   }
 
+  const hasSoldOut = dynamicSections.some((sec: any) => sec?.type === "Sold Out Packages");
+  const soldOutPackages = hasSoldOut ? await getSoldOutPackages() : [];
+
   return (
     <main>
       {/* ================= DYNAMIC SECTIONS ================= */}
-      <PageSectionsRenderer sections={dynamicSections} pageData={pageData} initialBlogData={blogs} />
+      <PageSectionsRenderer
+        sections={dynamicSections}
+        pageData={pageData}
+        initialBlogData={blogs}
+        initialPackageData={{ soldOut: hasSoldOut ? soldOutPackages : undefined }}
+      />
     </main>
   );
 }

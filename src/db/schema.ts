@@ -112,6 +112,7 @@ export const destinations = mysqlTable('destinations', {
   packageData: json('package_data'),
   status: mysqlEnum('status', ['published', 'draft']).notNull().default('published'),
   displayOrder: int('display_order').notNull().default(0),
+  seoSettings: json('seo_settings'),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow().onUpdateNow(),
 });
@@ -201,6 +202,13 @@ export const enquiries = mysqlTable('enquiries', {
     .default('new'),
   internalNotes: text('internal_notes'),
   assignedStaff: varchar('assigned_staff', { length: 255 }),
+  sourceForm: varchar('source_form', { length: 255 }),
+  emailTo: text('email_to'),
+  emailCc: text('email_cc'),
+  emailBcc: text('email_bcc'),
+  emailSubject: varchar('email_subject', { length: 500 }),
+  emailHtml: text('email_html'),
+  emailDeliveryStatus: varchar('email_delivery_status', { length: 32 }),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow().onUpdateNow(),
 });

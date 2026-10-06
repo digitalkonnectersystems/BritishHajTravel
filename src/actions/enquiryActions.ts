@@ -4,8 +4,26 @@ import { db } from '@/db';
 import { enquiries, quoteEnquiries, packageBookingEnquiries, contactEnquiries, visaEnquiries, flightEnquiries } from '@/db/schema';
 import { eq, desc, inArray } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
-import { dispatchFormEmails } from '@/lib/emailService';
+import { dispatchFormEmails, type FormEmailAudit } from '@/lib/emailService';
 import { logAdminActivityAction } from '@/actions/activityActions';
+
+async function saveEnquiryEmailAudit(enquiryNumber: string, audit?: FormEmailAudit) {
+  if (!audit) return;
+  try {
+    await db.update(enquiries).set({
+      sourceForm: audit.formName,
+      emailTo: audit.to.join(', '),
+      emailCc: audit.cc.join(', '),
+      emailBcc: audit.bcc.join(', '),
+      emailSubject: audit.subject,
+      emailHtml: audit.html,
+      emailDeliveryStatus: audit.status,
+      updatedAt: new Date(),
+    }).where(eq(enquiries.enquiryNumber, enquiryNumber));
+  } catch (error) {
+    console.error('Failed to save enquiry email audit snapshot:', error);
+  }
+}
 
 export async function submitQuoteEnquiryAction(data: {
   fullName: string;
@@ -63,6 +81,7 @@ export async function submitQuoteEnquiryAction(data: {
         message,
       }
     );
+    await saveEnquiryEmailAudit(enquiryNumber, emailResult.audit);
 
     revalidatePath('/admin/enquiries');
     revalidatePath('/admin/dashboard');
@@ -167,6 +186,7 @@ export async function submitPackageBookingEnquiryAction(data: {
         message,
       }
     );
+    await saveEnquiryEmailAudit(bookingNumber, emailResult.audit);
 
     revalidatePath('/admin/enquiries');
     revalidatePath('/admin/dashboard');
@@ -234,6 +254,7 @@ export async function submitContactEnquiryAction(data: {
       website,
       message,
     });
+    await saveEnquiryEmailAudit(ticketNumber, emailResult.audit);
 
     revalidatePath('/admin/enquiries');
     revalidatePath('/admin/dashboard');
@@ -316,6 +337,7 @@ export async function submitVisaEnquiryAction(data: {
       nationality,
       message,
     });
+    await saveEnquiryEmailAudit(enquiryNumber, emailResult.audit);
 
     revalidatePath('/admin/enquiries');
     revalidatePath('/admin/dashboard');
@@ -459,6 +481,7 @@ export async function submitFlightInquiry(data: {
       flightClass,
       message,
     });
+    await saveEnquiryEmailAudit(enquiryNumber, emailResult.audit);
 
     revalidatePath('/admin/enquiries');
     revalidatePath('/admin/dashboard');

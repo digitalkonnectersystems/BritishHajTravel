@@ -32,11 +32,11 @@ export function dedupeRecipientChannels(to: unknown, cc: unknown, bcc: unknown) 
     return result;
   };
 
-  // Precedence is intentional: TO, then BCC, then CC.
+  // Precedence is intentional: TO, then CC, then BCC.
   // A mailbox receives one admin copy even if entered in multiple fields.
   const uniqueTo = take(to);
-  const uniqueBcc = take(bcc);
   const uniqueCc = take(cc);
+  const uniqueBcc = take(bcc);
   return { to: uniqueTo, cc: uniqueCc, bcc: uniqueBcc };
 }
 

@@ -59,6 +59,7 @@ export default function SeoCenterModal({
   // Form State
   const [metaTitle, setMetaTitle] = useState('');
   const [metaDescription, setMetaDescription] = useState('');
+  const [metaKeywords, setMetaKeywords] = useState('');
   const [heroAlt, setHeroAlt] = useState('');
   const [ogCardAlt, setOgCardAlt] = useState('');
   const [geoSummary, setGeoSummary] = useState('');
@@ -68,6 +69,7 @@ export default function SeoCenterModal({
   const [jsonLdPayload, setJsonLdPayload] = useState('');
   const [canonicalUrl, setCanonicalUrl] = useState('');
   const [noIndex, setNoIndex] = useState(false);
+  const [noFollow, setNoFollow] = useState(false);
   const [ogImageUrl, setOgImageUrl] = useState('');
 
   // Preview Mode
@@ -159,6 +161,7 @@ export default function SeoCenterModal({
 
       setMetaTitle(existingSeo.metaTitle || pageData.metaTitle || generateOptimalTitle(pageTitle));
       setMetaDescription(existingSeo.metaDescription || pageData.metaDescription || generateOptimalDescription(pageTitle));
+      setMetaKeywords(Array.isArray(existingSeo.metaKeywords) ? existingSeo.metaKeywords.join(', ') : (existingSeo.metaKeywords || existingSeo.keywords || ''));
       setHeroAlt(existingSeo.heroAlt || `Official visual illustration and hero presentation for ${pageTitle} at British Hajj Travel UK`);
       setOgCardAlt(existingSeo.ogCardAlt || `Official social share card banner for ${pageTitle} at British Hajj Travel UK`);
       setGeoSummary(existingSeo.geoSummary || `Comprehensive official overview of ${pageTitle} services, Umrah packages, hotel reservations, and visa processing presented by British Hajj Travel UK.`);
@@ -185,6 +188,7 @@ export default function SeoCenterModal({
       );
       setCanonicalUrl(existingSeo.canonicalUrl || `https://britishhajjtravel.com${cleanSlug}`);
       setNoIndex(Boolean(existingSeo.noIndex));
+      setNoFollow(Boolean(existingSeo.noFollow));
       setOgImageUrl(existingSeo.ogImageUrl || pageData.bannerBgImage || '');
     };
 
@@ -413,6 +417,7 @@ export default function SeoCenterModal({
     const seoPayload = {
       metaTitle,
       metaDescription,
+      metaKeywords,
       heroAlt,
       ogCardAlt,
       geoSummary,
@@ -422,6 +427,7 @@ export default function SeoCenterModal({
       jsonLdPayload,
       canonicalUrl,
       noIndex,
+      noFollow,
       ogImageUrl,
       updatedAt: new Date().toISOString(),
     };
@@ -680,6 +686,19 @@ export default function SeoCenterModal({
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs text-slate-800 font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                     placeholder="Enter meta description..."
                   />
+                </div>
+
+                {/* Meta Keywords (optional, retained for engines/tools that still consume them) */}
+                <div>
+                  <label className="block text-xs font-extrabold text-slate-700 mb-1">Meta Keywords <span className="font-medium text-slate-400">(optional)</span></label>
+                  <textarea
+                    rows={2}
+                    value={metaKeywords}
+                    onChange={(e) => setMetaKeywords(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs text-slate-800 font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                    placeholder="hajj packages, umrah packages, saudi visa"
+                  />
+                  <p className="mt-1 mb-0 text-[10px] text-slate-400">Comma-separated. This does not replace the title or description and is not required for Google ranking.</p>
                 </div>
               </div>
             </section>
@@ -961,17 +980,31 @@ export default function SeoCenterModal({
 
                 <div>
                   <label className="block text-xs font-extrabold text-slate-700 mb-1">Robots Meta</label>
-                  <div className="flex items-center gap-3 pt-1.5">
-                    <input
-                      type="checkbox"
-                      id="noindex-toggle"
-                      checked={noIndex}
-                      onChange={(e) => setNoIndex(e.target.checked)}
-                      className="w-4 h-4 rounded text-primary focus:ring-primary"
-                    />
-                    <label htmlFor="noindex-toggle" className="text-xs font-semibold text-slate-700 cursor-pointer">
-                      Prevent search engines from indexing (noindex)
-                    </label>
+                  <div className="space-y-2 pt-1.5">
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="checkbox"
+                        id="noindex-toggle"
+                        checked={noIndex}
+                        onChange={(e) => setNoIndex(e.target.checked)}
+                        className="w-4 h-4 rounded text-primary focus:ring-primary"
+                      />
+                      <label htmlFor="noindex-toggle" className="text-xs font-semibold text-slate-700 cursor-pointer">
+                        Prevent search engines from indexing (noindex)
+                      </label>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="checkbox"
+                        id="nofollow-toggle"
+                        checked={noFollow}
+                        onChange={(e) => setNoFollow(e.target.checked)}
+                        className="w-4 h-4 rounded text-primary focus:ring-primary"
+                      />
+                      <label htmlFor="nofollow-toggle" className="text-xs font-semibold text-slate-700 cursor-pointer">
+                        Prevent crawlers from following links (nofollow)
+                      </label>
+                    </div>
                   </div>
                 </div>
               </div>

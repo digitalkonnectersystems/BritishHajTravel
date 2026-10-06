@@ -115,8 +115,6 @@ export default async function RootLayout({
   const faviconUrl = identity?.favicon || "/img/favicon.ico";
   const initialMaintenanceMode = loginAuth?.maintenanceMode ?? false;
 
-  const isIndexingEnabled = seoSettings?.siteIndexingEnabled ?? true;
-  const gscCode = (seoSettings?.googleSearchConsoleCode || "").trim();
   const gaId = (seoSettings?.googleAnalyticsId || "").trim();
   const isGaActive = (seoSettings?.googleAnalyticsEnabled ?? true) && gaId.length > 0;
 
@@ -131,16 +129,6 @@ export default async function RootLayout({
         <link rel="shortcut icon" href={faviconUrl} />
         <link rel="apple-touch-icon" href={faviconUrl} />
         <FontAwesomeStylesheet />
-        {/* Global Robots Indexing Directive if disabled */}
-        {!isIndexingEnabled && (
-          <meta name="robots" content="noindex, nofollow" />
-        )}
-
-        {/* Google Search Console HTML Verification */}
-        {gscCode && (
-          <meta name="google-site-verification" content={gscCode} />
-        )}
-
         {/* Google Analytics 4 (GA4) Tracking Script */}
         {isGaActive && (
           <>

@@ -318,6 +318,8 @@ export async function saveBlogAction(data: BlogSavePayload) {
 
   try {
     if (id) {
+      const beforeRows = await db.select().from(blogPosts).where(eq(blogPosts.id, id)).limit(1);
+      const previousEntry = beforeRows[0] || null;
       const updateData: any = {
         title,
         slug,
@@ -332,12 +334,14 @@ export async function saveBlogAction(data: BlogSavePayload) {
       updateData.publishedAt = parsedPublishedAt;
 
       await db.update(blogPosts).set(updateData).where(eq(blogPosts.id, id));
+      const afterRows = await db.select().from(blogPosts).where(eq(blogPosts.id, id)).limit(1);
 
-      // Log Activity
       await logAdminActivityAction({
-        type: 'pages',
+        type: 'blogs',
         action: 'Updated Blog Post',
         details: `Article: "${title}" (${category})`,
+        previousEntry,
+        newEntry: afterRows[0] || null,
       });
 
       revalidatePath('/blogs');

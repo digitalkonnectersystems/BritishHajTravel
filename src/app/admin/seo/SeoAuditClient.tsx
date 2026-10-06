@@ -44,7 +44,7 @@ export default function SeoAuditClient({ initialReport }: { initialReport: SeoAu
         <div>
           <h1 className="m-0 text-2xl font-extrabold text-slate-900">SEO Center</h1>
           <p className="mt-1 text-xs text-slate-500">
-            Audits the same Next.js Metadata API output used by public CMS pages, packages and blogs. Fixes are stored on the selected entity without changing public routes or page structure.
+            Audits the same Next.js Metadata API output used by public CMS pages, packages, destinations and blogs, including canonical, robots, Open Graph and Twitter/X tags. Fixes are stored on the selected entity without changing public routes or page structure.
           </p>
         </div>
         <button
@@ -80,6 +80,7 @@ export default function SeoAuditClient({ initialReport }: { initialReport: SeoAu
           <option value="page">CMS pages</option>
           <option value="package">Packages</option>
           <option value="blog">Blogs</option>
+          <option value="destination">Destinations</option>
         </select>
         <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className="rounded-xl border border-slate-200 px-3 py-2 text-xs font-bold text-slate-700">
           <option value="all">All audit states</option>

@@ -1325,10 +1325,17 @@ const DEFAULT_EMAIL_CONFIGS: any = {
   formCcRoutes: {},
   formBccRoutes: {},
   formRoutingRules: [
-    { id: 'rule_1', forms: ['quoteForm', 'hajjCustomizeForm', 'contact', 'dropUsMessage'], sendTo: 'saudivisa@britishhajjtravel.com', cc: '', bcc: '' },
-    { id: 'rule_2', forms: ['packageDetailForm', 'hajjPackageDetailForm', 'packageInquiry', 'blogSidebarForm'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
-    { id: 'rule_3', forms: ['visaConsultation', 'umrahVisaOrder'], sendTo: 'visas@britishhajjtravel.com', cc: '', bcc: '' },
-    { id: 'rule_4', forms: ['flightInquiry'], sendTo: 'flights@britishhajjtravel.com', cc: '', bcc: '' },
+    { id: 'form_quoteForm', forms: ['quoteForm'], sendTo: 'saudivisa@britishhajjtravel.com', cc: '', bcc: '' },
+    { id: 'form_packageDetailForm', forms: ['packageDetailForm'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
+    { id: 'form_hajjPackageDetailForm', forms: ['hajjPackageDetailForm'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
+    { id: 'form_hajjCustomizeForm', forms: ['hajjCustomizeForm'], sendTo: 'saudivisa@britishhajjtravel.com', cc: '', bcc: '' },
+    { id: 'form_contact', forms: ['contact'], sendTo: 'saudivisa@britishhajjtravel.com', cc: '', bcc: '' },
+    { id: 'form_packageInquiry', forms: ['packageInquiry'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
+    { id: 'form_visaConsultation', forms: ['visaConsultation'], sendTo: 'visas@britishhajjtravel.com', cc: '', bcc: '' },
+    { id: 'form_umrahVisaOrder', forms: ['umrahVisaOrder'], sendTo: 'visas@britishhajjtravel.com', cc: '', bcc: '' },
+    { id: 'form_flightInquiry', forms: ['flightInquiry'], sendTo: 'flights@britishhajjtravel.com', cc: '', bcc: '' },
+    { id: 'form_dropUsMessage', forms: ['dropUsMessage'], sendTo: 'saudivisa@britishhajjtravel.com', cc: '', bcc: '' },
+    { id: 'form_blogSidebarForm', forms: ['blogSidebarForm'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
   ],
 };
 
@@ -1360,17 +1367,32 @@ export async function getFormsSettings() {
         });
 
         const rawRules = parsed.emailConfigs?.formRoutingRules || DEFAULT_EMAIL_CONFIGS.formRoutingRules;
-        const normalizedRules = (rawRules || []).map((r: any) => ({
-          id: r.id || `rule_${Date.now()}`,
-          forms: r.forms || [],
-          sendTo: r.sendTo || '',
-          cc: r.cc || '',
-          bcc: r.bcc || '',
-        }));
+        const normalizedRules: any[] = [];
+        for (const rule of rawRules || []) {
+          const recipients = dedupeRecipientChannels(rule?.sendTo || '', rule?.cc || '', rule?.bcc || '');
+          const forms = Array.isArray(rule?.forms) ? Array.from(new Set(rule.forms.filter(Boolean))) : [];
+          for (const form of forms) {
+            normalizedRules.push({
+              id: `form_${form}`,
+              forms: [form],
+              sendTo: recipients.to.join(', '),
+              cc: recipients.cc.join(', '),
+              bcc: recipients.bcc.join(', '),
+            });
+          }
+        }
 
-        const visaRule = normalizedRules.find((rule: any) => rule.forms.includes('visaConsultation'));
-        if (visaRule && !visaRule.forms.includes('umrahVisaOrder')) {
-          visaRule.forms.push('umrahVisaOrder');
+        // Guarantee every configured form has its own independent routing rule.
+        for (const form of Object.keys(mergedFormsData)) {
+          if (normalizedRules.some((rule: any) => rule.forms[0] === form)) continue;
+          const defaultRule = DEFAULT_EMAIL_CONFIGS.formRoutingRules.find((rule: any) => rule.forms.includes(form));
+          normalizedRules.push({
+            id: `form_${form}`,
+            forms: [form],
+            sendTo: defaultRule?.sendTo || mergedFormsData[form]?.recipientEmail || DEFAULT_EMAIL_CONFIGS.sendToEmail,
+            cc: defaultRule?.cc || '',
+            bcc: defaultRule?.bcc || '',
+          });
         }
 
         const mergedEmailConfigs = {
@@ -1462,14 +1484,16 @@ export async function saveFormsSettingsAction(settingsData: any) {
     }
 
     const recipients = dedupeRecipientChannels(rule.sendTo || '', rule.cc || '', rule.bcc || '');
-    normalizedRules.push({
-      ...rule,
-      id,
-      forms,
-      sendTo: recipients.to.join(', '),
-      cc: recipients.cc.join(', '),
-      bcc: recipients.bcc.join(', '),
-    });
+    for (const form of forms) {
+      normalizedRules.push({
+        ...rule,
+        id: `form_${form}`,
+        forms: [form],
+        sendTo: recipients.to.join(', '),
+        cc: recipients.cc.join(', '),
+        bcc: recipients.bcc.join(', '),
+      });
+    }
   }
   emailConfigs.formRoutingRules = normalizedRules;
   nextSettings.emailConfigs = emailConfigs;
@@ -1477,6 +1501,10 @@ export async function saveFormsSettingsAction(settingsData: any) {
   try {
     const json = JSON.stringify(nextSettings);
     const existing = await db.select().from(siteSettings).where(eq(siteSettings.key, 'forms_settings')).limit(1);
+    let previousSettings: any = null;
+    if (existing?.[0]?.value) {
+      try { previousSettings = JSON.parse(existing[0].value); } catch { previousSettings = null; }
+    }
     if (existing && existing.length > 0) {
       await db.update(siteSettings).set({ value: json, updatedAt: new Date() }).where(eq(siteSettings.key, 'forms_settings'));
     } else {
@@ -1484,11 +1512,23 @@ export async function saveFormsSettingsAction(settingsData: any) {
     }
 
     formsSettingsMemoryCache = nextSettings;
+    const auditSafeEmailConfigs = (value: any) => {
+      const clone = { ...(value || {}) };
+      if ('smtpPassword' in clone) clone.smtpPassword = clone.smtpPassword ? '[REDACTED]' : '';
+      return clone;
+    };
     await logAdminActivityAction({
       type: 'settings',
       action: 'Updated Form Settings',
-      details: 'CRM enquiry, email routing and form templates saved',
-      newEntry: { emailConfigs: nextSettings.emailConfigs, emailTemplateKeys: Object.keys(nextSettings.emailTemplates || {}) },
+      details: 'CRM enquiry, per-form email routing and form templates saved',
+      previousEntry: previousSettings ? {
+        emailConfigs: auditSafeEmailConfigs(previousSettings.emailConfigs),
+        emailTemplateKeys: Object.keys(previousSettings.emailTemplates || {}),
+      } : null,
+      newEntry: {
+        emailConfigs: auditSafeEmailConfigs(nextSettings.emailConfigs),
+        emailTemplateKeys: Object.keys(nextSettings.emailTemplates || {}),
+      },
     });
 
     revalidatePath('/', 'layout');

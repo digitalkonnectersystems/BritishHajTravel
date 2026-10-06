@@ -67,6 +67,7 @@ export default function PackageDetailPageClient({
         infants: parseInt(infantsCount, 10),
         startDate: selectedDate,
         totalPrice: estimatedTotalFormatted ? `${currencyCode} ${estimatedTotalFormatted}` : String(pkg?.startingPrice ?? pkg?.price ?? ""),
+        sourceFormName: pkg?.type === 'hajj' ? 'Hajj Package Booking Form' : 'Umrah Package Booking Form',
       });
 
       if (res.success) {

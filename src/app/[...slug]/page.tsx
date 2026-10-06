@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getGuidesList, getPageBySlug } from "@/actions/pageActions";
-import { getPackagesByType } from "@/actions/packageActions";
+import { getPackagesByType, getSoldOutPackages } from "@/actions/packageActions";
 import PageBanner from "@/components/PageBanner";
 import PageSectionsRenderer from "@/components/PageSectionsRenderer";
 import { getPackageBySlug } from "@/actions/packageActions";
@@ -82,10 +82,10 @@ export default async function DynamicPage({
   // This avoids extra DB work on ordinary CMS pages while removing the
   // post-hydration package fetch/skeleton on package-heavy pages.
   const hasSoldOut = sections.some((sec: any) => sec?.type === "Sold Out Packages");
-  const needsUmrah = hasSoldOut || sections.some((sec: any) =>
+  const needsUmrah = sections.some((sec: any) =>
     ["Upcoming Umrah Packages", "Umrah Packages", "Umrah Packages Grid"].includes(sec?.type)
   );
-  const needsHajj = hasSoldOut || sections.some((sec: any) =>
+  const needsHajj = sections.some((sec: any) =>
     ["Hajj Packages", "Packages Grid"].includes(sec?.type)
   );
   const isGalleryPage = sections.some((sec: any) => sec?.type === "Gallery");
@@ -94,9 +94,10 @@ export default async function DynamicPage({
     ? (await Promise.all(guideCategories.map((category) => getGuidesList(category, false)))).flat()
     : [];
 
-  const [umrahPackages, hajjPackages] = await Promise.all([
+  const [umrahPackages, hajjPackages, soldOutPackages] = await Promise.all([
     needsUmrah ? getPackagesByType("umrah") : Promise.resolve([]),
     needsHajj ? getPackagesByType("hajj") : Promise.resolve([]),
+    hasSoldOut ? getSoldOutPackages() : Promise.resolve([]),
   ]);
 
   const isFlightBooking = slug.join("/") === "airline-tickets-booking";
@@ -133,7 +134,7 @@ export default async function DynamicPage({
             initialPackageData={{
               umrah: needsUmrah ? umrahPackages : undefined,
               hajj: needsHajj ? hajjPackages : undefined,
-              all: hasSoldOut ? [...umrahPackages, ...hajjPackages] : undefined,
+              soldOut: hasSoldOut ? soldOutPackages : undefined,
             }}
             initialGuideData={initialGuideData}
           />

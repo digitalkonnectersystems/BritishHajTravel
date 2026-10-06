@@ -179,6 +179,7 @@ export default function PackageBookingModal({
         startDate: selectedDate,
 
         totalPrice: selectedPriceIsTbc ? "TBC" : estimatedTotalFormatted ? `${currencyCode} ${estimatedTotalFormatted}` : String(pkg?.startingPrice ?? pkg?.price ?? "7,499"),
+        sourceFormName: pkg?.type === 'hajj' ? 'Hajj Package Booking Form' : 'Umrah Package Booking Form',
       });
 
       if (res.success) {

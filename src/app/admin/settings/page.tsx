@@ -485,10 +485,17 @@ export default function AdminSettingsPage() {
     formCcRoutes: {},
     formBccRoutes: {},
     formRoutingRules: [
-      { id: 'rule_1', forms: ['quoteForm', 'hajjCustomizeForm', 'contact', 'dropUsMessage'], sendTo: 'saudivisa@britishhajjtravel.com', cc: '', bcc: '' },
-      { id: 'rule_2', forms: ['packageDetailForm', 'hajjPackageDetailForm', 'packageInquiry', 'blogSidebarForm'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
-      { id: 'rule_3', forms: ['visaConsultation', 'umrahVisaOrder'], sendTo: 'visas@britishhajjtravel.com', cc: '', bcc: '' },
-      { id: 'rule_4', forms: ['flightInquiry'], sendTo: 'flights@britishhajjtravel.com', cc: '', bcc: '' },
+      { id: 'form_quoteForm', forms: ['quoteForm'], sendTo: 'saudivisa@britishhajjtravel.com', cc: '', bcc: '' },
+      { id: 'form_packageDetailForm', forms: ['packageDetailForm'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
+      { id: 'form_hajjPackageDetailForm', forms: ['hajjPackageDetailForm'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
+      { id: 'form_hajjCustomizeForm', forms: ['hajjCustomizeForm'], sendTo: 'saudivisa@britishhajjtravel.com', cc: '', bcc: '' },
+      { id: 'form_contact', forms: ['contact'], sendTo: 'saudivisa@britishhajjtravel.com', cc: '', bcc: '' },
+      { id: 'form_packageInquiry', forms: ['packageInquiry'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
+      { id: 'form_visaConsultation', forms: ['visaConsultation'], sendTo: 'visas@britishhajjtravel.com', cc: '', bcc: '' },
+      { id: 'form_umrahVisaOrder', forms: ['umrahVisaOrder'], sendTo: 'visas@britishhajjtravel.com', cc: '', bcc: '' },
+      { id: 'form_flightInquiry', forms: ['flightInquiry'], sendTo: 'flights@britishhajjtravel.com', cc: '', bcc: '' },
+      { id: 'form_dropUsMessage', forms: ['dropUsMessage'], sendTo: 'saudivisa@britishhajjtravel.com', cc: '', bcc: '' },
+      { id: 'form_blogSidebarForm', forms: ['blogSidebarForm'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
     ],
   });
 
@@ -4438,7 +4445,7 @@ export default function AdminSettingsPage() {
                       </div>
                     </div>
 
-                    {/* ── 1. TOP SECTION: Per-Form Email Routing Rules (Multi-Form per Card) ── */}
+                    {/* ── 1. TOP SECTION: One independent email configuration per form ── */}
                     {(() => {
                       const FORM_META: Record<string, { title: string; icon: string }> = {
                         quoteForm: { title: 'Homepage Hero Banner — Get a Free Quote Form', icon: '🏠' },
@@ -4456,226 +4463,87 @@ export default function AdminSettingsPage() {
                       const allFormKeys = Object.keys(formsData);
                       const rules = emailConfigs.formRoutingRules || [];
 
-                      // All form keys already assigned across ALL rules
-                      const allAssignedForms = rules.flatMap(r => r.forms);
-
-                      const updateRule = (id: string, patch: Partial<{ forms: string[]; sendTo: string; cc: string; bcc: string }>) => {
-                        setEmailConfigs(prev => ({
-                          ...prev,
-                          formRoutingRules: (prev.formRoutingRules || []).map(r =>
-                            r.id === id ? { ...r, ...patch } : r
-                          ),
-                        }));
+                      const getRuleForForm = (formKey: string, sourceRules = rules) => {
+                        const matched = sourceRules.find((rule) => Array.isArray(rule.forms) && rule.forms.includes(formKey));
+                        return {
+                          sendTo: matched?.sendTo || formsData[formKey]?.recipientEmail || emailConfigs.sendToEmail || '',
+                          cc: matched?.cc || '',
+                          bcc: matched?.bcc || '',
+                        };
                       };
 
-                      const removeRule = (id: string) => {
-                        setEmailConfigs(prev => ({
-                          ...prev,
-                          formRoutingRules: (prev.formRoutingRules || []).filter(r => r.id !== id),
-                        }));
-                      };
-
-                      const addRule = () => {
-                        const unassigned = allFormKeys.find(k => !allAssignedForms.includes(k) && formsData[k]?.enabled !== false);
-                        setEmailConfigs(prev => ({
-                          ...prev,
-                          formRoutingRules: [
-                            ...(prev.formRoutingRules || []),
-                            { id: `rule_${Date.now()}`, forms: unassigned ? [unassigned] : [], sendTo: '', cc: '', bcc: '' },
-                          ],
-                        }));
+                      const updateFormRouting = (formKey: string, field: 'sendTo' | 'cc' | 'bcc', value: string) => {
+                        setEmailConfigs((prev) => {
+                          const previousRules = prev.formRoutingRules || [];
+                          const formKeys = Object.keys(formsData);
+                          const getCurrent = (key: string) => {
+                            const matched = previousRules.find((rule) => Array.isArray(rule.forms) && rule.forms.includes(key));
+                            return {
+                              sendTo: matched?.sendTo || formsData[key]?.recipientEmail || prev.sendToEmail || '',
+                              cc: matched?.cc || '',
+                              bcc: matched?.bcc || '',
+                            };
+                          };
+                          const nextRules = formKeys.map((key) => {
+                            const current = getCurrent(key);
+                            return {
+                              id: `form_${key}`,
+                              forms: [key],
+                              sendTo: key === formKey && field === 'sendTo' ? value : current.sendTo,
+                              cc: key === formKey && field === 'cc' ? value : current.cc,
+                              bcc: key === formKey && field === 'bcc' ? value : current.bcc,
+                            };
+                          });
+                          return { ...prev, formRoutingRules: nextRules };
+                        });
                       };
 
                       return (
                         <div className="flex flex-col gap-4">
-                          {/* Section Header */}
-                          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                <span className="text-base">🔀</span>
-                                <h5 className="text-xs font-black uppercase tracking-wider text-slate-900 m-0">PER-FORM SEND TO EMAIL ROUTING</h5>
-                                <span className="text-[10px] font-extrabold bg-violet-100 text-violet-700 border border-violet-200 px-2 py-0.5 rounded-full">+ CC &amp; BCC Supported</span>
-                              </div>
-                              <p className="text-xs text-slate-500 m-0 leading-relaxed">
-                                Group multiple forms into dedicated routing rules. Each rule assigns a primary <strong>Send To</strong> email address, optional <strong>CC (Carbon Copy)</strong>, and optional <strong>BCC (Blind Carbon Copy)</strong> recipients.
-                              </p>
+                          <div>
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-base">✉️</span>
+                              <h5 className="text-xs font-black uppercase tracking-wider text-slate-900 m-0">SEPARATE EMAIL CONFIG FOR EVERY FORM</h5>
+                              <span className="text-[10px] font-extrabold bg-violet-100 text-violet-700 border border-violet-200 px-2 py-0.5 rounded-full">To → CC → BCC de-duplication</span>
                             </div>
-                            <button
-                              type="button"
-                              onClick={addRule}
-                              className="flex items-center gap-1.5 bg-primary hover:bg-white hover:text-primary text-white px-4 py-2.5 rounded-xl text-xs font-extrabold border-none cursor-pointer shadow-md transition-all whitespace-nowrap shrink-0"
-                            >
-                              <Plus className="w-3.5 h-3.5" /> Add Routing Rule
-                            </button>
+                            <p className="text-xs text-slate-500 m-0 leading-relaxed">
+                              Each form has its own To, CC and BCC recipients. Enter multiple addresses separated by commas. If the same address appears more than once, it is kept only once with priority <strong>To, then CC, then BCC</strong>. A form submission sends one admin email containing all final recipients.
+                            </p>
                           </div>
 
-                          {/* Routing Rule Cards */}
-                          <div className="flex flex-col gap-3">
-                            {rules.length === 0 && (
-                              <div className="text-center py-8 text-ink-lt text-xs border-2 border-dashed border-slate-200 rounded-2xl">
-                                No routing rules configured. Click <strong>Add Routing Rule</strong> to get started.
-                              </div>
-                            )}
-
-                            {rules.map((rule, rIdx) => {
-                              // Available forms for THIS rule's selector = unassigned globally + already in this rule
-                              const availableForThisRule = allFormKeys.filter(
-                                k => rule.forms.includes(k) || !allAssignedForms.includes(k)
-                              );
-
+                          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                            {allFormKeys.map((formKey) => {
+                              const meta = FORM_META[formKey] || { title: formsData[formKey]?.title || formKey, icon: '📝' };
+                              const config = getRuleForForm(formKey);
+                              const disabled = formsData[formKey]?.enabled === false;
                               return (
-                                <div
-                                  key={rule.id}
-                                  className="group relative rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white shadow-xs hover:border-emerald-300 hover:shadow-sm transition-all overflow-hidden"
-                                >
-                                  <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl bg-gradient-to-b from-primary to-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-
-                                  <div className="p-4 flex flex-col gap-4">
-
-                                    {/* ── TOP: Multi-Form Chip Selector + Delete Card ── */}
-                                    <div className="flex flex-col gap-2">
-                                      <div className="flex items-center justify-between gap-2">
-                                        <div className="flex items-center gap-1.5">
-                                          <span className="w-2 h-2 rounded-full bg-primary shrink-0" />
-                                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-primary">SEND TO EMAIL ADDRESS</span>
-                                          <span className="text-[9px] bg-slate-100 text-slate-600 border border-slate-200 px-1.5 py-px rounded-full font-bold">
-                                            {rule.forms.length} Selected
-                                          </span>
-                                        </div>
-                                        <button
-                                          type="button"
-                                          onClick={() => removeRule(rule.id)}
-                                          className="w-6 h-6 rounded-full bg-red-50 hover:bg-red-600 text-red-500 hover:text-white flex items-center justify-center border border-red-200 hover:border-red-600 cursor-pointer transition-all shrink-0"
-                                          title="Delete this routing rule"
-                                        >
-                                          <X className="w-3 h-3" />
-                                        </button>
-                                      </div>
-
-                                      {/* Selected form chips */}
-                                      <div className="flex flex-wrap gap-1.5">
-                                        {rule.forms.map(fKey => {
-                                          const fm = FORM_META[fKey] || { title: fKey, icon: '📝' };
-                                          const isFormDisabled = formsData[fKey]?.enabled === false;
-                                          return (
-                                            <span
-                                              key={fKey}
-                                              className={`flex items-center gap-1.5 border px-2.5 py-1 rounded-lg text-[10px] font-bold shadow-2xs ${isFormDisabled
-                                                ? 'bg-slate-100/90 border-slate-300 text-ink-lt'
-                                                : 'bg-white border-slate-200 text-slate-700'
-                                                }`}
-                                            >
-                                              <span>{fm.icon}</span>
-                                              <span>{fm.title}</span>
-                                              {isFormDisabled && (
-                                                <span className="text-[9px] font-extrabold bg-amber-100 text-amber-800 border border-amber-300 px-1.5 py-px rounded-md">
-                                                  Disabled
-                                                </span>
-                                              )}
-                                              <button
-                                                type="button"
-                                                onClick={() => updateRule(rule.id, { forms: rule.forms.filter(f => f !== fKey) })}
-                                                className="ml-0.5 w-3.5 h-3.5 rounded-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center transition-colors cursor-pointer border-none p-0"
-                                                title={`Remove ${fm.title}`}
-                                              >
-                                                <X className="w-2 h-2" />
-                                              </button>
-                                            </span>
-                                          );
-                                        })}
-
-                                        {/* Add form dropdown — only unassigned forms + empty option */}
-                                        {availableForThisRule.filter(k => !rule.forms.includes(k)).length > 0 && (
-                                          <select
-                                            value=""
-                                            onChange={(e) => {
-                                              const newForm = e.target.value;
-                                              if (newForm && !rule.forms.includes(newForm)) {
-                                                // Prevent adding disabled forms
-                                                if (formsData[newForm]?.enabled !== false) {
-                                                  updateRule(rule.id, { forms: [...rule.forms, newForm] });
-                                                }
-                                              }
-                                            }}
-                                            className="h-7 px-2 py-0.5 bg-white border border-dashed border-slate-300 hover:border-primary rounded-lg text-[10px] font-bold text-slate-500 hover:text-primary outline-none cursor-pointer transition-colors"
-                                          >
-                                            <option value="">✚ Add Form...</option>
-                                            {availableForThisRule
-                                              .filter(k => !rule.forms.includes(k))
-                                              .map(k => {
-                                                const km = FORM_META[k] || { title: k, icon: '' };
-                                                const isFormDisabled = formsData[k]?.enabled === false;
-                                                return (
-                                                  <option
-                                                    key={k}
-                                                    value={k}
-                                                    disabled={isFormDisabled}
-                                                    className={isFormDisabled ? 'text-ink-lt bg-slate-50 font-normal italic' : 'text-slate-800 font-bold'}
-                                                  >
-                                                    {km.icon} {km.title} {isFormDisabled ? '— (Disabled)' : ''}
-                                                  </option>
-                                                );
-                                              })}
-                                          </select>
-                                        )}
+                                <div key={formKey} className={`rounded-2xl border p-4 shadow-xs ${disabled ? 'border-slate-200 bg-slate-50/80' : 'border-slate-200 bg-white'}`}>
+                                  <div className="mb-3 flex items-start justify-between gap-3">
+                                    <div className="flex items-start gap-2.5">
+                                      <span className="text-lg">{meta.icon}</span>
+                                      <div>
+                                        <div className="text-xs font-extrabold text-slate-900">{meta.title}</div>
+                                        <div className="mt-0.5 font-mono text-[9px] text-slate-400">{formKey}</div>
                                       </div>
                                     </div>
+                                    <span className={`rounded-full border px-2 py-0.5 text-[9px] font-extrabold ${disabled ? 'border-amber-200 bg-amber-50 text-amber-700' : 'border-emerald-200 bg-emerald-50 text-emerald-700'}`}>
+                                      {disabled ? 'Disabled' : 'Active'}
+                                    </span>
+                                  </div>
 
-                                    {/* ── BOTTOM: Send To + CC + BCC single inputs ── */}
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-
-                                      {/* SEND TO */}
-                                      <div className="flex flex-col gap-1 p-3 rounded-xl bg-emerald-50/60 border border-emerald-200/60">
-                                        <div className="flex items-center gap-1.5">
-                                          <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
-                                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-700">Send To Email</span>
-                                          <span className="text-[9px] bg-emerald-100 text-emerald-700 px-1.5 py-px rounded-full font-bold border border-emerald-200">Admin Recipient</span>
-                                        </div>
-                                        <input
-                                          type="email"
-                                          placeholder="e.g. booking@britishhajjtravel.com"
-                                          value={rule.sendTo}
-                                          onChange={(e) => updateRule(rule.id, { sendTo: e.target.value })}
-                                          className="w-full px-3 py-2 bg-white border border-emerald-200 rounded-xl text-xs outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 font-mono font-semibold text-slate-800 shadow-2xs placeholder:text-ink-lt"
-                                        />
-                                        <p className="text-[10px] text-emerald-700/70 m-0">Destination email address for selected forms</p>
-                                      </div>
-
-                                      {/* CC */}
-                                      <div className="flex flex-col gap-1 p-3 rounded-xl bg-violet-50/60 border border-violet-200/60">
-                                        <div className="flex items-center gap-1.5">
-                                          <span className="w-2 h-2 rounded-full bg-violet-500 shrink-0" />
-                                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-700">CC Emails</span>
-                                          <span className="text-[9px] bg-violet-100 text-violet-700 px-1.5 py-px rounded-full font-bold border border-violet-200">Carbon Copy</span>
-                                        </div>
-                                        <input
-                                          type="email"
-                                          placeholder="cc@domain.com"
-                                          value={rule.cc}
-                                          onChange={(e) => updateRule(rule.id, { cc: e.target.value })}
-                                          className="w-full px-3 py-2 bg-white border border-violet-200 rounded-xl text-xs outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-400/10 font-mono font-semibold text-slate-800 shadow-2xs placeholder:text-ink-lt"
-                                        />
-                                        <p className="text-[10px] text-violet-700/70 m-0">Optional — leave blank for no CC</p>
-                                      </div>
-
-                                      {/* BCC */}
-                                      <div className="flex flex-col gap-1 p-3 rounded-xl bg-sky-50/60 border border-sky-200/60">
-                                        <div className="flex items-center gap-1.5">
-                                          <span className="w-2 h-2 rounded-full bg-sky-500 shrink-0" />
-                                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-700">BCC Emails</span>
-                                          <span className="text-[9px] bg-sky-100 text-sky-700 px-1.5 py-px rounded-full font-bold border border-sky-200">Blind Carbon Copy</span>
-                                        </div>
-                                        <input
-                                          type="email"
-                                          placeholder="bcc@domain.com"
-                                          value={rule.bcc || ''}
-                                          onChange={(e) => updateRule(rule.id, { bcc: e.target.value })}
-                                          className="w-full px-3 py-2 bg-white border border-sky-200 rounded-xl text-xs outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-400/10 font-mono font-semibold text-slate-800 shadow-2xs placeholder:text-ink-lt"
-                                        />
-                                        <p className="text-[10px] text-sky-700/70 m-0">Optional — leave blank for no BCC</p>
-                                      </div>
-
-                                    </div>
+                                  <div className="grid grid-cols-1 gap-3">
+                                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600">
+                                      To
+                                      <input type="text" value={config.sendTo} onChange={(e) => updateFormRouting(formKey, 'sendTo', e.target.value)} placeholder="test2@test.com, test@test.com" className="mt-1 w-full rounded-xl border border-emerald-200 bg-emerald-50/30 px-3 py-2 font-mono text-xs normal-case tracking-normal text-slate-800 outline-none focus:border-primary" />
+                                    </label>
+                                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600">
+                                      CC
+                                      <input type="text" value={config.cc} onChange={(e) => updateFormRouting(formKey, 'cc', e.target.value)} placeholder="test3@test.com" className="mt-1 w-full rounded-xl border border-violet-200 bg-violet-50/30 px-3 py-2 font-mono text-xs normal-case tracking-normal text-slate-800 outline-none focus:border-violet-400" />
+                                    </label>
+                                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600">
+                                      BCC
+                                      <input type="text" value={config.bcc} onChange={(e) => updateFormRouting(formKey, 'bcc', e.target.value)} placeholder="test4@test.com" className="mt-1 w-full rounded-xl border border-sky-200 bg-sky-50/30 px-3 py-2 font-mono text-xs normal-case tracking-normal text-slate-800 outline-none focus:border-sky-400" />
+                                    </label>
                                   </div>
                                 </div>
                               );

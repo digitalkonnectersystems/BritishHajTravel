@@ -143,6 +143,7 @@ export async function updatePackageOrderAction(orderedIds: number[]) {
     revalidatePath('/umrah-packages');
     revalidatePath('/hajj');
     revalidatePath('/');
+    revalidatePath('/', 'layout');
     return { success: true };
   } catch (err: any) {
     console.error('updatePackageOrderAction error:', err);
@@ -250,6 +251,7 @@ export async function createPackage(formData: FormData): Promise<{ success: bool
     revalidatePath('/hajj-packages');
     revalidatePath('/umrah-packages');
     revalidatePath('/');
+    revalidatePath('/', 'layout');
     return { success: true };
   } catch (error: any) {
     console.error('Error creating package:', error);
@@ -318,13 +320,21 @@ export async function updatePackageAction(
       updateData.packagesGallery = data.packagesGallery;
     }
 
+    const beforeRows = await db.select().from(packages).where(eq(packages.id, id)).limit(1);
+    const previousEntry = beforeRows[0] || null;
+
     await db.update(packages).set(updateData).where(eq(packages.id, id));
 
-    // Log Activity
+    const afterRows = await db.select().from(packages).where(eq(packages.id, id)).limit(1);
+    const newEntry = afterRows[0] || null;
+
+    // Log Activity with exact before/after values.
     await logAdminActivityAction({
       type: 'packages',
       action: 'Updated Package',
       details: `Updated package "${data.title}" (ID #${id}) - Status: ${data.status}`,
+      previousEntry,
+      newEntry,
     });
 
     revalidatePath('/admin/packages');
@@ -333,6 +343,7 @@ export async function updatePackageAction(
     revalidatePath('/hajj-packages');
     revalidatePath('/umrah-packages');
     revalidatePath('/');
+    revalidatePath('/', 'layout');
     return { success: true };
   } catch (error: any) {
     console.error('Error updating package:', error);
@@ -343,20 +354,25 @@ export async function updatePackageAction(
 export async function updatePackageStatus(id: number, status: 'available' | 'sold_out' | 'coming_soon' | 'draft'): Promise<void> {
   try {
     let pkgTitle = `ID #${id}`;
+    let previousEntry: any = null;
     try {
       const found = await db.select().from(packages).where(eq(packages.id, id)).limit(1);
       if (found && found.length > 0) {
+        previousEntry = found[0];
         pkgTitle = `"${found[0].title}"`;
       }
     } catch (e) {}
 
     await db.update(packages).set({ status, updatedAt: new Date() }).where(eq(packages.id, id));
+    const afterRows = await db.select().from(packages).where(eq(packages.id, id)).limit(1);
 
     // Log Activity
     await logAdminActivityAction({
       type: 'packages',
       action: 'Changed Package Status',
       details: `Package ${pkgTitle} status updated to "${status}"`,
+      previousEntry,
+      newEntry: afterRows[0] || null,
     });
 
     revalidatePath('/admin/packages');
@@ -365,6 +381,7 @@ export async function updatePackageStatus(id: number, status: 'available' | 'sol
     revalidatePath('/');
     revalidatePath('/hajj-packages');
     revalidatePath('/umrah-packages');
+    revalidatePath('/', 'layout');
   } catch (error) {
     console.error('Error updating package status:', error);
   }
@@ -373,9 +390,11 @@ export async function updatePackageStatus(id: number, status: 'available' | 'sol
 export async function deletePackage(id: number): Promise<void> {
   try {
     let pkgTitle = `ID #${id}`;
+    let previousEntry: any = null;
     try {
       const found = await db.select().from(packages).where(eq(packages.id, id)).limit(1);
       if (found && found.length > 0) {
+        previousEntry = found[0];
         pkgTitle = `"${found[0].title}"`;
       }
     } catch (e) {}
@@ -387,6 +406,8 @@ export async function deletePackage(id: number): Promise<void> {
       type: 'packages',
       action: 'Deleted Package',
       details: `Permanently removed package ${pkgTitle}`,
+      previousEntry,
+      newEntry: null,
     });
 
     revalidatePath('/admin/packages');
@@ -395,6 +416,7 @@ export async function deletePackage(id: number): Promise<void> {
     revalidatePath('/');
     revalidatePath('/hajj-packages');
     revalidatePath('/umrah-packages');
+    revalidatePath('/', 'layout');
   } catch (error) {
     console.error('Error deleting package:', error);
   }
