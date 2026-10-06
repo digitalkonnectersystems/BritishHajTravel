@@ -312,7 +312,7 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
                   />
                 ) : (
                   <div className="flex min-h-[500px] flex-1 items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-sm text-slate-500">
-                    No stored email snapshot is available for this older enquiry. New submissions will store the exact sent email automatically.
+                    No email snapshot is stored for this enquiry. Records created before email snapshot storage cannot be reconstructed exactly. After applying the latest database migration, every new submission stores the exact prepared admin email before SMTP delivery is attempted.
                   </div>
                 )}
               </div>

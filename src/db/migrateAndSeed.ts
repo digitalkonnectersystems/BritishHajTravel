@@ -118,7 +118,7 @@ async function runMigrationAndSeed() {
         \`email_cc\` text,
         \`email_bcc\` text,
         \`email_subject\` varchar(500),
-        \`email_html\` text,
+        \`email_html\` longtext,
         \`email_delivery_status\` varchar(32),
         \`created_at\` timestamp DEFAULT (now()),
         \`updated_at\` timestamp DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,

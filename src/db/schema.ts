@@ -9,7 +9,14 @@ import {
   decimal,
   json,
   index,
+  customType,
 } from 'drizzle-orm/mysql-core';
+
+const longtext = customType<{ data: string }>({
+  dataType() {
+    return 'longtext';
+  },
+});
 
 // 1. Users & Administrator Accounts
 export const users = mysqlTable('users', {
@@ -43,8 +50,8 @@ export const activityLogs = mysqlTable('activity_logs', {
   status: varchar('status', { length: 64 }).notNull(),
   userId: int('user_id'),
   ipAddress: varchar('ip_address', { length: 64 }),
-  previousEntry: text('previous_entry'),
-  newEntry: text('new_entry'),
+  previousEntry: longtext('previous_entry'),
+  newEntry: longtext('new_entry'),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow().onUpdateNow(),
   deletedAt: timestamp('deleted_at'),
@@ -207,7 +214,7 @@ export const enquiries = mysqlTable('enquiries', {
   emailCc: text('email_cc'),
   emailBcc: text('email_bcc'),
   emailSubject: varchar('email_subject', { length: 500 }),
-  emailHtml: text('email_html'),
+  emailHtml: longtext('email_html'),
   emailDeliveryStatus: varchar('email_delivery_status', { length: 32 }),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow().onUpdateNow(),

@@ -25,6 +25,19 @@ async function saveEnquiryEmailAudit(enquiryNumber: string, audit?: FormEmailAud
   }
 }
 
+async function dispatchAndStoreEnquiryEmail(
+  enquiryNumber: string,
+  formName: string,
+  submittedData: Record<string, any>,
+) {
+  return dispatchFormEmails(
+    formName,
+    submittedData,
+    undefined,
+    (audit) => saveEnquiryEmailAudit(enquiryNumber, audit),
+  );
+}
+
 export async function submitQuoteEnquiryAction(data: {
   fullName: string;
   phone: string;
@@ -69,7 +82,7 @@ export async function submitQuoteEnquiryAction(data: {
     });
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
-    const emailResult = await dispatchFormEmails(
+    const emailResult = await dispatchAndStoreEnquiryEmail(enquiryNumber, 
       sourceFormName || 'Get a Free Quote Form',
       {
         enquiryNumber,
@@ -81,7 +94,6 @@ export async function submitQuoteEnquiryAction(data: {
         message,
       }
     );
-    await saveEnquiryEmailAudit(enquiryNumber, emailResult.audit);
 
     revalidatePath('/admin/enquiries');
     revalidatePath('/admin/dashboard');
@@ -169,7 +181,7 @@ export async function submitPackageBookingEnquiryAction(data: {
     });
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
-    const emailResult = await dispatchFormEmails(
+    const emailResult = await dispatchAndStoreEnquiryEmail(bookingNumber, 
       sourceFormName || 'Package Detail Page Booking Form',
       {
         bookingNumber,
@@ -186,7 +198,6 @@ export async function submitPackageBookingEnquiryAction(data: {
         message,
       }
     );
-    await saveEnquiryEmailAudit(bookingNumber, emailResult.audit);
 
     revalidatePath('/admin/enquiries');
     revalidatePath('/admin/dashboard');
@@ -245,7 +256,7 @@ export async function submitContactEnquiryAction(data: {
     });
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
-    const emailResult = await dispatchFormEmails(sourceFormName || 'Contact Us Form', {
+    const emailResult = await dispatchAndStoreEnquiryEmail(ticketNumber, sourceFormName || 'Contact Us Form', {
       ticketNumber,
       fullName,
       email,
@@ -254,7 +265,6 @@ export async function submitContactEnquiryAction(data: {
       website,
       message,
     });
-    await saveEnquiryEmailAudit(ticketNumber, emailResult.audit);
 
     revalidatePath('/admin/enquiries');
     revalidatePath('/admin/dashboard');
@@ -327,7 +337,7 @@ export async function submitVisaEnquiryAction(data: {
     });
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
-    const emailResult = await dispatchFormEmails(sourceFormName || 'Visa Consultation Form', {
+    const emailResult = await dispatchAndStoreEnquiryEmail(enquiryNumber, sourceFormName || 'Visa Consultation Form', {
       enquiryNumber,
       visaTitle,
       fullName,
@@ -337,7 +347,6 @@ export async function submitVisaEnquiryAction(data: {
       nationality,
       message,
     });
-    await saveEnquiryEmailAudit(enquiryNumber, emailResult.audit);
 
     revalidatePath('/admin/enquiries');
     revalidatePath('/admin/dashboard');
@@ -467,7 +476,7 @@ export async function submitFlightInquiry(data: {
     });
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
-    const emailResult = await dispatchFormEmails(sourceFormName || 'Flight Booking Form', {
+    const emailResult = await dispatchAndStoreEnquiryEmail(enquiryNumber, sourceFormName || 'Flight Booking Form', {
       enquiryNumber,
       fullName,
       email,
@@ -481,7 +490,6 @@ export async function submitFlightInquiry(data: {
       flightClass,
       message,
     });
-    await saveEnquiryEmailAudit(enquiryNumber, emailResult.audit);
 
     revalidatePath('/admin/enquiries');
     revalidatePath('/admin/dashboard');

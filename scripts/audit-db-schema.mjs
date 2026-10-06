@@ -38,6 +38,19 @@ try {
     if (table === 'enquiries') {
       const type = String(columnMap.get('type') || '');
       if (!type.includes("'flight_enquiry'")) problems.push('enquiries.type enum is missing flight_enquiry');
+      const emailHtmlType = String(columnMap.get('email_html') || '').toLowerCase();
+      if (emailHtmlType && !emailHtmlType.startsWith('longtext')) {
+        problems.push(`enquiries.email_html should be LONGTEXT, found ${emailHtmlType}`);
+      }
+    }
+
+    if (table === 'activity_logs') {
+      for (const column of ['previous_entry', 'new_entry']) {
+        const auditType = String(columnMap.get(column) || '').toLowerCase();
+        if (auditType && !auditType.startsWith('longtext')) {
+          problems.push(`activity_logs.${column} should be LONGTEXT, found ${auditType}`);
+        }
+      }
     }
   }
 

@@ -25,8 +25,21 @@ export type FormEmailAudit = {
 export async function dispatchFormEmails(
   formName: string,
   submittedData: Record<string, any>,
-  providedUserEmail?: string
+  providedUserEmail?: string,
+  onAuditSnapshot?: (audit: FormEmailAudit) => Promise<void> | void,
 ): Promise<{ adminSent: boolean; userSent: boolean; error?: string; audit?: FormEmailAudit }> {
+  let lastAudit: FormEmailAudit | undefined;
+
+  const persistAuditSnapshot = async (audit: FormEmailAudit) => {
+    lastAudit = audit;
+    if (!onAuditSnapshot) return;
+    try {
+      await onAuditSnapshot(audit);
+    } catch (auditError) {
+      console.error('[Email Dispatcher] Failed to persist enquiry email snapshot:', auditError);
+    }
+  };
+
   try {
     // 1. Fetch saved email settings from DB or defaults
     let adminRecipientEmail = process.env.SMTP_TO || 'saudivisa@britishhajjtravel.com';
@@ -173,6 +186,10 @@ export async function dispatchFormEmails(
       status: 'Pending',
     };
 
+    // Persist the exact admin email body before SMTP is attempted. This guarantees
+    // the Form Enquiries view retains what was prepared even if SMTP later fails.
+    await persistAuditSnapshot(emailAuditBase);
+
     // 2. Check if SMTP Credentials exist
     if (!smtpHost || !smtpUser || !smtpPass) {
       console.error(
@@ -189,11 +206,13 @@ export async function dispatchFormEmails(
         console.error('[Email Dispatcher] Failed to log missing SMTP configuration:', logErr);
       }
 
+      const failedAudit: FormEmailAudit = { ...emailAuditBase, status: 'Failed' };
+      await persistAuditSnapshot(failedAudit);
       return {
         adminSent: false,
         userSent: false,
         error: 'SMTP is not configured.',
-        audit: { ...emailAuditBase, status: 'Failed' },
+        audit: failedAudit,
       };
     }
 
@@ -298,13 +317,16 @@ export async function dispatchFormEmails(
       console.log(`ℹ️ [Email Dispatcher] No user email entered. User confirmation email skipped.`);
     }
 
+    const finalAudit: FormEmailAudit = { ...emailAuditBase, status: adminSent ? 'Delivered' : 'Failed' };
+    await persistAuditSnapshot(finalAudit);
+
     return {
       adminSent,
       userSent,
       error: !adminSent || (isValidUserEmail && !userAlreadyReceivesAdminCopy && !userSent)
         ? getEmailDeliveryError(adminResult, userResult)
         : undefined,
-      audit: { ...emailAuditBase, status: adminSent ? 'Delivered' : 'Failed' },
+      audit: finalAudit,
     };
   } catch (err: any) {
     console.error('dispatchFormEmails error:', err);
@@ -318,6 +340,12 @@ export async function dispatchFormEmails(
       });
     } catch (logErr) {
       console.error('[Email Dispatcher] Failed to log dispatcher error:', logErr);
+    }
+
+    if (lastAudit) {
+      const failedAudit: FormEmailAudit = { ...lastAudit, status: 'Failed' };
+      await persistAuditSnapshot(failedAudit);
+      return { adminSent: false, userSent: false, error: err.message, audit: failedAudit };
     }
 
     return { adminSent: false, userSent: false, error: err.message };
