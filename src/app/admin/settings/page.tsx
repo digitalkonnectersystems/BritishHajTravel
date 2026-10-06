@@ -31,6 +31,7 @@ import { getDestinations } from '@/actions/destinationActions';
 import { getEmailDeliveryLogsAction } from '@/actions/logActions';
 import {
   getResponsiveEmailTemplateHtml,
+  getEditableEmailTemplateHtml,
   CANONICAL_FORM_SUBJECTS,
   FORM_SAMPLE_DATA,
   CanonicalFormSubject,
@@ -85,6 +86,13 @@ const TABS = [
   { id: 'css', label: 'Global CSS', icon: '💻' },
   { id: 'forms', label: 'Forms', icon: '📝' },
 ];
+
+const DEFAULT_EMAIL_TEMPLATES = Object.fromEntries(
+  CANONICAL_FORM_SUBJECTS.map((subject) => [
+    subject,
+    getEditableEmailTemplateHtml(subject),
+  ])
+) as Record<CanonicalFormSubject, string>;
 
 export default function AdminSettingsPage() {
   const [activeTab, setActiveTab] = useState('header-footer');
@@ -487,11 +495,9 @@ export default function AdminSettingsPage() {
   const [selectedTemplateSubject, setSelectedTemplateSubject] =
     useState<CanonicalFormSubject>('Get a Free Quote Form');
 
+  const [emailTemplates, setEmailTemplates] = useState<Record<CanonicalFormSubject, string>>(() => ({ ...DEFAULT_EMAIL_TEMPLATES }));
   const [emailTemplateHtml, setEmailTemplateHtml] = useState<string>(() =>
-    getResponsiveEmailTemplateHtml(
-      'Get a Free Quote Form',
-      FORM_SAMPLE_DATA['Get a Free Quote Form']
-    )
+    DEFAULT_EMAIL_TEMPLATES['Get a Free Quote Form']
   );
 
   const [formsData, setFormsData] = useState<any>({
@@ -564,7 +570,7 @@ export default function AdminSettingsPage() {
       if (data) {
         let finalData = { ...data };
         if (typeof window !== 'undefined') {
-          const localShare = localStorage.getItem('king_travel_share_tools');
+          const localShare = localStorage.getItem('bht_share_tools') || localStorage.getItem('king_travel_share_tools');
           if (localShare) {
             try {
               const parsedLocal = JSON.parse(localShare);
@@ -578,7 +584,7 @@ export default function AdminSettingsPage() {
       }
     });
     if (typeof window !== 'undefined') {
-      const localShare = localStorage.getItem('king_travel_share_tools');
+      const localShare = localStorage.getItem('bht_share_tools') || localStorage.getItem('king_travel_share_tools');
       if (localShare) {
         try {
           setShareData(JSON.parse(localShare));
@@ -637,16 +643,18 @@ export default function AdminSettingsPage() {
             ...data.emailConfigs,
           }));
         } else if (typeof window !== 'undefined') {
-          const localEmailCfg = localStorage.getItem('king_travel_email_configs');
+          const localEmailCfg = localStorage.getItem('bht_email_configs') || localStorage.getItem('king_travel_email_configs');
           if (localEmailCfg) {
             try { setEmailConfigs(JSON.parse(localEmailCfg)); } catch (e) { }
           }
         }
-        if (data.emailTemplateHtml) setEmailTemplateHtml(data.emailTemplateHtml);
+        const loadedTemplates = { ...DEFAULT_EMAIL_TEMPLATES, ...(data.emailTemplates || {}) } as Record<CanonicalFormSubject, string>;
+        setEmailTemplates(loadedTemplates);
+        setEmailTemplateHtml(loadedTemplates['Get a Free Quote Form'] || data.emailTemplateHtml || DEFAULT_EMAIL_TEMPLATES['Get a Free Quote Form']);
       }
     });
     if (typeof window !== 'undefined') {
-      const localEmailCfg = localStorage.getItem('king_travel_email_configs');
+      const localEmailCfg = localStorage.getItem('bht_email_configs') || localStorage.getItem('king_travel_email_configs');
       if (localEmailCfg) {
         try { setEmailConfigs(JSON.parse(localEmailCfg)); } catch (e) { }
       }
@@ -739,12 +747,13 @@ export default function AdminSettingsPage() {
     setFormsSaveMsg(null);
 
     if (typeof window !== 'undefined') {
-      localStorage.setItem('king_travel_email_configs', JSON.stringify(emailConfigs));
-      localStorage.setItem('king_travel_forms_settings', JSON.stringify({
+      localStorage.setItem('bht_email_configs', JSON.stringify(emailConfigs));
+      localStorage.setItem('bht_forms_settings', JSON.stringify({
         formsData,
         formFieldsState,
         emailConfigs,
         emailTemplateHtml,
+        emailTemplates: { ...emailTemplates, [selectedTemplateSubject]: emailTemplateHtml },
       }));
     }
 
@@ -753,6 +762,7 @@ export default function AdminSettingsPage() {
       formFieldsState,
       emailConfigs,
       emailTemplateHtml,
+      emailTemplates: { ...emailTemplates, [selectedTemplateSubject]: emailTemplateHtml },
     };
 
     const res = await saveFormsSettingsAction(fullPayload);
@@ -802,6 +812,7 @@ export default function AdminSettingsPage() {
       formFieldsState: updatedFormFieldsState,
       emailConfigs,
       emailTemplateHtml,
+      emailTemplates: { ...emailTemplates, [selectedTemplateSubject]: emailTemplateHtml },
     };
     const res = await saveFormsSettingsAction(fullPayload);
     setSavingForms(false);
@@ -1017,7 +1028,7 @@ export default function AdminSettingsPage() {
       variant: 'primary',
       onConfirm: async () => {
         if (typeof window !== 'undefined') {
-          localStorage.setItem('king_travel_site_identity', JSON.stringify(updatedIdentity));
+          localStorage.setItem('bht_site_identity', JSON.stringify(updatedIdentity));
           window.dispatchEvent(new Event('identity_updated'));
           if (updatedIdentity.favicon) {
             updateBrowserFavicon(updatedIdentity.favicon);
@@ -1040,7 +1051,7 @@ export default function AdminSettingsPage() {
       ...identityData,
     };
     if (typeof window !== 'undefined') {
-      localStorage.setItem('king_travel_site_identity', JSON.stringify(updatedIdentity));
+      localStorage.setItem('bht_site_identity', JSON.stringify(updatedIdentity));
       window.dispatchEvent(new Event('identity_updated'));
     }
     const res = await saveSiteIdentityAction(updatedIdentity);
@@ -1057,7 +1068,7 @@ export default function AdminSettingsPage() {
   const handleSaveShareTools = async () => {
     setSavingShare(true);
     if (typeof window !== 'undefined') {
-      localStorage.setItem('king_travel_share_tools', JSON.stringify(shareData));
+      localStorage.setItem('bht_share_tools', JSON.stringify(shareData));
     }
     const res = await saveShareToolsAction(shareData);
     setSavingShare(false);
@@ -4862,7 +4873,7 @@ export default function AdminSettingsPage() {
                         ✉️ EMAIL TEMPLATE CONFIGURATION
                       </h3>
                       <p className="text-xs text-slate-500 mt-0.5 mb-0">
-                        Select and preview responsive HTML notification templates for each of British Hajj Travel&apos;s 7 dynamic form subjects.
+                        Select and preview responsive HTML notification templates for each of British Hajj Travel&apos;s 11 configured form subjects.
                       </p>
                     </div>
 
@@ -4870,9 +4881,9 @@ export default function AdminSettingsPage() {
                       <button
                         type="button"
                         onClick={() => {
-                          const sampleData = FORM_SAMPLE_DATA[selectedTemplateSubject];
-                          const html = getResponsiveEmailTemplateHtml(selectedTemplateSubject, sampleData);
+                          const html = DEFAULT_EMAIL_TEMPLATES[selectedTemplateSubject];
                           setEmailTemplateHtml(html);
+                          setEmailTemplates((prev) => ({ ...prev, [selectedTemplateSubject]: html }));
                         }}
                         className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl border border-slate-200 transition-colors cursor-pointer flex items-center gap-1.5"
                       >
@@ -4891,7 +4902,7 @@ export default function AdminSettingsPage() {
                     </div>
                   </div>
 
-                  {/* ── 7 Canonical Form Subject Switcher Pills ── */}
+                  {/* ── All configured form subject template switchers ── */}
                   <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-2xs flex flex-col gap-2.5">
                     <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">
                       SELECT FORM SUBJECT TEMPLATE
@@ -4903,7 +4914,11 @@ export default function AdminSettingsPage() {
                           'Get a Free Quote Form': '🏠',
                           'Umrah Package Booking Form': '📊',
                           'Hajj Package Booking Form': '🕋',
+                          'Hajj Customize Form': '🕋',
                           'Contact Inquiry Form': '💬',
+                          'Package Inquiry Form': '📦',
+                          'Visa Consultation Form': '🛂',
+                          'Umrah Visa Order Form': '🛂',
                           'Flights Booking Inquiry Form': '✈️',
                           'Drop Us A Message Form': '📬',
                           'Blog Detail Page': '📝',
@@ -4914,10 +4929,10 @@ export default function AdminSettingsPage() {
                             key={subject}
                             type="button"
                             onClick={() => {
+                              const nextTemplates = { ...emailTemplates, [selectedTemplateSubject]: emailTemplateHtml };
+                              setEmailTemplates(nextTemplates);
                               setSelectedTemplateSubject(subject);
-                              const sampleData = FORM_SAMPLE_DATA[subject];
-                              const html = getResponsiveEmailTemplateHtml(subject, sampleData);
-                              setEmailTemplateHtml(html);
+                              setEmailTemplateHtml(nextTemplates[subject] || DEFAULT_EMAIL_TEMPLATES[subject]);
                             }}
                             className={`p-3 rounded-2xl text-left border transition-all cursor-pointer flex flex-col gap-1.5 ${isSelected
                               ? 'bg-primary text-white border-primary shadow-md ring-2 ring-primary/30'
@@ -4947,10 +4962,13 @@ export default function AdminSettingsPage() {
                         </span>
                         <span className="text-[10px] text-emerald-400">Live Code Mode</span>
                       </div>
+                      <div className="rounded-xl border border-slate-700 bg-slate-900/70 px-3 py-2 text-[10px] text-slate-300">
+                        Live-send tokens: <code>{'{{FORM_NAME}}'}</code>, <code>{'{{SUBMISSION_ROWS}}'}</code>, <code>{'{{SUBMISSION_DATE}}'}</code>, <code>{'{{SUBMITTER_NAME}}'}</code>, <code>{'{{EMAIL_AUDIENCE}}'}</code>. Templates without a live token stay preview-only, so sample data is never emailed.
+                      </div>
                       <textarea
                         rows={18}
                         value={emailTemplateHtml}
-                        onChange={(e) => setEmailTemplateHtml(e.target.value)}
+                        onChange={(e) => { const value = e.target.value; setEmailTemplateHtml(value); setEmailTemplates((prev) => ({ ...prev, [selectedTemplateSubject]: value })); }}
                         className="w-full bg-transparent font-sans text-xs !text-white outline-none resize-y leading-relaxed border-none focus:ring-0"
                       />
                     </div>

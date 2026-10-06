@@ -3,16 +3,13 @@ import type { Metadata } from "next";
 import { getGuidesList, getPageBySlug } from "@/actions/pageActions";
 import { getPackagesByType } from "@/actions/packageActions";
 import PageBanner from "@/components/PageBanner";
-import PageSeoHead from "@/components/PageSeoHead";
 import PageSectionsRenderer from "@/components/PageSectionsRenderer";
-import { getPackageDetailsAction, getPageSeoAction } from "@/actions/pageActions";
 import { getPackageBySlug } from "@/actions/packageActions";
 import PackageDetailPageClient from "@/app/package/[slug]/PackageDetailPageClient";
-import { getBlogBySlug, getBlogSeoAction } from "@/actions/blogActions";
+import { getBlogBySlug } from "@/actions/blogActions";
 import BlogDetailPage from "@/components/BlogDetailPage";
+import { buildBlogMetadata, buildPackageMetadata, buildPageMetadata, parseSeoSettings } from "@/lib/seoMetadata";
 
-
-const BLOG_FALLBACK_THUMB = 'https://antiquewhite-stinkbug-399384.hostingersite.com/wp-content/uploads/2026/05/Umrah_packages_202605092201.jpeg';
 
 export async function generateMetadata({
   params,
@@ -20,34 +17,22 @@ export async function generateMetadata({
   params: Promise<{ slug?: string[] }>;
 }): Promise<Metadata> {
   const { slug = [] } = await params;
-  if (slug.length !== 1) return {};
+  const slugPath = `/${slug.join('/')}`;
 
-  const blog = await getBlogBySlug(slug[0]).catch(() => null);
-  if (!blog || !blog.isPublished) return {};
+  const page = await getPageBySlug(slugPath).catch(() => null);
+  if (page && page.status !== 'draft') {
+    return buildPageMetadata(page, slugPath);
+  }
 
-  const seoData: any = blog.id ? await getBlogSeoAction(blog.id).catch(() => null) : null;
-  const metaTitle = seoData?.metaTitle || `${blog.title} | British Hajj Travel UK`;
-  const metaDesc = seoData?.metaDescription || blog.excerpt || `Read ${blog.title} on British Hajj Travel UK blog.`;
-  const ogImage = seoData?.ogImageUrl || blog.featuredImage || BLOG_FALLBACK_THUMB;
+  if (slug.length === 1) {
+    const blog = await getBlogBySlug(slug[0]).catch(() => null);
+    if (blog?.isPublished) return buildBlogMetadata(blog, slug[0]);
 
-  return {
-    title: metaTitle,
-    description: metaDesc,
-    alternates: { canonical: `/${slug[0]}` },
-    openGraph: {
-      title: metaTitle,
-      description: metaDesc,
-      url: `/${slug[0]}`,
-      type: 'article',
-      images: [{ url: ogImage, width: 1200, height: 630, alt: blog.title }],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: metaTitle,
-      description: metaDesc,
-      images: [ogImage],
-    },
-  };
+    const packageData = await getPackageBySlug(slug[0]).catch(() => null);
+    if (packageData && packageData.status !== 'draft') return buildPackageMetadata(packageData, slug[0]);
+  }
+
+  return {};
 }
 
 export default async function DynamicPage({
@@ -70,14 +55,10 @@ export default async function DynamicPage({
       // Fallback: check if the slug matches a package
       const packageData = await getPackageBySlug(slug[0]).catch(() => null);
       if (packageData) {
-        const seoData = packageData.id
-          ? await getPageSeoAction(`pkg_${packageData.id}`).catch(() => null)
-          : null;
         return (
           <PackageDetailPageClient
             initialSlug={slug[0]}
             initialPackage={packageData}
-            initialSeo={seoData}
           />
         );
       }
@@ -120,10 +101,19 @@ export default async function DynamicPage({
 
   const isFlightBooking = slug.join("/") === "airline-tickets-booking";
 
+  const pageSeo = parseSeoSettings(page.seoData || page.seoSettings);
+  let pageJsonLd = '';
+  if (pageSeo.jsonLdPayload) {
+    pageJsonLd = typeof pageSeo.jsonLdPayload === 'string'
+      ? pageSeo.jsonLdPayload
+      : JSON.stringify(pageSeo.jsonLdPayload);
+  }
+
   return (
     <main className={`${isFlightBooking ? "bg-blue-lt" : "bg-white"} min-h-screen`}>
-      <PageSeoHead pageTitle={page.title} seoData={page.seoData} />
-
+      {pageJsonLd && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: pageJsonLd.replace(/</g, '\\u003c') }} />
+      )}
       <PageBanner
         title={isGalleryPage ? page.title : (page.bannerTitle || page.title)}
         description={page.bannerDescription || ""}

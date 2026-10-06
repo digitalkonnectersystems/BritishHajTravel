@@ -98,7 +98,7 @@ export async function getBlogsList(publishedOnly = false) {
             ogTitle: blog.title,
             ogDescription: blog.excerpt,
             ogImageUrl: blog.featuredImage,
-            canonicalUrl: `/blogs/${blog.slug}`,
+            canonicalUrl: `/${blog.slug}`,
             keywords: `${blog.category}, Hajj, Umrah, British Hajj Travel UK, British Pilgrims`,
           }
         });

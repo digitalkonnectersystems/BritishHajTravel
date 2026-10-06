@@ -2,6 +2,13 @@ import { getDestinations } from '@/actions/destinationActions';
 import { getPageBySlug } from '@/actions/pageActions';
 import PageBanner from '@/components/PageBanner';
 import DestinationsPageSection from '@/components/DestinationsPageSection';
+import type { Metadata } from 'next';
+import { buildPageMetadata } from '@/lib/seoMetadata';
+
+export async function generateMetadata(): Promise<Metadata> {
+  const pageData = await getPageBySlug('/destinations').catch(() => null);
+  return buildPageMetadata(pageData || { title: 'Destinations' }, '/destinations');
+}
 
 export default async function DestinationsPage() {
   const [destinations, pageData] = await Promise.all([getDestinations(), getPageBySlug('/destinations')]);

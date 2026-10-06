@@ -8,7 +8,7 @@ export interface UserSession {
   loginTime?: number;
 }
 
-const COOKIE_NAME = 'king_travel_session';
+const COOKIE_NAME = 'bht_admin_session';
 const EIGHT_HOURS_MS = 8 * 60 * 60 * 1000;
 const EIGHT_HOURS_SEC = 8 * 60 * 60;
 

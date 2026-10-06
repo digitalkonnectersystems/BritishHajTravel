@@ -1,10 +1,15 @@
 import ContactPageClient from "./ContactPageClient";
 import { getPageBySlug, getFormsSettings } from "@/actions/pageActions";
+import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seoMetadata";
 
-export const metadata = {
-  title: 'Contact Us | British Hajj Travel Can',
-  description: 'Get in touch with British Hajj Travel Can for your Hajj & Umrah bookings.',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const pageData = await getPageBySlug("/contact").catch(() => null);
+  return buildPageMetadata(pageData || {
+    title: "Contact British Hajj Travel UK",
+    metaDescription: "Contact British Hajj Travel UK for Hajj, Umrah, Saudi visa and flight enquiries.",
+  }, "/contact");
+}
 
 export default async function ContactPage() {
   const pageData = await getPageBySlug('/contact');

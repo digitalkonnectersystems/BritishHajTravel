@@ -4,9 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { X, Calendar, User, Check, Star, MapPin, Utensils, Plane, TicketPercent, AlertCircle, ChevronDown, ChevronUp, ArrowLeft, ChevronLeft, ChevronRight, Sun, MoonStar } from "lucide-react";
-import { getPackageDetailsAction, getPageSeoAction } from "@/actions/pageActions";
 import { submitPackageBookingEnquiryAction } from "@/actions/enquiryActions";
-import PageSeoHead from "@/components/PageSeoHead";
 import SubmissionSuccessModal from "@/components/SubmissionSuccessModal";
 import DynamicIcon from "@/components/ui/DynamicIcon";
 import { getDurationUnit } from "@/lib/packageHelpers";
@@ -15,11 +13,9 @@ import { isTbcPrice } from "@/lib/priceDisplay";
 export default function PackageDetailPageClient({
   initialSlug,
   initialPackage,
-  initialSeo,
 }: {
   initialSlug: string;
   initialPackage?: any;
-  initialSeo?: any;
 }) {
   const rawSlug = initialSlug;
   const [pkg] = useState<any>(() => initialPackage || null);
@@ -34,8 +30,6 @@ export default function PackageDetailPageClient({
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
 
   const todayDateStr = new Date().toISOString().split("T")[0];
-  const pkgSeo = initialSeo || null;
-
   const [bookingStatus, setBookingStatus] = useState<string | null>(null);
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -465,47 +459,6 @@ export default function PackageDetailPageClient({
 
   return (
     <div className="bg-[#faf7f2] min-h-screen text-slate-800">
-      <PageSeoHead
-        pageTitle={title}
-        metaTitle={pkgSeo?.metaTitle || `${title} UK | British Hajj Travel`}
-        metaDescription={
-          pkgSeo?.metaDescription ||
-          `Book official ${title} packages with British Hajj Travel UK. ${durationText}, departure from ${departure}, starting price £ $${price}. Authorized visa, 5-star hotels & flight options.`
-        }
-        canonicalUrl={pkgSeo?.canonicalUrl || `/package/${rawSlug}`}
-        ogImageUrl={pkgSeo?.ogImageUrl || pkg.heroImage || 'https://media.britishhajjtravel.com/uploads/branding/logo.png'}
-        jsonLdPayload={
-          pkgSeo?.jsonLdPayload ||
-          JSON.stringify(
-            {
-              '@context': 'https://schema.org/',
-              '@type': 'Product',
-              name: title,
-              image: pkg.heroImage || 'https://media.britishhajjtravel.com/uploads/branding/logo.png',
-              description: `Official ${title} travel package provided by British Hajj Travel UK. Includes flights, 5-star accommodations, and verified visa processing.`,
-              brand: {
-                '@type': 'Brand',
-                name: 'British Hajj Travel UK',
-              },
-              offers: {
-                '@type': 'Offer',
-                url: `/package/${rawSlug}`,
-                priceCurrency: '£',
-                price: String(pkg.startingPrice ?? pkg.price ?? price ?? '12995').replace(/,/g, ''),
-                priceValidUntil: '2027-12-31',
-                availability: 'https://schema.org/InStock',
-                seller: {
-                  '@type': 'Organization',
-                  name: 'British Hajj Travel UK',
-                },
-              },
-            },
-            null,
-            2
-          )
-        }
-        seoData={pkgSeo}
-      />
       {/* ================= FULL-WIDTH HEADER BANNER ================= */}
       <div className="w-full bg-primary text-white py-10 sm:py-14 shadow-lg border-b border-primary">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-10 relative">

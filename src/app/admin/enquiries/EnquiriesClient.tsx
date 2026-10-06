@@ -95,6 +95,7 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
           { key: 'package_enquiry', label: 'Package Bookings (package_booking_enquiries)' },
           { key: 'general_contact', label: 'Contact Messages (contact_enquiries)' },
           { key: 'visa_enquiry', label: 'Visa Requests (visa_enquiries)' },
+          { key: 'flight_enquiry', label: 'Flight Requests (flight_enquiries)' },
         ].map((tab) => (
           <button
             key={tab.key}

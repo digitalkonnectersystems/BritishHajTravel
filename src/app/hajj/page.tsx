@@ -30,6 +30,8 @@ export default function CustomizeHajjPage() {
         phone: formData.phone,
         packageType: `Customize Hajj 2027 (${formData.occupancy})`,
         numberOfPilgrims: 1,
+        message: formData.message,
+        sourceFormName: 'Hajj Customize Form',
       });
 
       setLoading(false);

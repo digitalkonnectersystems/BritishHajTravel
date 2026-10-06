@@ -5,17 +5,15 @@ import type { Metadata } from 'next';
 import { getPageBySlug } from '@/actions/pageActions';
 import PageSectionsRenderer from '@/components/PageSectionsRenderer';
 import BlogsLoadMore from '@/components/BlogsLoadMore';
+import { buildPageMetadata } from '@/lib/seoMetadata';
 
-export const metadata: Metadata = {
-  title: 'Blog & Travel Guides | British Hajj Travel UK',
-  description: 'Explore pilgrimage tips, Hajj & Umrah guides, Saudi Visa info, and travel inspiration from British Hajj Travel UK\'s expert editorial team.',
-  openGraph: {
-    title: 'Blog & Travel Guides | British Hajj Travel UK',
-    description: 'Explore pilgrimage tips, Hajj & Umrah guides, Saudi Visa info, and travel inspiration.',
-    url: '/blogs',
-    type: 'website',
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const pageData = await getPageBySlug('/blogs').catch(() => null);
+  return buildPageMetadata(pageData || {
+    title: 'Blog & Travel Guides',
+    metaDescription: 'Explore Hajj and Umrah guides, Saudi visa information and pilgrimage travel advice from British Hajj Travel UK.',
+  }, '/blogs');
+}
 
 function formatDate(d: any) {
   if (!d) return null;

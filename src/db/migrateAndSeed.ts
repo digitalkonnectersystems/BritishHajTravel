@@ -85,6 +85,7 @@ async function runMigrationAndSeed() {
         \`image_url\` text,
         \`is_published\` boolean NOT NULL DEFAULT true,
         \`display_order\` int DEFAULT 0,
+        \`seo_settings\` longtext NULL,
         \`created_at\` timestamp DEFAULT (now()),
         CONSTRAINT \`visa_services_id\` PRIMARY KEY(\`id\`),
         CONSTRAINT \`visa_services_slug_unique\` UNIQUE(\`slug\`)
@@ -93,7 +94,7 @@ async function runMigrationAndSeed() {
       `CREATE TABLE IF NOT EXISTS \`enquiries\` (
         \`id\` int AUTO_INCREMENT NOT NULL,
         \`enquiry_number\` varchar(128) NOT NULL,
-        \`type\` enum('quote_request','package_enquiry','visa_enquiry','general_contact') NOT NULL DEFAULT 'quote_request',
+        \`type\` enum('quote_request','package_enquiry','visa_enquiry','general_contact','flight_enquiry') NOT NULL DEFAULT 'quote_request',
         \`full_name\` varchar(255) NOT NULL,
         \`email\` varchar(255) NOT NULL,
         \`phone\` varchar(50) NOT NULL,
@@ -152,6 +153,47 @@ async function runMigrationAndSeed() {
         \`created_at\` timestamp DEFAULT (now()),
         CONSTRAINT \`email_delivery_logs_id\` PRIMARY KEY(\`id\`)
       );`,
+
+
+      `CREATE TABLE IF NOT EXISTS \`activity_logs\` (
+        \`id\` int AUTO_INCREMENT NOT NULL,
+        \`name\` varchar(255) NOT NULL,
+        \`status\` varchar(64) NOT NULL,
+        \`user_id\` int NULL,
+        \`ip_address\` varchar(64) NULL,
+        \`previous_entry\` longtext NULL,
+        \`new_entry\` longtext NULL,
+        \`created_at\` timestamp DEFAULT (now()),
+        \`updated_at\` timestamp DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+        \`deleted_at\` timestamp NULL,
+        CONSTRAINT \`activity_logs_id\` PRIMARY KEY(\`id\`),
+        INDEX \`activity_logs_status_idx\` (\`status\`),
+        INDEX \`activity_logs_user_id_idx\` (\`user_id\`),
+        INDEX \`activity_logs_created_at_idx\` (\`created_at\`)
+      );`,
+
+      `CREATE TABLE IF NOT EXISTS \`sitemap_configs\` (
+        \`id\` int AUTO_INCREMENT NOT NULL,
+        \`content_type\` varchar(128) NOT NULL,
+        \`include_in_sitemap\` boolean DEFAULT true,
+        \`change_frequency\` varchar(50) DEFAULT 'monthly',
+        \`priority\` decimal(3,1) DEFAULT 0.5,
+        \`include_images\` boolean DEFAULT true,
+        \`include_last_modified\` boolean DEFAULT true,
+        \`updated_at\` timestamp DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+        CONSTRAINT \`sitemap_configs_id\` PRIMARY KEY(\`id\`),
+        CONSTRAINT \`sitemap_configs_content_type_unique\` UNIQUE(\`content_type\`)
+      );`,
+
+      `CREATE TABLE IF NOT EXISTS \`sitemap_logs\` (
+        \`id\` int AUTO_INCREMENT NOT NULL,
+        \`action\` varchar(50) NOT NULL,
+        \`status\` varchar(50) NOT NULL,
+        \`details\` longtext NULL,
+        \`triggered_by\` varchar(128) DEFAULT 'system',
+        \`created_at\` timestamp DEFAULT (now()),
+        CONSTRAINT \`sitemap_logs_id\` PRIMARY KEY(\`id\`)
+      );`,
     ];
 
     console.log('Executing table creation SQL statements...');
@@ -164,6 +206,8 @@ async function runMigrationAndSeed() {
       "ALTER TABLE `users` ADD COLUMN `badge_text_color` varchar(32) DEFAULT '#FFFFFF';",
       "ALTER TABLE `site_pages` ADD COLUMN `guide_category` varchar(20) NULL;",
       "ALTER TABLE `site_pages` ADD COLUMN `guide_card_data` text NULL;",
+      "ALTER TABLE `visa_services` ADD COLUMN `seo_settings` longtext NULL;",
+      "ALTER TABLE `enquiries` MODIFY COLUMN `type` enum('quote_request','package_enquiry','visa_enquiry','general_contact','flight_enquiry') NOT NULL DEFAULT 'quote_request';",
     ];
     for (const alterSql of alterStatements) {
       try {
@@ -178,21 +222,24 @@ async function runMigrationAndSeed() {
 
     // Seed default admin user
     console.log('Ensuring default admin user exists...');
-    const seedEmail = (process.env.INITIAL_ADMIN_EMAIL || 'hassan@britishhajjtravel.com').trim().toLowerCase();
-    const seedPwd = process.env.INITIAL_ADMIN_PASSWORD || 'KingTravel2026!';
-    const seedHash = hashPassword(seedPwd);
-
-    await db.insert(users)
-      .values({
-        name: 'Hassan',
-        email: seedEmail,
-        passwordHash: seedHash,
-        role: 'super_admin',
-        active: true,
-        badgeBg: '#64F900',
-        badgeTextColor: '#000000',
-      })
-      .onDuplicateKeyUpdate({ set: { passwordHash: seedHash } });
+    const seedEmail = (process.env.INITIAL_ADMIN_EMAIL || '').trim().toLowerCase();
+    const seedPwd = process.env.INITIAL_ADMIN_PASSWORD || '';
+    if (seedEmail && seedPwd) {
+      const seedHash = hashPassword(seedPwd);
+      await db.insert(users)
+        .values({
+          name: 'Super Admin',
+          email: seedEmail,
+          passwordHash: seedHash,
+          role: 'super_admin',
+          active: true,
+          badgeBg: '#64F900',
+          badgeTextColor: '#000000',
+        })
+        .onDuplicateKeyUpdate({ set: { passwordHash: seedHash } });
+    } else {
+      console.warn('Skipping default admin seed: set INITIAL_ADMIN_EMAIL and INITIAL_ADMIN_PASSWORD to seed an account.');
+    }
 
     // Run data seeder
     await seedDatabase();

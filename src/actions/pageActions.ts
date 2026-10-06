@@ -4,8 +4,9 @@ import { db } from '@/db';
 import { sitePages, siteSettings } from '@/db/schema';
 import { and, eq, isNull, sql } from 'drizzle-orm';
 import { revalidatePath, revalidateTag, unstable_cache } from 'next/cache';
-import { getResponsiveEmailTemplateHtml } from '@/lib/emailTemplate';
+import { getResponsiveEmailTemplateHtml, getEditableEmailTemplateHtml, CANONICAL_FORM_SUBJECTS, FORM_SAMPLE_DATA } from '@/lib/emailTemplate';
 import { logAdminActivityAction } from '@/actions/activityActions';
+import { dedupeRecipientChannels, hasInvalidEmailRecipient, normalizeEmailRecipients } from '@/lib/emailRecipients';
 
 // Cached reads go stale after this long (seconds) and refetch in the background.
 // Saves from the admin also bust these instantly via revalidateTag(), so content
@@ -220,9 +221,25 @@ async function fetchPageBySlugFromDb(slug: string) {
   if (pages && pages.length > 0) {
     const p = pages[0];
 
-    const seoData = p.seoSettings
-      ? safeJsonParse(p.seoSettings, null)
-      : null;
+    const storedSeo: any = p.seoSettings ? safeJsonParse<any>(p.seoSettings, {}) : {};
+    let legacySeo: any = {};
+    try {
+      const legacy = await db
+        .select({ value: siteSettings.value })
+        .from(siteSettings)
+        .where(eq(siteSettings.key, `page_seo_${p.id}`))
+        .limit(1);
+      legacySeo = legacy[0]?.value ? safeJsonParse(legacy[0].value, {}) : {};
+    } catch {
+      legacySeo = {};
+    }
+
+    const seoData = {
+      ...legacySeo,
+      ...storedSeo,
+      metaTitle: p.metaTitle || storedSeo?.metaTitle || legacySeo?.metaTitle || undefined,
+      metaDescription: p.metaDescription || storedSeo?.metaDescription || legacySeo?.metaDescription || undefined,
+    };
 
     return {
       ...p,
@@ -1315,6 +1332,15 @@ const DEFAULT_EMAIL_CONFIGS: any = {
   ],
 };
 
+function buildDefaultEmailTemplates() {
+  return Object.fromEntries(
+    CANONICAL_FORM_SUBJECTS.map((subject) => [
+      subject,
+      getEditableEmailTemplateHtml(subject),
+    ])
+  );
+}
+
 export async function getFormsSettings() {
   if (formsSettingsMemoryCache) return formsSettingsMemoryCache;
   try {
@@ -1357,14 +1383,8 @@ export async function getFormsSettings() {
           formsData: mergedFormsData,
           formFieldsState: mergedFormFieldsState,
           emailConfigs: mergedEmailConfigs,
-          emailTemplateHtml: parsed.emailTemplateHtml || getResponsiveEmailTemplateHtml('Sample Form Submission', {
-            fullName: 'John Doe',
-            email: 'john.doe@example.com',
-            phone: '+1 905-624-8555',
-            packageType: 'Deluxe Hajj Package 2027',
-            departureDate: 'Flexible 2027',
-            message: 'Looking for quad occupancy options and flight schedules from Toronto.',
-          }),
+          emailTemplates: { ...buildDefaultEmailTemplates(), ...(parsed.emailTemplates || {}) },
+          emailTemplateHtml: parsed.emailTemplateHtml || getResponsiveEmailTemplateHtml('Get a Free Quote Form', FORM_SAMPLE_DATA['Get a Free Quote Form']),
         };
 
         formsSettingsMemoryCache = result;
@@ -1379,43 +1399,105 @@ export async function getFormsSettings() {
     formsData: DEFAULT_FORMS_DATA,
     formFieldsState: DEFAULT_FORM_FIELDS_STATE,
     emailConfigs: DEFAULT_EMAIL_CONFIGS,
-    emailTemplateHtml: getResponsiveEmailTemplateHtml('Sample Form Submission', {
-      fullName: 'John Doe',
-      email: 'john.doe@example.com',
-      phone: '+1 905-624-8555',
-      packageType: 'Deluxe Hajj Package 2027',
-      departureDate: 'Flexible 2027',
-      message: 'Looking for quad occupancy options and flight schedules from Toronto.',
-    }),
+    emailTemplates: buildDefaultEmailTemplates(),
+    emailTemplateHtml: getResponsiveEmailTemplateHtml('Get a Free Quote Form', FORM_SAMPLE_DATA['Get a Free Quote Form']),
   };
 
   return formsSettingsMemoryCache || defaultResult;
 }
 
 export async function saveFormsSettingsAction(settingsData: any) {
-  formsSettingsMemoryCache = settingsData;
+  const nextSettings = JSON.parse(JSON.stringify(settingsData || {}));
+  const emailConfigs = nextSettings.emailConfigs || {};
+
+  // Normalize recipient fields when settings are saved as well as when mail is
+  // sent. The send-time pass remains the final safety net for older DB values.
+  if (emailConfigs.sendToEmail) {
+    if (hasInvalidEmailRecipient(emailConfigs.sendToEmail)) {
+      return { success: false, error: 'Invalid email address in the default To recipients.' };
+    }
+    emailConfigs.sendToEmail = normalizeEmailRecipients(emailConfigs.sendToEmail).join(', ');
+  }
+
+  for (const routeKey of ['formRoutes', 'formCcRoutes', 'formBccRoutes']) {
+    const routes = emailConfigs[routeKey];
+    if (!routes || typeof routes !== 'object') continue;
+    for (const [formKey, value] of Object.entries(routes)) {
+      if (!value) continue;
+      if (hasInvalidEmailRecipient(value)) {
+        return { success: false, error: `Invalid email recipient in ${routeKey}.${formKey}.` };
+      }
+      routes[formKey] = normalizeEmailRecipients(value).join(', ');
+    }
+  }
+
+  const routingRules = Array.isArray(emailConfigs.formRoutingRules) ? emailConfigs.formRoutingRules : [];
+  const assignedForms = new Map<string, string>();
+  const normalizedRules: any[] = [];
+  for (let index = 0; index < routingRules.length; index += 1) {
+    const rule = routingRules[index] || {};
+    const id = String(rule.id || `rule_${index + 1}`);
+    const forms: string[] = Array.isArray(rule.forms)
+      ? Array.from(
+          new Set<string>(
+            rule.forms
+              .filter((form: unknown): form is string => typeof form === 'string' && form.trim().length > 0)
+              .map((form: string) => form.trim())
+          )
+        )
+      : [];
+
+    for (const form of forms) {
+      const previous = assignedForms.get(form);
+      if (previous && previous !== id) {
+        return { success: false, error: `Form "${form}" is assigned to multiple email routing rules.` };
+      }
+      assignedForms.set(form, id);
+    }
+
+    for (const [field, value] of [['sendTo', rule.sendTo], ['cc', rule.cc], ['bcc', rule.bcc]] as const) {
+      if (value && hasInvalidEmailRecipient(value)) {
+        return { success: false, error: `Invalid email recipient in routing rule ${id}.${field}.` };
+      }
+    }
+
+    const recipients = dedupeRecipientChannels(rule.sendTo || '', rule.cc || '', rule.bcc || '');
+    normalizedRules.push({
+      ...rule,
+      id,
+      forms,
+      sendTo: recipients.to.join(', '),
+      cc: recipients.cc.join(', '),
+      bcc: recipients.bcc.join(', '),
+    });
+  }
+  emailConfigs.formRoutingRules = normalizedRules;
+  nextSettings.emailConfigs = emailConfigs;
+
   try {
-    const json = JSON.stringify(settingsData);
+    const json = JSON.stringify(nextSettings);
     const existing = await db.select().from(siteSettings).where(eq(siteSettings.key, 'forms_settings')).limit(1);
     if (existing && existing.length > 0) {
       await db.update(siteSettings).set({ value: json, updatedAt: new Date() }).where(eq(siteSettings.key, 'forms_settings'));
     } else {
       await db.insert(siteSettings).values({ key: 'forms_settings', value: json });
     }
-    // Log Activity
+
+    formsSettingsMemoryCache = nextSettings;
     await logAdminActivityAction({
       type: 'settings',
       action: 'Updated Form Settings',
-      details: 'CRM enquiry & booking form endpoints and templates saved',
+      details: 'CRM enquiry, email routing and form templates saved',
+      newEntry: { emailConfigs: nextSettings.emailConfigs, emailTemplateKeys: Object.keys(nextSettings.emailTemplates || {}) },
     });
 
     revalidatePath('/', 'layout');
     return { success: true };
   } catch (err: any) {
     console.warn('saveFormsSettingsAction DB query failed, saving to cache fallback:', err);
-    formsSettingsMemoryCache = settingsData;
+    formsSettingsMemoryCache = nextSettings;
     revalidatePath('/', 'layout');
-    return { success: true, warning: 'Saved to session memory cache.' };
+    return { success: true, warning: 'Database write failed; settings are available only in the current server process.' };
   }
 }
 
@@ -1472,20 +1554,20 @@ export async function getPackageDetailsAction(packageSlug: string) {
 
 export async function savePageSeoAction(pageId: number | string, seoData: any) {
   try {
-    const key = `page_seo_${pageId}`;
-    const value = JSON.stringify(seoData);
-
-    const numId = typeof pageId === 'number' ? pageId : parseInt(String(pageId), 10);
-    // Save to sitePages metaTitle and metaDescription if numeric
-    if (!isNaN(numId) && numId > 0) {
-      await db.update(sitePages).set({
-        metaTitle: seoData.metaTitle || null,
-        metaDescription: seoData.metaDescription || null,
-        updatedAt: new Date(),
-      }).where(eq(sitePages.id, numId));
+    const numId = Number(pageId);
+    if (!Number.isInteger(numId) || numId <= 0) {
+      return { success: false, error: 'Invalid page ID. Package/blog SEO must use the entity SEO action.' };
     }
 
-    // Save full JSON payload to siteSettings
+    const key = `page_seo_${numId}`;
+    const value = JSON.stringify(seoData);
+    await db.update(sitePages).set({
+      metaTitle: seoData.metaTitle || null,
+      metaDescription: seoData.metaDescription || null,
+      seoSettings: seoData,
+      updatedAt: new Date(),
+    }).where(eq(sitePages.id, numId));
+
     const existing = await db.select().from(siteSettings).where(eq(siteSettings.key, key)).limit(1);
     if (existing && existing.length > 0) {
       await db.update(siteSettings).set({ value, updatedAt: new Date() }).where(eq(siteSettings.key, key));
@@ -1493,17 +1575,17 @@ export async function savePageSeoAction(pageId: number | string, seoData: any) {
       await db.insert(siteSettings).values({ key, value });
     }
 
-    // Log Activity
     await logAdminActivityAction({
       type: 'pages',
       action: 'Updated Page SEO',
-      details: `SEO metadata updated for page ID #${pageId}`,
+      details: `SEO metadata updated for page ID #${numId}`,
+      newEntry: seoData,
     });
 
     revalidatePath('/admin/pages');
     revalidatePath('/admin/dashboard');
     revalidateTag('page-seo', 'max');
-    revalidateTag(`page-seo-${pageId}`, 'max');
+    revalidateTag(`page-seo-${numId}`, 'max');
     return { success: true };
   } catch (err: any) {
     console.error('savePageSeoAction error:', err);
@@ -1769,13 +1851,13 @@ function getLocalTemplateFallback(section: string, context: SeoGenerationContext
   if (section === 'geo') {
     return {
       geoSummary: `${siteContext.brandName} offers full-service ${title} solutions, including verified visa processing, group packages, custom itineraries, and luxury accommodations.`,
-      geoClusters: `${title}, Umrah Packages 2026, Hajj Travel, UK Saudi Visas, Toronto Umrah Agency`,
+      geoClusters: `${title}, Umrah Packages 2026, Hajj Travel, UK Saudi Visas, UK Umrah Travel Agency`,
     };
   }
 
   if (section === 'aeo') {
     return {
-      formattedFaqs: `Q: What is included in ${title} at ${siteContext.brandName}?\nA: This package includes verified visa assistance, round-trip flight bookings, 5-star hotel accommodations in Makkah and Madinah, and reliable ground transfers with guided support throughout your journey.\n\nQ: What is the cost of ${title} packages?\nA: Package pricing varies depending on travel dates, airline choice, and room occupancy. Contact our Toronto office for an itemized and transparent quotation with zero hidden fees.\n\nQ: How can I book or apply for ${title}?\nA: You can easily reserve your spot by submitting an online inquiry on our official website, calling our customer care desk, or visiting our Toronto headquarters.\n\nQ: What are the eligibility and document requirements for ${title}?\nA: British travelers require a valid passport with at least six months validity, passport-sized photographs, and required immunization records as mandated by Saudi authorities.\n\nQ: Why choose ${siteContext.brandName} for ${title}?\nA: We are an authorized and licensed pilgrimage provider offering de£e-long experience, dedicated 24/7 on-ground assistance, and curated five-star hospitality for British pilgrims.`,
+      formattedFaqs: `Q: What is included in ${title} at ${siteContext.brandName}?\nA: This package includes verified visa assistance, round-trip flight bookings, 5-star hotel accommodations in Makkah and Madinah, and reliable ground transfers with guided support throughout your journey.\n\nQ: What is the cost of ${title} packages?\nA: Package pricing varies depending on travel dates, airline choice, and room occupancy. Contact our UK travel team for an itemized quotation based on your travel dates and room choice.\n\nQ: How can I book or apply for ${title}?\nA: You can easily reserve your spot by submitting an online inquiry on our official website, or contacting our customer care team for booking assistance.\n\nQ: What are the eligibility and document requirements for ${title}?\nA: British travelers require a valid passport with at least six months validity, passport-sized photographs, and required immunization records as mandated by Saudi authorities.\n\nQ: Why choose ${siteContext.brandName} for ${title}?\nA: We provide pilgrimage planning, booking support, and travel guidance for British pilgrims.`,
     };
   }
 
@@ -1787,14 +1869,6 @@ function getLocalTemplateFallback(section: string, context: SeoGenerationContext
       name: `${title} - ${siteContext.brandName}`,
       description: `Official ${title} travel solutions, hotel bookings, and visa services by ${siteContext.brandName}.`,
       url: `${siteContext.domain}${cleanSlug}`,
-      // TODO: Replace the former brand phone number with the real British Hajj Travel number.
-      telephone: '',
-      address: {
-        '@type': 'PostalAddress',
-        addressLocality: 'Toronto',
-        addressRegion: 'ON',
-        addressCountry: 'CA',
-      },
       publisher: {
         '@type': 'Organization',
         name: siteContext.brandName,

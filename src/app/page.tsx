@@ -1,15 +1,19 @@
+import type { Metadata } from "next";
 import PageSectionsRenderer from "@/components/PageSectionsRenderer";
 import { getPageBySlug } from "@/actions/pageActions";
 import { getLatestBlogs } from "@/actions/blogActions";
-import PageSeoHead from "@/components/PageSeoHead";
+import { buildPageMetadata } from "@/lib/seoMetadata";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const pageData = await getPageBySlug('/').catch(() => null);
+  return buildPageMetadata(pageData || { title: 'Home', slug: '/' }, '/');
+}
 
 export default async function Home() {
   const [pageData, blogs] = await Promise.all([
     getPageBySlug("/"),
     getLatestBlogs(3),
   ]);
-
-  const homeSeo = pageData?.seoData || null;
 
   let dynamicSections: any[] = [];
   if (pageData?.sections) {
@@ -26,7 +30,6 @@ export default async function Home() {
 
   return (
     <main>
-      <PageSeoHead pageTitle="Home" seoData={homeSeo} />
       {/* ================= DYNAMIC SECTIONS ================= */}
       <PageSectionsRenderer sections={dynamicSections} pageData={pageData} initialBlogData={blogs} />
     </main>

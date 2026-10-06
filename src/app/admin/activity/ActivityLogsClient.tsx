@@ -14,6 +14,7 @@ const TYPE_CONFIG: Record<string, { label: string; bg: string; text: string; dot
   users: { label: 'Users / Login', bg: '#ECFDF5', text: '#047857', dot: '#10B981', border: '#A7F3D0' },
   settings: { label: 'Settings', bg: '#F5F3FF', text: '#6D28D9', dot: '#8B5CF6', border: '#DDD6FE' },
   packages: { label: 'Packages', bg: '#FFFBEB', text: '#B45309', dot: '#F59E0B', border: '#FDE68A' },
+  blogs: { label: 'Blog Posts', bg: '#FDF4FF', text: '#A21CAF', dot: '#D946EF', border: '#F5D0FE' },
   visas: { label: 'Visas', bg: '#E0F2FE', text: '#0369A1', dot: '#0EA5E9', border: '#BAE6FD' },
   enquiries: { label: 'Enquiries', bg: '#FFF1F2', text: '#BE123C', dot: '#F43F5E', border: '#FECDD3' },
   menus: { label: 'Menus', bg: '#F0FDFA', text: '#0F766E', dot: '#14B8A6', border: '#99F6E4' },
@@ -183,6 +184,7 @@ export default function ActivityLogsClient({ initialActivities }: ActivityLogsCl
               <option value="users">Users / Login</option>
               <option value="pages">Pages / CMS</option>
               <option value="packages">Packages</option>
+              <option value="blogs">Blog Posts</option>
               <option value="visas">Visas</option>
               <option value="enquiries">Enquiries</option>
               <option value="menus">Menus</option>

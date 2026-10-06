@@ -323,6 +323,7 @@ function BlogEditorInner() {
           onClose={() => setSeoModalOpen(false)}
           pageData={{
             id: blogId!,
+            entityType: 'blog',
             title: form.title,
             slug: `/${form.slug}`,
             seoData: null,

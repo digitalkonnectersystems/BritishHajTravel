@@ -5,6 +5,13 @@ import { getPageBySlug } from "@/actions/pageActions";
 import PageSectionsRenderer from "@/components/PageSectionsRenderer";
 import HajjPackagesSection from "@/components/HajjPackagesSection";
 import PageBanner from "@/components/PageBanner";
+import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seoMetadata";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const pageData = await getPageBySlug("/hajj-packages").catch(() => null);
+  return buildPageMetadata(pageData || { title: "Hajj Packages" }, "/hajj-packages");
+}
 
 // Fallback cards shown only if no Hajj packages exist yet in the database,
 // so the page never renders empty.

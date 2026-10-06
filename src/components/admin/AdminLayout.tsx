@@ -44,7 +44,7 @@ const navItems = [
     icon: <LayoutDashboard className="w-4 h-4" />,
   },
   {
-    label: 'CRM Enquiries',
+    label: 'Forms Enquiries',
     href: '/admin/enquiries',
     icon: <Mail className="w-4 h-4" />,
   },
@@ -87,6 +87,16 @@ const navItems = [
     label: 'Guides',
     href: '/admin/guides',
     icon: <BookOpen className="w-4 h-4" />,
+  },
+  {
+    label: 'SEO Center',
+    href: '/admin/seo',
+    icon: <Search className="w-4 h-4" />,
+  },
+  {
+    label: 'Activity Logs',
+    href: '/admin/activity',
+    icon: <Activity className="w-4 h-4" />,
   },
   {
     label: 'Settings',

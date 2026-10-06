@@ -315,11 +315,41 @@ export function getResponsiveEmailTemplateHtml(
 </html>`;
 }
 
+export function getEditableEmailTemplateHtml(subject: string): string {
+  const safeSubject = escapeHtml(String(subject || 'Form Submission'));
+  return `<!doctype html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head>
+<body style="margin:0;background:#f1f5f9;font-family:Arial,Helvetica,sans-serif;color:#0f172a">
+  <div style="max-width:720px;margin:0 auto;padding:28px 16px">
+    <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden">
+      <div style="background:#102e74;color:#ffffff;padding:22px 24px">
+        <div style="font-size:20px;font-weight:700">British Hajj Travel UK</div>
+        <div style="margin-top:5px;font-size:13px;opacity:.9">${safeSubject} · {{EMAIL_AUDIENCE}}</div>
+      </div>
+      <div style="padding:24px">
+        <p style="margin:0 0 14px;font-size:14px;line-height:1.6">Hello {{SUBMITTER_NAME}},</p>
+        <p style="margin:0 0 18px;font-size:14px;line-height:1.6">The following information was submitted through <strong>{{FORM_NAME}}</strong>.</p>
+        <table role="presentation" cellspacing="0" cellpadding="0" style="width:100%;border-collapse:collapse;font-size:13px">
+          <tbody>{{SUBMISSION_ROWS}}</tbody>
+        </table>
+        <p style="margin:18px 0 0;font-size:12px;color:#64748b">Submitted: {{SUBMISSION_DATE}}</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>`;
+}
+
 export const CANONICAL_FORM_SUBJECTS = [
   'Get a Free Quote Form',
   'Umrah Package Booking Form',
   'Hajj Package Booking Form',
+  'Hajj Customize Form',
   'Contact Inquiry Form',
+  'Package Inquiry Form',
+  'Visa Consultation Form',
+  'Umrah Visa Order Form',
   'Flights Booking Inquiry Form',
   'Drop Us A Message Form',
   'Blog Detail Page',
@@ -329,56 +359,36 @@ export type CanonicalFormSubject = (typeof CANONICAL_FORM_SUBJECTS)[number];
 
 export const FORM_SAMPLE_DATA: Record<CanonicalFormSubject, Record<string, unknown>> = {
   'Get a Free Quote Form': {
-    fullName: 'Ahmed Khan',
-    email: 'ahmed@example.com',
-    phone: '+44 20 7946 0123',
-    packageType: 'Umrah Package',
-    departureMonth: 'December 2026',
-    numberOfPilgrims: 2,
+    fullName: 'Ahmed Khan', email: 'ahmed@example.com', phone: '+44 20 7946 0123', packageType: 'Umrah Package', departureMonth: 'December 2026', numberOfPilgrims: 2,
   },
   'Umrah Package Booking Form': {
-    fullName: 'Fatima Ali',
-    email: 'fatima@example.com',
-    phone: '+44 20 7946 0145',
-    packageName: 'Premium Umrah Package',
-    departureDate: '2026-12-10',
-    adults: 2,
-    children: 1,
+    fullName: 'Fatima Ali', email: 'fatima@example.com', phone: '+44 20 7946 0145', packageName: 'Premium Umrah Package', departureDate: '2026-12-10', adults: 2, children: 1,
   },
   'Hajj Package Booking Form': {
-    fullName: 'Omar Hassan',
-    email: 'omar@example.com',
-    phone: '+44 20 7946 0167',
-    packageName: 'Hajj 2027 Package',
-    numberOfPilgrims: 4,
-    nationality: 'British',
+    fullName: 'Omar Hassan', email: 'omar@example.com', phone: '+44 20 7946 0167', packageName: 'Hajj 2027 Package', numberOfPilgrims: 4, nationality: 'British',
+  },
+  'Hajj Customize Form': {
+    fullName: 'Ibrahim Ali', email: 'ibrahim@example.com', phone: '+44 20 7946 0168', packageType: 'Custom Hajj 2027', adults: 2, message: 'Please contact me about a custom Hajj itinerary.',
   },
   'Contact Inquiry Form': {
-    name: 'Sarah Ahmed',
-    email: 'sarah@example.com',
-    phone: '+44 20 7946 0189',
-    message: 'I would like more information about your pilgrimage packages.',
+    name: 'Sarah Ahmed', email: 'sarah@example.com', phone: '+44 20 7946 0189', message: 'I would like more information about your pilgrimage packages.',
+  },
+  'Package Inquiry Form': {
+    fullName: 'Maryam Khan', email: 'maryam@example.com', phone: '+44 20 7946 0188', packageName: 'Umrah Package', adults: 2, message: 'Please send available package dates.',
+  },
+  'Visa Consultation Form': {
+    fullName: 'Zain Malik', email: 'zain@example.com', phone: '+44 20 7946 0187', visaTitle: 'Saudi Tourist eVisa', travelersCount: 2, nationality: 'British',
+  },
+  'Umrah Visa Order Form': {
+    fullName: 'Hafsa Noor', email: 'hafsa@example.com', phone: '+44 20 7946 0186', visaTitle: 'Saudi Umrah Visa', travelersCount: 1, nationality: 'British',
   },
   'Flights Booking Inquiry Form': {
-    passengerName: 'Bilal Mahmood',
-    email: 'bilal@example.com',
-    phone: '+44 20 7946 0190',
-    originCity: 'Toronto',
-    destinationCity: 'Jeddah',
-    travelDates: '2027-05-20 to 2027-06-05',
-    numberOfPassengers: 2,
+    passengerName: 'Bilal Mahmood', email: 'bilal@example.com', phone: '+44 20 7946 0190', originCity: 'London', destinationCity: 'Jeddah', travelDates: '2027-05-20 to 2027-06-05', numberOfPassengers: 2,
   },
   'Drop Us A Message Form': {
-    name: 'Aisha Rahman',
-    email: 'aisha@example.com',
-    phone: '+44 20 7946 0191',
-    message: 'Please contact me about arranging a private group trip.',
+    name: 'Aisha Rahman', email: 'aisha@example.com', phone: '+44 20 7946 0191', message: 'Please contact me about arranging a private group trip.',
   },
   'Blog Detail Page': {
-    fullName: 'Yusuf Ibrahim',
-    email: 'yusuf@example.com',
-    phone: '+44 20 7946 0192',
-    packageType: 'Hajj Package',
-    message: 'I am interested in learning more about this package.',
+    fullName: 'Yusuf Ibrahim', email: 'yusuf@example.com', phone: '+44 20 7946 0192', packageType: 'Hajj Package', message: 'I am interested in learning more about this package.',
   },
 };

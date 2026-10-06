@@ -18,7 +18,7 @@ export default function FloatingShareBar() {
   const fetchConfig = () => {
     let localData: any = null;
     if (typeof window !== 'undefined') {
-      const local = localStorage.getItem('king_travel_share_tools');
+      const local = localStorage.getItem('bht_share_tools') || localStorage.getItem('king_travel_share_tools');
       if (local) {
         try {
           localData = JSON.parse(local);

@@ -13,9 +13,11 @@ export async function submitQuoteEnquiryAction(data: {
   email: string;
   packageType?: string;
   numberOfPilgrims?: number;
+  message?: string;
+  sourceFormName?: string;
 }) {
   try {
-    const { fullName, phone, email, packageType = 'Umrah Package', numberOfPilgrims = 1 } = data;
+    const { fullName, phone, email, packageType = 'Umrah Package', numberOfPilgrims = 1, message = '', sourceFormName } = data;
 
     if (!fullName || !email || !phone) {
       return { success: false, error: 'Full Name, Email, and Phone number are required.' };
@@ -23,20 +25,17 @@ export async function submitQuoteEnquiryAction(data: {
 
     const enquiryNumber = `QT-${Date.now().toString().slice(-6)}`;
 
-    // 1. Insert into dedicated quote_enquiries table
-    try {
-      await db.insert(quoteEnquiries).values({
-        enquiryNumber,
-        fullName,
-        phone,
-        email,
-        packageType,
-        numberOfPilgrims,
-        status: 'new',
-      });
-    } catch (subErr) {
-      console.warn('Quote sub-table insert warning:', subErr);
-    }
+    // 1. Insert into dedicated quote_enquiries table. Keep the dedicated
+    // and unified records aligned so the admin CRUD operates on the same enquiry.
+    await db.insert(quoteEnquiries).values({
+      enquiryNumber,
+      fullName,
+      phone,
+      email,
+      packageType,
+      numberOfPilgrims,
+      status: 'new',
+    });
 
     // 2. Aggregate in unified enquiries table
     await db.insert(enquiries).values({
@@ -47,12 +46,13 @@ export async function submitQuoteEnquiryAction(data: {
       phone,
       preferredPackageType: packageType,
       adults: numberOfPilgrims,
+      message,
       status: 'new',
     });
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
     const emailResult = await dispatchFormEmails(
-      'Get a Free Quote Form',
+      sourceFormName || 'Get a Free Quote Form',
       {
         enquiryNumber,
         fullName,
@@ -60,6 +60,7 @@ export async function submitQuoteEnquiryAction(data: {
         phone,
         packageType,
         numberOfPilgrims,
+        message,
       }
     );
 
@@ -90,6 +91,7 @@ export async function submitPackageBookingEnquiryAction(data: {
   startDate?: string;
   totalPrice?: string;
   message?: string;
+  sourceFormName?: string;
 }) {
   try {
     const {
@@ -105,6 +107,7 @@ export async function submitPackageBookingEnquiryAction(data: {
       startDate = '',
       totalPrice = '',
       message = '',
+      sourceFormName,
     } = data;
 
     if (!fullName || !email || !phone) {
@@ -113,25 +116,21 @@ export async function submitPackageBookingEnquiryAction(data: {
 
     const bookingNumber = `BK-${Date.now().toString().slice(-6)}`;
 
-    // 1. Insert into dedicated package_booking_enquiries table
-    try {
-      await db.insert(packageBookingEnquiries).values({
-        bookingNumber,
-        packageId,
-        packageName,
-        fullName,
-        phone,
-        email,
-        adults,
-        children,
-        infants,
-        startDate,
-        totalPrice,
-        status: 'new',
-      });
-    } catch (subErr) {
-      console.warn('Booking sub-table insert warning:', subErr);
-    }
+    // 1. Insert into dedicated package_booking_enquiries table.
+    await db.insert(packageBookingEnquiries).values({
+      bookingNumber,
+      packageId,
+      packageName,
+      fullName,
+      phone,
+      email,
+      adults,
+      children,
+      infants,
+      startDate,
+      totalPrice,
+      status: 'new',
+    });
 
     // 2. Aggregate in unified enquiries table
     await db.insert(enquiries).values({
@@ -147,11 +146,12 @@ export async function submitPackageBookingEnquiryAction(data: {
       infants,
       departureMonth: startDate,
       status: 'new',
+      message,
     });
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
     const emailResult = await dispatchFormEmails(
-      'Package Detail Page Booking Form',
+      sourceFormName || 'Package Detail Page Booking Form',
       {
         bookingNumber,
         packageName,
@@ -189,9 +189,10 @@ export async function submitContactEnquiryAction(data: {
   website?: string;
   packageType?: string;
   message: string;
+  sourceFormName?: string;
 }) {
   try {
-    const { fullName, email, phone, website = '', packageType = '', message } = data;
+    const { fullName, email, phone, website = '', packageType = '', message, sourceFormName } = data;
 
     if (!fullName || !email) {
       return { success: false, error: 'Full Name and Email are required.' };
@@ -199,21 +200,17 @@ export async function submitContactEnquiryAction(data: {
 
     const ticketNumber = `TKT-${Date.now().toString().slice(-6)}`;
 
-    // 1. Insert into dedicated contact_enquiries table
-    try {
-      await db.insert(contactEnquiries).values({
-        ticketNumber,
-        fullName,
-        email,
-        phone: phone || 'N/A',
-        website,
-        packageType,
-        message,
-        status: 'new',
-      });
-    } catch (subErr) {
-      console.warn('Contact sub-table insert warning:', subErr);
-    }
+    // 1. Insert into dedicated contact_enquiries table.
+    await db.insert(contactEnquiries).values({
+      ticketNumber,
+      fullName,
+      email,
+      phone: phone || 'N/A',
+      website,
+      packageType,
+      message,
+      status: 'new',
+    });
 
     // 2. Aggregate in unified enquiries table
     await db.insert(enquiries).values({
@@ -228,7 +225,7 @@ export async function submitContactEnquiryAction(data: {
     });
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
-    const emailResult = await dispatchFormEmails('Contact Us Form', {
+    const emailResult = await dispatchFormEmails(sourceFormName || 'Contact Us Form', {
       ticketNumber,
       fullName,
       email,
@@ -261,6 +258,7 @@ export async function submitVisaEnquiryAction(data: {
   travelersCount?: number;
   nationality?: string;
   message?: string;
+  sourceFormName?: string;
 }) {
   try {
     const {
@@ -272,6 +270,7 @@ export async function submitVisaEnquiryAction(data: {
       travelersCount = 1,
       nationality = 'British',
       message = '',
+      sourceFormName,
     } = data;
 
     if (!fullName || !email || !phone) {
@@ -280,22 +279,18 @@ export async function submitVisaEnquiryAction(data: {
 
     const enquiryNumber = `VSA-${Date.now().toString().slice(-6)}`;
 
-    try {
-      await db.insert(visaEnquiries).values({
-        enquiryNumber,
-        visaServiceId,
-        visaTitle,
-        fullName,
-        email,
-        phone,
-        travelersCount,
-        nationality,
-        message,
-        status: 'new',
-      });
-    } catch (subErr) {
-      console.warn('Visa sub-table insert warning:', subErr);
-    }
+    await db.insert(visaEnquiries).values({
+      enquiryNumber,
+      visaServiceId,
+      visaTitle,
+      fullName,
+      email,
+      phone,
+      travelersCount,
+      nationality,
+      message,
+      status: 'new',
+    });
 
     await db.insert(enquiries).values({
       enquiryNumber,
@@ -311,7 +306,7 @@ export async function submitVisaEnquiryAction(data: {
     });
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
-    const emailResult = await dispatchFormEmails('Visa Consultation Form', {
+    const emailResult = await dispatchFormEmails(sourceFormName || 'Visa Consultation Form', {
       enquiryNumber,
       visaTitle,
       fullName,
@@ -337,8 +332,9 @@ export async function submitQuoteRequest(formData: FormData) {
   const phone = formData.get('phone') as string;
   const packageType = (formData.get('packageType') as string) || 'Umrah Package';
   const numberOfPilgrims = parseInt((formData.get('adults') as string) || (formData.get('numberOfPilgrims') as string) || '1', 10);
+  const message = (formData.get('message') as string) || '';
 
-  return await submitQuoteEnquiryAction({ fullName, email, phone, packageType, numberOfPilgrims });
+  return await submitQuoteEnquiryAction({ fullName, email, phone, packageType, numberOfPilgrims, message });
 }
 
 export async function submitPackageEnquiry(formData: FormData) {
@@ -348,7 +344,7 @@ export async function submitPackageEnquiry(formData: FormData) {
   const packageName = (formData.get('packageName') as string) || 'Package Enquiry';
   const message = (formData.get('message') as string) || '';
 
-  return await submitPackageBookingEnquiryAction({ fullName, email, phone, packageName, message });
+  return await submitPackageBookingEnquiryAction({ fullName, email, phone, packageName, message, sourceFormName: 'Package Inquiry Form' });
 }
 
 export async function getEnquiriesList() {
@@ -395,6 +391,7 @@ export async function submitFlightInquiry(data: {
   passengers?: number;
   flightClass?: string;
   message?: string;
+  sourceFormName?: string;
 }) {
   try {
     const {
@@ -409,6 +406,7 @@ export async function submitFlightInquiry(data: {
       passengers = 1,
       flightClass = 'Economy',
       message = '',
+      sourceFormName,
     } = data;
 
     if (!fullName || !email || !phone) {
@@ -417,25 +415,21 @@ export async function submitFlightInquiry(data: {
 
     const enquiryNumber = `FLT-${Date.now().toString().slice(-6)}`;
 
-    try {
-      await db.insert(flightEnquiries).values({
-        enquiryNumber,
-        fullName,
-        email,
-        phone,
-        originCity,
-        destinationCity,
-        departureDate,
-        returnDate,
-        tripType,
-        passengers,
-        flightClass,
-        message,
-        status: 'new',
-      });
-    } catch (subErr) {
-      console.warn('Flight sub-table insert warning:', subErr);
-    }
+    await db.insert(flightEnquiries).values({
+      enquiryNumber,
+      fullName,
+      email,
+      phone,
+      originCity,
+      destinationCity,
+      departureDate,
+      returnDate,
+      tripType,
+      passengers,
+      flightClass,
+      message,
+      status: 'new',
+    });
 
     await db.insert(enquiries).values({
       enquiryNumber,
@@ -451,7 +445,7 @@ export async function submitFlightInquiry(data: {
     });
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
-    const emailResult = await dispatchFormEmails('Flight Booking Form', {
+    const emailResult = await dispatchFormEmails(sourceFormName || 'Flight Booking Form', {
       enquiryNumber,
       fullName,
       email,
@@ -491,56 +485,96 @@ export async function getVisaEnquiriesList() {
   }
 }
 
+type EnquiryRow = typeof enquiries.$inferSelect;
+
+async function syncDedicatedEnquiryStatus(row: EnquiryRow, status: string): Promise<void> {
+  const updatedAt = new Date();
+  switch (row.type) {
+    case 'quote_request':
+      await db.update(quoteEnquiries).set({ status, updatedAt }).where(eq(quoteEnquiries.enquiryNumber, row.enquiryNumber));
+      break;
+    case 'package_enquiry':
+      await db.update(packageBookingEnquiries).set({ status, updatedAt }).where(eq(packageBookingEnquiries.bookingNumber, row.enquiryNumber));
+      break;
+    case 'general_contact':
+      await db.update(contactEnquiries).set({ status, updatedAt }).where(eq(contactEnquiries.ticketNumber, row.enquiryNumber));
+      break;
+    case 'visa_enquiry':
+      await db.update(visaEnquiries).set({ status, updatedAt }).where(eq(visaEnquiries.enquiryNumber, row.enquiryNumber));
+      break;
+    case 'flight_enquiry':
+      await db.update(flightEnquiries).set({ status, updatedAt }).where(eq(flightEnquiries.enquiryNumber, row.enquiryNumber));
+      break;
+  }
+}
+
+async function deleteDedicatedEnquiry(row: EnquiryRow): Promise<void> {
+  switch (row.type) {
+    case 'quote_request':
+      await db.delete(quoteEnquiries).where(eq(quoteEnquiries.enquiryNumber, row.enquiryNumber));
+      break;
+    case 'package_enquiry':
+      await db.delete(packageBookingEnquiries).where(eq(packageBookingEnquiries.bookingNumber, row.enquiryNumber));
+      break;
+    case 'general_contact':
+      await db.delete(contactEnquiries).where(eq(contactEnquiries.ticketNumber, row.enquiryNumber));
+      break;
+    case 'visa_enquiry':
+      await db.delete(visaEnquiries).where(eq(visaEnquiries.enquiryNumber, row.enquiryNumber));
+      break;
+    case 'flight_enquiry':
+      await db.delete(flightEnquiries).where(eq(flightEnquiries.enquiryNumber, row.enquiryNumber));
+      break;
+  }
+}
+
 export async function updateEnquiryStatus(enquiryId: number, status: any, internalNotes?: string): Promise<void> {
   try {
-    let enquiryNum = `#${enquiryId}`;
-    try {
-      const found = await db.select().from(enquiries).where(eq(enquiries.id, enquiryId)).limit(1);
-      if (found && found.length > 0) {
-        enquiryNum = `${found[0].enquiryNumber} (${found[0].fullName})`;
-      }
-    } catch (e) {}
+    const found = await db.select().from(enquiries).where(eq(enquiries.id, enquiryId)).limit(1);
+    const row = found[0];
+    if (!row) throw new Error(`Enquiry ${enquiryId} was not found.`);
 
+    const previousEntry = { status: row.status, internalNotes: row.internalNotes };
+    await syncDedicatedEnquiryStatus(row, String(status));
     await db
       .update(enquiries)
       .set({
         status,
-        internalNotes: internalNotes || undefined,
+        internalNotes: internalNotes === undefined ? row.internalNotes : internalNotes,
         updatedAt: new Date(),
       })
       .where(eq(enquiries.id, enquiryId));
 
-    // Log Activity
     await logAdminActivityAction({
       type: 'enquiries',
       action: 'Updated Enquiry Status',
-      details: `Enquiry ${enquiryNum} status changed to "${status}"`,
+      details: `Enquiry ${row.enquiryNumber} (${row.fullName}) status changed to "${status}"`,
+      previousEntry,
+      newEntry: { status, internalNotes: internalNotes === undefined ? row.internalNotes : internalNotes },
     });
 
     revalidatePath('/admin/enquiries');
     revalidatePath('/admin/dashboard');
   } catch (error) {
     console.error('Error updating enquiry status:', error);
+    throw error;
   }
 }
 
 export async function deleteEnquiryAction(id: number): Promise<{ success: boolean; error?: string }> {
   try {
-    let enquiryNum = `#${id}`;
-    try {
-      const found = await db.select().from(enquiries).where(eq(enquiries.id, id)).limit(1);
-      if (found && found.length > 0) {
-        enquiryNum = `${found[0].enquiryNumber} (${found[0].fullName})`;
-      }
-    } catch (e) {}
+    const found = await db.select().from(enquiries).where(eq(enquiries.id, id)).limit(1);
+    const row = found[0];
+    if (!row) return { success: false, error: 'Enquiry not found.' };
 
+    await deleteDedicatedEnquiry(row);
     await db.delete(enquiries).where(eq(enquiries.id, id));
 
-    // Log Activity
     await logAdminActivityAction({
       type: 'enquiries',
-      action: 'Deleted CRM Enquiry',
-      details: `Removed enquiry ${enquiryNum}`,
+      action: 'Deleted Form Enquiry',
+      details: `Removed enquiry ${row.enquiryNumber} (${row.fullName})`,
+      previousEntry: row,
     });
 
     revalidatePath('/admin/enquiries');
@@ -553,20 +587,22 @@ export async function deleteEnquiryAction(id: number): Promise<{ success: boolea
 }
 
 export async function markEnquiriesReadAction(ids: number[]): Promise<{ success: boolean; error?: string }> {
-  console.log('markEnquiriesReadAction called with ids:', ids);
   try {
     if (!ids || ids.length === 0) return { success: true };
-    console.log('About to call db.update');
+    const rows = await db.select().from(enquiries).where(inArray(enquiries.id, ids));
+    await Promise.all(rows.map((row) => syncDedicatedEnquiryStatus(row, 'contacted')));
     await db.update(enquiries).set({ status: 'contacted', updatedAt: new Date() }).where(inArray(enquiries.id, ids));
-    
-    // Log Activity
+
     await logAdminActivityAction({
       type: 'enquiries',
       action: 'Marked Enquiries Contacted',
-      details: `Marked ${ids.length} CRM enquiry records as contacted`,
+      details: `Marked ${rows.length} form enquiry records as contacted`,
+      previousEntry: rows.map((row) => ({ id: row.id, enquiryNumber: row.enquiryNumber, status: row.status })),
+      newEntry: rows.map((row) => ({ id: row.id, enquiryNumber: row.enquiryNumber, status: 'contacted' })),
     });
 
     revalidatePath('/admin/enquiries');
+    revalidatePath('/admin/dashboard');
     return { success: true };
   } catch (error: any) {
     console.error('Error marking enquiries read:', error);
@@ -577,13 +613,15 @@ export async function markEnquiriesReadAction(ids: number[]): Promise<{ success:
 export async function deleteEnquiriesBulkAction(ids: number[]): Promise<{ success: boolean; error?: string }> {
   try {
     if (!ids || ids.length === 0) return { success: true };
+    const rows = await db.select().from(enquiries).where(inArray(enquiries.id, ids));
+    await Promise.all(rows.map(deleteDedicatedEnquiry));
     await db.delete(enquiries).where(inArray(enquiries.id, ids));
 
-    // Log Activity
     await logAdminActivityAction({
       type: 'enquiries',
       action: 'Deleted Enquiries in Bulk',
-      details: `Permanently removed ${ids.length} enquiry records`,
+      details: `Permanently removed ${rows.length} form enquiry records`,
+      previousEntry: rows,
     });
 
     revalidatePath('/admin/enquiries');

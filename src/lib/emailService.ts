@@ -2,6 +2,7 @@ import { db } from '@/db';
 import { siteSettings, emailDeliveryLogs } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { getResponsiveEmailTemplateHtml, formatFieldLabel } from './emailTemplate';
+import { dedupeRecipientChannels, includesRecipient } from './emailRecipients';
 
 export { getResponsiveEmailTemplateHtml, formatFieldLabel };
 
@@ -25,11 +26,13 @@ export async function dispatchFormEmails(
     let smtpPass = process.env.SMTP_PASS || '';
     const authenticatedSender = (process.env.SMTP_USER || '').trim().toLowerCase();
     let fromEmail = (process.env.SMTP_FROM || authenticatedSender || 'no-reply@digitalkonnecter.com').trim();
+    let savedFormsConfig: any = null;
 
     try {
       const res = await db.select().from(siteSettings).where(eq(siteSettings.key, 'forms_settings')).limit(1);
       if (res && res.length > 0) {
         const config = JSON.parse(res[0].value);
+        savedFormsConfig = config;
         if (config?.emailConfigs?.sendToEmail) {
           adminRecipientEmail = config.emailConfigs.sendToEmail;
         }
@@ -107,6 +110,14 @@ export async function dispatchFormEmails(
       // Fallback to defaults
     }
 
+    const recipientChannels = dedupeRecipientChannels(adminRecipientEmail, adminCcEmail, adminBccEmail);
+    if (recipientChannels.to.length === 0) {
+      return { adminSent: false, userSent: false, error: 'No valid admin recipient email is configured.' };
+    }
+    adminRecipientEmail = recipientChannels.to.join(', ');
+    adminCcEmail = recipientChannels.cc.join(', ');
+    adminBccEmail = recipientChannels.bcc.join(', ');
+
     // Determine user email
     const userEmail =
       providedUserEmail ||
@@ -116,10 +127,20 @@ export async function dispatchFormEmails(
       '';
 
     const isValidUserEmail = typeof userEmail === 'string' && /\S+@\S+\.\S+/.test(userEmail.trim());
+    const userAlreadyReceivesAdminCopy = isValidUserEmail
+      ? includesRecipient(recipientChannels, userEmail.trim())
+      : false;
 
-    // Build Admin & User Email HTML
-    const adminHtml = getResponsiveEmailTemplateHtml(formName, submittedData, false);
-    const userHtml = isValidUserEmail ? getResponsiveEmailTemplateHtml(formName, submittedData, true) : '';
+    // Build Admin & User Email HTML. A custom per-form template is used only when
+    // it contains supported live-data tokens, preventing sample preview data from
+    // ever being sent to a real customer.
+    const mappedTemplateKey = resolveEmailTemplateKey(formName, submittedData);
+    const configuredTemplate = savedFormsConfig?.emailTemplates?.[mappedTemplateKey];
+    const adminHtml = renderConfiguredTemplate(configuredTemplate, formName, submittedData, false)
+      || getResponsiveEmailTemplateHtml(formName, submittedData, false);
+    const userHtml = isValidUserEmail
+      ? (renderConfiguredTemplate(configuredTemplate, formName, submittedData, true) || getResponsiveEmailTemplateHtml(formName, submittedData, true))
+      : '';
 
     // Auto-Selected Generic Subjects
     const adminSubject = `[British Hajj Travel UK] ${formName}`;
@@ -185,7 +206,7 @@ export async function dispatchFormEmails(
     const adminPromise = transporter.sendMail(adminMailOptions);
 
     // Prepare Email #2 (User, if email is valid)
-    const userPromise = (isValidUserEmail && userHtml)
+    const userPromise = (isValidUserEmail && userHtml && !userAlreadyReceivesAdminCopy)
       ? transporter.sendMail({
         from: `"British Hajj Travel UK" <${fromEmail}>`,
         to: userEmail.trim(),
@@ -252,7 +273,7 @@ export async function dispatchFormEmails(
     return {
       adminSent,
       userSent,
-      error: !adminSent || (isValidUserEmail && !userSent)
+      error: !adminSent || (isValidUserEmail && !userAlreadyReceivesAdminCopy && !userSent)
         ? getEmailDeliveryError(adminResult, userResult)
         : undefined,
     };
@@ -272,6 +293,53 @@ export async function dispatchFormEmails(
 
     return { adminSent: false, userSent: false, error: err.message };
   }
+}
+
+
+function resolveEmailTemplateKey(formName: string, submittedData: Record<string, any>): string {
+  const value = String(formName || '').toLowerCase();
+  const packageContext = `${submittedData.packageName || ''} ${submittedData.packageType || ''} ${submittedData.visaTitle || ''}`.toLowerCase();
+  if (value.includes('blog')) return 'Blog Detail Page';
+  if (value.includes('flight')) return 'Flights Booking Inquiry Form';
+  if (value.includes('umrah visa')) return 'Umrah Visa Order Form';
+  if (value.includes('visa')) return 'Visa Consultation Form';
+  if (value.includes('hajj') && value.includes('custom')) return 'Hajj Customize Form';
+  if (value.includes('package') && value.includes('inquiry')) return 'Package Inquiry Form';
+  if (value.includes('package') && (value.includes('detail') || value.includes('booking'))) {
+    return packageContext.includes('hajj') ? 'Hajj Package Booking Form' : 'Umrah Package Booking Form';
+  }
+  if (value.includes('drop us')) return 'Drop Us A Message Form';
+  if (value.includes('contact')) return 'Contact Inquiry Form';
+  if (value.includes('quote')) return packageContext.includes('hajj') ? 'Hajj Customize Form' : 'Get a Free Quote Form';
+  return formName;
+}
+
+function escapeHtml(value: unknown): string {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function renderConfiguredTemplate(template: unknown, formName: string, submittedData: Record<string, any>, isUserEmail: boolean): string | null {
+  if (typeof template !== 'string' || !template.trim()) return null;
+  const supportedTokens = ['{{FORM_NAME}}', '{{SUBMISSION_ROWS}}', '{{SUBMISSION_DATE}}', '{{SUBMITTER_NAME}}', '{{EMAIL_AUDIENCE}}'];
+  if (!supportedTokens.some((token) => template.includes(token))) return null;
+
+  const rows = Object.entries(submittedData)
+    .filter(([, value]) => value !== undefined && value !== null && String(value).trim() !== '')
+    .map(([key, value]) => `<tr><td style="padding:8px 12px;border:1px solid #e2e8f0;font-weight:700;vertical-align:top">${escapeHtml(formatFieldLabel(key))}</td><td style="padding:8px 12px;border:1px solid #e2e8f0">${escapeHtml(Array.isArray(value) ? value.join(', ') : value)}</td></tr>`)
+    .join('');
+
+  const submitterName = submittedData.fullName || submittedData.name || submittedData.customerName || 'Customer';
+  return template
+    .replaceAll('{{FORM_NAME}}', escapeHtml(formName))
+    .replaceAll('{{SUBMISSION_ROWS}}', rows)
+    .replaceAll('{{SUBMISSION_DATE}}', escapeHtml(new Date().toLocaleString('en-GB', { timeZone: 'Europe/London' })))
+    .replaceAll('{{SUBMITTER_NAME}}', escapeHtml(submitterName))
+    .replaceAll('{{EMAIL_AUDIENCE}}', isUserEmail ? 'Customer Confirmation' : 'Admin Notification');
 }
 
 function getEmailDeliveryError(

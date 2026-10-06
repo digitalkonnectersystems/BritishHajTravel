@@ -1,7 +1,13 @@
+import type { Metadata } from 'next';
 import { getHotelDirectory } from '@/actions/hotelActions';
 import { getPageBySlug } from '@/actions/pageActions';
 import PageBanner from '@/components/PageBanner';
-import PageSeoHead from '@/components/PageSeoHead';
+import { buildPageMetadata } from '@/lib/seoMetadata';
+
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPageBySlug('/hotels').catch(() => null);
+  return buildPageMetadata(page || { title: 'Hotels', slug: '/hotels' }, '/hotels');
+}
 
 function HotelStars({ rating }: { rating: string | null }) {
   const count = Math.max(0, Math.min(5, Math.round(Number(rating || 5))));
@@ -21,7 +27,6 @@ export default async function HotelsPage() {
 
   return (
     <main className="min-h-screen bg-blue-lt pb-16">
-      <PageSeoHead pageTitle={page?.title || 'Hotels'} seoData={page?.seoData} />
       <PageBanner
         title={page?.bannerTitle || page?.title || 'Hotels in Makkah and Madinah'}
         description={page?.bannerDescription || 'Explore our recommended hotels by city and visit each hotel\'s website for more details and booking information.'}

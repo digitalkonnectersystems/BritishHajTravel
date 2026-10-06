@@ -36,6 +36,24 @@ export const sessions = mysqlTable('sessions', {
   expiresAt: timestamp('expires_at').notNull(),
 });
 
+// 2a. Administrative Activity Audit Log
+export const activityLogs = mysqlTable('activity_logs', {
+  id: int('id').autoincrement().primaryKey(),
+  name: varchar('name', { length: 255 }).notNull(),
+  status: varchar('status', { length: 64 }).notNull(),
+  userId: int('user_id'),
+  ipAddress: varchar('ip_address', { length: 64 }),
+  previousEntry: text('previous_entry'),
+  newEntry: text('new_entry'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow().onUpdateNow(),
+  deletedAt: timestamp('deleted_at'),
+}, (table) => ({
+  statusIdx: index('activity_logs_status_idx').on(table.status),
+  userIdx: index('activity_logs_user_id_idx').on(table.userId),
+  createdIdx: index('activity_logs_created_at_idx').on(table.createdAt),
+}));
+
 // 2a. Package Categories (admin-managed grouping for Umrah/Hajj packages)
 export const packageCategories = mysqlTable('package_categories', {
   id: int('id').autoincrement().primaryKey(),

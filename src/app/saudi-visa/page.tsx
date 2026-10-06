@@ -6,6 +6,13 @@ import PageSectionsRenderer from "@/components/PageSectionsRenderer";
 import UmrahVisaApplicationSection from "@/components/UmrahVisaApplicationSection";
 import UmrahVisaServicesOverviewSection from "@/components/UmrahVisaServicesOverviewSection";
 import UmrahVisaDocumentGuideSection from "@/components/UmrahVisaDocumentGuideSection";
+import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seoMetadata";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const pageData = await getPageBySlug("/saudi-visa").catch(() => null);
+  return buildPageMetadata(pageData || { title: "Saudi Visa Services" }, "/saudi-visa");
+}
 
 function ProcessStepsSection({ data }: { data?: any }) {
   return (

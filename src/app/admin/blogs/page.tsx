@@ -260,7 +260,7 @@ export default function AdminBlogsPage() {
       <SeoCenterModal
         isOpen={seoModalOpen}
         onClose={() => { setSeoModalOpen(false); setSelectedSeoBlog(null); }}
-        pageData={selectedSeoBlog ? { id: selectedSeoBlog.id, title: selectedSeoBlog.title, slug: selectedSeoBlog.slug ? `/${selectedSeoBlog.slug}` : '', seoData: selectedSeoBlog.seoData } : null}
+        pageData={selectedSeoBlog ? { id: selectedSeoBlog.id, entityType: 'blog', title: selectedSeoBlog.title, slug: selectedSeoBlog.slug ? `/${selectedSeoBlog.slug}` : '', seoData: selectedSeoBlog.seoData } : null}
         onSaveSuccess={async () => { const updated = await getBlogsList(); setBlogs(updated); }}
       />
     </AdminLayout>

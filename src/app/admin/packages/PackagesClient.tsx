@@ -493,11 +493,13 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
         pageData={
           selectedSeoPkg
             ? {
-              id: `pkg_${selectedSeoPkg.id}`,
+              id: selectedSeoPkg.id,
+              entityType: 'package',
               title: selectedSeoPkg.title,
-              slug: `/package/${selectedSeoPkg.id}`,
+              slug: `/package/${selectedSeoPkg.slug}`,
+              seoData: selectedSeoPkg.seoSettings || selectedSeoPkg.seoData || null,
               metaTitle: `${selectedSeoPkg.title} | British Hajj Travel UK`,
-              metaDescription: `Book official ${selectedSeoPkg.title} from UK. Starting at £ $${selectedSeoPkg.startingPrice}. ${selectedSeoPkg.shortDescription || 'Verified visa, luxury hotel stays, flights included.'}`,
+              metaDescription: `Book official ${selectedSeoPkg.title} from UK. Starting at £${selectedSeoPkg.startingPrice}. ${selectedSeoPkg.shortDescription || 'Verified visa, luxury hotel stays, flights included.'}`,
             }
             : null
         }

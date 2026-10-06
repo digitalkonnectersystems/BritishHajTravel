@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-const COOKIE_NAME = 'king_travel_session';
+const COOKIE_NAME = 'bht_admin_session';
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;

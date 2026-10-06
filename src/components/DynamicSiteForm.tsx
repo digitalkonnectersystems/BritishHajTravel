@@ -205,6 +205,7 @@ export default function DynamicSiteForm({
           passengers: parseNumberSafe(getVal(["9", "passengers", "number_of_passengers", "number of passengers"], "1"), 1),
           flightClass: getVal(["10", "class", "flightClass", "flight class"], "Economy"),
           message,
+          sourceFormName: 'Flights Booking Inquiry Form',
         });
       } else if (formKey === "quoteForm") {
         res = await submitQuoteEnquiryAction({
@@ -213,6 +214,8 @@ export default function DynamicSiteForm({
           email,
           packageType,
           numberOfPilgrims: parseNumberSafe(getVal(["adults", "passengers"], "1"), 1),
+          message,
+          sourceFormName: 'Get a Free Quote Form',
         });
       } else if (formKey === "packageDetailForm" || formKey === "packageInquiry") {
         res = await submitPackageBookingEnquiryAction({
@@ -225,6 +228,7 @@ export default function DynamicSiteForm({
           children: parseNumberSafe(getVal(["children"], "0"), 0),
           infants: parseNumberSafe(getVal(["infants"], "0"), 0),
           startDate: getVal(["departureDate", "travel_date", "start_date"]),
+          sourceFormName: formKey === 'packageInquiry' ? 'Package Inquiry Form' : 'Umrah Package Booking Form',
         });
       } else if (formKey === "visaConsultation" || formKey === "umrahVisaOrder") {
         res = await submitVisaEnquiryAction({
@@ -234,6 +238,7 @@ export default function DynamicSiteForm({
           travelersCount: parseNumberSafe(quantity, 1),
           nationality: getVal(["nationality"], "British"),
           message: [message, travelDate ? `Travel date: ${travelDate}` : ""].filter(Boolean).join("\n"),
+          sourceFormName: formKey === 'umrahVisaOrder' ? 'Umrah Visa Order Form' : 'Visa Consultation Form',
         });
       } else if (formKey === "contact" || formKey === "dropUsMessage") {
         res = await submitContactEnquiryAction({
@@ -243,6 +248,7 @@ export default function DynamicSiteForm({
           website,
           packageType,
           message,
+          sourceFormName: formKey === 'dropUsMessage' ? 'Drop Us A Message Form' : 'Contact Inquiry Form',
         });
       }
 

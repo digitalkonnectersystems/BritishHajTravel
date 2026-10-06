@@ -22,13 +22,17 @@ import {
   Plus,
   Loader2,
 } from 'lucide-react';
-import { savePageSeoAction, generateSeoSectionAction, SeoGenerationContext } from '@/actions/pageActions';
+import { generateSeoSectionAction } from '@/actions/pageActions';
+import type { SeoGenerationContext } from '@/actions/pageActions';
+import { getEntitySeoAction, saveEntitySeoAction } from '@/actions/seoActions';
+import type { SeoEntityType } from '@/lib/seoMetadata';
 
 interface SeoCenterModalProps {
   isOpen: boolean;
   onClose: () => void;
   pageData: {
     id: number | string;
+    entityType?: SeoEntityType;
     title: string;
     slug: string;
     metaTitle?: string;
@@ -129,110 +133,85 @@ export default function SeoCenterModal({
     return fitText(`Explore official ${title} packages by British Hajj Travel UK. Verified visas, luxury hotel bookings & 24/7 support.`, 160);
   };
 
-  // Populate data on pageData change
+  // Populate data from the entity-specific SEO record. This prevents package/blog IDs
+  // from colliding with site page IDs in the legacy page_seo_* settings keys.
   useEffect(() => {
-    if (pageData) {
+    let cancelled = false;
+
+    const populate = async () => {
+      if (!pageData) return;
+
       const pageTitle = pageData.title || 'British Hajj Travel UK';
       const pageSlug = pageData.slug || '/';
       const cleanSlug = pageSlug === '/' ? '' : pageSlug.startsWith('/') ? pageSlug : `/${pageSlug}`;
+      let existingSeo = pageData.seoData || {};
 
-      const existingSeo = pageData.seoData || {};
+      try {
+        const storedSeo = await getEntitySeoAction(pageData.entityType || 'page', pageData.id);
+        if (storedSeo && typeof storedSeo === 'object') {
+          existingSeo = { ...existingSeo, ...storedSeo };
+        }
+      } catch (err) {
+        console.warn('SEO entity lookup failed; using data supplied by the admin screen.', err);
+      }
 
-      setMetaTitle(
-        pageData.metaTitle ||
-        existingSeo.metaTitle ||
-        generateOptimalTitle(pageTitle)
-      );
+      if (cancelled) return;
 
-      setMetaDescription(
-        pageData.metaDescription ||
-        existingSeo.metaDescription ||
-        generateOptimalDescription(pageTitle)
-      );
-
-      setHeroAlt(
-        existingSeo.heroAlt ||
-        `Official visual illustration and hero presentation for ${pageTitle} at British Hajj Travel UK`
-      );
-
-      setOgCardAlt(
-        existingSeo.ogCardAlt ||
-        `Official social share card banner for ${pageTitle} at British Hajj Travel UK`
-      );
-
-      setGeoSummary(
-        existingSeo.geoSummary ||
-        `Comprehensive official overview of ${pageTitle} services, Umrah packages, hotel reservations, and visa processing presented by British Hajj Travel UK.`
-      );
-
-      setGeoClusters(
-        existingSeo.geoClusters ||
-        `British Hajj Travel UK, Umrah Packages, Hajj Packages, Saudi Visa, Flights, Luxury Hotels, Toronto Travel Agency`
-      );
-
-      setAeoFaqs(
-        existingSeo.aeoFaqs ||
-        `Q: What is the main focus of ${pageTitle} at British Hajj Travel UK?\nA: This page provides official guidance, pricing, and booking details regarding ${pageTitle}.\n\nQ: How can I book packages for ${pageTitle}?\nA: Visit our official website contact section or request a free quote online.`
-      );
-
+      setMetaTitle(existingSeo.metaTitle || pageData.metaTitle || generateOptimalTitle(pageTitle));
+      setMetaDescription(existingSeo.metaDescription || pageData.metaDescription || generateOptimalDescription(pageTitle));
+      setHeroAlt(existingSeo.heroAlt || `Official visual illustration and hero presentation for ${pageTitle} at British Hajj Travel UK`);
+      setOgCardAlt(existingSeo.ogCardAlt || `Official social share card banner for ${pageTitle} at British Hajj Travel UK`);
+      setGeoSummary(existingSeo.geoSummary || `Comprehensive official overview of ${pageTitle} services, Umrah packages, hotel reservations, and visa processing presented by British Hajj Travel UK.`);
+      setGeoClusters(existingSeo.geoClusters || `British Hajj Travel UK, Umrah Packages, Hajj Packages, Saudi Visa, Flights, Luxury Hotels, UK Travel Agency`);
+      setAeoFaqs(existingSeo.aeoFaqs || `Q: What is the main focus of ${pageTitle} at British Hajj Travel UK?\nA: This page provides official guidance, pricing, and booking details regarding ${pageTitle}.\n\nQ: How can I book packages for ${pageTitle}?\nA: Visit our official website contact section or request a free quote online.`);
       setSchemaType(existingSeo.schemaType || 'TravelAgency');
 
       const initialSchema = {
         '@context': 'https://schema.org',
         '@type': existingSeo.schemaType || 'TravelAgency',
         name: `${pageTitle} | British Hajj Travel UK`,
-        description:
-          pageData.metaDescription ||
-          `Official ${pageTitle} packages and travel services provided by British Hajj Travel UK.`,
+        description: pageData.metaDescription || existingSeo.metaDescription || `Official ${pageTitle} packages and travel services provided by British Hajj Travel UK.`,
         url: `https://britishhajjtravel.com${cleanSlug}`,
         publisher: {
           '@type': 'Organization',
           name: 'British Hajj Travel UK',
-          url: 'https://britishhajjtravel.com',
-          logo: 'https://media.britishhajjtravel.com/uploads/branding/logo.png',
         },
       };
 
       setJsonLdPayload(
-        existingSeo.jsonLdPayload || JSON.stringify(initialSchema, null, 2)
+        typeof existingSeo.jsonLdPayload === 'string' && existingSeo.jsonLdPayload.trim()
+          ? existingSeo.jsonLdPayload
+          : JSON.stringify(initialSchema, null, 2)
       );
-
       setCanonicalUrl(existingSeo.canonicalUrl || `https://britishhajjtravel.com${cleanSlug}`);
-      setNoIndex(existingSeo.noIndex || false);
-      setOgImageUrl(
-        existingSeo.ogImageUrl ||
-        pageData.bannerBgImage ||
-        'https://media.britishhajjtravel.com/uploads/branding/logo.png'
-      );
-    }
-  }, [pageData]);
+      setNoIndex(Boolean(existingSeo.noIndex));
+      setOgImageUrl(existingSeo.ogImageUrl || pageData.bannerBgImage || '');
+    };
 
-  // Common generation context builder
-  const buildGenerationContext = (customExisting?: Record<string, string>): SeoGenerationContext => {
-    const pageTitle = pageData?.title || 'British Hajj Travel UK';
-    const pageSlug = pageData?.slug || '/';
+    populate();
+    return () => {
+      cancelled = true;
+    };
+  }, [pageData, isOpen]);
+
+  const buildGenerationContext = (existingContent: Record<string, string> = {}): SeoGenerationContext => {
+    const slug = pageData?.slug || '/';
+    const normalizedSlug = slug === '/' ? '/' : slug.startsWith('/') ? slug : `/${slug}`;
+
     return {
-      pageTitle,
-      pageSlug,
-      metaDescription,
-      schemaType,
-      canonicalUrl,
-      heroImageUrl: pageData?.bannerBgImage,
-      ogImageUrl,
-      existingContent: customExisting || {
-        metaTitle,
-        metaDescription,
-        heroAlt,
-        ogCardAlt,
-        geoSummary,
-        geoClusters,
-        aeoFaqs,
-      },
+      pageTitle: pageData?.title || 'British Hajj Travel UK',
+      pageSlug: normalizedSlug,
+      metaDescription: metaDescription || pageData?.metaDescription || undefined,
+      heroImageUrl: pageData?.bannerBgImage || undefined,
+      ogImageUrl: ogImageUrl || pageData?.bannerBgImage || undefined,
+      schemaType: schemaType || 'WebPage',
+      canonicalUrl: canonicalUrl || `https://britishhajjtravel.com${normalizedSlug === '/' ? '' : normalizedSlug}`,
+      existingContent,
       siteContext: {
         brandName: 'British Hajj Travel UK',
         domain: 'https://britishhajjtravel.com',
-        industry: 'Licensed Umrah & Hajj pilgrimage operator, flights, and Saudi visa services in Toronto, UK',
-        logoUrl: 'https://media.britishhajjtravel.com/uploads/branding/logo.png',
+        industry: 'Hajj, Umrah and Saudi travel',
+        logoUrl: 'https://britishhajjtravel.com/img/logo.png',
       },
     };
   };
@@ -308,7 +287,7 @@ export default function SeoCenterModal({
       console.warn('GEO generation error:', err);
       const title = pageData.title || 'British Hajj Travel UK';
       setGeoSummary(`British Hajj Travel UK offers full-service ${title} solutions, including verified visa processing, group packages, custom itineraries, and luxury accommodations.`);
-      setGeoClusters(`${title}, Umrah Packages 2026, Hajj Travel, UK Saudi Visas, Toronto Umrah Agency`);
+      setGeoClusters(`${title}, Umrah Packages 2026, Hajj Travel, UK Saudi Visas, UK Umrah Travel Agency`);
       setSaveToast('Used quick defaults — AI generation is temporarily unavailable.');
       setTimeout(() => setSaveToast(''), 3500);
     } finally {
@@ -334,7 +313,7 @@ export default function SeoCenterModal({
     } catch (err) {
       console.warn('AEO generation error:', err);
       const title = pageData.title || 'British Hajj Travel UK';
-      setAeoFaqs(`Q: What is included in ${title} at British Hajj Travel UK?\nA: This package includes verified visa assistance, round-trip flight bookings, 5-star hotel accommodations in Makkah and Madinah, and reliable ground transfers with guided support throughout your journey.\n\nQ: What is the cost of ${title} packages?\nA: Package pricing varies depending on travel dates, airline choice, and room occupancy. Contact our Toronto office for an itemized and transparent quotation with zero hidden fees.\n\nQ: How can I book or apply for ${title}?\nA: You can easily reserve your spot by submitting an online inquiry on our official website, calling our customer care desk, or visiting our Toronto headquarters.\n\nQ: What are the eligibility and document requirements for ${title}?\nA: British travelers require a valid passport with at least six months validity, passport-sized photographs, and required immunization records as mandated by Saudi authorities.\n\nQ: Why choose British Hajj Travel UK for ${title}?\nA: We are an authorized and licensed pilgrimage provider offering decade-long experience, dedicated 24/7 on-ground assistance, and curated five-star hospitality for British pilgrims.`);
+      setAeoFaqs(`Q: What is included in ${title} at British Hajj Travel UK?\nA: This package includes verified visa assistance, round-trip flight bookings, 5-star hotel accommodations in Makkah and Madinah, and reliable ground transfers with guided support throughout your journey.\n\nQ: What is the cost of ${title} packages?\nA: Package pricing varies depending on travel dates, airline choice, and room occupancy. Contact our UK travel team for an itemized and transparent quotation with zero hidden fees.\n\nQ: How can I book or apply for ${title}?\nA: You can easily reserve your spot by submitting an online inquiry on our official website, calling our customer care desk, or visiting our UK travel team.\n\nQ: What are the eligibility and document requirements for ${title}?\nA: British travelers require a valid passport with at least six months validity, passport-sized photographs, and required immunization records as mandated by Saudi authorities.\n\nQ: Why choose British Hajj Travel UK for ${title}?\nA: We are an authorized and licensed pilgrimage provider offering decade-long experience, dedicated 24/7 on-ground assistance, and curated five-star hospitality for British pilgrims.`);
       setSaveToast('Used quick defaults — AI generation is temporarily unavailable.');
       setTimeout(() => setSaveToast(''), 3500);
     } finally {
@@ -448,14 +427,16 @@ export default function SeoCenterModal({
     };
 
     try {
-      const pageId = typeof pageData.id === 'number' ? pageData.id : parseInt(String(pageData.id), 10) || 0;
-      await savePageSeoAction(pageId, seoPayload);
+      const result = await saveEntitySeoAction(pageData.entityType || 'page', pageData.id, seoPayload);
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to save SEO configuration.');
+      }
 
       setSaveToast('SEO configuration saved successfully!');
       if (onSaveSuccess) onSaveSuccess();
       setTimeout(() => setSaveToast(''), 3000);
     } catch (err) {
-      setSaveToast('Saved locally in page state.');
+      setSaveToast('Failed to save SEO configuration. Please try again.');
       setTimeout(() => setSaveToast(''), 3000);
     } finally {
       setIsSaving(false);
