@@ -11,10 +11,14 @@ export default function UpcomingUmrahPackages({
   data,
   initialPackages,
   pageData,
+  onBookNow,
+  hideFooterLink = false,
 }: {
   data: any;
   initialPackages?: any;
   pageData?: any;
+  onBookNow?: (pkg: any) => void;
+  hideFooterLink?: boolean;
 }) {
   const pathname = usePathname();
   const eyebrow = data?.eyebrow || "EXCLUSIVE UPCOMING";
@@ -288,8 +292,12 @@ export default function UpcomingUmrahPackages({
                       </a>
                       <button
                         onClick={() => {
-                          setSelectedPkgForBooking(pkg);
-                          setBookingModalOpen(true);
+                          if (onBookNow) {
+                            onBookNow(pkg);
+                          } else {
+                            setSelectedPkgForBooking(pkg);
+                            setBookingModalOpen(true);
+                          }
                         }}
                         className={`flex-1 py-3 text-center text-xs font-black rounded-md uppercase tracking-widest transition-colors block border-2 border-transparent cursor-pointer ${isGold
                           ? "bg-red hover:bg-white hover:border-red text-white hover:text-red"
@@ -306,7 +314,7 @@ export default function UpcomingUmrahPackages({
           </div>
         )}
  
-        {pathname !== "/umrah-packages" && (
+        {!hideFooterLink && pathname !== "/umrah-packages" && (
           <div className="flex justify-center mt-12">
             <a
               href="/umrah-packages"
@@ -318,11 +326,11 @@ export default function UpcomingUmrahPackages({
         )}
       </div>
  
-      <PackageBookingModal
+      {!onBookNow && <PackageBookingModal
         isOpen={bookingModalOpen}
         onClose={() => setBookingModalOpen(false)}
         pkg={selectedPkgForBooking}
-      />
+      />}
     </section>
   );
 }

@@ -164,6 +164,29 @@ export default function UmrahPackagesPageClient({ initialPageData, packages = []
         </div>
       </div>
 
+      {/* Preserve dedicated month pages as crawlable internal links, independent of the main package listings. */}
+      <section aria-labelledby="umrah-months-heading" className="bg-[#f3f6fc] py-12 px-5">
+        <div className="max-w-[1300px] mx-auto">
+          <p className="text-[#b50007] uppercase text-xs font-extrabold tracking-widest">BROWSE BY DEPARTURE</p>
+          <h2 id="umrah-months-heading" className="text-[#020e43] font-bold text-3xl mt-3 mb-2">Explore Umrah by Month</h2>
+          <p className="text-sm text-slate-600 mb-7">Compare Umrah options and browse archived 2026 itineraries. Past departure details are provided for reference.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[
+              { title: 'Ramadan Umrah 2027', href: '/ramadan-umrah-packages', description: 'Ramadan pilgrimage packages' },
+              { title: 'March Umrah Packages 2026', href: '/march-umrah-packages', description: 'View archived March itineraries' },
+              { title: 'August Umrah Packages 2026', href: '/august-umrah-packages', description: 'View archived August itinerary' },
+              { title: 'October Umrah Packages 2026', href: '/october-umrah-packages', description: 'October package details' },
+              { title: 'December Umrah Packages 2026', href: '/december-umrah-packages', description: 'December package details' },
+              { title: 'Nusuk Umrah Guide', href: '/umrah-guide', description: 'Plan your Umrah journey' },
+            ].map((item) => <Link key={item.href} href={item.href} className="flex flex-col bg-white border border-slate-200 hover:border-[#b50007] transition-colors rounded-xl p-6 no-underline">
+              <span className="text-[#020e43] text-lg font-bold">{item.title}</span>
+              <span className="text-slate-500 text-xs mt-2 flex-1">{item.description}</span>
+              <span className="text-[#b50007] text-xs font-extrabold mt-5">VIEW PAGE →</span>
+            </Link>)}
+          </div>
+        </div>
+      </section>
+
       {/* ================= MAIN PACKAGES GRID ================= */}
       <section className="packages-grid-container pt-16 bg-white">
         <div className="max-w-[1400px] mx-auto px-5">

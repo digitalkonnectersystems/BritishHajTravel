@@ -1117,6 +1117,18 @@ export async function clearFormsSettingsCache() {
 }
 
 const DEFAULT_FORM_FIELDS_STATE: Record<string, Array<{ id: string; label: string; type: string; placeholder: string; required: boolean }>> = {
+  baanHoldingHajjForm: [
+    { id: '1', label: 'Name', type: 'text', placeholder: 'Name', required: true },
+    { id: '2', label: 'Email', type: 'email', placeholder: 'Email', required: true },
+    { id: '3', label: 'Phone', type: 'tel', placeholder: 'Phone', required: true },
+    { id: '4', label: 'Postcode', type: 'text', placeholder: 'Postcode', required: true },
+    { id: '5', label: 'Airport', type: 'select', placeholder: 'London (LON)', required: true },
+    { id: '6', label: 'Hajj Package', type: 'select', placeholder: '5-Star', required: true },
+    { id: '7', label: 'Number of Passengers', type: 'number', placeholder: '1', required: true },
+    { id: '8', label: 'Number of Days', type: 'select', placeholder: '12 Days Packages', required: true },
+    { id: '9', label: 'Room Size', type: 'select', placeholder: 'Double Room', required: true },
+    { id: '10', label: 'Budget per person', type: 'select', placeholder: '5K - 7K', required: true },
+  ],
   quoteForm: [
     { id: '1', label: 'Your Name', type: 'text', placeholder: 'Full Name', required: true },
     { id: '2', label: 'Phone Number', type: 'tel', placeholder: '+1 905 624 8344', required: true },
@@ -1212,6 +1224,7 @@ const DEFAULT_FORM_FIELDS_STATE: Record<string, Array<{ id: string; label: strin
 };
 
 const DEFAULT_FORMS_DATA: Record<string, any> = {
+  baanHoldingHajjForm: { title: 'BAAN Holding Hajj — Registration of Interest', subtitle: 'Enquiry popup at /baan-holding-hajj', recipientEmail: 'booking@britishhajjtravel.com', successMessage: 'Your Hajj 2027 interest has been registered.', enabled: true, buttonText: 'Submit Enquiry', fieldsCount: 10 },
   quoteForm: {
     title: 'Homepage Hero Banner — Get a Free Quote Form',
     subtitle: 'Inline quote form embedded in the Homepage & Umrah landing page hero banner.',
@@ -1325,6 +1338,7 @@ const DEFAULT_EMAIL_CONFIGS: any = {
   formCcRoutes: {},
   formBccRoutes: {},
   formRoutingRules: [
+    { id: 'form_baanHoldingHajjForm', forms: ['baanHoldingHajjForm'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
     { id: 'form_quoteForm', forms: ['quoteForm'], sendTo: 'saudivisa@britishhajjtravel.com', cc: '', bcc: '' },
     { id: 'form_packageDetailForm', forms: ['packageDetailForm'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
     { id: 'form_hajjPackageDetailForm', forms: ['hajjPackageDetailForm'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },

@@ -4,6 +4,7 @@ import { getGuidesList, getPageBySlug } from "@/actions/pageActions";
 import { getPackagesByType, getSoldOutPackages } from "@/actions/packageActions";
 import PageBanner from "@/components/PageBanner";
 import PageSectionsRenderer from "@/components/PageSectionsRenderer";
+import RelatedUmrahPackages from "@/components/seasonal/RelatedUmrahPackages";
 import { getPackageBySlug } from "@/actions/packageActions";
 import PackageDetailPageClient from "@/app/package/[slug]/PackageDetailPageClient";
 import { getBlogBySlug } from "@/actions/blogActions";
@@ -42,6 +43,12 @@ export default async function DynamicPage({
 }) {
   const { slug = [] } = await params;
   const slugPath = `/${slug.join("/")}`;
+  const showRelatedUmrahPackages = [
+    "/ramadan-umrah-packages",
+    "/october-umrah-packages",
+    "/december-umrah-packages",
+    "/umrah-guide",
+  ].includes(slugPath);
   const page = await getPageBySlug(slugPath);
 
   if (!page || page.status === "draft") {
@@ -149,6 +156,7 @@ export default async function DynamicPage({
           <p className="text-green mt-2">Content coming soon.</p>
         </div>
       )}
+      {showRelatedUmrahPackages && <RelatedUmrahPackages currentPath={slugPath} />}
     </main>
   );
 }

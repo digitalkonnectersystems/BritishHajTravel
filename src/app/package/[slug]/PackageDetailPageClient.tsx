@@ -66,7 +66,8 @@ export default function PackageDetailPageClient({
         children: parseInt(childrenCount, 10),
         infants: parseInt(infantsCount, 10),
         startDate: selectedDate,
-        totalPrice: estimatedTotalFormatted ? `${currencyCode} ${estimatedTotalFormatted}` : String(pkg?.startingPrice ?? pkg?.price ?? ""),
+        totalPrice: estimatedTotalFormatted ? `${currencyCode} ${estimatedTotalFormatted}` :
+          (isTbcPrice(minPriceItem.price, minPriceItem.priceStatus) ? 'TBC' : String(pkg?.startingPrice ?? pkg?.price ?? "")),
         sourceFormName: pkg?.type === 'hajj' ? 'Hajj Package Booking Form' : 'Umrah Package Booking Form',
       });
 
@@ -1015,7 +1016,7 @@ export default function PackageDetailPageClient({
                       >
                         {packagePrices.map((item, idx) => (
                           <option key={idx} value={item.packageType} className="bg-white text-ink py-1">
-                            £ {item.price ? item.price.toLocaleString("en-CA") : ""} - {item.packageType}
+                            {isTbcPrice(item.price, item.priceStatus) ? 'TBC' : `${currencyCode} ${item.price.toLocaleString('en-GB')}`} - {item.packageType}
                           </option>
                         ))}
                       </select>

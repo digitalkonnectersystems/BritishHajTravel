@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 900">
+<defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#6988c0"/><stop offset=".57" stop-color="#d9c5a4"/><stop offset="1" stop-color="#f5dfb8"/></linearGradient><linearGradient id="tower" x2="1" y2="0"><stop stop-color="#aa9876"/><stop offset=".5" stop-color="#f2d9a8"/><stop offset="1" stop-color="#998267"/></linearGradient><pattern id="windows" width="19" height="27" patternUnits="userSpaceOnUse"><rect width="10" height="15" x="4" y="6" fill="#293d62" opacity=".55"/></pattern></defs>
+<rect width="780" height="900" fill="url(#sky)"/><circle cx="560" cy="180" r="120" fill="#fdf1d0" opacity=".55"/>
+<path d="M0 648Q160 620 280 655T780 640V900H0Z" fill="#b6a184" opacity=".8"/>
+<g fill="url(#tower)" stroke="#9b8a6b" stroke-width="4"><rect x="300" y="220" width="175" height="560"/><path d="M328 220V154H447V220Z"/><path d="M360 153V93L388 57 415 93V153Z"/><rect x="200" y="360" width="110" height="420"/><rect x="475" y="347" width="100" height="433"/><path d="M220 360V300H291V360ZM492 347V294H558V347Z"/></g>
+<path d="M360 100L388 45 417 100" fill="none" stroke="#cbb486" stroke-width="7"/><path d="M388 40V12" stroke="#b49f70" stroke-width="8"/>
+<circle cx="388" cy="210" r="52" fill="#f5e4ba" stroke="#8e7c69" stroke-width="9"/><circle cx="388" cy="210" r="38" fill="none" stroke="#8e7c69" stroke-width="3"/><path d="M388 180V210L408 227" stroke="#293d62" stroke-width="5" fill="none" stroke-linecap="round"/>
+<rect x="300" y="310" width="175" height="470" fill="url(#windows)" opacity=".8"/><rect x="200" y="405" width="110" height="375" fill="url(#windows)"/><rect x="475" y="392" width="100" height="388" fill="url(#windows)"/>
+<path d="M0 750L190 695V900H0ZM590 675L780 740V900H590Z" fill="#d9cab0"/><path d="M0 750L190 695M590 675L780 740" fill="none" stroke="#968569" stroke-width="9"/>
+<g fill="#faf6e8"><rect x="0" y="780" width="780" height="120"/><rect x="90" y="720" width="600" height="110"/></g>
+<g fill="#202b37"><rect x="130" y="745" width="520" height="115"/><rect x="130" y="745" width="520" height="18" fill="#dfc990"/><rect x="130" y="842" width="520" height="18" fill="#dfc990"/></g>
+<g fill="#f8e6bd"><path d="M65 780V600M85 780V600M695 780V600M715 780V600" stroke="#f8e6bd" stroke-width="18"/><path d="M52 600H98L75 540ZM682 600H728L705 540Z"/></g>
+</svg>

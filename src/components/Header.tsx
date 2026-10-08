@@ -10,6 +10,7 @@ const DEFAULT_NAV_ITEMS = [
   { id: '2', label: 'About', url: '/about', level: 1, children: [] },
   { id: '3', label: 'Umrah Packages', url: '/umrah-packages', level: 1, children: [] },
   { id: '4', label: 'Hajj Packages', url: '/hajj-packages', level: 1, children: [] },
+  { id: 'baan-holding-hajj', label: 'BAAN HOLDING HAJJ', url: '/baan-holding-hajj', level: 1, children: [] },
   { id: '5', label: 'Saudi Visa', url: '/saudi-visa', level: 1, children: [] },
   { id: '6', label: 'Flights', url: '/airlines', level: 1, children: [] },
   { id: '7', label: 'Contact', url: '/contact', level: 1, children: [] },
@@ -108,7 +109,7 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
                   <span
                     className="cursor-pointer flex items-center xl:gap-0 gap-4"
                     onClick={() => {
-                      if (window.innerWidth < 1024) {
+                      if (window.innerWidth < 1280) {
                         setOpenDropdown(openDropdown === mobKey ? null : mobKey);
                       }
                     }}

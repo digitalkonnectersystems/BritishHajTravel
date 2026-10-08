@@ -476,7 +476,7 @@ function PageBuilderContent() {
 
   // Homepage Hero Banner Specific Fields
 
-  const [heroEyebrow, setHeroEyebrow] = useState('Est. in UK · Licensed Pilgrimage Operator');
+  const [heroEyebrow, setHeroEyebrow] = useState('Est. in UK 2001 · Licensed Pilgrimage Operator');
 
   const [primaryBtnLabel, setPrimaryBtnLabel] = useState('View Umrah Packages →');
 
@@ -2651,7 +2651,7 @@ function PageBuilderContent() {
 
                 <div className="text-[11px] font-extrabold uppercase tracking-widest text-white">
 
-                  {heroEyebrow || 'Est. in UK · Licensed Pilgrimage Operator'}
+                  {heroEyebrow || 'Est. in UK 2001 · Licensed Pilgrimage Operator'}
 
                 </div>
 
@@ -2717,7 +2717,7 @@ function PageBuilderContent() {
 
                 onChange={(e) => setHeroEyebrow(e.target.value)}
 
-                placeholder="e.g. Est. in UK · Licensed Pilgrimage Operator"
+                placeholder="e.g. Est. in UK 2001 · Licensed Pilgrimage Operator"
 
                 className="w-full px-3 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs font-medium outline-none focus:border-primary"
 

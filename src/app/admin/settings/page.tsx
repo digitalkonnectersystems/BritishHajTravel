@@ -485,6 +485,7 @@ export default function AdminSettingsPage() {
     formCcRoutes: {},
     formBccRoutes: {},
     formRoutingRules: [
+      { id: 'form_baanHoldingHajjForm', forms: ['baanHoldingHajjForm'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
       { id: 'form_quoteForm', forms: ['quoteForm'], sendTo: 'saudivisa@britishhajjtravel.com', cc: '', bcc: '' },
       { id: 'form_packageDetailForm', forms: ['packageDetailForm'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
       { id: 'form_hajjPackageDetailForm', forms: ['hajjPackageDetailForm'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },

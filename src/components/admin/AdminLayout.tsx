@@ -54,6 +54,11 @@ const navItems = [
     icon: <Package className="w-4 h-4" />,
   },
   {
+    label: 'BAAN Holding Hajj Page',
+    href: '/admin/baan-holding-hajj',
+    icon: <Package className="w-4 h-4" />,
+  },
+  {
     label: 'Umrah Packages',
     href: '/admin/umrah-packages',
     icon: <Package className="w-4 h-4" />,

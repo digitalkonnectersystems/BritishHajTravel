@@ -1,0 +1,37 @@
+export const defaultBaanContent = {
+  eyebrow: 'BAAN HOLDING HAJJ PACKAGES',
+  heading: 'Hajj 2027 with BAAN Holding',
+  description: 'Explore selected BAAN Holding Hajj packages with guidance and enquiry support from British Haj Travel in the UK.',
+  heroImage: '/baan-holding-hajj/hero-art.svg',
+  heroAlt: 'The Holy Mosque and Abraj Al Bait in Makkah',
+  heroButton: 'Register Your Interest',
+  airportOptions: ['London (LON)', 'Manchester (MAN)', 'Birmingham (BHX)', 'Other UK Airport'],
+  packageOptions: ['5-Star', '4-Star', 'Other / Please advise'],
+  durationOptions: ['12 Days Packages', '14 Days Packages', 'Other / Please advise'],
+  roomOptions: ['Double Room', 'Triple Room', 'Quad Room', 'Single Room'],
+  budgetOptions: ['5K - 7K', '7K - 10K', '10K+', 'Other / Please advise'],
+  introTitle: 'Hajj Packages from BAAN Holding',
+  introText: 'British Haj Travel makes selected BAAN Holding Hajj packages available to UK pilgrims through our platform. As a reseller, British Haj Travel helps customers explore available package options and provides UK-based assistance throughout the enquiry and booking process.',
+  provider: 'BAAN Holding', reseller: 'British Haj Travel',
+  process: [
+    { title: 'Explore', text: 'Review the available BAAN Holding Hajj options.' },
+    { title: 'Enquire', text: 'Tell our team about your Hajj requirements.' },
+    { title: 'Confirm', text: 'Check availability, pricing and package details.' },
+    { title: 'Prepare', text: 'Complete the relevant arrangements for your journey.' },
+  ],
+  support: [
+    { title: 'UK Customer Support', text: 'Speak with our team about your Hajj requirements and available package options.' },
+    { title: 'BAAN Partner Packages', text: 'Explore selected BAAN Holding Hajj packages available through our platform.' },
+    { title: 'Package Guidance', text: 'Our team can help explain package details, inclusions and booking arrangements.' },
+  ],
+  notice: 'Hajj package availability, prices, accommodation, transportation, services and booking conditions may vary according to the relevant Hajj season and provider arrangements. British Haj Travel acts as a reseller and facilitator for packages made available through its partner providers. Customers should review the final package details and terms before booking.',
+  faqs: [
+    { question: 'What are BAAN Holding Hajj packages?', answer: 'BAAN Holding Hajj packages are pilgrimage service packages made available through BAAN Holding and applicable booking channels for eligible pilgrims.' },
+    { question: 'Is British Haj Travel the Hajj package provider?', answer: 'BAAN Holding is the package provider. British Haj Travel acts as a UK reseller and facilitator for selected available packages.' },
+    { question: 'Can UK pilgrims enquire about BAAN Hajj packages?', answer: 'Yes. UK pilgrims can register their interest and contact British Haj Travel to enquire about available options.' },
+    { question: 'What is included in the Hajj packages?', answer: 'Inclusions vary by package and season. Confirm accommodation, transport, flights, meals, services and terms before booking.' },
+    { question: 'How can I enquire about a BAAN Hajj package?', answer: 'Use the Register Your Interest button to submit the enquiry form, and our team will contact you.' },
+    { question: 'Are package prices fixed?', answer: 'No. Pricing, availability and conditions depend on the Hajj season and provider arrangements.' },
+  ],
+};
+export type BaanContent = typeof defaultBaanContent;

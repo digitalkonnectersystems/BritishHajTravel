@@ -80,6 +80,7 @@ export async function dispatchFormEmails(
           config?.emailConfigs?.formRoutingRules || [];
 
         const formKeyMap: Record<string, string> = {
+          'BAAN Holding Hajj Interest Form': 'baanHoldingHajjForm',
           'Get a Free Quote Form': 'quoteForm',
           'Homepage Hero Banner — Get a Free Quote Form': 'quoteForm',
           'Package Detail Page Booking Form': 'packageDetailForm',
