@@ -10,10 +10,8 @@ export default function FloatingShareBar() {
   const [isVisible, setIsVisible] = useState(true);
   const [delayedShow, setDelayedShow] = useState(false);
 
-  // Do not show floating share bar inside admin panel or login routes
-  if (pathname?.startsWith('/admin') || pathname === '/letstravel') {
-    return null;
-  }
+  // Keep hook order stable even when switching between admin and public routes.
+  const isPublicPage = !pathname?.startsWith('/admin') && pathname !== '/letstravel';
 
   const fetchConfig = () => {
     let localData: any = null;
@@ -38,15 +36,12 @@ export default function FloatingShareBar() {
   };
 
   useEffect(() => {
+    if (!isPublicPage) return;
     fetchConfig();
-
-    const handleUpdate = () => {
-      fetchConfig();
-    };
-
+    const handleUpdate = () => fetchConfig();
     window.addEventListener('share_tools_updated', handleUpdate);
     return () => window.removeEventListener('share_tools_updated', handleUpdate);
-  }, [pathname]);
+  }, [isPublicPage]);
 
   const isShareEnabled = Boolean(
     shareConfig &&
@@ -97,7 +92,7 @@ export default function FloatingShareBar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [shareConfig?.hideOnScrollDown]);
 
-  if (!shareConfig || !isShareEnabled || !delayedShow) {
+  if (!isPublicPage || !shareConfig || !isShareEnabled || !delayedShow) {
     return null;
   }
 

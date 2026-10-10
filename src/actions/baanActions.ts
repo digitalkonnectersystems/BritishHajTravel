@@ -7,19 +7,81 @@ import { getCurrentSession } from '@/lib/auth';
 import { dispatchFormEmails } from '@/lib/emailService';
 import { defaultBaanContent, type BaanContent } from '@/lib/baanContent';
 
-export async function getBaanContent(): Promise<BaanContent> {
-  const record = await db.select({ value: siteSettings.value }).from(siteSettings).where(eq(siteSettings.key, 'baan_holding_page')).limit(1);
-  if (!record[0]?.value) return defaultBaanContent;
-  try { return { ...defaultBaanContent, ...JSON.parse(record[0].value) }; }
-  catch { return defaultBaanContent; }
+type ReadResult = { content: BaanContent; databaseAvailable: boolean };
+
+/** Only log diagnostic information to the server, never expose DB errors to site visitors. */
+function logBaanDatabaseError(operation: string, error: unknown): void {
+  const outer = error && typeof error === 'object' ? error as Record<string, unknown> : {};
+  const nested = outer.cause && typeof outer.cause === 'object'
+    ? outer.cause as Record<string, unknown>
+    : outer;
+  console.error(`[BAAN] ${operation} database error`, {
+    code: nested.code ?? outer.code ?? 'unknown',
+    errno: nested.errno ?? outer.errno ?? 'unknown',
+    sqlState: nested.sqlState ?? outer.sqlState ?? 'unknown',
+    message: nested.message ?? outer.message ?? String(error),
+  });
 }
+
+async function readBaanContent(): Promise<ReadResult> {
+  let record: { value: string }[];
+  try {
+    record = await db.select({ value: siteSettings.value })
+      .from(siteSettings)
+      .where(eq(siteSettings.key, 'baan_holding_page'))
+      .limit(1);
+  } catch (error) {
+    logBaanDatabaseError('read site_settings.baan_holding_page', error);
+    return { content: defaultBaanContent, databaseAvailable: false };
+  }
+
+  // No saved custom settings is normal. The default BAAN page remains usable.
+  if (!record[0]?.value) return { content: defaultBaanContent, databaseAvailable: true };
+
+  try {
+    const parsed: unknown = JSON.parse(record[0].value);
+    if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      throw new Error('BAAN page setting is not a JSON object');
+    }
+    return {
+      content: { ...defaultBaanContent, ...(parsed as Partial<BaanContent>) },
+      databaseAvailable: true,
+    };
+  } catch (error) {
+    // A malformed setting must not be silently overwritten by the editor.
+    console.error('[BAAN] Invalid JSON in site_settings.baan_holding_page', error);
+    return { content: defaultBaanContent, databaseAvailable: false };
+  }
+}
+
+/** Public page can render its built-in content when the database is temporarily unavailable. */
+export async function getBaanContent(): Promise<BaanContent> {
+  return (await readBaanContent()).content;
+}
+
+/** Prevent an administrator from unknowingly overwriting settings after a failed read. */
+export async function getBaanContentForAdmin(): Promise<BaanContent | null> {
+  const result = await readBaanContent();
+  return result.databaseAvailable ? result.content : null;
+}
+
 export async function saveBaanContent(payload: BaanContent) {
-  if (!await getCurrentSession()) return { success: false, error: 'Unauthorized' };
+  const session = await getCurrentSession();
+  if (!session || !['super_admin', 'admin', 'content_editor', 'seo_manager'].includes(session.role)) {
+    return { success: false, error: 'Unauthorized' };
+  }
   const value = JSON.stringify({ ...defaultBaanContent, ...payload });
   if (value.length > 60000) return { success: false, error: 'Page configuration is too large. Upload images to Media Center and save their URLs.' };
-  await db.insert(siteSettings).values({ key: 'baan_holding_page', value }).onDuplicateKeyUpdate({ set: { value, updatedAt: new Date() } });
-  revalidatePath('/baan-holding-hajj');
-  return { success: true };
+  try {
+    await db.insert(siteSettings)
+      .values({ key: 'baan_holding_page', value })
+      .onDuplicateKeyUpdate({ set: { value, updatedAt: new Date() } });
+    revalidatePath('/baan-holding-hajj');
+    return { success: true };
+  } catch (error) {
+    logBaanDatabaseError('save site_settings.baan_holding_page', error);
+    return { success: false, error: 'Unable to save BAAN settings because the database is unavailable. Please retry after checking the database connection.' };
+  }
 }
 
 export async function submitBaanInterest(data: {

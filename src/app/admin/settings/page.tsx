@@ -355,6 +355,18 @@ export default function AdminSettingsPage() {
   }, [activeTab, formsSubTab]);
 
   const [formFieldsState, setFormFieldsState] = useState<Record<string, Array<{ id: string; label: string; type: string; placeholder: string; required: boolean }>>>({
+    baanHoldingHajjForm: [
+      { id: 'name', label: 'Full Name', type: 'text', placeholder: 'Full name', required: true },
+      { id: 'email', label: 'Email Address', type: 'email', placeholder: 'Email address', required: true },
+      { id: 'phone', label: 'Phone Number', type: 'tel', placeholder: 'Phone number', required: true },
+      { id: 'postcode', label: 'Postcode', type: 'text', placeholder: 'Postcode', required: true },
+      { id: 'airport', label: 'Departure Airport', type: 'select', placeholder: 'Choose airport', required: true },
+      { id: 'packageTier', label: 'Package', type: 'select', placeholder: 'Choose package', required: true },
+      { id: 'passengers', label: 'Number of Passengers', type: 'number', placeholder: '1', required: true },
+      { id: 'days', label: 'Duration', type: 'select', placeholder: 'Choose duration', required: true },
+      { id: 'room', label: 'Room Preference', type: 'select', placeholder: 'Choose room', required: true },
+      { id: 'budget', label: 'Budget', type: 'select', placeholder: 'Choose budget', required: true },
+    ],
     quoteForm: [
       { id: '1', label: 'Your Name', type: 'text', placeholder: 'Full Name', required: true },
       { id: '2', label: 'Phone Number', type: 'tel', placeholder: '+1 905 624 8344', required: true },
@@ -509,6 +521,7 @@ export default function AdminSettingsPage() {
   );
 
   const [formsData, setFormsData] = useState<any>({
+    baanHoldingHajjForm: { title: 'BAAN Holding Hajj Interest Form', subtitle: 'BAAN Holding Hajj page registration modal at /baan-holding-hajj/.', recipientEmail: 'booking@britishhajjtravel.com', successMessage: 'Your BAAN Holding Hajj enquiry has been received.', enabled: true, buttonText: 'Submit Enquiry' },
     quoteForm: { title: 'Homepage Hero Banner — Get a Free Quote Form', subtitle: 'Inline quote form embedded in the Homepage & Umrah landing page hero banner.', recipientEmail: 'saudivisa@britishhajjtravel.com', successMessage: 'Thank you! Your quote request has been received.', enabled: true, buttonText: 'Submit Quote' },
     packageDetailForm: { title: 'Umrah Package Booking Form (Detail Page & Popup Modal)', subtitle: 'Primary booking form used across individual Umrah detail pages (/package/[slug]) and the “Book Now” popup modal.', recipientEmail: 'booking@britishhajjtravel.com', successMessage: 'Your package booking request has been submitted.', enabled: true, buttonText: 'Book Package' },
     hajjPackageDetailForm: { title: 'Hajj Package Booking Form (Detail Page & Popup Modal)', subtitle: 'Dedicated booking form used across individual Hajj detail pages (/package/[slug]) and the “Book Now” popup modal.', recipientEmail: 'booking@britishhajjtravel.com', successMessage: 'Your Hajj package booking request has been submitted.', enabled: true, buttonText: 'Book Hajj 2027' },
@@ -4080,6 +4093,7 @@ export default function AdminSettingsPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {Object.keys(formsData).map((formKey) => {
                       const DEFAULT_META: Record<string, { title: string; icon: string; desc: string }> = {
+                        baanHoldingHajjForm: { title: 'BAAN Holding Hajj Interest Form', icon: '🕋' },
                         quoteForm: { title: 'Homepage Hero Banner — Get a Free Quote Form', icon: '🏠', desc: 'Inline quote form in the homepage & Umrah landing page hero banner.' },
                         packageDetailForm: { title: 'Umrah Package Booking Form (Detail Page & Popup Modal)', icon: '📊', desc: 'Primary booking form used on individual Umrah package detail pages and the “Book Now” popup modal.' },
                         hajjPackageDetailForm: { title: 'Hajj Package Booking Form (Detail Page & Popup Modal)', icon: '🕋', desc: 'Dedicated booking form used on individual Hajj package detail pages and the “Book Now” popup modal.' },
@@ -4449,6 +4463,7 @@ export default function AdminSettingsPage() {
                     {/* ── 1. TOP SECTION: One independent email configuration per form ── */}
                     {(() => {
                       const FORM_META: Record<string, { title: string; icon: string }> = {
+                        baanHoldingHajjForm: { title: 'BAAN Holding Hajj Interest Form', icon: '🕋' },
                         quoteForm: { title: 'Homepage Hero Banner — Get a Free Quote Form', icon: '🏠' },
                         packageDetailForm: { title: 'Umrah Package Booking Form (Detail Page & Popup Modal)', icon: '📊' },
                         hajjPackageDetailForm: { title: 'Hajj Package Booking Form (Detail Page & Popup Modal)', icon: '🕋' },

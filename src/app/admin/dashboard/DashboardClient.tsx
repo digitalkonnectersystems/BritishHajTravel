@@ -246,13 +246,18 @@ export default function DashboardClient({
   const [filterMenuOpen, setFilterMenuOpen] = useState(false);
   const router = useRouter();
 
-  // Polling for real-time updates
+  // Keep dashboards reasonably current without rendering the entire admin
+  // server component tree on every background tab every 15 seconds.
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      router.refresh();
-    }, 15000); // 15 seconds
-
-    return () => clearInterval(intervalId);
+    const refreshIfVisible = () => {
+      if (document.visibilityState === 'visible') router.refresh();
+    };
+    const intervalId = window.setInterval(refreshIfVisible, 120000);
+    document.addEventListener('visibilitychange', refreshIfVisible);
+    return () => {
+      window.clearInterval(intervalId);
+      document.removeEventListener('visibilitychange', refreshIfVisible);
+    };
   }, [router]);
 
   // Animated counters state

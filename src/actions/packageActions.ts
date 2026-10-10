@@ -141,6 +141,8 @@ export async function updatePackageOrderAction(orderedIds: number[]) {
     revalidatePath('/admin/umrah-packages');
     revalidatePath('/hajj-packages');
     revalidatePath('/umrah-packages');
+    revalidatePath('/march-umrah-packages');
+    revalidatePath('/august-umrah-packages');
     revalidatePath('/hajj');
     revalidatePath('/');
     revalidatePath('/', 'layout');
@@ -250,6 +252,8 @@ export async function createPackage(formData: FormData): Promise<{ success: bool
     revalidatePath('/admin/umrah-packages');
     revalidatePath('/hajj-packages');
     revalidatePath('/umrah-packages');
+    revalidatePath('/march-umrah-packages');
+    revalidatePath('/august-umrah-packages');
     revalidatePath('/');
     revalidatePath('/', 'layout');
     return { success: true };
@@ -342,6 +346,8 @@ export async function updatePackageAction(
     revalidatePath('/admin/umrah-packages');
     revalidatePath('/hajj-packages');
     revalidatePath('/umrah-packages');
+    revalidatePath('/march-umrah-packages');
+    revalidatePath('/august-umrah-packages');
     revalidatePath('/');
     revalidatePath('/', 'layout');
     return { success: true };
@@ -381,6 +387,8 @@ export async function updatePackageStatus(id: number, status: 'available' | 'sol
     revalidatePath('/');
     revalidatePath('/hajj-packages');
     revalidatePath('/umrah-packages');
+    revalidatePath('/march-umrah-packages');
+    revalidatePath('/august-umrah-packages');
     revalidatePath('/', 'layout');
   } catch (error) {
     console.error('Error updating package status:', error);
@@ -416,6 +424,8 @@ export async function deletePackage(id: number): Promise<void> {
     revalidatePath('/');
     revalidatePath('/hajj-packages');
     revalidatePath('/umrah-packages');
+    revalidatePath('/march-umrah-packages');
+    revalidatePath('/august-umrah-packages');
     revalidatePath('/', 'layout');
   } catch (error) {
     console.error('Error deleting package:', error);
@@ -470,6 +480,8 @@ export async function bulkGeneratePackageCodesAction(
     revalidatePath('/admin/umrah-packages');
     revalidatePath('/hajj-packages');
     revalidatePath('/umrah-packages');
+    revalidatePath('/march-umrah-packages');
+    revalidatePath('/august-umrah-packages');
     revalidatePath('/');
     return { success: true, updated };
   } catch (error: any) {

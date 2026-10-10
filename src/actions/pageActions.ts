@@ -13,7 +13,7 @@ import { dedupeRecipientChannels, hasInvalidEmailRecipient, normalizeEmailRecipi
 // updates show up right away - this just avoids hitting the DB (a full network
 // round trip) on every single page load, which is what was making the header
 // and footer render before the actual page content.
-const CONTENT_CACHE_SECONDS = 300;
+const CONTENT_CACHE_SECONDS = 3600;
 
 function safeJsonParse<T>(jsonStr: any, fallback: T): T {
   if (!jsonStr || typeof jsonStr !== 'string') return fallback;
@@ -521,28 +521,29 @@ export async function getNavItems() {
   return getDefaultNavItems();
 }
 
+// The site layout invokes this on every visitor request.  It must stay read-only
+// and cached rather than selecting all page records and writing a missing gallery
+// row as a side effect of page rendering.
+async function fetchGalleryNavItemsFromDb() {
+  const pages = await db.select({
+    id: sitePages.id,
+    title: sitePages.title,
+    slug: sitePages.slug,
+    status: sitePages.status,
+    sections: sitePages.sections,
+  }).from(sitePages).where(eq(sitePages.status, 'published'));
+  return pages
+    .filter(page => page.slug !== '/gallery' &&
+      safeJsonParse<any[]>(page.sections, []).some(section => section?.type === 'Gallery'))
+    .map(page => ({ id: `gallery-${page.id}`, label: page.title, url: page.slug, level: 2, children: [] }));
+}
+
 export async function getGalleryNavItems() {
   try {
-    let pages = await db.select({ id: sitePages.id, title: sitePages.title, slug: sitePages.slug, status: sitePages.status, sections: sitePages.sections }).from(sitePages);
-    if (!pages.some((page) => page.slug === '/gallery')) {
-      const inserted = await db.insert(sitePages).values({
-        title: 'Gallery',
-        slug: '/gallery',
-        status: 'published',
-        showInMenu: false,
-        bannerTitle: 'Gallery',
-        bannerDescription: 'Explore moments from British Hajj Travel journeys.',
-        sections: JSON.stringify([{ id: 'gallery-main', type: 'Gallery', title: 'Main Gallery', data: { eyebrow: 'GALLERY', title: 'Highlights from British Hajj Travel', description: '', images: [], videos: [] } }]),
-        metaTitle: 'Gallery | British Hajj Travel',
-        metaDescription: 'Explore British Hajj Travel journey highlights and videos.',
-      }).$returningId();
-      if (inserted.length > 0) {
-        pages = [...pages, { id: inserted[0].id, title: 'Gallery', slug: '/gallery', status: 'published', sections: JSON.stringify([]) }];
-      }
-    }
-    return pages
-      .filter((page) => page.status === 'published' && page.slug !== '/gallery' && safeJsonParse<any[]>(page.sections, []).some((section) => section?.type === 'Gallery'))
-      .map((page) => ({ id: `gallery-${page.id}`, label: page.title, url: page.slug, level: 2, children: [] }));
+    return await unstable_cache(fetchGalleryNavItemsFromDb, ['gallery-nav-items'], {
+      tags: ['pages', 'gallery-nav-items'],
+      revalidate: CONTENT_CACHE_SECONDS,
+    })();
   } catch (error) {
     console.error('getGalleryNavItems DB query failed:', error);
     return [];
@@ -993,6 +994,7 @@ export async function updatePageStatusAction(id: number, status: 'published' | '
     });
 
     revalidatePath('/admin/pages');
+    revalidateTag('pages', 'max');
     return { success: true };
   } catch (err: any) {
     console.error('updatePageStatusAction DB error:', err);

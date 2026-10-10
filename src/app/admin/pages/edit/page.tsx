@@ -6443,7 +6443,7 @@ function PageBuilderContent() {
 
                                   <span className="text-xs font-extrabold text-primary uppercase">
 
-                                    {sec.type === 'Sold Out Packages' ? '🛑 Sold Out' : ((sec.type === 'Hajj Packages' || sec.type === 'Upcoming Hajj Packages') ? '🕌 Hajj' : '🕋 Umrah')} Packages Selector
+                                    {(sec.type === 'Hajj Packages' || sec.type === 'Upcoming Hajj Packages') ? '🕌 Hajj' : '🕋 Umrah'} Packages Selector
 
                                   </span>
 
@@ -6481,13 +6481,13 @@ function PageBuilderContent() {
 
                                     {packageCategories
 
-                                      .filter(c => (sec.type === 'Sold Out Packages') ? true : c.type === ((sec.type === 'Hajj Packages' || sec.type === 'Upcoming Hajj Packages') ? 'hajj' : 'umrah'))
+                                      .filter(c => c.type === ((sec.type === 'Hajj Packages' || sec.type === 'Upcoming Hajj Packages') ? 'hajj' : 'umrah'))
 
                                       .map(c => (
 
                                         <option key={c.id} value={String(c.id)}>
 
-                                          {sec.type === 'Sold Out Packages' ? `${c.type === 'hajj' ? 'Hajj' : 'Umrah'} - ` : ''}{c.name} ({c.packageCount} {c.packageCount === 1 ? 'package' : 'packages'})
+                                          {c.name} ({c.packageCount} {c.packageCount === 1 ? 'package' : 'packages'})
 
                                         </option>
 
@@ -6559,7 +6559,7 @@ function PageBuilderContent() {
 
                                         <option key={p.id} value={p.id}>
 
-                                          {sec.type === 'Sold Out Packages' ? `${p.type === 'hajj' ? '🕌 Hajj' : '🕋 Umrah'} - ` : ''}{p.title}
+                                          {p.title}
 
                                         </option>
 

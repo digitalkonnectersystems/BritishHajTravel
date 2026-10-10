@@ -13,13 +13,20 @@ import styles from './seasonalUmrah.module.css';
 export default function SeasonalUmrahLanding({
   data,
   packages,
+  availablePackages,
   novemberPackages = [],
 }: {
   data: SeasonalUmrahPageData;
   packages: any[];
+  availablePackages: any[];
   novemberPackages?: { label: string; href: string }[];
 }) {
-  const [packageSlug, setPackageSlug] = useState(packages[0]?.slug || '');
+  // Keep the historic display cards separate from the live, selectable Umrah packages.
+  // The public package query excludes sold_out and draft; retain that safeguard here.
+  const selectablePackages = availablePackages.filter(
+    (pkg) => pkg.type === 'umrah' && pkg.status !== 'sold_out' && pkg.status !== 'draft'
+  );
+  const [packageSlug, setPackageSlug] = useState('');
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -31,8 +38,10 @@ export default function SeasonalUmrahLanding({
   const formRef = useRef<HTMLElement>(null);
 
   function selectPackage(pkg: any) {
-    if (pkg?.slug) setPackageSlug(pkg.slug);
-    setStatus('');
+    // Sold-out archive cards are never added to the booking dropdown.
+    const isSelectable = selectablePackages.some((item) => item.slug === pkg?.slug);
+    setPackageSlug(isSelectable ? pkg.slug : '');
+    setStatus(isSelectable ? '' : 'Choose a currently available Umrah package from the list.');
     setSuccess(false);
     formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
@@ -46,7 +55,7 @@ export default function SeasonalUmrahLanding({
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (busy) return;
-    const chosen = packages.find((p) => p.slug === packageSlug);
+    const chosen = selectablePackages.find((p) => p.slug === packageSlug);
     if (!chosen) { setStatus('Select a package.'); return; }
     setBusy(true); setStatus(''); setSuccess(false);
     try {
@@ -59,7 +68,7 @@ export default function SeasonalUmrahLanding({
         phone: phone.trim(),
         message: [
           subject.trim() ? `Subject: ${subject.trim()}` : '',
-          `Historic package: ${chosen.title}. The 2026 departure has passed. This enquiry requests future availability, not a confirmed booking.`,
+          `Page: ${data.title}. Selected Umrah package: ${chosen.title}. This is an enquiry, not a confirmed booking.`,
           message.trim(),
         ].filter(Boolean).join('\n\n'),
         sourceFormName: 'Umrah Package Booking Form',
@@ -95,9 +104,9 @@ export default function SeasonalUmrahLanding({
               <label>Your Email *<input autoComplete="email" type="email" value={email} maxLength={254} required onChange={e=>setEmail(e.target.value)} placeholder="Email address"/></label>
               <label>Phone *<input autoComplete="tel" type="tel" value={phone} maxLength={50} required onChange={e=>setPhone(e.target.value)} placeholder="Phone number"/></label>
               <label>Subject<input value={subject} maxLength={200} onChange={e=>setSubject(e.target.value)} placeholder="Optional"/></label>
-              <label className={styles.fullSpan}>Package Name *<span className={styles.selectWrap}><select required value={packageSlug} onChange={e=>setPackageSlug(e.target.value)} disabled={packages.length===0}>{packages.map(p=><option key={p.slug} value={p.slug}>{p.title}</option>)}</select><ChevronDown size={15}/></span></label>
+              <label className={styles.fullSpan}>Package Name *<span className={styles.selectWrap}><select required value={packageSlug} onChange={e=>{setPackageSlug(e.target.value); setStatus('');}} disabled={selectablePackages.length===0}><option value="" disabled>{selectablePackages.length ? 'Select an Umrah package' : 'No Umrah packages currently available'}</option>{selectablePackages.map(p=><option key={p.id} value={p.slug}>{p.title}</option>)}</select><ChevronDown size={15}/></span></label>
               <label className={styles.fullSpan}>Your Message<textarea value={message} onChange={e=>setMessage(e.target.value)} rows={2} maxLength={3000} placeholder="Preferred dates or questions (optional)"/></label>
-              <button type="submit" disabled={busy || packages.length === 0} className={`${styles.submit} ${styles.fullSpan}`}>{busy ? 'SENDING...' : 'SEND ENQUIRY'} <ArrowRight size={16}/></button>
+              <button type="submit" disabled={busy || selectablePackages.length === 0} className={`${styles.submit} ${styles.fullSpan}`}>{busy ? 'SENDING...' : 'SEND ENQUIRY'} <ArrowRight size={16}/></button>
               {status && <p role="status" aria-live="polite" className={`${success?styles.success:styles.error} ${styles.fullSpan}`}>{success?<CheckCircle2 size={18}/>:null}{status}</p>}
               <p className={`${styles.formFinePrint} ${styles.fullSpan}`}>Enquiries are not confirmed bookings.</p>
             </form>

@@ -38,9 +38,16 @@ export default function UserPresenceWidget({ currentUser }: UserPresenceWidgetPr
   };
 
   useEffect(() => {
-    fetchPresence();
-    const interval = setInterval(fetchPresence, 15000); // Poll every 15 seconds
-    return () => clearInterval(interval);
+    const refreshIfVisible = () => {
+      if (document.visibilityState === 'visible') void fetchPresence();
+    };
+    refreshIfVisible();
+    const interval = window.setInterval(refreshIfVisible, 60000);
+    document.addEventListener('visibilitychange', refreshIfVisible);
+    return () => {
+      window.clearInterval(interval);
+      document.removeEventListener('visibilitychange', refreshIfVisible);
+    };
   }, [currentUser]);
 
   // Outside click to close

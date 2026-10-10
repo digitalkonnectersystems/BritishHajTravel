@@ -3,6 +3,9 @@ import SeasonalUmrahLanding from '@/components/seasonal/SeasonalUmrahLanding';
 import { seasonalUmrahPages } from '@/lib/seasonalUmrah';
 import { getPackagesByType, getPackageBySlug } from '@/actions/packageActions';
 
+// Reuse the cached page between visitors; package mutations also invalidate it.
+export const revalidate = 300;
+
 export const metadata: Metadata = {
   title: 'March Umrah Packages 2026 | British Haj Travel',
   description: 'Explore the historic March 2026 Umrah itineraries, Makkah and Madinah hotel details, room options and request current package availability.',
@@ -14,5 +17,5 @@ export default async function MarchUmrahPackagesPage() {
   const packageSlugs = ['ramadhan-umrah-package-march-2026', 'umrah-package-march-2026'];
   const matches = await Promise.all(packageSlugs.map(slug => getPackageBySlug(slug)));
   const historicPackages = matches.filter((p): p is NonNullable<typeof p> => Boolean(p && p.type === 'umrah'));
-  return <SeasonalUmrahLanding data={seasonalUmrahPages.march} packages={historicPackages} novemberPackages={novemberPackages} />;
+  return <SeasonalUmrahLanding data={seasonalUmrahPages.march} packages={historicPackages} availablePackages={all} novemberPackages={novemberPackages} />;
 }

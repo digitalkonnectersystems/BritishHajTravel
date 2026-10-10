@@ -43,22 +43,13 @@ export async function recordUserHeartbeatAction(userData?: {
   badgeTextColor?: string;
 }) {
   try {
-    let email = userData?.email?.trim().toLowerCase();
-    let name = userData?.name;
-    let role = userData?.role;
-    let badgeBg = userData?.badgeBg;
-    let badgeTextColor = userData?.badgeTextColor;
-
-    if (!email) {
-      const session = await getCurrentSession();
-      if (session?.email) {
-        email = session.email.toLowerCase();
-        name = name || session.name;
-        role = role || session.role;
-      }
-    }
-
-    if (!email) return { success: false, error: 'No session email found' };
+    const session = await getCurrentSession();
+    if (!session?.email) return { success: false, error: 'Authentication required' };
+    const email = session.email.trim().toLowerCase();
+    const name = session.name;
+    const role = session.role;
+    const badgeBg = userData?.badgeBg;
+    const badgeTextColor = userData?.badgeTextColor;
 
     const now = Date.now();
     let presenceMap: Record<string, { name: string; role: string; lastSeen: number; badgeBg?: string; badgeTextColor?: string }> = {};

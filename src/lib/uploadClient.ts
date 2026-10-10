@@ -2,11 +2,11 @@
  * Client function to upload a file to local storage via /api/admin/upload route.
  */
 async function prepareImageForUpload(file: File): Promise<File> {
-  if (!file.type.startsWith('image/') || file.type === 'image/gif' || file.type === 'image/svg+xml' || file.type === 'image/webp') return file;
+  if (!file.type.startsWith('image/') || file.type === 'image/gif' || file.type === 'image/svg+xml') return file;
 
   try {
     const bitmap = await createImageBitmap(file);
-    const maxDimension = 2400;
+    const maxDimension = 1920;
     const scale = Math.min(1, maxDimension / Math.max(bitmap.width, bitmap.height));
     const canvas = document.createElement('canvas');
     canvas.width = Math.max(1, Math.round(bitmap.width * scale));
@@ -15,7 +15,7 @@ async function prepareImageForUpload(file: File): Promise<File> {
     if (!context) return file;
     context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
     bitmap.close();
-    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/webp', 0.86));
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/webp', 0.78));
     if (!blob || blob.size >= file.size) return file;
     return new File([blob], `${file.name.replace(/\.[^/.]+$/, '')}.webp`, { type: 'image/webp', lastModified: file.lastModified });
   } catch {
@@ -70,10 +70,9 @@ export function sanitizeMediaUrl(url: string): string {
   if (!url) return '';
   const mediaBase = (process.env.NEXT_PUBLIC_MEDIA_URL || '/images_BHT').replace(/\/$/, '');
 
-  // Strip full remote host URLs
-  if (url.startsWith('https://media.britishhajjtravel.com')) {
-    return url.replace(/^https?:\/\/media\.britishhajjtravel\.com\/?/, `${mediaBase}/`);
-  }
+  // Remote media uploads must keep their absolute URL. Rewriting the host into
+  // /images_BHT would break images unless the file also exists in the Vercel app.
+  if (/^https:\/\/media\.britishhajjtravel\.com\//i.test(url)) return url;
   if (url.startsWith('https://britishhajjtravel.com/media/')) {
     return url.replace(/^https?:\/\/britishhajjtravel\.com\/media\//, `${mediaBase}/`);
   }

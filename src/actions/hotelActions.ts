@@ -57,7 +57,7 @@ export async function getHotelDirectory() {
     ['hotel-directory'],
     {
       tags: ['hotel-directory'],
-      revalidate: 300,
+      revalidate: 3600,
     }
   );
 
