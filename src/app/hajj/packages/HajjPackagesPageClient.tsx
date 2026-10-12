@@ -1,15 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
+import HajjLandscapeCard from "@/components/HajjLandscapeCard";
+import HajjPackagePager from "@/components/HajjPackagePager";
+import { isTbcPrice } from "@/lib/priceDisplay";
 import PageBanner from "@/components/PageBanner";
-import PackageDetailModal, { PackageDetailData } from "@/components/PackageDetailModal";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import PageSectionsRenderer from "@/components/PageSectionsRenderer";
-import DynamicIcon from "@/components/ui/DynamicIcon";
-import * as LucideIcons from "lucide-react";
-import { getDurationUnit } from "@/lib/packageHelpers";
 
 const hajjCardsData = [
   {
@@ -17,7 +13,7 @@ const hajjCardsData = [
     title: "Economy Hajj Package 2027",
     duration: "14Days",
     heroImage:
-      "uploads\sections\hajj_1.jpg",
+      "/uploads/sections/hajj_1.jpg",
     price: "£ 12,995",
     makkahHotel: {
       name: "5 Star Hotel in Makkah",
@@ -59,7 +55,7 @@ const hajjCardsData = [
     title: "Deluxe Hajj 2027",
     duration: "15 Days",
     heroImage:
-      "uploads\sections\hajj_1.jpg",
+      "/uploads/sections/hajj_1.jpg",
     price: "£ 17,995",
     makkahHotel: {
       name: "5 Star Hotel Fairmont Makkah",
@@ -141,22 +137,8 @@ const hajjCardsData = [
 
 export default function HajjPackagesPageClient({ initialPageData, packages = [] }: { initialPageData?: any, packages?: any[] }) {
   const pageData = initialPageData || null;
-  const [selectedDetailPkg, setSelectedDetailPkg] = useState<PackageDetailData | null>(null);
-  const [isDetailOpen, setIsDetailOpen] = useState(false);
-
-
-  const openDetailModal = (card: any) => {
-    setSelectedDetailPkg(card);
-    setIsDetailOpen(true);
-  };
-
   return (
     <div className="hajj-page-wrapper" suppressHydrationWarning>
-      <PackageDetailModal
-        isOpen={isDetailOpen}
-        onClose={() => setIsDetailOpen(false)}
-        pkg={selectedDetailPkg}
-      />
       {/* ================= DYNAMIC HERO BANNER ================= */}
       <PageBanner
         title={
@@ -209,45 +191,41 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
         </div>
       </div>
 
-      {/* ================= MAIN HAJJ PACKAGES GRID ================= */}
-      <section className="packages-grid-container py-12 max-w-7xl mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {(() => {
-            let cards = packages && packages.length > 0 ? packages : hajjCardsData;
-            if (pageData?.sections && (!packages || packages.length === 0)) {
-              try {
-                const parsed = typeof pageData.sections === "string" ? JSON.parse(pageData.sections) : pageData.sections;
-                const hajjSec = Array.isArray(parsed) && parsed.find((s: any) => s.type === "Hajj Packages Grid" || s.type === "Hajj Cards");
-                if (hajjSec?.data?.items && Array.isArray(hajjSec.data.items) && hajjSec.data.items.length > 0) {
-                  cards = hajjSec.data.items;
-                }
-              } catch (e) { }
-            }
+      {/* ================= FULL-WIDTH HAJJ LANDSCAPE PACKAGES ================= */}
+      <section className="packages-grid-container mx-auto max-w-[1400px] px-4 py-12 sm:px-6">
+        <HajjPackagePager
+          items={(() => {
+            if (packages.length > 0) return packages;
+            try {
+              const parsed = typeof pageData?.sections === "string" ? JSON.parse(pageData.sections) : pageData?.sections;
+              const section = Array.isArray(parsed) && parsed.find((s: any) => s.type === "Hajj Packages Grid" || s.type === "Hajj Cards");
+              if (Array.isArray(section?.data?.items) && section.data.items.length > 0) return section.data.items;
+            } catch { /* Keep existing page fallback. */ }
+            return hajjCardsData;
+          })()}
+          renderCard={(card: any, idx: number) => {
+              const cd = typeof card.cardData === "string" ? (() => { try { return JSON.parse(card.cardData); } catch { return {}; } })() : (card.cardData || {});
+              const detail = typeof card.detailPageData === "string" ? (() => { try { return JSON.parse(card.detailPageData); } catch { return {}; } })() : (card.detailPageData || {});
+              const badgeTag = cd.badgeTag || card.badgeTag || (card.month ? `HAJJ ${card.month}` : "HAJJ 2027");
+              const duration = cd.duration || card.duration || detail.durationText || (card.durationDays ? `${card.durationDays} Days` : "");
+              const flightRoute = cd.flightRoute || card.flightRoute || "";
+              const heroImage = cd.bannerImage || card.thumbnail || card.heroImage || card.featuredImage || card.image || "/uploads/sections/hajj_1.jpg";
+              const title = card.title || cd.packageTitle || "Hajj Package 2027";
+              const rawPrice = String(card.startingPrice ?? card.price ?? cd.price ?? "").trim();
+              const quadPrice = Array.isArray(cd.packagePrices) ? cd.packagePrices.find((p: any) => /quad/i.test(p.packageType || p.type || "")) : null;
+              const price = isTbcPrice(rawPrice, quadPrice?.priceStatus) ? "TBC" : rawPrice ? (rawPrice.startsWith("£") ? rawPrice : `£ ${Number.isFinite(Number(rawPrice.replace(/[,£$]/g, ""))) ? Number(rawPrice.replace(/[,£$]/g, "")).toLocaleString("en-GB") : rawPrice}`) : "";
+              const priceSubtext = cd.priceSubtext || card.priceSubtext || "";
+              const operatorName = cd.operatorName || card.operatorName || "";
+              const operatorRating = cd.operatorRating || card.operatorRating || "";
+              const packageCode = String(
+                card.packageCode || cd.packageCode || detail.packageCode || ''
+              ).trim();
+              const btnLabel = cd.btnLabel || card.btnLabel || "Book Hajj 2027";
 
-            return cards.map((card: any, idx: number) => {
-              const badgeTag = card.badgeTag || (card.month ? `HAJJ ${card.month}` : "HAJJ 2027");
-              const duration = card.duration || card.detailPageData?.durationText || card.month || "14Days";
-              const flightRoute = card.flightRoute || "FROM UK ✈ TO SAUDIA";
-              const heroImage = card.thumbnail || card.heroImage || "https://antiquewhite-stinkbug-399384.hostingersite.com/wp-content/uploads/2026/05/Umrah_packages_202605092201.jpeg";
-              const title = card.title || "Hajj Package 2027";
-              const rawPrice = (card.startingPrice || card.price || "12,995").toString();
-              const price = rawPrice.startsWith("£") ? rawPrice : `£ ${rawPrice.replace("$", "").trim()}`;
-              const priceSubtext = card.priceSubtext || "£ / QUAD OCCUPANCY";
-              const operatorName = card.operatorName || "British Hajj Travel";
-              const operatorRating = card.operatorRating || "4.4/5";
-              const btnLabel = card.btnLabel || "Book Hajj 2027";
-              const btnLink = card.btnLink || `https://wa.me/19056248344?text=Hi,%20I'm%20interested%20in%20${encodeURIComponent(title)}`;
-
-              const makkahImg = card.makkahHotel?.image || "https://cf.bstatic.com/xdata/images/hotel/max1024x768/865309229.jpg";
-              const makkahName = card.makkahHotel?.name || "5 Star Hotel in Makkah";
-              const makkahLoc = card.makkahHotel?.location || "Near to Haram";
-              const makkahBadge = card.makkahHotel?.badge || "Breakfast";
-              const makkahNights = card.makkahHotel?.nights || "6 Nights";
-
-              const makkahHotel = card.makkahHotel;
-              const madinahHotel = card.madinahHotel;
-              const aziziyaHotel = card.aziziyaHotel;
-              const minaHotel = card.minaHotel;
+              const makkahHotel = cd.makkahHotel || card.makkahHotel;
+              const madinahHotel = cd.madinahHotel || card.madinahHotel;
+              const aziziyaHotel = cd.aziziyaHotel || card.aziziyaHotel;
+              const minaHotel = cd.minaHotel || card.minaHotel;
 
               const isDurEnabled = (h: any) => {
                 if (!h) return false;
@@ -263,7 +241,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
 
               const defaultAccommodations = [
                 {
-                  city: 'MAKKAH',
+                  city: makkahHotel?.label || 'MAKKAH',
                   subtitle: makkahHotel?.name || '',
                   location: makkahHotel?.location || '',
                   badge: makkahHotel?.badge || '',
@@ -274,7 +252,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
                   durationEnabled: isDurEnabled(makkahHotel),
                 },
                 {
-                  city: 'MADINA',
+                  city: madinahHotel?.label || 'MADINA',
                   subtitle: madinahHotel?.name || '',
                   location: madinahHotel?.location || '',
                   badge: madinahHotel?.badge || '',
@@ -285,7 +263,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
                   durationEnabled: isDurEnabled(madinahHotel),
                 },
                 {
-                  city: 'AZIZIYA',
+                  city: aziziyaHotel?.label || 'AZIZIYA',
                   subtitle: aziziyaHotel?.name || '',
                   location: aziziyaHotel?.location || '',
                   badge: aziziyaHotel?.badge || '',
@@ -296,7 +274,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
                   durationEnabled: isDurEnabled(aziziyaHotel),
                 },
                 {
-                  city: 'MINA',
+                  city: minaHotel?.label || 'MINA',
                   subtitle: minaHotel?.name || '',
                   location: minaHotel?.location || '',
                   badge: minaHotel?.badge || '',
@@ -311,7 +289,8 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
                 return Boolean(acc.subtitle || acc.location || acc.image || (acc.durationEnabled && acc.nights) || (acc.badgeEnabled && acc.badge));
               });
 
-              const inclusionsList = Array.isArray(card.inclusions) && card.inclusions.length > 0
+              const inclusionsList = Array.isArray(cd.inclusions) ? cd.inclusions
+                : Array.isArray(card.inclusions) && card.inclusions.length > 0
                 ? card.inclusions
                 : [
                   { icon: 'Plane', text: 'Return\nAir Tickets' },
@@ -322,7 +301,8 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
                   { icon: 'MessageCircle', text: 'Guidance &\nSupport' },
                 ];
 
-              const eligibilityList = Array.isArray(card.eligibility) && card.eligibility.length > 0
+              const eligibilityList = Array.isArray(cd.eligibility) ? cd.eligibility
+                : Array.isArray(card.eligibility) && card.eligibility.length > 0
                 ? card.eligibility
                 : [
                   'British & U.S. citizens with Pakistani passports.',
@@ -333,178 +313,29 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
 
               const pkgSlug = card.slug || card.id || title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 
-              return (
-                <article key={card.id || idx} className="bg-white rounded-[2rem] overflow-hidden shadow-lg border border-slate-100 flex flex-col group transition-all duration-300 hover:shadow-2xl">
-                  {/* Hero Header Image */}
-                  <div className="relative h-60 overflow-hidden">
-                    <Image
-                      src={heroImage}
-                      alt={title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                      unoptimized
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary via-transparent to-primary/30" />
-
-                    {/* Top Bar Tags */}
-                    <div className="absolute top-4 inset-x-4 flex justify-between items-center text-xs">
-                      <div className="bg-primary text-white font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 backdrop-blur-sm">
-                        <i className="fa-solid fa-kaaba text-red"></i>
-                        <span>{badgeTag}</span>
-                      </div>
-                      <div className="text-red font-extrabold px-3 py-1.5 rounded-lg flex items-center gap-1.5">
-                        <i className="fa-solid fa-calendar-days"></i>
-                        <span>{duration}</span>
-                      </div>
-                    </div>
-
-                    {/* Title & Route Placement */}
-                    <div className="absolute bottom-4 left-4 right-4 text-white">
-                      <div className="text-[#6ee7b7] text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 mb-1">
-                        <i className="fa-solid fa-plane text-xs"></i> {flightRoute}
-                      </div>
-                      <h2 className="text-2xl font-bold tracking-tight text-white">{title}</h2>
-                    </div>
-                  </div>
-
-                  {/* Card Body */}
-                  <div className="p-5 flex-1 flex flex-col justify-between">
-                    <div>
-                      <span className="text-[11px] font-black uppercase tracking-widest text-slate-800 block mb-3">Accommodations</span>
-
-                      {/* 2x2 Accommodations Grid */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-4">
-                        {defaultAccommodations.map((acc, aIdx) => (
-                          <div
-                            key={aIdx}
-                            className="flex gap-2.5 p-2 rounded-2xl border border-[#eef0e4] bg-[#fcfdf9] items-center"
-                          >
-                            <div className="relative w-14 h-14 rounded-xl overflow-hidden shrink-0 bg-slate-100 flex items-center justify-center">
-                              {acc.image ? (
-                                <Image
-                                  src={acc.image}
-                                  alt={acc.city}
-                                  fill
-                                  className="object-cover"
-                                  unoptimized
-                                />
-                              ) : (
-                                <i className="fa-solid fa-hotel text-slate-400 text-base"></i>
-                              )}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <h4 className="text-xs font-black text-primary uppercase tracking-wider leading-none mb-0.5">{acc.city}</h4>
-                              <div className="text-red font-bold text-[10px] uppercase tracking-wide truncate mb-1">
-                                {acc.subtitle}
-                              </div>
-                              <p className="text-[10px] text-slate-500 flex items-center gap-1 mb-1 truncate">
-                                <i className="fa-solid fa-location-dot text-slate-400 shrink-0"></i>
-                                <span className="truncate">{acc.location}</span>
-                              </p>
-                              <div className="flex gap-1 flex-wrap">
-                                {acc.badgeEnabled !== false && acc.badge && (
-                                  <span className="text-[8px] font-bold bg-primary text-white px-1.5 py-0.5 rounded flex items-center gap-1 shrink-0">
-                                    <DynamicIcon name={acc.badgeIcon || 'Utensils'} className="w-2.5 h-2.5" />
-                                    <span>{acc.badge}</span>
-                                  </span>
-                                )}
-                                {acc.durationEnabled !== false && acc.nights && (
-                                  <span className="text-[8px] font-bold bg-red-lt text-ink-soft px-1.5 py-0.5 rounded flex items-center gap-1 shrink-0">
-                                    {getDurationUnit(acc.nights) === 'days' ? (
-                                      <LucideIcons.Sun className="w-2 h-2 text-ink" />
-                                    ) : (
-                                      <LucideIcons.MoonStar className="w-2 h-2 text-ink" />
-                                    )}
-                                    <span>{acc.nights}</span>
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* PACKAGE INCLUSIONS (6 Badges Card) */}
-                      <div className="relative mb-4 pt-3">
-                        <div className="absolute top-0 left-1/2 -translate-x-1/2 bg-[#00382B] text-white text-[9px] font-black uppercase tracking-widest px-3 py-0.5 rounded-full z-10 shadow-sm whitespace-nowrap">
-                          PACKAGE INCLUSIONS
-                        </div>
-                        <div className="rounded-2xl border border-[#e5ebe3] bg-[#f9faf7] pt-5 pb-3 px-2">
-                          <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5 text-center">
-                            {inclusionsList.map((inc: any, iIdx: number) => {
-                              const iconName = inc.icon || 'CheckCircle';
-                              const text = inc.text || '';
-                              return (
-                                <div key={iIdx} className="flex flex-col items-center justify-start">
-                                  <div className="w-9 h-9 rounded-full border border-slate-300 bg-white flex items-center justify-center mb-1 shadow-2xs">
-                                    <DynamicIcon name={iconName} className="w-3.5 h-3.5 text-primary" />
-                                  </div>
-                                  <span className="text-[8px] font-bold text-slate-800 leading-tight whitespace-pre-line">
-                                    {text}
-                                  </span>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Eligibility Checklist */}
-                      {eligibilityList.length > 0 && (
-                        <div className="rounded-2xl bg-[#f4f7f2] p-3 border border-[#e4ece0] mb-4">
-                          <ul className="space-y-1.5">
-                            {eligibilityList.map((item: string, eIdx: number) => (
-                              <li key={eIdx} className="flex items-start gap-2 text-[11px] text-ink leading-snug">
-                                <span className="w-3.5 h-3.5 rounded-full bg-primary text-white flex items-center justify-center shrink-0 mt-0.5">
-                                  <i className="fa-solid fa-check text-[8px]"></i>
-                                </span>
-                                <span>{item}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Footer Meta & Actions */}
-                    <div className="pt-3 border-t border-slate-100 mt-2 space-y-3">
-                      <div className="flex justify-between items-start gap-4">
-                        <div className="w-1/2">
-                          <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 block">OPERATOR</span>
-                          <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-                            <span className="text-xs font-bold text-slate-800">{operatorName}</span>
-                            <span className="text-[9px] font-extrabold bg-amber-500 text-slate-950 px-1.5 py-0.5 rounded shrink-0">{operatorRating}</span>
-                          </div>
-                        </div>
-                        <div className="w-1/2 text-right">
-                          <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 block">{priceSubtext}</span>
-                          <div className="text-[22px] font-black text-primary text-right leading-none">{price}</div>
-                        </div>
-                      </div>
-
-                      <div className="flex gap-2">
-                        <Link
-                          href={`/package/${pkgSlug}`}
-                          className="flex-1 py-3 border-2 border-slate-800 text-slate-800 hover:bg-slate-800/5 text-xs font-extrabold rounded-xl uppercase tracking-wider transition-colors flex justify-center items-center gap-2"
-                        >
-                          <i className="fa-solid fa-eye text-xs"></i> View Detail
-                        </Link>
-                        <Link
-                          href={`/package/${pkgSlug}`}
-                          className="flex-1 bg-red hover:bg-[#b88222] text-slate-950 font-extrabold py-3 px-3 rounded-xl flex items-center justify-center gap-2 text-xs uppercase tracking-wider shadow-sm hover:shadow-md transition-all cursor-pointer"
-                        >
-                          <i className="fa-solid fa-book-bookmark text-xs"></i>
-                          <span>{btnLabel}</span>
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                </article>
-              );
-            });
-          })()}
-        </div>
+            return (
+              <HajjLandscapeCard
+                key={card.id || idx}
+                heroImage={heroImage}
+                packageTitle={title}
+                badgeTag={badgeTag}
+                duration={duration}
+                flightRoute={flightRoute}
+                packageCode={packageCode}
+                accommodations={defaultAccommodations}
+                inclusions={inclusionsList}
+                eligibility={eligibilityList}
+                operatorName={operatorName}
+                operatorRating={operatorRating}
+                priceSubtext={priceSubtext}
+                price={price}
+                bookLabel={btnLabel}
+                onViewDetail={() => { window.location.href = `/package/${pkgSlug}`; }}
+                onBook={() => { window.location.href = `/package/${pkgSlug}`; }}
+              />
+            );
+          }}
+        />
       </section>
 
       {/* ================= HAJJ SERVICES GRID ================= */}
