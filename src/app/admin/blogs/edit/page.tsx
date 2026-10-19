@@ -269,7 +269,7 @@ function BlogEditorInner() {
                   value={form.publishedAt}
                   onChange={(val) => setForm((p) => ({ ...p, publishedAt: val }))}
                 />
-                <p className="text-[10px] text-slate-400 mt-1">If empty, creation date is used</p>
+                <p className="text-[10px] text-slate-400 mt-1">If empty, the current date is saved automatically</p>
               </div>
             </div>
 

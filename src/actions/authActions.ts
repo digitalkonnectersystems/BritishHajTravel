@@ -5,7 +5,8 @@ import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { createSessionCookie, destroySession, getCurrentSession } from '@/lib/auth';
 import { redirect } from 'next/navigation';
-import { verifyPassword, hashPassword } from '@/lib/password';
+import { verifyPassword, hashPassword, needsPasswordRehash } from '@/lib/password';
+import { requireAdmin } from '@/lib/requireAdmin';
 import { logAdminActivityAction } from '@/actions/activityActions';
 import { recordUserHeartbeatAction } from '@/actions/userActions';
 
@@ -17,41 +18,9 @@ export async function adminLogin(formData: FormData) {
     return { success: false, error: 'Email and password are required.' };
   }
 
-  let userList: any[] = [];
   try {
-    userList = await db.select().from(users).where(eq(users.email, email)).limit(1);
-  } catch (dbErr) {
-    console.warn('Users table query fallback:', dbErr);
-    userList = [];
-  }
-
-  try {
-    // Initial setup fallback if database table is empty or not yet created
-    if (!userList.length) {
-      const envEmail = (process.env.INITIAL_ADMIN_EMAIL || '').trim().toLowerCase();
-      const envPassword = process.env.INITIAL_ADMIN_PASSWORD || '';
-      if (envEmail && envPassword && email === envEmail && password === envPassword) {
-        await createSessionCookie({
-          userId: 1,
-          email: envEmail,
-          name: 'Super Admin',
-          role: 'super_admin',
-        });
-
-        // Record heartbeat & activity
-        await recordUserHeartbeatAction({ email: envEmail, name: 'Super Admin', role: 'super_admin' });
-        await logAdminActivityAction({
-          type: 'users',
-          action: 'User Logged In',
-          user: 'Super Admin',
-          userEmail: envEmail,
-          details: 'Initial setup admin authenticated successfully',
-        });
-
-        return redirect('/admin/dashboard');
-      }
-      return { success: false, error: 'Invalid Credentials.' };
-    }
+    const userList = await db.select().from(users).where(eq(users.email, email)).limit(1);
+    if (!userList.length) return { success: false, error: 'Invalid Credentials.' };
 
     const user = userList[0];
 
@@ -66,6 +35,11 @@ export async function adminLogin(formData: FormData) {
 
     if (!isValid) {
       return { success: false, error: 'Invalid Credentials.' };
+    }
+
+    // Upgrade successfully verified legacy password hashes on login.
+    if (needsPasswordRehash(user.passwordHash)) {
+      await db.update(users).set({ passwordHash: hashPassword(password) }).where(eq(users.id, user.id));
     }
 
     await createSessionCookie({
@@ -116,66 +90,23 @@ export async function adminLogout() {
   return redirect('/letstravel');
 }
 
-export async function verifyResetEmail(formData: FormData) {
-  const email = (formData.get('email') as string)?.trim().toLowerCase();
-
-  if (!email) {
-    return { success: false, error: 'Email is required.' };
-  }
-
-  try {
-    const userList = await db.select().from(users).where(eq(users.email, email)).limit(1);
-
-    if (!userList.length) {
-      return { success: false, error: 'No account found with this email address.' };
-    }
-
-    const user = userList[0];
-
-    if (!user.active) {
-      return { success: false, error: 'This user account is currently disabled.' };
-    }
-
-    return { success: true, message: 'Email verified.', email };
-  } catch (error: any) {
-    return { success: false, error: 'Failed to verify email.' };
-  }
+/** Public reset-by-email was insecure. Use a verified administrator account instead. */
+export async function verifyResetEmail(_formData: FormData) {
+  return { success: false, error: 'Password recovery requires an administrator. Contact your site administrator.' };
 }
 
+/** Authenticated super-admin password change only. Not a public forgot-password endpoint. */
 export async function resetAdminPassword(formData: FormData) {
-  const email = (formData.get('email') as string)?.trim().toLowerCase();
-  const newPassword = formData.get('password') as string;
-
-  if (!email || !newPassword) {
-    return { success: false, error: 'Email and new password are required.' };
-  }
-
   try {
-    const userList = await db.select().from(users).where(eq(users.email, email)).limit(1);
-
-    if (!userList.length) {
-      return { success: false, error: 'No account found with this email address.' };
-    }
-
-    const user = userList[0];
-
-    if (!user.active) {
-      return { success: false, error: 'This user account is currently disabled.' };
-    }
-
-    await db.update(users).set({ passwordHash: hashPassword(newPassword) }).where(eq(users.id, user.id));
-
-    // Log Activity
-    await logAdminActivityAction({
-      type: 'users',
-      action: 'Password Reset',
-      user: user.name,
-      userEmail: user.email,
-      details: `Password was successfully changed for ${user.email}`,
-    });
-
-    return { success: true, message: 'Password has been successfully reset.' };
-  } catch (error: any) {
-    return { success: false, error: 'Failed to reset password.' };
+    await requireAdmin(['super_admin']);
+    const email = String(formData.get('email') || '').trim().toLowerCase();
+    const password = String(formData.get('password') || '');
+    if (!email || password.length < 12) return { success: false, error: 'Email and a password of at least 12 characters are required.' };
+    const list = await db.select({ id: users.id }).from(users).where(eq(users.email, email)).limit(1);
+    if (!list.length) return { success: false, error: 'User not found.' };
+    await db.update(users).set({ passwordHash: hashPassword(password) }).where(eq(users.id, list[0].id));
+    return { success: true, message: 'Password updated by the administrator.' };
+  } catch {
+    return { success: false, error: 'Administrator authorization required.' };
   }
 }

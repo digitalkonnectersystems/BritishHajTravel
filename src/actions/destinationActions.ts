@@ -1,8 +1,10 @@
 'use server';
 
+import { requireAdmin } from '@/lib/requireAdmin';
+
 import { db } from '@/db';
 import { destinations } from '@/db/schema';
-import { and, asc, eq, sql } from 'drizzle-orm';
+import { and, asc, eq } from 'drizzle-orm';
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { logAdminActivityAction } from '@/actions/activityActions';
 
@@ -17,28 +19,10 @@ function parseJson(value: unknown, fallback: any[] = []) {
   }
 }
 
-async function ensureDestinationsTable() {
-  await db.execute(sql`CREATE TABLE IF NOT EXISTS destinations (
-    id int AUTO_INCREMENT PRIMARY KEY,
-    title varchar(255) NOT NULL,
-    slug varchar(128) NOT NULL UNIQUE,
-    description text,
-    section_title varchar(255) DEFAULT 'Packages for this destination',
-    banner_images json,
-    package_ids json,
-    packages_data json,
-    package_data json,
-    status enum('published','draft') NOT NULL DEFAULT 'published',
-    display_order int NOT NULL DEFAULT 0,
-    seo_settings longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-    created_at timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-  )`);
-}
-
 export async function getDestinations(includeDrafts = false) {
+  if (includeDrafts) await requireAdmin();
+
   try {
-    await ensureDestinationsTable();
     const query = db.select().from(destinations);
     const rows = await (includeDrafts ? query : query.where(eq(destinations.status, 'published')))
       .orderBy(asc(destinations.displayOrder), asc(destinations.title));
@@ -57,7 +41,6 @@ export async function getDestinations(includeDrafts = false) {
 
 export async function getDestinationBySlug(slug: string) {
   try {
-    await ensureDestinationsTable();
     const rows = await db.select().from(destinations).where(
       and(eq(destinations.slug, slug), eq(destinations.status, 'published'))
     ).limit(1);
@@ -89,8 +72,9 @@ export async function saveDestinationAction(data: {
   status?: 'published' | 'draft';
   displayOrder?: number;
 }) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
-    await ensureDestinationsTable();
     const title = data.title.trim();
     const slug = data.slug.toLowerCase().trim().replace(/^\/+|\/+$/g, '').replace(/[^a-z0-9-]+/g, '-');
     if (!title || !slug) return { success: false, error: 'Title and slug are required.' };
@@ -160,8 +144,9 @@ export async function saveDestinationAction(data: {
 }
 
 export async function deleteDestinationAction(id: number) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
-    await ensureDestinationsTable();
     const previousEntry = (await db.select().from(destinations).where(eq(destinations.id, id)).limit(1))[0] || null;
     await db.delete(destinations).where(eq(destinations.id, id));
     await logAdminActivityAction({
@@ -181,6 +166,8 @@ export async function deleteDestinationAction(id: number) {
 }
 
 export async function updateDestinationOrderAction(orderedIds: number[]) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
     await Promise.all(orderedIds.map((id, index) => db.update(destinations).set({ displayOrder: index, updatedAt: new Date() }).where(eq(destinations.id, id))));
     revalidatePath('/destinations');

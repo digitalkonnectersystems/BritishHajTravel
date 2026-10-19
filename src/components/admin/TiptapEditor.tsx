@@ -218,6 +218,10 @@ export default function TiptapEditor({
         heading: {
           levels: [1, 2, 3, 4, 5, 6],
         },
+        // Tiptap v3 StarterKit already includes Link and Underline.
+        // Disable those defaults because custom versions are registered below.
+        link: false,
+        underline: false,
       }),
       Underline,
       Link.configure({

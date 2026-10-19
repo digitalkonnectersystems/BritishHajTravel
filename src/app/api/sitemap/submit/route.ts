@@ -1,3 +1,4 @@
+import { getCurrentSession } from '@/lib/auth';
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
 import { sitemapLogs } from '@/db/schema';
@@ -5,6 +6,8 @@ import { getSeoIntelligenceSettings } from '@/actions/pageActions';
 import { resolveCanonicalPublicOrigin } from '@/lib/urlResolver';
 
 export async function POST() {
+  const session = await getCurrentSession();
+  if (!session || !['super_admin', 'admin', 'seo_manager'].includes(session.role)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   try {
     const seoSettings = await getSeoIntelligenceSettings();
     const canonicalOrigin = resolveCanonicalPublicOrigin(seoSettings);

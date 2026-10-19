@@ -1,8 +1,10 @@
 'use server';
 
+import { requireAdmin } from '@/lib/requireAdmin';
+
 import { db } from '@/db';
 import { sitePages, siteSettings } from '@/db/schema';
-import { and, eq, isNull, sql } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { revalidatePath, revalidateTag, unstable_cache } from 'next/cache';
 import { getResponsiveEmailTemplateHtml, getEditableEmailTemplateHtml, CANONICAL_FORM_SUBJECTS, FORM_SAMPLE_DATA } from '@/lib/emailTemplate';
 import { logAdminActivityAction } from '@/actions/activityActions';
@@ -27,43 +29,6 @@ function safeJsonParse<T>(jsonStr: any, fallback: T): T {
 
 export async function getPagesList() {
   try {
-    await ensureGuideColumns();
-    const destinationsPage = await db.select({ id: sitePages.id }).from(sitePages).where(eq(sitePages.slug, '/destinations')).limit(1);
-    if (destinationsPage.length === 0) {
-      await db.insert(sitePages).values({
-        title: 'Destinations',
-        slug: '/destinations',
-        status: 'published',
-        showInMenu: true,
-        bannerTitle: 'Destinations',
-        bannerDescription: '',
-        sections: JSON.stringify([
-          {
-            id: 'destinations-grid-1',
-            type: 'Destinations Grid',
-            title: 'Destinations Grid',
-            data: { title: 'Destinations' },
-          },
-        ]),
-        metaTitle: 'Destinations | British Hajj Travel',
-        metaDescription: 'Explore British Hajj Travel destinations and available packages.',
-      });
-    }
-
-    const mainGalleryPage = await db.select({ id: sitePages.id }).from(sitePages).where(eq(sitePages.slug, '/gallery')).limit(1);
-    if (mainGalleryPage.length === 0) {
-      await db.insert(sitePages).values({
-        title: 'Gallery',
-        slug: '/gallery',
-        status: 'published',
-        showInMenu: false,
-        bannerTitle: 'Gallery',
-        bannerDescription: 'Explore moments from British Hajj Travel journeys.',
-        sections: JSON.stringify([{ id: 'gallery-main', type: 'Gallery', title: 'Main Gallery', data: { eyebrow: 'GALLERY', title: 'Highlights from British Hajj Travel', description: '', images: [], videos: [] } }]),
-        metaTitle: 'Gallery | British Hajj Travel',
-        metaDescription: 'Explore British Hajj Travel journey highlights and videos.',
-      });
-    }
     let pages = await db.select().from(sitePages).where(isNull(sitePages.guideCategory));
 
     // Apply stored reordering sequence if available
@@ -92,49 +57,10 @@ export async function getPagesList() {
 
 export type GuideCategory = 'hajj' | 'umrah';
 
-let guideColumnsReady: Promise<void> | null = null;
-
-async function ensureGuideColumns() {
-  if (!guideColumnsReady) {
-    guideColumnsReady = (async () => {
-      const databaseName = process.env.DB_NAME || 'bht_travel_db';
-      const columns = ['guide_category', 'guide_card_data'];
-      for (const column of columns) {
-        const existing = await db.execute(sql`
-          SELECT COLUMN_NAME
-          FROM information_schema.columns
-          WHERE table_schema = ${databaseName}
-            AND table_name = 'site_pages'
-            AND column_name = ${column}
-          LIMIT 1
-        `);
-        const rows = Array.isArray(existing) ? existing[0] : [];
-        if (Array.isArray(rows) && rows.length > 0) continue;
-
-        const statement = column === 'guide_category'
-          ? sql`ALTER TABLE site_pages ADD COLUMN guide_category varchar(20) NULL`
-          : sql`ALTER TABLE site_pages ADD COLUMN guide_card_data text NULL`;
-        try {
-          await db.execute(statement);
-        } catch (error: any) {
-          const errorText = JSON.stringify(error, Object.getOwnPropertyNames(error)).toLowerCase();
-          const isDuplicateColumn = error?.code === 'ER_DUP_FIELDNAME'
-            || error?.errno === 1060
-            || errorText.includes('duplicate column');
-          if (!isDuplicateColumn) {
-            guideColumnsReady = null;
-            throw error;
-          }
-        }
-      }
-    })();
-  }
-  return guideColumnsReady;
-}
-
 export async function getGuidesList(category?: GuideCategory, includeDrafts = false) {
+  if (includeDrafts) await requireAdmin();
+
   try {
-    await ensureGuideColumns();
     const filters = [];
     if (category) filters.push(eq(sitePages.guideCategory, category));
     if (!includeDrafts) filters.push(eq(sitePages.status, 'published'));
@@ -166,8 +92,9 @@ export async function getGuidesList(category?: GuideCategory, includeDrafts = fa
 }
 
 export async function reorderGuidesAction(category: GuideCategory, guideIds: number[]) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
-    await ensureGuideColumns();
     const guides = await db
       .select({ id: sitePages.id })
       .from(sitePages)
@@ -197,8 +124,9 @@ export async function reorderGuidesAction(category: GuideCategory, guideIds: num
 }
 
 export async function getPageById(id: number) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
-    await ensureGuideColumns();
     const pages = await db.select().from(sitePages).where(eq(sitePages.id, id)).limit(1);
     if (pages && pages.length > 0) {
       const p = pages[0];
@@ -265,6 +193,8 @@ export async function getPageBySlug(slug: string) {
 }
 
 export async function savePageAction(formData: FormData) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   const id = formData.get('id') ? Number(formData.get('id')) : null;
   const title = String(formData.get('title') || 'Untitled Page');
   const rawSlug = String(formData.get('slug') || '/').trim();
@@ -288,7 +218,6 @@ export async function savePageAction(formData: FormData) {
   const seoSettings = formData.get('seoSettings') as string;
 
   try {
-    await ensureGuideColumns();
     if (slug.length > 128) {
       return { success: false, error: 'The page slug must be 128 characters or fewer.' };
     }
@@ -414,6 +343,8 @@ export async function savePageAction(formData: FormData) {
 }
 
 export async function saveGuideAction(formData: FormData) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   const id = formData.get('id') ? Number(formData.get('id')) : null;
   const title = String(formData.get('title') || '').trim();
   const rawSlug = String(formData.get('slug') || '').trim();
@@ -431,7 +362,6 @@ export async function saveGuideAction(formData: FormData) {
   if (slug.length > 128) return { success: false, error: 'The guide slug must be 128 characters or fewer.' };
 
   try {
-    await ensureGuideColumns();
     const duplicate = await db.select({ id: sitePages.id, title: sitePages.title }).from(sitePages).where(eq(sitePages.slug, slug)).limit(1);
     if (duplicate.length > 0 && duplicate[0].id !== id) {
       return { success: false, error: `A page already exists with the slug "${slug}" ("${duplicate[0].title}").` };
@@ -551,6 +481,8 @@ export async function getGalleryNavItems() {
 }
 
 export async function saveNavItemsAction(navItems: any[]) {
+  await requireAdmin(['admin']);
+
   try {
     const existing = await db.select().from(siteSettings).where(eq(siteSettings.key, 'nav_items')).limit(1);
     if (existing && existing.length > 0) {
@@ -647,6 +579,8 @@ export async function getFooterData() {
 }
 
 export async function saveFooterSettingsAction(footerData: any) {
+  await requireAdmin(['admin']);
+
   try {
     footerMemoryCache = footerData;
     const existing = await db.select().from(siteSettings).where(eq(siteSettings.key, 'footer_settings')).limit(1);
@@ -675,6 +609,8 @@ export async function saveFooterSettingsAction(footerData: any) {
 }
 
 export async function deletePageAction(id: number) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
     const pages = await db.select().from(sitePages).where(eq(sitePages.id, id)).limit(1);
     if (pages && pages.length > 0) {
@@ -703,6 +639,8 @@ export async function deletePageAction(id: number) {
 }
 
 export async function deleteGuideAction(id: number) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
     const guides = await db
       .select()
@@ -736,6 +674,8 @@ export async function deleteGuideAction(id: number) {
 }
 
 export async function moveGuideToPagesAction(id: number) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
     const pages = await db.select().from(sitePages).where(eq(sitePages.id, id)).limit(1);
     const page = pages[0];
@@ -815,6 +755,8 @@ export async function getSiteIdentity() {
 }
 
 export async function saveSiteIdentityAction(data: any) {
+  await requireAdmin(['admin']);
+
   try {
     siteIdentityMemoryCache = data;
     const existing = await db.select().from(siteSettings).where(eq(siteSettings.key, 'site_identity')).limit(1);
@@ -902,6 +844,8 @@ export async function getShareTools() {
 }
 
 export async function saveShareToolsAction(data: any) {
+  await requireAdmin(['admin']);
+
   shareToolsMemoryCache = data;
   try {
     const existing = await db.select().from(siteSettings).where(eq(siteSettings.key, 'share_tools')).limit(1);
@@ -934,6 +878,8 @@ export async function getGlobalCss() {
 }
 
 export async function saveGlobalCssAction(css: string) {
+  await requireAdmin(['admin']);
+
   try {
     const existing = await db.select().from(siteSettings).where(eq(siteSettings.key, 'global_css')).limit(1);
     if (existing && existing.length > 0) {
@@ -958,6 +904,8 @@ export async function saveGlobalCssAction(css: string) {
 }
 
 export async function updatePageOrderAction(orderedIds: number[]) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
     const existing = await db.select().from(siteSettings).where(eq(siteSettings.key, 'ordered_pages')).limit(1);
     if (existing && existing.length > 0) {
@@ -983,6 +931,8 @@ export async function updatePageOrderAction(orderedIds: number[]) {
 }
 
 export async function updatePageStatusAction(id: number, status: 'published' | 'draft') {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
     await db.update(sitePages).set({ status, updatedAt: new Date() }).where(eq(sitePages.id, id));
 
@@ -1040,6 +990,8 @@ export async function getLoginAuthSettings() {
 }
 
 export async function saveLoginAuthSettingsAction(data: any) {
+  await requireAdmin(['admin']);
+
   loginAuthMemoryCache = data;
   try {
     const existing = await db.select().from(siteSettings).where(eq(siteSettings.key, 'login_auth_settings')).limit(1);
@@ -1095,6 +1047,8 @@ export async function getDisclaimerSettings(): Promise<DisclaimerSettings> {
 }
 
 export async function saveDisclaimerSettingsAction(data: DisclaimerSettings) {
+  await requireAdmin(['admin']);
+
   disclaimerMemoryCache = data;
   try {
     const existing = await db.select().from(siteSettings).where(eq(siteSettings.key, 'disclaimer_settings')).limit(1);
@@ -1364,7 +1318,7 @@ function buildDefaultEmailTemplates() {
   );
 }
 
-export async function getFormsSettings() {
+async function readFullFormsSettings() {
   if (formsSettingsMemoryCache) return formsSettingsMemoryCache;
   try {
     const setting = await db.select().from(siteSettings).where(eq(siteSettings.key, 'forms_settings')).limit(1);
@@ -1444,7 +1398,30 @@ export async function getFormsSettings() {
   return formsSettingsMemoryCache || defaultResult;
 }
 
+/** Browser-accessible form presentation only. Never expose SMTP/routing credentials. */
+export async function getFormsSettings(): Promise<Record<string, any>> {
+  const full = await readFullFormsSettings();
+  const formsData = JSON.parse(JSON.stringify(full.formsData || {}));
+  for (const value of Object.values(formsData) as any[]) {
+    if (value && typeof value === 'object') {
+      delete value.recipientEmail;
+      delete value.sendTo;
+      delete value.cc;
+      delete value.bcc;
+    }
+  }
+  return { ...formsData, formsData, formFieldsState: full.formFieldsState };
+}
+
+/** Protected editor settings including email routing and templates. */
+export async function getAdminFormsSettings() {
+  await requireAdmin(['admin']);
+  return readFullFormsSettings();
+}
+
 export async function saveFormsSettingsAction(settingsData: any) {
+  await requireAdmin(['admin']);
+
   const nextSettings = JSON.parse(JSON.stringify(settingsData || {}));
   const emailConfigs = nextSettings.emailConfigs || {};
 
@@ -1609,6 +1586,8 @@ export async function getPackageDetailsAction(packageSlug: string) {
 }
 
 export async function savePageSeoAction(pageId: number | string, seoData: any) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
     const numId = Number(pageId);
     if (!Number.isInteger(numId) || numId <= 0) {
@@ -1721,6 +1700,8 @@ export async function getSeoIntelligenceSettings() {
 }
 
 export async function saveSeoIntelligenceSettingsAction(settings: any) {
+  await requireAdmin(['admin']);
+
   try {
     const existing = await db.select().from(siteSettings).where(eq(siteSettings.key, 'seo_intelligence')).limit(1);
     const value = JSON.stringify(settings);
@@ -1941,6 +1922,8 @@ export async function generateSeoSectionAction(
   section: 'traditional' | 'alt' | 'geo' | 'aeo' | 'schema' | 'technical',
   context: SeoGenerationContext
 ): Promise<SeoSectionResult> {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   if (section === 'technical') {
     const cleanSlug = context.pageSlug === '/' ? '' : context.pageSlug.startsWith('/') ? context.pageSlug : `/${context.pageSlug}`;
     return {

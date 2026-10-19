@@ -1,5 +1,7 @@
 'use server';
 
+import { requireAdmin } from '@/lib/requireAdmin';
+
 import { db } from '@/db';
 import { hotelCategories, hotels } from '@/db/schema';
 import { asc, eq } from 'drizzle-orm';
@@ -65,6 +67,8 @@ export async function getHotelDirectory() {
 }
 
 export async function getHotelAdminData() {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   const categories = await db
     .select()
     .from(hotelCategories)
@@ -77,6 +81,8 @@ export async function getHotelAdminData() {
 }
 
 export async function createHotelCategoryAction(input: { name: string; displayOrder?: number; isPublished?: boolean }) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   const name = input.name.trim();
   if (!name) return { success: false, error: 'Category name is required.' };
   const slug = slugify(name);
@@ -99,6 +105,8 @@ export async function createHotelCategoryAction(input: { name: string; displayOr
 }
 
 export async function updateHotelCategoryAction(id: number, input: { name: string; displayOrder?: number; isPublished?: boolean }) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   const name = input.name.trim();
   if (!name) return { success: false, error: 'Category name is required.' };
   try {
@@ -118,6 +126,8 @@ export async function updateHotelCategoryAction(id: number, input: { name: strin
 }
 
 export async function deleteHotelCategoryAction(id: number) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
     await db.delete(hotelCategories).where(eq(hotelCategories.id, id));
     revalidatePath('/hotels');
@@ -129,6 +139,8 @@ export async function deleteHotelCategoryAction(id: number) {
 }
 
 export async function updateHotelCategoryOrderAction(orderedIds: number[]) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
     await Promise.all(orderedIds.map((id, index) => db.update(hotelCategories).set({ displayOrder: index, updatedAt: new Date() }).where(eq(hotelCategories.id, id))));
     revalidatePath('/hotels');
@@ -170,6 +182,8 @@ function normalizeHotel(input: HotelInput) {
 }
 
 export async function createHotelAction(input: HotelInput) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   const hotel = normalizeHotel(input);
   if (!hotel.name || !hotel.city || !hotel.categoryId || !hotel.websiteUrl) {
     return { success: false, error: 'Category, hotel name, city, and website URL are required.' };
@@ -186,6 +200,8 @@ export async function createHotelAction(input: HotelInput) {
 }
 
 export async function updateHotelAction(id: number, input: HotelInput) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   const hotel = normalizeHotel(input);
   if (!hotel.name || !hotel.city || !hotel.categoryId || !hotel.websiteUrl) {
     return { success: false, error: 'Category, hotel name, city, and website URL are required.' };
@@ -201,6 +217,8 @@ export async function updateHotelAction(id: number, input: HotelInput) {
 }
 
 export async function deleteHotelAction(id: number) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
     await db.delete(hotels).where(eq(hotels.id, id));
     revalidatePath('/hotels');
@@ -212,6 +230,8 @@ export async function deleteHotelAction(id: number) {
 }
 
 export async function updateHotelOrderAction(orderedIds: number[]) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
     await Promise.all(orderedIds.map((id, index) => db.update(hotels).set({ displayOrder: index, updatedAt: new Date() }).where(eq(hotels.id, id))));
     revalidatePath('/hotels');

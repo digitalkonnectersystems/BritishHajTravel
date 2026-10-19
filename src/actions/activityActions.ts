@@ -1,5 +1,7 @@
 'use server';
 
+import { requireAdmin } from '@/lib/requireAdmin';
+
 import { db } from '@/db';
 import { activityLogs, users } from '@/db/schema';
 import { desc, isNull, inArray } from 'drizzle-orm';
@@ -126,6 +128,8 @@ async function getRequestIp(): Promise<string | null> {
 }
 
 export async function getRecentActivities(limit: number = 100): Promise<ActivityItem[]> {
+  await requireAdmin();
+
   unstable_noStore();
   try {
     const safeLimit = Math.min(500, Math.max(1, Number(limit) || 100));
@@ -204,6 +208,8 @@ export async function getRecentActivities(limit: number = 100): Promise<Activity
 }
 
 export async function logAdminActivityAction(entry: ActivityPayload) {
+  await requireAdmin();
+
   try {
     let resolvedUser = entry.user;
     let resolvedEmail = entry.userEmail;
@@ -251,6 +257,8 @@ export async function logAdminActivityAction(entry: ActivityPayload) {
 }
 
 export async function clearActivityLogsAction() {
+  await requireAdmin(['admin']);
+
   try {
     await db
       .update(activityLogs)

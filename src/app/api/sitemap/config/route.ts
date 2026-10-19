@@ -1,9 +1,12 @@
+import { getCurrentSession } from '@/lib/auth';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
 import { sitemapConfigs } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 
 export async function GET() {
+  const session = await getCurrentSession();
+  if (!session || !['super_admin', 'admin', 'seo_manager'].includes(session.role)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   try {
     const configs = await db.select().from(sitemapConfigs);
     return NextResponse.json({ success: true, configs });
@@ -13,6 +16,8 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  const session = await getCurrentSession();
+  if (!session || !['super_admin', 'admin', 'seo_manager'].includes(session.role)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   try {
     const body = await req.json();
     const { configs } = body; // Array of config objects

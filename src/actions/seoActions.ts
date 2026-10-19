@@ -1,5 +1,7 @@
 'use server';
 
+import { requireAdmin } from '@/lib/requireAdmin';
+
 import { db } from '@/db';
 import { blogPosts, destinations, packages, sitePages, siteSettings, visaServices } from '@/db/schema';
 import { eq } from 'drizzle-orm';
@@ -240,6 +242,8 @@ function auditSingleItem(item: Omit<SeoAuditItem, 'score' | 'issues'>): SeoAudit
 }
 
 export async function getSeoAuditReportAction(): Promise<SeoAuditItem[]> {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   await requireAdminSession();
 
   const [pageRows, packageRows, blogRows, destinationRows] = await Promise.all([

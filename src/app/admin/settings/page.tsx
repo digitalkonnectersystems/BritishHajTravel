@@ -22,7 +22,7 @@ import {
   saveLoginAuthSettingsAction,
   getDisclaimerSettings,
   saveDisclaimerSettingsAction,
-  getFormsSettings,
+  getAdminFormsSettings,
   saveFormsSettingsAction,
   getSeoIntelligenceSettings,
   saveSeoIntelligenceSettingsAction,
@@ -640,7 +640,7 @@ export default function AdminSettingsPage() {
         }
       }
     });
-    getFormsSettings().then(data => {
+    getAdminFormsSettings().then(data => {
       if (data) {
         const loadedData = data.formsData || data;
         setFormsData((prev: any) => ({

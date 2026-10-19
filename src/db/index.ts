@@ -1,5 +1,6 @@
 import { drizzle } from 'drizzle-orm/mysql2';
 import mysql from 'mysql2/promise';
+import { readFileSync } from 'node:fs';
 import * as schema from './schema';
 
 const host = process.env.DB_HOST || 'localhost';
@@ -34,7 +35,8 @@ const poolConnection =
 
     ssl: useSsl
       ? {
-          rejectUnauthorized: false,
+          rejectUnauthorized: true,
+          ...(process.env.DB_SSL_CA_PATH ? { ca: readFileSync(process.env.DB_SSL_CA_PATH, 'utf8') } : {}),
         }
       : undefined,
 

@@ -1,5 +1,7 @@
 'use server';
 
+import { requireAdmin } from '@/lib/requireAdmin';
+
 import { db } from '@/db';
 import { visaServices } from '@/db/schema';
 import { eq, asc } from 'drizzle-orm';
@@ -102,6 +104,8 @@ export async function getVisaServiceBySlug(slug: string) {
 }
 
 export async function createVisaService(formData: FormData): Promise<{ success: boolean; error?: string }> {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
     const title = formData.get('title') as string;
     const shortDescription = formData.get('shortDescription') as string || '';
@@ -152,6 +156,8 @@ export async function updateVisaServiceAction(
     isPublished?: boolean;
   }
 ): Promise<{ success: boolean; error?: string }> {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
     const beforeRows = await db.select().from(visaServices).where(eq(visaServices.id, id)).limit(1);
     const previousEntry = beforeRows[0] || null;
@@ -185,6 +191,8 @@ export async function updateVisaServiceAction(
 }
 
 export async function deleteVisaServiceAction(id: number): Promise<{ success: boolean; error?: string }> {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
     let visaTitle = `ID #${id}`;
     try {

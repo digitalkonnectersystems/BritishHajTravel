@@ -13,11 +13,11 @@ export default async function AdminDashboardPage() {
   const session = await getCurrentSession();
   if (!session) redirect('/letstravel');
 
-  const enquiries = await getEnquiriesList();
+  const enquiries = ['super_admin', 'admin', 'enquiry_manager'].includes(session.role) ? await getEnquiriesList() : [];
   const packages = await getAllPackages();
   const visas = await getVisaServicesList();
   const pages = await getPagesList();
-  const usersList = await getUsersList();
+  const usersList = ['super_admin', 'admin'].includes(session.role) ? await getUsersList() : [];
   const activities = await getRecentActivities(10);
 
   return (

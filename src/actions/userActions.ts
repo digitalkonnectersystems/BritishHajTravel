@@ -1,26 +1,16 @@
 'use server';
 
+import { requireAdmin } from '@/lib/requireAdmin';
+
 import { db } from '@/db';
 import { users, siteSettings } from '@/db/schema';
-import { eq, sql } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { hashPassword } from '@/lib/password';
+import { randomBytes } from 'node:crypto';
 import { logAdminActivityAction } from '@/actions/activityActions';
 import { formatRelativeTime } from '@/lib/formatTime';
 import { getCurrentSession } from '@/lib/auth';
-
-let ensureColumnsRan = false;
-
-async function ensureUserColumnsExist() {
-  if (ensureColumnsRan) return;
-  ensureColumnsRan = true;
-  try {
-    await db.execute(sql`ALTER TABLE \`users\` ADD COLUMN \`badge_bg\` varchar(32) DEFAULT '#0F766E'`);
-  } catch (e) { }
-  try {
-    await db.execute(sql`ALTER TABLE \`users\` ADD COLUMN \`badge_text_color\` varchar(32) DEFAULT '#FFFFFF'`);
-  } catch (e) { }
-}
 
 export interface UserPresenceInfo {
   id: number;
@@ -86,6 +76,8 @@ export async function recordUserHeartbeatAction(userData?: {
 }
 
 export async function getUsersPresenceAction(): Promise<UserPresenceInfo[]> {
+  await requireAdmin(['admin']);
+
   try {
     const list = await getUsersList();
     let presenceMap: Record<string, { lastSeen: number }> = {};
@@ -131,43 +123,17 @@ export async function getUsersPresenceAction(): Promise<UserPresenceInfo[]> {
 }
 
 export async function getUsersList() {
+  await requireAdmin(['admin']);
+
   try {
-    await ensureUserColumnsExist();
-    let list = await db.select().from(users);
-
-    // If database table is empty, seed default admin user into database
-    if (!list || list.length === 0) {
-      const initEmail = (process.env.INITIAL_ADMIN_EMAIL || '').trim().toLowerCase();
-      const initPwd = process.env.INITIAL_ADMIN_PASSWORD || '';
-      const defaultUser = {
-        name: 'Hassan',
-        email: initEmail,
-        passwordHash: hashPassword(initPwd),
-        role: 'super_admin' as const,
-        active: true,
-        badgeBg: '#64F900',
-        badgeTextColor: '#000000',
-      };
-      try {
-        await db.insert(users).values(defaultUser);
-        list = await db.select().from(users);
-      } catch (seedErr) {
-        console.error('Failed to seed default admin user to DB:', seedErr);
-      }
-    }
-
-    return list || [];
-  } catch (err: any) {
-    if (err?.message?.includes('badge_bg') || err?.code === 'ER_BAD_FIELD_ERROR') {
-      try {
-        ensureColumnsRan = false;
-        await ensureUserColumnsExist();
-        const retryList = await db.select().from(users);
-        return retryList || [];
-      } catch (retryErr) {
-        console.error('Retry getUsersList failed:', retryErr);
-      }
-    }
+    // Explicit projection never returns password hashes to client callers.
+    return await db.select({
+      id: users.id, name: users.name, email: users.email,
+      role: users.role, active: users.active, badgeBg: users.badgeBg,
+      badgeTextColor: users.badgeTextColor, createdAt: users.createdAt,
+      updatedAt: users.updatedAt,
+    }).from(users);
+  } catch (err) {
     console.error('getUsersList DB query failed:', err);
     return [];
   }
@@ -182,9 +148,16 @@ export async function createUserAction(data: {
   badgeBg?: string;
   badgeTextColor?: string;
 }) {
+  const actor = await requireAdmin(['admin']);
+
   try {
-    await ensureUserColumnsExist();
     const emailLower = data.email.trim().toLowerCase();
+
+    const allowedRoles = ['super_admin', 'admin', 'content_editor', 'enquiry_manager', 'seo_manager'];
+    if (!allowedRoles.includes(data.role)) return { success: false, error: 'Invalid account role.' };
+    if (data.role === 'super_admin' && actor.role !== 'super_admin') {
+      return { success: false, error: 'Only a super administrator can grant this role.' };
+    }
 
     // Check duplicate in MySQL DB
     const existing = await db.select().from(users).where(eq(users.email, emailLower)).limit(1);
@@ -195,11 +168,12 @@ export async function createUserAction(data: {
     let plainPassword = data.password && data.password.trim() ? data.password.trim() : '';
     if (!plainPassword) {
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
-      const bytes = require('crypto').randomBytes(12);
+      const bytes = randomBytes(12);
       for (let i = 0; i < 12; i++) {
         plainPassword += chars[bytes[i] % chars.length];
       }
     }
+    if (plainPassword.length < 12) return { success: false, error: 'Passwords must be at least 12 characters.' };
     const hashedPassword = hashPassword(plainPassword);
 
     const newUserObj = {
@@ -228,7 +202,12 @@ export async function createUserAction(data: {
       success: true,
       user: {
         id: insertId,
-        ...newUserObj,
+        name: newUserObj.name,
+        email: newUserObj.email,
+        role: newUserObj.role,
+        active: newUserObj.active,
+        badgeBg: newUserObj.badgeBg,
+        badgeTextColor: newUserObj.badgeTextColor,
         createdAt: new Date(),
       },
     };
@@ -250,9 +229,19 @@ export async function updateUserAction(
     badgeTextColor?: string;
   }
 ) {
+  const actor = await requireAdmin(['admin']);
+
   try {
-    await ensureUserColumnsExist();
     const emailLower = data.email.trim().toLowerCase();
+
+    const allowedRoles = ['super_admin', 'admin', 'content_editor', 'enquiry_manager', 'seo_manager'];
+    if (!allowedRoles.includes(data.role)) return { success: false, error: 'Invalid account role.' };
+    const targetRoleRows = await db.select({ role: users.role }).from(users).where(eq(users.id, id)).limit(1);
+    if (!targetRoleRows.length) return { success: false, error: 'Account not found.' };
+    if (actor.role !== 'super_admin' && (targetRoleRows[0].role === 'super_admin' || data.role === 'super_admin')) {
+      return { success: false, error: 'Only a super administrator can change this account.' };
+    }
+    if (actor.userId === id && !data.active) return { success: false, error: 'You cannot disable your own account.' };
 
     const updateObj: any = {
       name: data.name.trim(),
@@ -266,6 +255,7 @@ export async function updateUserAction(
 
     // Only update passwordHash if new password is provided
     if (data.password && data.password.trim().length > 0) {
+      if (data.password.trim().length < 12) return { success: false, error: 'Passwords must be at least 12 characters.' };
       updateObj.passwordHash = hashPassword(data.password.trim());
     }
 
@@ -297,6 +287,9 @@ export async function updateUserAction(
 }
 
 export async function deleteUserAction(id: number) {
+  const actor = await requireAdmin(['admin']);
+
+  if (actor.userId === id) return { success: false, error: 'You cannot delete your own account.' };
   try {
     let userName = `User #${id}`;
     try {
@@ -306,6 +299,10 @@ export async function deleteUserAction(id: number) {
       }
     } catch (e) { }
 
+    const targetRoleRows = await db.select({ role: users.role }).from(users).where(eq(users.id, id)).limit(1);
+    if (actor.role !== 'super_admin' && targetRoleRows[0]?.role === 'super_admin') {
+      return { success: false, error: 'Only a super administrator can delete this account.' };
+    }
     await db.delete(users).where(eq(users.id, id));
 
     // Log Activity

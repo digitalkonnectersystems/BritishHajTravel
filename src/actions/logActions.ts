@@ -1,10 +1,14 @@
 'use server';
 
+import { requireAdmin } from '@/lib/requireAdmin';
+
 import { db } from '@/db';
 import { emailDeliveryLogs } from '@/db/schema';
 import { desc } from 'drizzle-orm';
 
 export async function getEmailDeliveryLogsAction() {
+  await requireAdmin(['admin']);
+
   try {
     const logs = await db
       .select()

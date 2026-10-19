@@ -29,7 +29,8 @@ export async function POST(request: Request) {
         status: 'new',
       });
     } catch (dbErr) {
-      console.warn('Database insert warning:', dbErr);
+      console.error('Quote request database insert failed:', dbErr);
+      return NextResponse.json({ success: false, error: 'Unable to save your request. Please try again.' }, { status: 503 });
     }
 
     return NextResponse.json({

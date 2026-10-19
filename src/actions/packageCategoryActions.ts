@@ -1,5 +1,7 @@
 'use server';
 
+import { requireAdmin } from '@/lib/requireAdmin';
+
 import { db } from '@/db';
 import { packageCategories, packages } from '@/db/schema';
 import { asc, eq, sql } from 'drizzle-orm';
@@ -68,6 +70,8 @@ export async function getPackageCategories(type: 'umrah' | 'hajj' = 'umrah'): Pr
 }
 
 export async function createPackageCategoryAction(input: PackageCategoryInput) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   const name = (input.name || '').trim();
   if (!name) return { success: false, error: 'Category name is required.' };
 
@@ -108,6 +112,8 @@ export async function updatePackageCategoryAction(
   id: number,
   input: { name: string; description?: string; displayOrder?: number; isPublished?: boolean }
 ) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   const name = (input.name || '').trim();
   if (!name) return { success: false, error: 'Category name is required.' };
 
@@ -148,6 +154,8 @@ export async function updatePackageCategoryAction(
 }
 
 export async function deletePackageCategoryAction(id: number) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
     let categoryName = `ID #${id}`;
     try {
@@ -172,6 +180,8 @@ export async function deletePackageCategoryAction(id: number) {
 }
 
 export async function updatePackageCategoryOrderAction(orderedIds: number[]) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
     await Promise.all(
       orderedIds.map((id, index) =>
@@ -191,6 +201,8 @@ export async function updatePackageCategoryOrderAction(orderedIds: number[]) {
 
 /** Assign (or clear) a category on a single package. */
 export async function updatePackageCategoryAssignmentAction(packageId: number, categoryId: number | null) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
     let pkgTitle = `ID #${packageId}`;
     let categoryName = 'Uncategorised';

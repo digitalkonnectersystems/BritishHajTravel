@@ -1,5 +1,7 @@
 'use server';
 
+import { requireAdmin } from '@/lib/requireAdmin';
+
 import { db } from '@/db';
 import { enquiries, quoteEnquiries, packageBookingEnquiries, contactEnquiries, visaEnquiries, flightEnquiries } from '@/db/schema';
 import { eq, desc, inArray } from 'drizzle-orm';
@@ -379,6 +381,8 @@ export async function submitPackageEnquiry(formData: FormData) {
 }
 
 export async function getEnquiriesList() {
+  await requireAdmin(['admin', 'enquiry_manager']);
+
   try {
     return await db.select().from(enquiries).orderBy(desc(enquiries.createdAt));
   } catch {
@@ -387,6 +391,8 @@ export async function getEnquiriesList() {
 }
 
 export async function getQuoteEnquiriesList() {
+  await requireAdmin(['admin', 'enquiry_manager']);
+
   try {
     return await db.select().from(quoteEnquiries).orderBy(desc(quoteEnquiries.createdAt));
   } catch {
@@ -395,6 +401,8 @@ export async function getQuoteEnquiriesList() {
 }
 
 export async function getPackageBookingEnquiriesList() {
+  await requireAdmin(['admin', 'enquiry_manager']);
+
   try {
     return await db.select().from(packageBookingEnquiries).orderBy(desc(packageBookingEnquiries.createdAt));
   } catch {
@@ -403,6 +411,8 @@ export async function getPackageBookingEnquiriesList() {
 }
 
 export async function getContactEnquiriesList() {
+  await requireAdmin(['admin', 'enquiry_manager']);
+
   try {
     return await db.select().from(contactEnquiries).orderBy(desc(contactEnquiries.createdAt));
   } catch {
@@ -501,6 +511,8 @@ export async function submitFlightInquiry(data: {
 }
 
 export async function getFlightEnquiriesList() {
+  await requireAdmin(['admin', 'enquiry_manager']);
+
   try {
     return await db.select().from(flightEnquiries).orderBy(desc(flightEnquiries.createdAt));
   } catch {
@@ -509,6 +521,8 @@ export async function getFlightEnquiriesList() {
 }
 
 export async function getVisaEnquiriesList() {
+  await requireAdmin(['admin', 'enquiry_manager']);
+
   try {
     return await db.select().from(visaEnquiries).orderBy(desc(visaEnquiries.createdAt));
   } catch {
@@ -560,6 +574,8 @@ async function deleteDedicatedEnquiry(row: EnquiryRow): Promise<void> {
 }
 
 export async function updateEnquiryStatus(enquiryId: number, status: any, internalNotes?: string): Promise<void> {
+  await requireAdmin(['admin', 'enquiry_manager']);
+
   try {
     const found = await db.select().from(enquiries).where(eq(enquiries.id, enquiryId)).limit(1);
     const row = found[0];
@@ -593,6 +609,8 @@ export async function updateEnquiryStatus(enquiryId: number, status: any, intern
 }
 
 export async function deleteEnquiryAction(id: number): Promise<{ success: boolean; error?: string }> {
+  await requireAdmin(['admin', 'enquiry_manager']);
+
   try {
     const found = await db.select().from(enquiries).where(eq(enquiries.id, id)).limit(1);
     const row = found[0];
@@ -618,6 +636,8 @@ export async function deleteEnquiryAction(id: number): Promise<{ success: boolea
 }
 
 export async function markEnquiriesReadAction(ids: number[]): Promise<{ success: boolean; error?: string }> {
+  await requireAdmin(['admin', 'enquiry_manager']);
+
   try {
     if (!ids || ids.length === 0) return { success: true };
     const rows = await db.select().from(enquiries).where(inArray(enquiries.id, ids));
@@ -642,6 +662,8 @@ export async function markEnquiriesReadAction(ids: number[]): Promise<{ success:
 }
 
 export async function deleteEnquiriesBulkAction(ids: number[]): Promise<{ success: boolean; error?: string }> {
+  await requireAdmin(['admin', 'enquiry_manager']);
+
   try {
     if (!ids || ids.length === 0) return { success: true };
     const rows = await db.select().from(enquiries).where(inArray(enquiries.id, ids));

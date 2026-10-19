@@ -1,5 +1,7 @@
 'use server';
 
+import { requireAdmin } from '@/lib/requireAdmin';
+
 import { db } from '@/db';
 import { packages, packagePrices, packageHotels } from '@/db/schema';
 import { eq, desc, and, ne } from 'drizzle-orm';
@@ -120,6 +122,8 @@ export async function getSoldOutPackages() {
 }
 
 export async function updatePackageOrderAction(orderedIds: number[]) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
     const { siteSettings } = await import('@/db/schema');
     const existing = await db.select().from(siteSettings).where(eq(siteSettings.key, 'ordered_packages')).limit(1);
@@ -186,6 +190,8 @@ export async function getPackageBySlug(slug: string) {
 }
 
 export async function createPackage(formData: FormData): Promise<{ success: boolean; error?: string }> {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
     const title = formData.get('title') as string;
     const customSlug = formData.get('slug') as string;
@@ -284,6 +290,8 @@ export async function updatePackageAction(
     packagesGallery?: string[];
   }
 ): Promise<{ success: boolean; error?: string }> {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
     // Normalize legacy month strings (e.g. "December 2026") → "YYYY-MM" before validation/save
     let sanitizedMonth: string | undefined;
@@ -358,6 +366,8 @@ export async function updatePackageAction(
 }
 
 export async function updatePackageStatus(id: number, status: 'available' | 'sold_out' | 'coming_soon' | 'draft'): Promise<void> {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
     let pkgTitle = `ID #${id}`;
     let previousEntry: any = null;
@@ -396,6 +406,8 @@ export async function updatePackageStatus(id: number, status: 'available' | 'sol
 }
 
 export async function deletePackage(id: number): Promise<void> {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
     let pkgTitle = `ID #${id}`;
     let previousEntry: any = null;
@@ -439,6 +451,8 @@ export async function deletePackage(id: number): Promise<void> {
 export async function bulkGeneratePackageCodesAction(
   type: 'hajj' | 'umrah'
 ): Promise<{ success: boolean; updated: number; error?: string }> {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
     const prefix = type === 'hajj' ? 'BHT-H' : 'BHT-U';
     const rows = await db.select().from(packages).where(eq(packages.type, type));

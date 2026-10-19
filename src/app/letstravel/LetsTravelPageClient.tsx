@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { adminLogin, verifyResetEmail, resetAdminPassword } from '@/actions/authActions';
+import { adminLogin } from '@/actions/authActions';
 
 export default function LetsTravelPageClient({ initialIdentity, initialLoginAuth }: { initialIdentity?: any; initialLoginAuth?: any }) {
   const [error, setError] = useState<string | null>(null);
@@ -10,10 +10,8 @@ export default function LetsTravelPageClient({ initialIdentity, initialLoginAuth
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const [flowType, setFlowType] = useState<'login' | 'forgot_password' | 'reset_password'>('login');
-  const [resetEmail, setResetEmail] = useState('');
+  const [flowType, setFlowType] = useState<'login' | 'forgot_password'>('login');
   const [passwordInput, setPasswordInput] = useState('');
-  const [confirmPasswordInput, setConfirmPasswordInput] = useState('');
 
   const identity = initialIdentity || null;
   const loginAuth = initialLoginAuth || null;
@@ -22,29 +20,6 @@ export default function LetsTravelPageClient({ initialIdentity, initialLoginAuth
   const logoAlt = identity?.logoAlt || 'British Hajj Travel Logo';
   const bgImage = loginAuth?.backgroundImage;
   const footerText = loginAuth?.footerText || '© 2026 British Hajj Travel LTD. All Rights Reserved.';
-
-  const calculateStrength = (password: string) => {
-    let strength = 0;
-    if (password.length >= 8) strength += 1;
-    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength += 1;
-    if (/\d/.test(password)) strength += 1;
-    if (/[^a-zA-Z\d]/.test(password)) strength += 1;
-
-    switch (strength) {
-      case 0:
-      case 1:
-        return { percent: 25, label: 'Weak', color: 'bg-red-500', textColor: 'text-red-500' };
-      case 2:
-        return { percent: 50, label: 'Fair', color: 'bg-orange-500', textColor: 'text-orange-400' };
-      case 3:
-        return { percent: 75, label: 'Good', color: 'bg-yellow-500', textColor: 'text-yellow-400' };
-      case 4:
-      default:
-        return { percent: 100, label: 'Strong', color: 'bg-emerald-500', textColor: 'text-emerald-400' };
-    }
-  };
-
-  const pwStrength = calculateStrength(passwordInput);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -55,54 +30,6 @@ export default function LetsTravelPageClient({ initialIdentity, initialLoginAuth
     const res = await adminLogin(formData);
     if (res && !res.success) {
       setError(res.error || 'Login Failed');
-      setLoading(false);
-    }
-  };
-
-  const handleVerifyEmail = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    setSuccessMsg(null);
-    const formData = new FormData(e.currentTarget);
-    const email = formData.get('email') as string;
-    const res = await verifyResetEmail(formData);
-
-    if (res && !res.success) {
-      setError(res.error || 'Verification Failed');
-      setLoading(false);
-    } else {
-      setResetEmail(email);
-      setFlowType('reset_password');
-      setLoading(false);
-    }
-  };
-
-  const handleResetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    setSuccessMsg(null);
-
-    if (passwordInput !== confirmPasswordInput) {
-      setError("Passwords do not match.");
-      setLoading(false);
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('email', resetEmail);
-    formData.append('password', passwordInput);
-
-    const res = await resetAdminPassword(formData);
-    if (res && !res.success) {
-      setError(res.error || 'Password Reset Failed');
-      setLoading(false);
-    } else {
-      setSuccessMsg(res.message || 'Password has been successfully reset.');
-      setFlowType('login');
-      setPasswordInput('');
-      setConfirmPasswordInput('');
       setLoading(false);
     }
   };
@@ -151,13 +78,11 @@ export default function LetsTravelPageClient({ initialIdentity, initialLoginAuth
           <h1 className="text-2xl font-serif font-normal text-primary tracking-wide">
             {flowType === 'login' && 'Admin Portal Sign In'}
             {flowType === 'forgot_password' && 'Reset Password'}
-            {flowType === 'reset_password' && 'Create New Password'}
-          </h1>
+            </h1>
           <p className="text-xs text-ink-soft mt-1 font-light">
             {flowType === 'login' && 'Authorized access to British Hajj Travel UK Operations'}
             {flowType === 'forgot_password' && 'Enter your registered email address to continue'}
-            {flowType === 'reset_password' && 'Enter your new secure password below'}
-          </p>
+            </p>
         </div>
 
         {/* Error Alert */}
@@ -249,123 +174,13 @@ export default function LetsTravelPageClient({ initialIdentity, initialLoginAuth
         )}
 
         {flowType === 'forgot_password' && (
-          <form onSubmit={handleVerifyEmail} className="space-y-4">
-            <div>
-              <label className={`block text-[11px] font-bold uppercase tracking-wider mb-2 ${error ? 'text-red-500' : 'text-ink'}`}>
-                Email Address
-              </label>
-              <input
-                type="email"
-                name="email"
-                required
-                className={`w-full px-4 py-3 text-sm bg-white border border-1 border-[#d1d1d1] !text-ink rounded-md outline-none transition !placeholder:text-gray-500 ${error
-                  ? 'border-2 border-red-500 focus:ring-red-500 focus:border-red-500'
-                  : 'border border-[#E4DAC0]/20 focus:ring-[#DB9E30] focus:border-[#DB9E30]'
-                  }`}
-                placeholder="Enter registered email"
-              />
-            </div>
-
-            <div className="pt-2">
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-primary hover:bg-primary-light text-white font-bold text-sm py-3.5 rounded-md shadow-lg transition duration-200 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer mb-3"
-              >
-                {loading ? 'Verifying...' : 'Verify Email'}
-              </button>
-              <button
-                type="button"
-                onClick={() => { setFlowType('login'); setError(null); setSuccessMsg(null); }}
-                className="w-full bg-transparent hover:underline text-ink border border-[#EAEAE4]/20 font-bold text-sm py-3.5 rounded-md transition duration-200 flex items-center justify-center gap-2"
-              >
-                ← Back to Login
-              </button>
-            </div>
-          </form>
-        )}
-
-        {flowType === 'reset_password' && (
-          <form onSubmit={handleResetPassword} className="space-y-4">
-            <div>
-              <label className={`block text-[11px] font-bold uppercase tracking-wider mb-2 text-[#EAEAE4]`}>
-                New Password
-              </label>
-              <div className="relative flex items-center">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  required
-                  value={passwordInput}
-                  onChange={(e) => setPasswordInput(e.target.value)}
-                  className={`w-full px-4 py-3 text-sm bg-[#0c1a17] !text-white rounded-md outline-none transition !placeholder:text-gray-500 pr-10 border border-[#E4DAC0]/20 focus:ring-[#DB9E30] focus:border-[#DB9E30]`}
-                  placeholder="••••••••••••"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 text-[#EAEAE4]/60 hover:text-red transition p-1 text-sm focus:outline-none"
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                >
-                  {showPassword ? (
-                    <i className="fa-solid fa-eye"></i>
-                  ) : (
-                    <i className="fa-solid fa-eye-slash"></i>
-                  )}
-                </button>
-              </div>
-
-              {/* Password Strength Indicator */}
-              {passwordInput.length > 0 && (
-                <div className="mt-3">
-                  <div className="w-full bg-[#1A332E] h-1.5 rounded-full overflow-hidden">
-                    <div className={`h-full transition-all duration-300 ${pwStrength.color}`} style={{ width: `${pwStrength.percent}%` }}></div>
-                  </div>
-                  <div className="flex justify-between text-end text-[10px] uppercase font-bold tracking-wider mb-1.5">
-                    <span className={pwStrength.textColor}>{pwStrength.label}</span>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div>
-              <label className={`block text-[11px] font-bold uppercase tracking-wider mb-2 ${confirmPasswordInput && passwordInput !== confirmPasswordInput ? 'text-red-500' : 'text-[#EAEAE4]'}`}>
-                Confirm New Password
-              </label>
-              <input
-                type={showPassword ? "text" : "password"}
-                name="confirmPassword"
-                required
-                value={confirmPasswordInput}
-                onChange={(e) => setConfirmPasswordInput(e.target.value)}
-                className={`w-full px-4 py-3 text-sm bg-[#0c1a17] text-white rounded-xl outline-none transition placeholder:text-gray-500 ${confirmPasswordInput && passwordInput !== confirmPasswordInput
-                  ? 'border-2 border-red-500 focus:ring-red-500 focus:border-red-500'
-                  : 'border border-[#E4DAC0]/20  focus:ring-[#DB9E30] focus:border-[#DB9E30]'
-                  }`}
-                placeholder="••••••••••••"
-              />
-              {confirmPasswordInput && passwordInput !== confirmPasswordInput && (
-                <p className="text-red-500 text-xs mt-1.5">Passwords do not match.</p>
-              )}
-            </div>
-
-            <div className="pt-2">
-              <button
-                type="submit"
-                disabled={loading || (confirmPasswordInput !== passwordInput)}
-                className="w-full bg-red hover:bg-[#E7BE6E] text-[#132723] font-bold text-sm py-3.5 rounded-xl shadow-lg transition duration-200 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer mb-3"
-              >
-                {loading ? 'Resetting...' : 'Reset Password'}
-              </button>
-              <button
-                type="button"
-                onClick={() => { setFlowType('login'); setError(null); setSuccessMsg(null); setPasswordInput(''); setConfirmPasswordInput(''); }}
-                className="w-full bg-transparent hover:bg-white/5 text-[#EAEAE4] border border-[#EAEAE4]/20 font-bold text-sm py-3.5 rounded-xl transition duration-200 flex items-center justify-center gap-2"
-              >
-                ← Cancel
-              </button>
-            </div>
-          </form>
+          <div className="space-y-4 text-sm text-slate-700">
+            <p>To reset your password, contact your site administrator. For security, an email address alone cannot authorize a password change.</p>
+            <button type="button" onClick={() => { setFlowType('login'); setError(null); }}
+              className="w-full rounded-md border border-slate-300 py-3 font-semibold hover:bg-slate-50">
+              Back to Login
+            </button>
+          </div>
         )}
       </div>
 
