@@ -87,3 +87,4 @@ drizzle/meta/_journal.json
 fix.js
 alter_table.mjs
 *.cjs
+docs/performance

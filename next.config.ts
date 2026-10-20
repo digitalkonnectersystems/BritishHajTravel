@@ -1,9 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  experimental: {
-    inlineCss: true,
-  },
+  // experimental: {
+  //   inlineCss: true,
+  // },
   // async rewrites() {
   //   return [
   //     {
