@@ -54,8 +54,8 @@ export async function adminLogin(formData: FormData) {
       email: user.email,
       name: user.name,
       role: user.role,
-      badgeBg: user.badgeBg,
-      badgeTextColor: user.badgeTextColor,
+      badgeBg: user.badgeBg ?? '#0F766E',
+      badgeTextColor: user.badgeTextColor ?? '#FFFFFF',
     });
     await logAdminActivityAction({
       type: 'users',

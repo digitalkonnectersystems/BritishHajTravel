@@ -4093,7 +4093,11 @@ export default function AdminSettingsPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {Object.keys(formsData).map((formKey) => {
                       const DEFAULT_META: Record<string, { title: string; icon: string; desc: string }> = {
-                        baanHoldingHajjForm: { title: 'BAAN Holding Hajj Interest Form', icon: '🕋' },
+                        baanHoldingHajjForm: {
+                          title: 'BAAN Holding Hajj Interest Form',
+                          icon: '🕋',
+                          desc: 'Interest and enquiry form for BAAN Holding Hajj packages.',
+                        },
                         quoteForm: { title: 'Homepage Hero Banner — Get a Free Quote Form', icon: '🏠', desc: 'Inline quote form in the homepage & Umrah landing page hero banner.' },
                         packageDetailForm: { title: 'Umrah Package Booking Form (Detail Page & Popup Modal)', icon: '📊', desc: 'Primary booking form used on individual Umrah package detail pages and the “Book Now” popup modal.' },
                         hajjPackageDetailForm: { title: 'Hajj Package Booking Form (Detail Page & Popup Modal)', icon: '🕋', desc: 'Dedicated booking form used on individual Hajj package detail pages and the “Book Now” popup modal.' },

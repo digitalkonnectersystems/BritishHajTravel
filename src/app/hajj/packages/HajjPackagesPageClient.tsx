@@ -6,6 +6,7 @@ import { isTbcPrice } from "@/lib/priceDisplay";
 import PageBanner from "@/components/PageBanner";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import PageSectionsRenderer from "@/components/PageSectionsRenderer";
+import DynamicIcon from "@/components/ui/DynamicIcon";
 
 const hajjCardsData = [
   {
