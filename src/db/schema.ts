@@ -326,7 +326,7 @@ export const blogPosts = mysqlTable('blog_posts', {
 export const siteSettings = mysqlTable('site_settings', {
   id: int('id').autoincrement().primaryKey(),
   key: varchar('key', { length: 128 }).notNull().unique(),
-  value: text('value').notNull(),
+  value: longtext('value').notNull(),
   updatedAt: timestamp('updated_at').defaultNow().onUpdateNow(),
 });
 
@@ -345,8 +345,8 @@ export const sitePages = mysqlTable('site_pages', {
   bannerSize: varchar('banner_size', { length: 50 }).default('cover'),
   bannerTitle: text('banner_title'),
   bannerDescription: text('banner_description'),
-  sections: text('sections'), // JSON string of dynamic sections
-  richText: text('rich_text'),
+  sections: longtext('sections'),
+  richText: longtext('rich_text'),
   metaTitle: varchar('meta_title', { length: 255 }),
   metaDescription: text('meta_description'),
   seoSettings: json('seo_settings'),
