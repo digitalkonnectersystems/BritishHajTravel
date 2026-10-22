@@ -10,7 +10,7 @@ export default function WhoWeAreSection({ data }: { data: any }) {
       : fallback;
 
   const eyebrow =
-    configuredValue("eyebrow", "ABOUT BRITISH HAJ TRAVEL LTD");
+    configuredValue("eyebrow", "ABOUT British Haj Travel LTD");
 
   const title =
     configuredValue("title", "We provide and offer Hajj & Umrah packages from the UK");
@@ -18,7 +18,7 @@ export default function WhoWeAreSection({ data }: { data: any }) {
   const description1 =
     configuredValue(
       "description1",
-      "BRITISH HAJ TRAVEL LTD is a trusted, family-run travel organisation from the UK. We provide fully ATOL protected Hajj and Umrah packages with a focus on care, comfort and spiritual fulfilment."
+      "British Haj Travel LTD is a trusted, family-run travel organisation from the UK. We provide fully ATOL protected Hajj and Umrah packages with a focus on care, comfort and spiritual fulfilment."
     );
 
   const image =
@@ -28,7 +28,7 @@ export default function WhoWeAreSection({ data }: { data: any }) {
     configuredValue("backgroundImage", "/upload/sections/who-we-are-bg.webp");
 
   const featuresTitle =
-    configuredValue("featuresTitle", "Why Choose BRITISH HAJ TRAVEL LTD?");
+    configuredValue("featuresTitle", "Why Choose British Haj Travel LTD?");
 
   const rawItems =
     Array.isArray(data?.items)
