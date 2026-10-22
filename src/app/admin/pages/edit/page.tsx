@@ -1670,17 +1670,17 @@ function PageBuilderContent() {
 
       defaultData = {
 
-        eyebrow: 'ABOUT BHT BRITISH HAJ TRAVEL LTD',
+        eyebrow: 'ABOUT BRITISH HAJ TRAVEL LTD',
 
         title: 'We provide and offer Hajj & Umrah packages from the UK',
 
-        description1: 'BHT British Haj Travel Ltd is a trusted, family-run travel organisation from the UK. We provide fully ATOL protected Hajj and Umrah packages with a focus on care, comfort and spiritual fulfilment.',
+        description1: 'BRITISH HAJ TRAVEL LTD is a trusted, family-run travel organisation from the UK. We provide fully ATOL protected Hajj and Umrah packages with a focus on care, comfort and spiritual fulfilment.',
 
         image: '/uploads/sections/hajj_1.jpg',
 
         backgroundImage: '/upload/sections/who-we-are-bg.webp',
 
-        featuresTitle: 'Why Choose BHT British Haj Travel Ltd?',
+        featuresTitle: 'Why Choose BRITISH HAJ TRAVEL LTD?',
 
         items: [
 
