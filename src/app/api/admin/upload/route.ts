@@ -51,9 +51,6 @@ export async function POST(req: NextRequest) {
     if (!['blob', 'remote', 'local'].includes(provider)) {
       return NextResponse.json({ success: false, error: 'Unknown MEDIA_STORAGE_PROVIDER' }, { status: 500 });
     }
-    if (provider === 'remote' && !process.env.BHT_SESSION_SECRET) {
-      return NextResponse.json({ success: false, error: 'Configure BHT_SESSION_SECRET before enabling remote uploads' }, { status: 503 });
-    }
     if (provider === 'local' && process.env.VERCEL) {
       return NextResponse.json({ success: false, error: 'Local media storage cannot be used on Vercel functions' }, { status: 503 });
     }

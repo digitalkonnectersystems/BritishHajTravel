@@ -235,7 +235,7 @@ export default function UpcomingUmrahPackages({
                       </span>
                     </div>
  
-                    <div className={`incl-label ${isGold ? "text-white" : "text-ink-soft"}`}>
+                    {/* <div className={`incl-label ${isGold ? "text-white" : "text-ink-soft"}`}>
                       PACKAGE INCLUDES
                     </div>
                     <ul className="space-y-4 mb-8 flex-1">
@@ -278,7 +278,7 @@ export default function UpcomingUmrahPackages({
                           </li>
                         );
                       })}
-                    </ul>
+                    </ul> */}
  
                     <div className="flex gap-2">
                       <a

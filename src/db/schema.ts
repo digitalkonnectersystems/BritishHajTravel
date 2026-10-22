@@ -43,6 +43,21 @@ export const sessions = mysqlTable('sessions', {
   expiresAt: timestamp('expires_at').notNull(),
 });
 
+// Database-backed session-signing secret (row id=1, value1).
+// This value must NEVER be returned to the client or included in settings CRUD APIs.
+export const systemSettings = mysqlTable('system_settings', {
+  id: int('id').autoincrement().primaryKey(),
+  name: varchar('name', { length: 191 }).notNull().unique(),
+  value1: text('value1').notNull(),
+  value2: text('value2'),
+  value3: text('value3'),
+  remarks: text('remarks'),
+  status: boolean('status').notNull().default(true),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow().onUpdateNow(),
+  deletedAt: timestamp('deleted_at'),
+});
+
 // 2a. Administrative Activity Audit Log
 export const activityLogs = mysqlTable('activity_logs', {
   id: int('id').autoincrement().primaryKey(),

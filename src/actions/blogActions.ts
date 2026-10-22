@@ -255,7 +255,9 @@ export async function saveBlogAction(data: BlogSavePayload) {
         isPublished,
         updatedAt: new Date(),
       };
-      updateData.publishedAt = parsedPublishedAt ?? new Date();
+      // Editing an existing blog without selecting a new date must not
+      // silently replace its original publish date with today's date.
+      updateData.publishedAt = parsedPublishedAt ?? previousEntry?.publishedAt ?? new Date();
 
       await db.update(blogPosts).set(updateData).where(eq(blogPosts.id, id));
       const afterRows = await db.select().from(blogPosts).where(eq(blogPosts.id, id)).limit(1);
@@ -284,8 +286,10 @@ export async function saveBlogAction(data: BlogSavePayload) {
         category,
         authorName,
         isPublished,
+        // New blog: if the date picker is empty, save the current date.
+        // Drizzle serializes Date into the existing published_at TIMESTAMP.
+        publishedAt: parsedPublishedAt ?? new Date(),
       };
-      insertData.publishedAt = parsedPublishedAt ?? new Date();
 
       let savedId: number | undefined;
       const inserted = await db.insert(blogPosts).values(insertData).$returningId();

@@ -1,13 +1,5 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
-
-/** Server only. Never accept an unsigned session. Set a random 32+ byte secret. */
-function sessionSecret(): string {
-  const secret = process.env.BHT_SESSION_SECRET;
-  if (!secret || Buffer.byteLength(secret, 'utf8') < 32) {
-    throw new Error('BHT_SESSION_SECRET must be configured with at least 32 bytes.');
-  }
-  return secret;
-}
+import { getSessionSecret } from '@/lib/sessionSecret';
 
 export interface SignedSessionPayload {
   userId: number;
@@ -21,18 +13,18 @@ export interface SignedSessionPayload {
 const VALID_ROLES = new Set(['super_admin', 'admin', 'content_editor', 'enquiry_manager', 'seo_manager']);
 const MAX_AGE = 8 * 60 * 60 * 1000;
 
-export function signSession(value: SignedSessionPayload): string {
+export async function signSession(value: SignedSessionPayload): Promise<string> {
   const encoded = Buffer.from(JSON.stringify(value), 'utf8').toString('base64url');
-  const signature = createHmac('sha256', sessionSecret()).update(encoded).digest('base64url');
+  const signature = createHmac('sha256', await getSessionSecret()).update(encoded).digest('base64url');
   return `${encoded}.${signature}`;
 }
 
-export function verifySession(raw: string | undefined): SignedSessionPayload | null {
+export async function verifySession(raw: string | undefined): Promise<SignedSessionPayload | null> {
   if (!raw || raw.length > 8192) return null;
   try {
     const parts = raw.split('.');
     if (parts.length !== 2 || !parts[0] || !parts[1]) return null;
-    const expected = Buffer.from(createHmac('sha256', sessionSecret()).update(parts[0]).digest('base64url'));
+    const expected = Buffer.from(createHmac('sha256', await getSessionSecret()).update(parts[0]).digest('base64url'));
     const received = Buffer.from(parts[1]);
     if (received.length !== expected.length || !timingSafeEqual(received, expected)) return null;
     const obj: unknown = JSON.parse(Buffer.from(parts[0], 'base64url').toString('utf8'));

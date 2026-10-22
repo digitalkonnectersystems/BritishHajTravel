@@ -11,37 +11,44 @@ import { logAdminActivityAction } from '@/actions/activityActions';
 import { recordUserHeartbeatAction } from '@/actions/userActions';
 
 export async function adminLogin(formData: FormData) {
-  const email = (formData.get('email') as string)?.trim().toLowerCase();
-  const password = formData.get('password') as string;
+  const email = String(formData.get('email') || '').trim().toLowerCase();
+  const password = String(formData.get('password') || '');
 
   if (!email || !password) {
     return { success: false, error: 'Email and password are required.' };
   }
 
+  let stage = 'database lookup';
   try {
-    const userList = await db.select().from(users).where(eq(users.email, email)).limit(1);
-    if (!userList.length) return { success: false, error: 'Invalid Credentials.' };
+    // Select only the fields needed for authentication. This avoids failing
+    // because of unrelated missing columns (for example, display badge fields).
+    const userList = await db.select({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      passwordHash: users.passwordHash,
+      role: users.role,
+      active: users.active,
+    }).from(users).where(eq(users.email, email)).limit(1);
 
+    if (!userList.length) return { success: false, error: 'Invalid Credentials.' };
     const user = userList[0];
 
-    // Check account status
     if (!user.active) {
       return { success: false, error: 'This user account is currently disabled.' };
     }
 
-    // Verify only the password hash stored for this user. There are no
-    // hard-coded project passwords or bypass credentials.
-    const isValid = verifyPassword(password, user.passwordHash);
-
-    if (!isValid) {
+    stage = 'password verification';
+    if (!verifyPassword(password, user.passwordHash)) {
       return { success: false, error: 'Invalid Credentials.' };
     }
 
-    // Upgrade successfully verified legacy password hashes on login.
+    stage = 'password hash upgrade';
     if (needsPasswordRehash(user.passwordHash)) {
       await db.update(users).set({ passwordHash: hashPassword(password) }).where(eq(users.id, user.id));
     }
 
+    stage = 'session creation';
     await createSessionCookie({
       userId: user.id,
       email: user.email,
@@ -49,27 +56,43 @@ export async function adminLogin(formData: FormData) {
       role: user.role,
     });
 
-    // Record presence heartbeat & activity
-    await recordUserHeartbeatAction({
-      email: user.email,
-      name: user.name,
-      role: user.role,
-      badgeBg: user.badgeBg ?? '#0F766E',
-      badgeTextColor: user.badgeTextColor ?? '#FFFFFF',
-    });
-    await logAdminActivityAction({
-      type: 'users',
-      action: 'User Logged In',
-      user: user.name,
-      userEmail: user.email,
-      details: `Successful sign-in to Admin Portal (${user.role})`,
-    });
+    // These operations are useful but must not turn a valid login into a failure.
+    // In particular, the activity logger's requireAdmin() may throw if the
+    // newly written cookie is not yet visible to this Server Action.
+    try {
+      const presence = await recordUserHeartbeatAction({
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        badgeBg: '#0F766E',
+        badgeTextColor: '#FFFFFF',
+      });
+      if (!presence.success) console.warn('[adminLogin] Presence update skipped.');
+    } catch (err) {
+      console.error('[adminLogin] Nonfatal presence error:', err);
+    }
 
-    return redirect('/admin/dashboard');
-  } catch (error: any) {
-    if (error.message?.includes('NEXT_REDIRECT')) throw error;
+    try {
+      const audit = await logAdminActivityAction({
+        type: 'users',
+        action: 'User Logged In',
+        user: user.name,
+        userEmail: user.email,
+        details: `Successful sign-in to Admin Portal (${user.role})`,
+      });
+      if (!audit.success) console.warn('[adminLogin] Login audit skipped.');
+    } catch (err) {
+      console.error('[adminLogin] Nonfatal login audit error:', err);
+    }
+  } catch (err) {
+    // The actual diagnostic stays in server logs, not the public login UI.
+    // Never log plaintext passwords, hashes, or session cookies.
+    console.error(`[adminLogin] Failed during ${stage}:`, err);
     return { success: false, error: 'Authentication failed.' };
   }
+
+  // A Next.js redirect is an exception internally. Keep it outside the try/catch.
+  redirect('/admin/dashboard');
 }
 
 export async function adminLogout() {

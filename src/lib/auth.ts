@@ -14,7 +14,7 @@ const EIGHT_HOURS_MS = 8 * 60 * 60 * 1000;
 
 export async function createSessionCookie(user: Omit<UserSession, 'loginTime'> & { loginTime?: number }): Promise<void> {
   const loginTime = Date.now();
-  const value = signSession({ ...user, loginTime, expiresAt: loginTime + EIGHT_HOURS_MS });
+  const value = await signSession({ ...user, loginTime, expiresAt: loginTime + EIGHT_HOURS_MS });
   (await cookies()).set(COOKIE_NAME, value, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
@@ -26,7 +26,7 @@ export async function createSessionCookie(user: Omit<UserSession, 'loginTime'> &
 
 export async function getCurrentSession(): Promise<UserSession | null> {
   const raw = (await cookies()).get(COOKIE_NAME)?.value;
-  const session = verifySession(raw);
+  const session = await verifySession(raw);
   if (!session) return null;
   const { userId, email, name, role, loginTime } = session;
   return { userId, email, name, role, loginTime };
