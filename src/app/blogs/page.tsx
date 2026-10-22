@@ -6,6 +6,7 @@ import { getPageBySlug } from '@/actions/pageActions';
 import PageSectionsRenderer from '@/components/PageSectionsRenderer';
 import BlogsLoadMore from '@/components/BlogsLoadMore';
 import { buildPageMetadata } from '@/lib/seoMetadata';
+import { getBlogFeaturedImage } from '@/lib/blogImages';
 
 export async function generateMetadata(): Promise<Metadata> {
   const pageData = await getPageBySlug('/blogs').catch(() => null);
@@ -20,7 +21,6 @@ function formatDate(d: any) {
   return new Date(d).toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' });
 }
 
-const FALLBACK_THUMB = 'https://antiquewhite-stinkbug-399384.hostingersite.com/wp-content/uploads/2026/05/Umrah_packages_202605092201.jpeg';
 
 const CATEGORY_COLORS: Record<string, string> = {
   'Pilgrimage Guide': 'bg-emerald-100 text-emerald-700',
@@ -82,7 +82,7 @@ export default async function BlogsListingPage() {
                 {/* Image */}
                 <div className="relative overflow-hidden min-h-[260px]">
                   <img
-                    src={featured.featuredImage || FALLBACK_THUMB}
+                    src={getBlogFeaturedImage(featured.featuredImage)}
                     alt={featured.title}
                     className="w-full h-full object-cover absolute inset-0 group-hover:scale-105 transition-transform duration-700"
                   />

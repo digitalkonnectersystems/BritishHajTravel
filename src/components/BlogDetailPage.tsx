@@ -3,8 +3,7 @@ import Link from 'next/link';
 import BlogSidebarBookingForm from '@/components/BlogSidebarBookingForm';
 import { getPackagesByType } from '@/actions/packageActions';
 import { RICH_TEXT_PROSE_CLASS } from '@/lib/richTextProseClass';
-
-const FALLBACK_THUMB = 'https://antiquewhite-stinkbug-399384.hostingersite.com/wp-content/uploads/2026/05/Umrah_packages_202605092201.jpeg';
+import { getBlogFeaturedImage } from '@/lib/blogImages';
 
 const CATEGORY_COLORS: Record<string, string> = {
   'Pilgrimage Guide': 'bg-emerald-100 text-emerald-700 border-emerald-200',
@@ -64,7 +63,7 @@ export default async function BlogDetailPage({ blog, slug }: { blog: any; slug: 
     '@type': 'Article',
     headline: blog.title,
     description: blog.excerpt || '',
-    image: blog.featuredImage || FALLBACK_THUMB,
+    image: getBlogFeaturedImage(blog.featuredImage),
     author: { '@type': 'Person', name: blog.authorName || 'British Hajj Travel Editorial' },
     publisher: {
       '@type': 'Organization',
@@ -86,7 +85,7 @@ export default async function BlogDetailPage({ blog, slug }: { blog: any; slug: 
       {/* ── Hero Banner ── */}
       <div className="relative w-full h-[360px] overflow-hidden">
         <img
-          src={blog.featuredImage || FALLBACK_THUMB}
+          src={getBlogFeaturedImage(blog.featuredImage)}
           alt={blog.title}
           className="w-full h-full object-cover"
         />
@@ -340,7 +339,7 @@ function RelatedCard({ post }: { post: any }) {
       {/* Thumbnail */}
       <div className="relative flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-slate-100 border border-slate-100">
         <img
-          src={post.featuredImage || FALLBACK_THUMB}
+          src={getBlogFeaturedImage(post.featuredImage)}
           alt={post.title}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
         />

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { resolveCanonicalPublicOrigin } from '@/lib/urlResolver';
+import { getBlogFeaturedImage } from '@/lib/blogImages';
 
 export type SeoEntityType = 'page' | 'package' | 'blog' | 'visa' | 'destination';
 
@@ -212,7 +213,7 @@ export function buildBlogMetadata(blog: any, slug?: string): Metadata {
     title,
     description,
     canonical: toAbsoluteUrl(canonicalSource, path),
-    image: seo.ogImageUrl || blog?.featuredImage,
+    image: seo.ogImageUrl || getBlogFeaturedImage(blog?.featuredImage),
     imageAlt: seo.ogCardAlt || seo.heroAlt || blog?.title,
     keywords: seo.metaKeywords || seo.keywords,
     noIndex: seo.noIndex || blog?.isPublished === false,

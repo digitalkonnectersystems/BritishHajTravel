@@ -11,6 +11,7 @@ import GlassNotificationModal from '@/components/ui/GlassNotificationModal';
 import SeoCenterModal from '@/components/admin/SeoCenterModal';
 import { Trash2, Pencil, Sliders, Upload, Plus, X, GripVertical, Star } from 'lucide-react';
 import CategoryDropdown from '@/components/admin/CategoryDropdown';
+import { getBlogFeaturedImage } from '@/lib/blogImages';
 
 export default function AdminBlogsPage() {
   const [blogs, setBlogs] = useState<any[]>([]);
@@ -169,15 +170,12 @@ export default function AdminBlogsPage() {
 
                     {/* Thumbnail */}
                     <td className="py-3 px-4">
-                      {b.featuredImage ? (
-                        <div className={`w-12 h-10 rounded-lg overflow-hidden border bg-slate-100 ${isTopFeatured ? 'border-amber-400 ring-2 ring-amber-300/40' : 'border-slate-200'}`}>
-                          <img src={b.featuredImage} alt={b.title} className="w-full h-full object-cover" />
-                        </div>
-                      ) : (
-                        <div className={`w-12 h-10 rounded-lg bg-gradient-to-br from-emerald-100 to-teal-100 border flex items-center justify-center ${isTopFeatured ? 'border-amber-400' : 'border-slate-200'}`}>
-                          <span className="text-[10px] text-primary font-bold">IMG</span>
-                        </div>
-                      )}
+                      <div
+                        className={`w-12 h-10 rounded-lg overflow-hidden border bg-slate-100 ${isTopFeatured ? 'border-amber-400 ring-2 ring-amber-300/40' : 'border-slate-200'}`}
+                        title={!b.featuredImage ? 'Default image displayed; featured_image remains NULL in the database' : undefined}
+                      >
+                        <img src={getBlogFeaturedImage(b.featuredImage)} alt={b.title} className="w-full h-full object-cover" />
+                      </div>
                     </td>
 
                     {/* Title + Slug */}

@@ -2,8 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-
-const FALLBACK_THUMB = 'https://antiquewhite-stinkbug-399384.hostingersite.com/wp-content/uploads/2026/05/Umrah_packages_202605092201.jpeg';
+import { getBlogFeaturedImage } from '@/lib/blogImages';
 
 function formatDate(value: unknown) {
   if (!value) return '';
@@ -55,7 +54,7 @@ export default function LatestBlogsSection({ data, blogs, isHomepage = false }: 
               >
                 <div className="relative aspect-[1.75] overflow-hidden bg-slate-100">
                   <Image
-                    src={blog.featuredImage || FALLBACK_THUMB}
+                    src={getBlogFeaturedImage(blog.featuredImage)}
                     alt={blog.title || 'Blog article'}
                     fill
                     unoptimized

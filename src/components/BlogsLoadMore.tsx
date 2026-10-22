@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { getBlogFeaturedImage } from '@/lib/blogImages';
 
 function formatDate(d: any) {
   if (!d) return null;
@@ -12,7 +13,6 @@ function formatDate(d: any) {
   });
 }
 
-const FALLBACK_THUMB = 'https://antiquewhite-stinkbug-399384.hostingersite.com/wp-content/uploads/2026/05/Umrah_packages_202605092201.jpeg';
 
 const CATEGORY_COLORS: Record<string, string> = {
   'Pilgrimage Guide': 'bg-emerald-100 text-emerald-700',
@@ -42,7 +42,7 @@ export default function BlogsLoadMore({ blogs, initialCount = 11 }: { blogs: any
             >
               <div className="relative overflow-hidden h-52">
                 <img
-                  src={blog.featuredImage || FALLBACK_THUMB}
+                  src={getBlogFeaturedImage(blog.featuredImage)}
                   alt={blog.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-600"
                 />
