@@ -63,7 +63,7 @@ export default function VisaSolutionsSection({ data, className }: { data?: any; 
   const bgClass = data?.bgColor || (isHomepage ? "bg-white" : "bg-blue-lt");
 
   return (
-    <section id="saudi-visa" className={`py-12 md:py-16 w-full ${bgClass} ${className || ""}`}>
+    <section id="saudi-visa" className={`py-8 md:py-10 w-full ${bgClass} ${className || ""}`}>
       <div className="max-w-[1400px] mx-auto px-5">
         <div className="section-head center text-center mb-10">
           <div className="eyebrow uppercase text-xs font-bold tracking-widest text-red mb-1">

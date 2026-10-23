@@ -136,7 +136,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
             ];
 
           return (
-            <section key={idx} className="py-12 md:py-16 bg-blue-lt">
+            <section key={idx} className="py-8 md:py-10 bg-blue-lt">
               <div className="max-w-5xl mx-auto px-4">
                 <div className="flex flex-col items-center text-center mb-8">
                   <span className="eyebrow mx-auto block">
@@ -289,7 +289,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         // ── Testimonials ──────────────────────────────────────────────────────
         if (sec.type === "Testimonials") {
           return (
-            <section key={idx} className="py-12 md:py-16 bg-primary">
+            <section key={idx} className="py-8 md:py-10 bg-primary">
               <div className="max-w-[1400px] mx-auto px-5">
                 <div className="text-center flex flex-col mb-10">
                   {sec.data?.eyebrow && (
