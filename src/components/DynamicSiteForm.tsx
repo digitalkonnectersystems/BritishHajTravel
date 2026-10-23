@@ -553,7 +553,7 @@ export default function DynamicSiteForm({
 
   if (cardContainer) {
     return (
-      <div style={{ backgroundColor: finalBgColor }} className={`w-full py-12 md:py-16 px-4 sm:px-6 ${className}`}>
+      <div style={{ backgroundColor: finalBgColor }} className={`w-full py-8 md:py-10 px-4 sm:px-6 ${className}`}>
         <div style={{ maxWidth: finalMaxWidth }} className="mx-auto bg-white rounded-3xl p-6 sm:p-10 shadow-xl border-0">
           {formInnerContent}
         </div>

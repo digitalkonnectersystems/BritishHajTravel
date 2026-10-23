@@ -1674,7 +1674,7 @@ function PageBuilderContent() {
 
         title: 'We provide and offer Hajj & Umrah packages from the UK',
 
-        description1: 'British Haj Travel LTD is a trusted, family-run travel organisation from the UK. We provide fully ATOL protected Hajj and Umrah packages with a focus on care, comfort and spiritual fulfilment.',
+        description1: 'British Haj Travel Ltd is a trusted, family-run travel organisation from the UK. We provide fully ATOL protected Hajj and Umrah packages with a focus on care, comfort and spiritual fulfilment.',
 
         image: '/uploads/sections/hajj_1.jpg',
 

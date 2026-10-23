@@ -18,7 +18,7 @@ export default function WhoWeAreSection({ data }: { data: any }) {
   const description1 =
     configuredValue(
       "description1",
-      "British Haj Travel LTD is a trusted, family-run travel organisation from the UK. We provide fully ATOL protected Hajj and Umrah packages with a focus on care, comfort and spiritual fulfilment."
+      "British Haj Travel Ltd is a trusted, family-run travel organisation from the UK. We provide fully ATOL protected Hajj and Umrah packages with a focus on care, comfort and spiritual fulfilment."
     );
 
   const image =

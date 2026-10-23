@@ -528,7 +528,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any, page
                     {/* 4. Select Package */}
                     <div className="relative">
                       <label htmlFor="quote-package" className="text-white block text-xs font-bold uppercase tracking-wider mb-1.5">
-                        Select Your Package
+                        Package
                       </label>
                       <select
                         id="quote-package"
@@ -578,7 +578,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any, page
         </div>
 
         <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative rounded-3xl md:rounded-[30px] shadow-[0_20px_50px_-12px_rgba(15,23,42,0.12)] bg-white p-5 sm:p-6 md:p-7 max-md:mt-6 -mt-10 sm:-mt-14 md:-mt-16 lg:-mt-20 border border-slate-100/90 z-20 overflow-hidden">
+          <div className="relative rounded-3xl md:rounded-[30px] shadow-[0_20px_50px_-12px_rgba(15,23,42,0.12)] bg-white p-5 sm:p-6 md:p-7 max-md:mt-3 -mt-5 sm:-mt-7 md:-mt-8 lg:-mt-10 border border-slate-100/90 z-20 overflow-hidden">
             {/* Header: Left Kaaba Sketch, Center Title & Subtitle, Right Required Documents */}
             <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6 md:mb-7">
               {/* Left Column: Architectural Kaaba sketch & journey message */}
