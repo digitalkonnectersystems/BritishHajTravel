@@ -25,7 +25,7 @@ const defaultCards: SeatCard[] = [
 export default function AvailableSeatsSection({ data }: { data?: any }) {
   const cards: SeatCard[] = Array.isArray(data?.items) && data.items.length ? data.items : defaultCards;
   return (
-    <section className="relative overflow-hidden bg-[#f1f9ff] px-4 py-8 md:py-10">
+    <section className="relative overflow-hidden bg-[#f1f9ff] px-4 py-12 md:py-16">
       <div className="mx-auto max-w-7xl">
         <div className="section-head center text-center mb-8">
           <span className="eyebrow mx-auto block">{data?.eyebrow || "AVAILABLE SEATS"}</span>

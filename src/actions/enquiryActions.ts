@@ -1,6 +1,7 @@
 'use server';
 
 import { requireAdmin } from '@/lib/requireAdmin';
+import { isValidUkPhone } from '@/lib/ukPhone';
 
 import { db } from '@/db';
 import { enquiries, quoteEnquiries, packageBookingEnquiries, contactEnquiries, visaEnquiries, flightEnquiries } from '@/db/schema';
@@ -52,6 +53,7 @@ export async function submitQuoteEnquiryAction(data: {
   try {
     const { fullName, phone, email, packageType = 'Umrah Package', numberOfPilgrims = 1, message = '', sourceFormName } = data;
 
+    if (!isValidUkPhone(phone)) return {success: false, error: 'Phone must use +44 followed by exactly 10 digits.'};
     if (!fullName || !email || !phone) {
       return { success: false, error: 'Full Name, Email, and Phone number are required.' };
     }
@@ -143,6 +145,7 @@ export async function submitPackageBookingEnquiryAction(data: {
       sourceFormName,
     } = data;
 
+    if (!isValidUkPhone(phone)) return {success: false, error: 'Phone must use +44 followed by exactly 10 digits.'};
     if (!fullName || !email || !phone) {
       return { success: false, error: 'Full Name, Email, and Phone number are required.' };
     }
@@ -231,6 +234,8 @@ export async function submitContactEnquiryAction(data: {
       return { success: false, error: 'Full Name and Email are required.' };
     }
 
+    if (phone && phone !== '+44' && !isValidUkPhone(phone)) return {success:false,error:'Phone must use +44 followed by exactly 10 digits.'};
+
     const ticketNumber = `TKT-${Date.now().toString().slice(-6)}`;
 
     // 1. Insert into dedicated contact_enquiries table.
@@ -306,6 +311,7 @@ export async function submitVisaEnquiryAction(data: {
       sourceFormName,
     } = data;
 
+    if (!isValidUkPhone(phone)) return {success: false, error: 'Phone must use +44 followed by exactly 10 digits.'};
     if (!fullName || !email || !phone) {
       return { success: false, error: 'Full Name, Email, and Phone are required.' };
     }
@@ -439,7 +445,7 @@ export async function submitFlightInquiry(data: {
       fullName,
       email,
       phone,
-      originCity = 'Toronto (YYZ)',
+      originCity = 'London (LHR)',
       destinationCity = 'Jeddah (JED)',
       departureDate = '',
       returnDate = '',
@@ -450,6 +456,7 @@ export async function submitFlightInquiry(data: {
       sourceFormName,
     } = data;
 
+    if (!isValidUkPhone(phone)) return {success: false, error: 'Phone must use +44 followed by exactly 10 digits.'};
     if (!fullName || !email || !phone) {
       return { success: false, error: 'Full Name, Email, and Phone are required.' };
     }

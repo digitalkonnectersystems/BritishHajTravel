@@ -68,13 +68,14 @@ export default function ActivityLogsClient({ initialActivities }: ActivityLogsCl
 
   useEffect(() => {
     const interval = setInterval(async () => {
+      if (document.visibilityState !== 'visible') return;
       try {
         const data = await getRecentActivities(150);
         setActivities(data);
       } catch (err) {
         console.error('Failed to refresh activity logs:', err);
       }
-    }, 5000);
+    }, 60000);
     return () => clearInterval(interval);
   }, []);
 

@@ -1,5 +1,6 @@
 'use client';
 
+import { normalizeUkPhoneInput } from '@/lib/ukPhone';
 import React, { useState } from 'react';
 import { submitQuoteEnquiryAction } from '@/actions/enquiryActions';
 import SubmissionSuccessModal from '@/components/SubmissionSuccessModal';
@@ -8,7 +9,7 @@ export default function CustomizeHajjPage() {
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
-    phone: '',
+    phone: '+44',
     occupancy: 'Quad Occupancy',
     message: '',
   });
@@ -42,7 +43,7 @@ export default function CustomizeHajjPage() {
         setFormData({
           fullName: '',
           email: '',
-          phone: '',
+          phone: '+44',
           occupancy: 'Quad Occupancy',
           message: '',
         });
@@ -99,14 +100,11 @@ export default function CustomizeHajjPage() {
                   type="text"
                   placeholder="Phone Number"
                   required
-                  maxLength={11}
+                  maxLength={13}
                   value={formData.phone}
                   onChange={(e) => {
                     let val = e.target.value;
-                    const startsWithPlus = val.startsWith("+");
-                    const digits = val.replace(/[^0-9]/g, "");
-                    val = (startsWithPlus ? "+" : "") + digits;
-                    if (val.length > 11) val = val.slice(0, 11);
+                    val = normalizeUkPhoneInput(val);
                     setFormData({ ...formData, phone: val });
                   }}
                   className="w-full p-3 rounded-xl border border-slate-200 text-xs outline-none focus:border-[#004B39]"

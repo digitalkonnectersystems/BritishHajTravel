@@ -461,7 +461,8 @@ export default function SeoCenterModal({
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <h2 className="text-sm font-black text-primary m-0 tracking-tight">SEO Center</h2>
+                <h2 className="text-sm font-black text-white m-0 tracking-tight">SEO Center</h2>
+                <span className="text-slate-400 text-xs font-medium">— Editing:</span>
                 <span className="text-xs font-bold text-emerald-300 bg-emerald-950/80 border border-emerald-700/60 px-2.5 py-0.5 rounded-full">
                   {pageData.title}
                 </span>
@@ -469,7 +470,7 @@ export default function SeoCenterModal({
                   Next-Gen Intelligence
                 </span>
               </div>
-              <p className="text-[10px] text-slate-500 m-0 mt-0.5">
+              <p className="text-[10px] text-slate-400 m-0 mt-0.5">
                 Real-time automated diagnostic health &amp; AI search engine indexability suite
               </p>
             </div>
@@ -1015,7 +1016,7 @@ export default function SeoCenterModal({
                 <h3 className="text-sm font-extrabold text-slate-900 m-0 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-primary" /> AI Search Readiness Score &amp; Issues Audit
                 </h3>
-                <p className="text-xs text-slate-500 m-0 mt-0.5">Real-time automated diagnostic audit and issue checklist for this page.</p>
+                <p className="text-xs text-slate-400 m-0 mt-0.5">Real-time automated diagnostic audit and issue checklist for this page.</p>
               </div>
 
               <div className="flex flex-col sm:flex-row items-center gap-6 p-4 rounded-2xl bg-slate-50 border border-slate-200">

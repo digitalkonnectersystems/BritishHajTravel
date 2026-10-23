@@ -1,4 +1,5 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect, permanentRedirect } from "next/navigation";
+import { lookupRedirect, recordNotFound } from "@/actions/redirectActions";
 import type { Metadata } from "next";
 import { getGuidesList, getPageBySlug } from "@/actions/pageActions";
 import { getPackagesByType, getSoldOutPackages } from "@/actions/packageActions";
@@ -70,6 +71,19 @@ export default async function DynamicPage({
         );
       }
     }
+    try {
+      const rule = await lookupRedirect(slugPath);
+      if (rule) {
+        if (rule.httpCode === 308) permanentRedirect(rule.destinationPath);
+        redirect(rule.destinationPath);
+      }
+    } catch (error: any) {
+      // NEXT_REDIRECT is a framework control-flow exception, not a database failure.
+      if (String(error?.digest || '').startsWith('NEXT_REDIRECT')) throw error;
+      console.error('Redirect lookup failed', error);
+    }
+    // Do not count an unpublished/draft page as an ordinary missing URL.
+    if (!page) await recordNotFound(slugPath);
     notFound();
   }
 

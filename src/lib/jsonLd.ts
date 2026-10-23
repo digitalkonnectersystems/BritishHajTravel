@@ -6,7 +6,7 @@ export function getOrganizationJsonLd() {
     url: 'https://britishhajjtravel.com',
     logo: 'https://britishhajjtravel.com/img/logo.png',
     description: 'Licensed British travel agency specializing in Hajj 2027, 5-Star Umrah packages, Saudi visas, airline tickets and luxury pilgrim accommodations.',
-    telephone: '+1-905-624-8344',
+    telephone: '+447957197390',
     email: 'info@britishhajjtravel.com',
     address: {
       '@type': 'PostalAddress',
@@ -16,7 +16,7 @@ export function getOrganizationJsonLd() {
       postalCode: 'L5B 3Z6',
       addressCountry: 'CA',
     },
-    areaServed: ['Mississauga', 'Milton', 'Toronto', 'Ontario', 'UK'],
+    areaServed: ['United Kingdom', 'London', 'Birmingham', 'Manchester', 'UK'],
     priceRange: '$$$',
   };
 }

@@ -1,4 +1,5 @@
 "use client";
+import { normalizeUkPhoneInput } from '@/lib/ukPhone';
 
 import { useState } from "react";
 import PageBanner from "@/components/PageBanner";
@@ -63,9 +64,9 @@ function ContactInfoCardsSection({ data }: { data?: any }) {
                 const supportList: any[] = (data?.supportItems && Array.isArray(data.supportItems) && data.supportItems.length > 0)
                   ? data.supportItems
                   : [
-                    { phone: data?.phone1 || '+1 800-844-5464', label: '', text: data?.phone1 || '+1 800-844-5464', url: `tel:${(data?.phone1 || '+18008445464').replace(/\s+/g, '')}`, openInNewTab: false },
-                    { phone: data?.phone2 || '+1 905-624-8555', label: '', text: data?.phone2 || '+1 905-624-8555', url: `tel:${(data?.phone2 || '+19056248555').replace(/\s+/g, '')}`, openInNewTab: false },
-                    { phone: data?.phone3 || '+1 905-624-8344', label: '', text: data?.phone3 || '+1 905-624-8344', url: `tel:${(data?.phone3 || '+19056248344').replace(/\s+/g, '')}`, openInNewTab: false },
+                    { phone: data?.phone1 || '+44 795 7197 390', label: '', text: data?.phone1 || '+44 795 7197 390', url: `tel:${(data?.phone1 || '+44 795 7197 390').replace(/\s+/g, '')}`, openInNewTab: false },
+                    { phone: data?.phone2 || '+44 177 2252 996', label: '', text: data?.phone2 || '+44 177 2252 996', url: `tel:${(data?.phone2 || '+44 177 2252 996').replace(/\s+/g, '')}`, openInNewTab: false },
+                    { phone: data?.phone3 || '+44 177 2252 996', label: '', text: data?.phone3 || '+44 177 2252 996', url: `tel:${(data?.phone3 || '+44 177 2252 996').replace(/\s+/g, '')}`, openInNewTab: false },
                   ];
 
                 return supportList
@@ -163,7 +164,7 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
   const [contactForm, setContactForm] = useState({
     name: "",
     email: "",
-    phone: "",
+    phone: "+44",
     website: "",
     message: "",
   });
@@ -216,7 +217,7 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
         setContactForm({
           name: "",
           email: "",
-          phone: "",
+          phone: "+44",
           website: "",
           message: "",
         });
@@ -304,14 +305,14 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
                   type="tel"
                   id="phone"
                   placeholder=" "
-                  maxLength={11}
+                  maxLength={13}
                   value={contactForm.phone}
                   onChange={(e) => {
                     let val = e.target.value;
                     const startsWithPlus = val.startsWith("+");
                     const digits = val.replace(/[^0-9]/g, "");
                     val = (startsWithPlus ? "+" : "") + digits;
-                    if (val.length > 11) val = val.slice(0, 11);
+                    val = normalizeUkPhoneInput(val);
                     setContactForm({ ...contactForm, phone: val });
                   }}
                   className={`peer w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium appearance-none bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat ${errors.phone ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-red"}`}

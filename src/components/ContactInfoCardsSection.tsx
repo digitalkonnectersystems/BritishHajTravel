@@ -54,9 +54,9 @@ export default function ContactInfoCardsSection({ data }: { data?: any }) {
                 const supportList: any[] = (data?.supportItems && Array.isArray(data.supportItems) && data.supportItems.length > 0)
                   ? data.supportItems
                   : [
-                    { phone: data?.phone1 || '+1 800-844-5464', label: '', text: data?.phone1 || '+1 800-844-5464', url: `tel:${(data?.phone1 || '+18008445464').replace(/\s+/g, '')}`, openInNewTab: false },
-                    { phone: data?.phone2 || '+1 905-624-8555', label: '', text: data?.phone2 || '+1 905-624-8555', url: `tel:${(data?.phone2 || '+19056248555').replace(/\s+/g, '')}`, openInNewTab: false },
-                    { phone: data?.phone3 || '+1 905-624-8344', label: '', text: data?.phone3 || '+1 905-624-8344', url: `tel:${(data?.phone3 || '+19056248344').replace(/\s+/g, '')}`, openInNewTab: false },
+                    { phone: data?.phone1 || '+44 795 7197 390', label: '', text: data?.phone1 || '+44 795 7197 390', url: `tel:${(data?.phone1 || '+44 795 7197 390').replace(/\s+/g, '')}`, openInNewTab: false },
+                    { phone: data?.phone2 || '+44 177 2252 996', label: '', text: data?.phone2 || '+44 177 2252 996', url: `tel:${(data?.phone2 || '+44 177 2252 996').replace(/\s+/g, '')}`, openInNewTab: false },
+                    { phone: data?.phone3 || '+44 177 2252 996', label: '', text: data?.phone3 || '+44 177 2252 996', url: `tel:${(data?.phone3 || '+44 177 2252 996').replace(/\s+/g, '')}`, openInNewTab: false },
                   ];
 
                 return supportList

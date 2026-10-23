@@ -24,7 +24,7 @@ export default function LatestBlogsSection({ data, blogs, isHomepage = false }: 
 
   return (
     <section
-      className="bg-primary py-8 md:py-10 bg-center bg-cover bg-no-repeat bg-fixed"
+      className="bg-primary py-12 md:py-16 bg-center bg-cover bg-no-repeat bg-fixed"
       style={
         bgImage
           ? {

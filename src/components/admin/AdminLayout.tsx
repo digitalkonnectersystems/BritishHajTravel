@@ -19,6 +19,9 @@ import {
   ChevronDown,
   ShieldCheck,
   Activity,
+  GitPullRequest,
+  TerminalSquare,
+  SlidersHorizontal,
   FileText,
   Mail,
   CheckCircle2,
@@ -97,6 +100,21 @@ const navItems = [
     label: 'SEO Center',
     href: '/admin/seo',
     icon: <Search className="w-4 h-4" />,
+  },
+  {
+    label: 'Customized Enquiries',
+    href: '/admin/customized-enquiries',
+    icon: <SlidersHorizontal className="w-4 h-4" />,
+  },
+  {
+    label: 'Redirects & 404',
+    href: '/admin/redirects',
+    icon: <GitPullRequest className="w-4 h-4" />,
+  },
+  {
+    label: 'Backend Logs',
+    href: '/admin/backend-logs',
+    icon: <TerminalSquare className="w-4 h-4" />,
   },
   {
     label: 'Activity Logs',
@@ -194,7 +212,15 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
 
         {/* Nav */}
         <nav className="flex-1 pt-4 flex flex-col gap-1">
-          {navItems.map((item) => {
+          {navItems.filter((item) => {
+            if (!user || user.role === 'super_admin' || user.role === 'admin') return true;
+            if (item.href === '/admin/enquiries' || item.href === '/admin/customized-enquiries') return user.role === 'enquiry_manager';
+            if (item.href === '/admin/backend-logs') return false;
+            if (item.href === '/admin/redirects') return user.role === 'content_editor';
+            if (item.href === '/admin/seo') return user.role === 'content_editor' || user.role === 'seo_manager';
+            if (item.href === '/admin/settings') return false;
+            return item.href === '/admin/dashboard' || item.href === '/admin/activity' || user.role === 'content_editor';
+          }).map((item) => {
             const isActive =
               pathname === item.href || (item.href === '/admin/pages' && pathname.startsWith('/admin/pages')) || (item.href === '/admin/guides' && pathname.startsWith('/admin/guides'));
             return (

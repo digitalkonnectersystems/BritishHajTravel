@@ -5,7 +5,7 @@ import { requireAdmin } from '@/lib/requireAdmin';
 import { db } from '@/db';
 import { destinations } from '@/db/schema';
 import { and, asc, eq } from 'drizzle-orm';
-import { revalidatePath, revalidateTag } from 'next/cache';
+import { revalidatePath, updateTag } from 'next/cache';
 import { logAdminActivityAction } from '@/actions/activityActions';
 
 function parseJson(value: unknown, fallback: any[] = []) {
@@ -128,7 +128,7 @@ export async function saveDestinationAction(data: {
     revalidatePath('/destinations');
     revalidatePath(`/destinations/${slug}`);
     revalidatePath('/', 'layout');
-    revalidateTag('nav-items', 'max');
+    updateTag('nav-items');
     return { success: true };
   } catch (error: any) {
     console.error('saveDestinationAction error:', error);
@@ -158,7 +158,7 @@ export async function deleteDestinationAction(id: number) {
     });
     revalidatePath('/destinations');
     revalidatePath('/', 'layout');
-    revalidateTag('nav-items', 'max');
+    updateTag('nav-items');
     return { success: true };
   } catch (error: any) {
     return { success: false, error: error.message || 'Failed to delete destination.' };
@@ -172,7 +172,7 @@ export async function updateDestinationOrderAction(orderedIds: number[]) {
     await Promise.all(orderedIds.map((id, index) => db.update(destinations).set({ displayOrder: index, updatedAt: new Date() }).where(eq(destinations.id, id))));
     revalidatePath('/destinations');
     revalidatePath('/', 'layout');
-    revalidateTag('nav-items', 'max');
+    updateTag('nav-items');
     return { success: true };
   } catch {
     return { success: false, error: 'Failed to update destination order.' };

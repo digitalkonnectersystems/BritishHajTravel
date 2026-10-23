@@ -1,4 +1,5 @@
 "use client";
+import { normalizeUkPhoneInput } from '@/lib/ukPhone';
 
 import { useState } from "react";
 import { submitContactEnquiryAction } from "@/actions/enquiryActions";
@@ -37,7 +38,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
   const [form, setForm] = useState({
     fullName: "",
     email: "",
-    phone: "",
+    phone: "+44",
     packageType: "",
     message: "",
   });
@@ -82,7 +83,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
         if (res.ticketNumber) setModalRef(res.ticketNumber);
         setModalOpen(true);
         setStatus(null);
-        setForm({ fullName: "", email: "", phone: "", packageType: "", message: "" });
+        setForm({ fullName: "", email: "", phone: "+44", packageType: "", message: "" });
       } else {
         setStatus(res.error || "Submission failed.");
       }
@@ -95,20 +96,20 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
   const resolvedLandlines: Array<{ number: string; label?: string; openInNewTab?: boolean }> = (data?.landlines && Array.isArray(data.landlines) && data.landlines.length > 0)
     ? data.landlines.filter(l => l && l.number?.trim()).map(l => ({ number: l.number!.trim(), label: l.label, openInNewTab: l.openInNewTab }))
     : [
-      ...(data?.tollFree ? [{ number: data.tollFree, label: 'Toll Free / Main', openInNewTab: data.tollFreeNewTab ?? true }] : [{ number: "+1 905-624-8555", openInNewTab: true }]),
-      ...(data?.localNum1 ? [{ number: data.localNum1, label: 'Local Line 2', openInNewTab: data.localNum1NewTab ?? true }] : [{ number: "+1 905-624-8344", openInNewTab: true }]),
+      ...(data?.tollFree ? [{ number: data.tollFree, label: 'Toll Free / Main', openInNewTab: data.tollFreeNewTab ?? true }] : [{ number: "+44 177 2252 996", openInNewTab: true }]),
+      ...(data?.localNum1 ? [{ number: data.localNum1, label: 'Local Line 2', openInNewTab: data.localNum1NewTab ?? true }] : [{ number: "+44 177 2252 996", openInNewTab: true }]),
     ];
 
   // Resolve WhatsApp list (repeater or legacy fallback)
   const resolvedWhatsApp: Array<{ number: string; label?: string; openInNewTab?: boolean }> = (data?.whatsappList && Array.isArray(data.whatsappList) && data.whatsappList.length > 0)
     ? data.whatsappList.filter(w => w && w.number?.trim()).map(w => ({ number: w.number!.trim(), label: w.label, openInNewTab: w.openInNewTab }))
     : [
-      ...(data?.waReservation ? [{ number: data.waReservation, label: data.waReservationLabel || "Reservation", openInNewTab: data.waReservationNewTab ?? true }] : [{ number: "+1 647-982-8555", label: "Reservation", openInNewTab: true }]),
-      ...(data?.waVisa ? [{ number: data.waVisa, label: data.waVisaLabel || "Saudi Visa", openInNewTab: data.waVisaNewTab ?? true }] : [{ number: "+1 800-844-5464", label: "Saudi Visa", openInNewTab: true }]),
+      ...(data?.waReservation ? [{ number: data.waReservation, label: data.waReservationLabel || "Reservation", openInNewTab: data.waReservationNewTab ?? true }] : [{ number: "+44 177 2252 996", label: "Reservation", openInNewTab: true }]),
+      ...(data?.waVisa ? [{ number: data.waVisa, label: data.waVisaLabel || "Saudi Visa", openInNewTab: data.waVisaNewTab ?? true }] : [{ number: "+44 795 7197 390", label: "Saudi Visa", openInNewTab: true }]),
     ];
 
   return (
-    <section className="py-8 md:py-10 bg-blue-lt">
+    <section className="py-12 md:py-16 bg-blue-lt">
       <div className="max-w-[1400px] mx-auto px-5">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
@@ -274,14 +275,11 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                     type="tel"
                     id="phoneNumber"
                     placeholder="Phone Number"
-                    maxLength={11}
+                    maxLength={13}
                     value={form.phone}
                     onChange={(e) => {
                       let val = e.target.value;
-                      const startsWithPlus = val.startsWith("+");
-                      const digits = val.replace(/[^0-9]/g, "");
-                      val = (startsWithPlus ? "+" : "") + digits;
-                      if (val.length > 11) val = val.slice(0, 11);
+                      val = normalizeUkPhoneInput(val);
                       setForm({ ...form, phone: val });
                     }}
                     className="w-full border border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium focus:border-primary"

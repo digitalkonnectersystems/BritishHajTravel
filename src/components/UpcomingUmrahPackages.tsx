@@ -97,7 +97,7 @@ export default function UpcomingUmrahPackages({
   const sectionBgClass = isUmrahListingPage ? "bg-blue-lt" : isHomepage ? "bg-white" : (pathname === "/" ? "bg-white" : "bg-blue-lt");
  
   return (
-    <section className={`py-8 md:py-10 ${sectionBgClass}`}>
+    <section className={`py-12 md:py-16 ${sectionBgClass}`}>
       <div className="max-w-[1400px] mx-auto px-5">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-10 md:mb-16 gap-6 text-center md:text-left">

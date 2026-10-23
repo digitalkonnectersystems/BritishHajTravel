@@ -170,7 +170,7 @@ export default function DeluxeHajj2027Page() {
                   </h4>
                   <ul className="space-y-2 text-sm text-slate-600">
                     <li><strong className="text-slate-800 font-semibold">12 to 14 Dhul Hajjah</strong></li>
-                    <li><strong className="text-slate-800 font-semibold">14 Dhul Hajjah:</strong> Check out from Aziziya and leave for Jeddah airport for departure to Toronto.</li>
+                    <li><strong className="text-slate-800 font-semibold">14 Dhul Hajjah:</strong> Check out from Aziziya and leave for Jeddah airport for departure to London.</li>
                   </ul>
                 </div>
               </div>

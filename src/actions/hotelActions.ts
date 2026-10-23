@@ -7,7 +7,7 @@ import { hotelCategories, hotels } from '@/db/schema';
 import { asc, eq } from 'drizzle-orm';
 import {
   revalidatePath,
-  revalidateTag,
+  updateTag,
   unstable_cache,
 } from 'next/cache';
 import { logAdminActivityAction } from '@/actions/activityActions';
@@ -97,7 +97,7 @@ export async function createHotelCategoryAction(input: { name: string; displayOr
     }).$returningId();
     await logAdminActivityAction({ type: 'settings', action: 'Created Hotel Category', details: `Hotel category "${name}" created` });
     revalidatePath('/hotels');
-    revalidateTag('hotel-directory', 'max');
+    updateTag('hotel-directory');
     return { success: true, id: inserted[0]?.id };
   } catch (error: any) {
     return { success: false, error: error?.code === 'ER_DUP_ENTRY' ? 'A category with this name already exists.' : 'Failed to create hotel category.' };
@@ -118,7 +118,7 @@ export async function updateHotelCategoryAction(id: number, input: { name: strin
       updatedAt: new Date(),
     }).where(eq(hotelCategories.id, id));
     revalidatePath('/hotels');
-    revalidateTag('hotel-directory', 'max');
+    updateTag('hotel-directory');
     return { success: true };
   } catch (error: any) {
     return { success: false, error: error?.code === 'ER_DUP_ENTRY' ? 'A category with this name already exists.' : 'Failed to update hotel category.' };
@@ -131,7 +131,7 @@ export async function deleteHotelCategoryAction(id: number) {
   try {
     await db.delete(hotelCategories).where(eq(hotelCategories.id, id));
     revalidatePath('/hotels');
-    revalidateTag('hotel-directory', 'max');
+    updateTag('hotel-directory');
     return { success: true };
   } catch {
     return { success: false, error: 'Failed to delete hotel category.' };
@@ -144,7 +144,7 @@ export async function updateHotelCategoryOrderAction(orderedIds: number[]) {
   try {
     await Promise.all(orderedIds.map((id, index) => db.update(hotelCategories).set({ displayOrder: index, updatedAt: new Date() }).where(eq(hotelCategories.id, id))));
     revalidatePath('/hotels');
-    revalidateTag('hotel-directory', 'max');
+    updateTag('hotel-directory');
     return { success: true };
   } catch {
     return { success: false, error: 'Failed to update hotel category order.' };
@@ -192,7 +192,7 @@ export async function createHotelAction(input: HotelInput) {
     const inserted = await db.insert(hotels).values(hotel).$returningId();
     await logAdminActivityAction({ type: 'settings', action: 'Created Hotel', details: `Hotel "${hotel.name}" created` });
     revalidatePath('/hotels');
-    revalidateTag('hotel-directory', 'max');
+    updateTag('hotel-directory');
     return { success: true, id: inserted[0]?.id };
   } catch {
     return { success: false, error: 'Failed to create hotel.' };
@@ -209,7 +209,7 @@ export async function updateHotelAction(id: number, input: HotelInput) {
   try {
     await db.update(hotels).set({ ...hotel, updatedAt: new Date() }).where(eq(hotels.id, id));
     revalidatePath('/hotels');
-    revalidateTag('hotel-directory', 'max');
+    updateTag('hotel-directory');
     return { success: true };
   } catch {
     return { success: false, error: 'Failed to update hotel.' };
@@ -222,7 +222,7 @@ export async function deleteHotelAction(id: number) {
   try {
     await db.delete(hotels).where(eq(hotels.id, id));
     revalidatePath('/hotels');
-    revalidateTag('hotel-directory', 'max');
+    updateTag('hotel-directory');
     return { success: true };
   } catch {
     return { success: false, error: 'Failed to delete hotel.' };
@@ -235,7 +235,7 @@ export async function updateHotelOrderAction(orderedIds: number[]) {
   try {
     await Promise.all(orderedIds.map((id, index) => db.update(hotels).set({ displayOrder: index, updatedAt: new Date() }).where(eq(hotels.id, id))));
     revalidatePath('/hotels');
-    revalidateTag('hotel-directory', 'max');
+    updateTag('hotel-directory');
     return { success: true };
   } catch {
     return { success: false, error: 'Failed to update hotel order.' };

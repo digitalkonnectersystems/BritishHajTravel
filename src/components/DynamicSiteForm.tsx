@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { normalizeUkPhoneInput } from "@/lib/ukPhone";
 import {
   submitFlightInquiry,
   submitQuoteEnquiryAction,
@@ -103,13 +104,13 @@ export default function DynamicSiteForm({
           if (fieldsOverride?.length && !preferFormConfig) {
             setFieldsList(fieldsOverride);
             const initialData: Record<string, string> = {};
-            fieldsOverride.forEach((f: any) => { initialData[f.id] = ""; });
+            fieldsOverride.forEach((f: any) => { initialData[f.id] = f.type === "tel" ? "+44" : ""; });
             setFormData(initialData);
           } else if (settings.formFieldsState && settings.formFieldsState[formKey]) {
             setFieldsList(settings.formFieldsState[formKey]);
             const initialData: Record<string, string> = {};
             settings.formFieldsState[formKey].forEach((f: any) => {
-              initialData[f.id] = "";
+              initialData[f.id] = f.type === "tel" ? "+44" : "";
             });
             setFormData(initialData);
           } else if (settings[formKey]) {
@@ -118,7 +119,7 @@ export default function DynamicSiteForm({
               setFieldsList(settings[formKey].fields);
               const initialData: Record<string, string> = {};
               settings[formKey].fields.forEach((f: any) => {
-                initialData[f.id] = "";
+                initialData[f.id] = f.type === "tel" ? "+44" : "";
               });
               setFormData(initialData);
             }
@@ -142,10 +143,7 @@ export default function DynamicSiteForm({
     const { name, value, type } = e.target as HTMLInputElement;
     // Phone fields: strip non-numeric chars except + - ( ) space
     if (type === "tel") {
-      let cleaned = value.replace(/[^0-9+\-() ]/g, "");
-      if (formKey === "flightInquiry" && cleaned.length > 11) {
-        cleaned = cleaned.slice(0, 11);
-      }
+      const cleaned = normalizeUkPhoneInput(value);
       setFormData((prev) => ({ ...prev, [name]: cleaned }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
@@ -263,7 +261,7 @@ export default function DynamicSiteForm({
         // Reset form
         const initialData: Record<string, string> = {};
         fieldsList.forEach((f: any) => {
-          initialData[f.id] = "";
+          initialData[f.id] = f.type === "tel" ? "+44" : "";
         });
         setFormData(initialData);
       } else {
@@ -492,10 +490,11 @@ export default function DynamicSiteForm({
                       type="tel"
                       name={field.id}
                       required={field.required}
-                      value={formData[field.id] || ""}
+                      value={formData[field.id] || "+44"}
                       onChange={handleChange}
-                      placeholder={field.placeholder || "e.g. +1 234 567 890"}
-                      maxLength={formKey === "flightInquiry" ? 11 : undefined}
+                      placeholder={field.placeholder || "e.g. +44 795 7197 390"}
+                      maxLength={13}
+                      pattern="\+44[0-9]{10}"
                       inputMode="tel"
                       autoComplete="tel"
                       className="w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium focus:border-emerald-800"
@@ -553,7 +552,7 @@ export default function DynamicSiteForm({
 
   if (cardContainer) {
     return (
-      <div style={{ backgroundColor: finalBgColor }} className={`w-full py-8 md:py-10 px-4 sm:px-6 ${className}`}>
+      <div style={{ backgroundColor: finalBgColor }} className={`w-full py-12 md:py-16 px-4 sm:px-6 ${className}`}>
         <div style={{ maxWidth: finalMaxWidth }} className="mx-auto bg-white rounded-3xl p-6 sm:p-10 shadow-xl border-0">
           {formInnerContent}
         </div>

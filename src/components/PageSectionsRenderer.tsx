@@ -12,6 +12,7 @@ import UpcomingUmrahPackages from '@/components/UpcomingUmrahPackages';
 import TravelServicesSection from '@/components/TravelServicesSection';
 import WhatWeProvideSection from '@/components/WhatWeProvideSection';
 import HajjPackagesSection from '@/components/HajjPackagesSection';
+import PackageCustomizationCTA from '@/components/PackageCustomizationCTA';
 import ContactInfoCardsSection from '@/components/ContactInfoCardsSection';
 import ContactMapsSection from '@/components/ContactMapsSection';
 import CertificationsFlipCardsSection from '@/components/CertificationsFlipCardsSection';
@@ -135,7 +136,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
             ];
 
           return (
-            <section key={idx} className="py-8 md:py-10 bg-blue-lt">
+            <section key={idx} className="py-12 md:py-16 bg-blue-lt">
               <div className="max-w-5xl mx-auto px-4">
                 <div className="flex flex-col items-center text-center mb-8">
                   <span className="eyebrow mx-auto block">
@@ -288,7 +289,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         // ── Testimonials ──────────────────────────────────────────────────────
         if (sec.type === "Testimonials") {
           return (
-            <section key={idx} className="py-8 md:py-10 bg-primary">
+            <section key={idx} className="py-12 md:py-16 bg-primary">
               <div className="max-w-[1400px] mx-auto px-5">
                 <div className="text-center flex flex-col mb-10">
                   {sec.data?.eyebrow && (
@@ -658,7 +659,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         }
 
         if (sec.type === "Upcoming Umrah Packages" || sec.type === "Umrah Packages" || sec.type === "Umrah Packages Grid") {
-          return <UpcomingUmrahPackages key={idx} data={sec.data} initialPackages={initialPackageData?.umrah} pageData={pageData} />;
+          return <div key={idx}><UpcomingUmrahPackages data={sec.data} initialPackages={initialPackageData?.umrah} pageData={pageData} />{pageData?.slug === '/umrah-packages' && !sections.slice(0,idx).some((p:any)=>['Upcoming Umrah Packages','Umrah Packages','Umrah Packages Grid'].includes(p.type) && p.hidden !== true) && <PackageCustomizationCTA journey='umrah' />}</div>;
         }
 
         if (sec.type === "Travel Services" || sec.type === "Services Grid" || sec.type === "Umrah Services Grid" || sec.type === "Hajj Services Grid") {
@@ -670,7 +671,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         }
 
         if (sec.type === "Hajj Packages" || sec.type === "Packages Grid") {
-          return <HajjPackagesSection key={idx} data={sec.data} initialPackages={initialPackageData?.hajj} pageData={pageData} />;
+          return <div key={idx}><HajjPackagesSection data={sec.data} initialPackages={initialPackageData?.hajj} pageData={pageData} />{pageData?.slug === '/hajj-packages' && !sections.slice(0,idx).some((p:any)=>['Hajj Packages','Packages Grid'].includes(p.type) && p.hidden !== true) && <PackageCustomizationCTA journey='hajj' />}</div>;
         }
 
         if (sec.type === "Banner 4 Grids") {

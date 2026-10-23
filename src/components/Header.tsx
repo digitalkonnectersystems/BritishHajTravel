@@ -174,7 +174,7 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
                   rel="noopener noreferrer"
                   className="text-[15px] max-sm:text-[13px] font-bold text-[#25D366] no-underline"
                 >
-                  {identityData?.whatsappHeaderText || '+1 905-624-8344'}
+                  {identityData?.whatsappHeaderText || '+44 177 2252 996'}
                 </a>
               </div>
             </div>

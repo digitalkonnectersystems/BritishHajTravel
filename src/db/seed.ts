@@ -8,7 +8,7 @@ export async function seedDatabase() {
     // 1. Seed Site Settings
     const defaultSettings = [
       { key: 'site_name', value: 'British Hajj Travel LTD' },
-      { key: 'phone', value: '+1 (905) 624-8344' },
+      { key: 'phone', value: '+44 177 2252 996' },
       { key: 'whatsapp_general', value: '19056248344' },
       { key: 'email', value: 'info@britishhajjtravel.com' },
       { key: 'address_mississauga', value: '3050 Confederation Pkwy, Unit 301, Mississauga, ON L5B 3Z6, UK' },
@@ -35,7 +35,7 @@ export async function seedDatabase() {
         status: 'available' as const,
         featuredImage: 'https://images.unsplash.com/photo-1542856391-010fb87dcfed?auto=format&fit=crop&w=800&q=80',
         inclusions: JSON.stringify([
-          'Return Flights from Toronto (YYZ)',
+          'Return Flights from London (LHR)',
           '5-Star Hotels in Makkah & Madinah',
           'Saudi Tourist / Umrah Visa Assistance',
           'Luxury Air-Conditioned Transfers',

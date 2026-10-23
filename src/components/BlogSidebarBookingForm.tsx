@@ -1,4 +1,5 @@
 "use client";
+import { normalizeUkPhoneInput } from '@/lib/ukPhone';
 
 import { useEffect, useState } from "react";
 import { TicketPercent, Calendar } from "lucide-react";
@@ -30,7 +31,7 @@ function formatTravelMonth(value?: string | null): string {
 
 export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: string }) {
   const [fullName, setFullName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState("+44");
   const [email, setEmail] = useState("");
   const [adults, setAdults] = useState("1");
   const [childrenCount, setChildrenCount] = useState("0");
@@ -273,14 +274,11 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
             <input
               type="tel"
               placeholder="Phone Number"
-              maxLength={11}
+              maxLength={13}
               value={phone}
               onChange={(e) => {
                 let val = e.target.value;
-                const startsWithPlus = val.startsWith("+");
-                const digits = val.replace(/[^0-9]/g, "");
-                val = (startsWithPlus ? "+" : "") + digits;
-                if (val.length > 11) val = val.slice(0, 11);
+                val = normalizeUkPhoneInput(val);
                 setPhone(val);
                 if (errors.phone) setErrors((prev) => ({ ...prev, phone: false }));
               }}

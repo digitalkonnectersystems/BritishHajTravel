@@ -5,13 +5,13 @@ import { requireAdmin } from '@/lib/requireAdmin';
 import { db } from '@/db';
 import { sitePages, siteSettings } from '@/db/schema';
 import { and, eq, isNull } from 'drizzle-orm';
-import { revalidatePath, revalidateTag, unstable_cache } from 'next/cache';
+import { revalidatePath, updateTag, unstable_cache } from 'next/cache';
 import { getResponsiveEmailTemplateHtml, getEditableEmailTemplateHtml, CANONICAL_FORM_SUBJECTS, FORM_SAMPLE_DATA } from '@/lib/emailTemplate';
 import { logAdminActivityAction } from '@/actions/activityActions';
 import { dedupeRecipientChannels, hasInvalidEmailRecipient, normalizeEmailRecipients } from '@/lib/emailRecipients';
 
 // Cached reads go stale after this long (seconds) and refetch in the background.
-// Saves from the admin also bust these instantly via revalidateTag(), so content
+// Saves from the admin also bust these instantly via updateTag(), so content
 // updates show up right away - this just avoids hitting the DB (a full network
 // round trip) on every single page load, which is what was making the header
 // and footer render before the actual page content.
@@ -115,7 +115,7 @@ export async function reorderGuidesAction(category: GuideCategory, guideIds: num
       });
 
     revalidatePath('/admin/guides');
-    revalidateTag('pages', 'max');
+    updateTag('pages');
     return { success: true };
   } catch (err) {
     console.error('reorderGuidesAction failed:', err);
@@ -327,8 +327,8 @@ export async function savePageAction(formData: FormData) {
     revalidatePath('/admin/guides');
     revalidatePath(slug);
     revalidatePath('/', 'layout');
-    revalidateTag('pages', 'max');
-    revalidateTag(`page-slug-${slug}`, 'max');
+    updateTag('pages');
+    updateTag(`page-slug-${slug}`);
     return { success: true, pageId: savedId, error: undefined };
   } catch (err: any) {
     console.error('savePageAction DB query failed:', err);
@@ -396,8 +396,8 @@ export async function saveGuideAction(formData: FormData) {
     });
     revalidatePath('/admin/guides');
     revalidatePath(slug);
-    revalidateTag('pages', 'max');
-    revalidateTag(`page-slug-${slug}`, 'max');
+    updateTag('pages');
+    updateTag(`page-slug-${slug}`);
     return { success: true, pageId: savedId };
   } catch (err: any) {
     console.error('saveGuideAction DB query failed:', err);
@@ -498,7 +498,7 @@ export async function saveNavItemsAction(navItems: any[]) {
     });
 
     revalidatePath('/', 'layout');
-    revalidateTag('nav-items', 'max');
+    updateTag('nav-items');
     return { success: true };
   } catch (err: any) {
     console.error('saveNavItemsAction DB query failed:', err);
@@ -542,9 +542,9 @@ export async function getDefaultFooterData() {
     supportTitle: '24/7 CUSTOMER SUPPORT',
     supportItems: [
       { text: '24/7 customer support', url: '', openInNewTab: false },
-      { text: '+1800-844-5464', url: 'tel:+18008445464', openInNewTab: false },
-      { text: '+1905-624-8555', url: 'tel:+19056248555', openInNewTab: false },
-      { text: '+1905-624-8344', url: 'tel:+19056248344', openInNewTab: false },
+      { text: '+44 795 7197 390', url: 'tel:+447957197390', openInNewTab: false },
+      { text: '+44 177 2252 996', url: 'tel:+441772252996', openInNewTab: false },
+      { text: '+44 177 2252 996', url: 'tel:+441772252996', openInNewTab: false },
       { text: 'saudivisa@britishhajjtravel.com', url: 'mailto:saudivisa@britishhajjtravel.com', openInNewTab: false },
       { text: 'Mon–Sat, 9am – 7pm EST', url: '', openInNewTab: false },
     ],
@@ -597,13 +597,13 @@ export async function saveFooterSettingsAction(footerData: any) {
     });
 
     revalidatePath('/', 'layout');
-    revalidateTag('footer-data', 'max');
+    updateTag('footer-data');
     return { success: true };
   } catch (err: any) {
     console.warn('saveFooterSettingsAction DB insert failed, fallback to memory cache:', err);
     footerMemoryCache = footerData;
     revalidatePath('/', 'layout');
-    revalidateTag('footer-data', 'max');
+    updateTag('footer-data');
     return { success: true, warning: 'Saved to session cache.' };
   }
 }
@@ -664,8 +664,8 @@ export async function deleteGuideAction(id: number) {
     });
     revalidatePath('/admin/guides');
     revalidatePath('/', 'layout');
-    revalidateTag('pages', 'max');
-    revalidateTag(`page-slug-${pages[0].slug}`, 'max');
+    updateTag('pages');
+    updateTag(`page-slug-${pages[0].slug}`);
     return { success: true };
   } catch (err: any) {
     console.error('deleteGuideAction DB query failed:', err);
@@ -699,8 +699,8 @@ export async function moveGuideToPagesAction(id: number) {
     revalidatePath('/admin/pages');
     revalidatePath(page.slug);
     revalidatePath('/', 'layout');
-    revalidateTag('pages', 'max');
-    revalidateTag(`page-slug-${page.slug}`, 'max');
+    updateTag('pages');
+    updateTag(`page-slug-${page.slug}`);
     return { success: true };
   } catch (err: any) {
     console.error('moveGuideToPagesAction failed:', err);
@@ -773,13 +773,13 @@ export async function saveSiteIdentityAction(data: any) {
     });
 
     revalidatePath('/', 'layout');
-    revalidateTag('site-identity', 'max');
+    updateTag('site-identity');
     return { success: true };
   } catch (err: any) {
     console.warn('saveSiteIdentityAction DB query failed, saving to cache fallback:', err);
     siteIdentityMemoryCache = data;
     revalidatePath('/', 'layout');
-    revalidateTag('site-identity', 'max');
+    updateTag('site-identity');
     return { success: true, warning: 'Saved to session memory cache.' };
   }
 }
@@ -855,12 +855,12 @@ export async function saveShareToolsAction(data: any) {
       await db.insert(siteSettings).values({ key: 'share_tools', value: JSON.stringify(data) });
     }
     revalidatePath('/', 'layout');
-    revalidateTag('share-tools', 'max');
+    updateTag('share-tools');
     return { success: true };
   } catch (err: any) {
     console.warn('saveShareToolsAction DB query failed, saving to cache fallback:', err);
     revalidatePath('/', 'layout');
-    revalidateTag('share-tools', 'max');
+    updateTag('share-tools');
     return { success: true, warning: 'Saved to session memory cache.' };
   }
 }
@@ -944,7 +944,7 @@ export async function updatePageStatusAction(id: number, status: 'published' | '
     });
 
     revalidatePath('/admin/pages');
-    revalidateTag('pages', 'max');
+    updateTag('pages');
     return { success: true };
   } catch (err: any) {
     console.error('updatePageStatusAction DB error:', err);
@@ -1009,13 +1009,13 @@ export async function saveLoginAuthSettingsAction(data: any) {
 
     revalidatePath('/letstravel');
     revalidatePath('/', 'layout');
-    revalidateTag('login-auth-settings', 'max');
+    updateTag('login-auth-settings');
     return { success: true };
   } catch (err: any) {
     console.warn('saveLoginAuthSettingsAction DB query failed:', err);
     revalidatePath('/letstravel');
     revalidatePath('/', 'layout');
-    revalidateTag('login-auth-settings', 'max');
+    updateTag('login-auth-settings');
     return { success: true };
   }
 }
@@ -1087,7 +1087,7 @@ const DEFAULT_FORM_FIELDS_STATE: Record<string, Array<{ id: string; label: strin
   ],
   quoteForm: [
     { id: '1', label: 'Your Name', type: 'text', placeholder: 'Full Name', required: true },
-    { id: '2', label: 'Phone Number', type: 'tel', placeholder: '+1 905 624 8344', required: true },
+    { id: '2', label: 'Phone Number', type: 'tel', placeholder: '+44 177 2252 996', required: true },
     { id: '3', label: 'Email Address', type: 'email', placeholder: 'Email', required: true },
     { id: '4', label: 'Select Your Package', type: 'select', placeholder: 'Select your package choice', required: true },
     { id: '5', label: 'Departure Date', type: 'date', placeholder: 'mm/dd/yyyy', required: true },
@@ -1095,7 +1095,7 @@ const DEFAULT_FORM_FIELDS_STATE: Record<string, Array<{ id: string; label: strin
   ],
   packageDetailForm: [
     { id: '1', label: 'Full Name', type: 'text', placeholder: 'Full Name', required: true },
-    { id: '2', label: 'Phone Number', type: 'tel', placeholder: '+1', required: true },
+    { id: '2', label: 'Phone Number', type: 'tel', placeholder: '+44', required: true },
     { id: '3', label: 'Email Address', type: 'email', placeholder: 'Email', required: true },
     { id: '4', label: 'Adults', type: 'select', placeholder: '1', required: true },
     { id: '5', label: 'Children', type: 'select', placeholder: '0', required: false },
@@ -1105,7 +1105,7 @@ const DEFAULT_FORM_FIELDS_STATE: Record<string, Array<{ id: string; label: strin
   ],
   hajjPackageDetailForm: [
     { id: '1', label: 'Full Name', type: 'text', placeholder: 'Full Name', required: true },
-    { id: '2', label: 'Phone Number', type: 'tel', placeholder: '+1', required: true },
+    { id: '2', label: 'Phone Number', type: 'tel', placeholder: '+44', required: true },
     { id: '3', label: 'Email Address', type: 'email', placeholder: 'Email', required: true },
     { id: '4', label: 'Adults', type: 'select', placeholder: '1', required: true },
     { id: '5', label: 'Children', type: 'select', placeholder: '0', required: false },
@@ -1115,19 +1115,19 @@ const DEFAULT_FORM_FIELDS_STATE: Record<string, Array<{ id: string; label: strin
   hajjCustomizeForm: [
     { id: '1', label: 'Full Name', type: 'text', placeholder: 'Full Name', required: true },
     { id: '2', label: 'Email Address', type: 'email', placeholder: 'Email', required: true },
-    { id: '3', label: 'Phone Number', type: 'tel', placeholder: '+1 905 624 8344', required: true },
+    { id: '3', label: 'Phone Number', type: 'tel', placeholder: '+44 177 2252 996', required: true },
     { id: '4', label: 'Room Occupancy', type: 'select', placeholder: 'Quad / Triple / Double', required: true },
   ],
   contact: [
     { id: '1', label: 'Full Name', type: 'text', placeholder: 'Full Name', required: true },
     { id: '2', label: 'Email Address', type: 'email', placeholder: 'name@example.com', required: true },
-    { id: '3', label: 'Phone Number', type: 'tel', placeholder: '+1 (555) 000-0000', required: true },
+    { id: '3', label: 'Phone Number', type: 'tel', placeholder: '+44 795 7197 390', required: true },
     { id: '4', label: 'Subject', type: 'text', placeholder: 'Inquiry subject', required: false },
     { id: '5', label: 'Message', type: 'textarea', placeholder: 'Write your message here...', required: true },
   ],
   packageInquiry: [
     { id: '1', label: 'Pilgrim Name', type: 'text', placeholder: 'Lead pilgrim full name', required: true },
-    { id: '2', label: 'Contact Phone', type: 'tel', placeholder: '+1 (555) 000-0000', required: true },
+    { id: '2', label: 'Contact Phone', type: 'tel', placeholder: '+44 795 7197 390', required: true },
     { id: '3', label: 'Email Address', type: 'email', placeholder: 'name@example.com', required: true },
     { id: '4', label: 'Select Package', type: 'select', placeholder: 'Select package choice', required: true },
     { id: '5', label: 'Number of Travelers', type: 'text', placeholder: 'e.g. 4 adults', required: true },
@@ -1138,7 +1138,7 @@ const DEFAULT_FORM_FIELDS_STATE: Record<string, Array<{ id: string; label: strin
     { id: '2', label: 'Nationality', type: 'text', placeholder: 'e.g. British', required: true },
     { id: '3', label: 'Passport Type', type: 'select', placeholder: 'Regular / Diplomatic', required: true },
     { id: '4', label: 'Destination', type: 'text', placeholder: 'Saudi Arabia', required: true },
-    { id: '5', label: 'Phone Number', type: 'tel', placeholder: '+1 (555) 000-0000', required: true },
+    { id: '5', label: 'Phone Number', type: 'tel', placeholder: '+44 795 7197 390', required: true },
     { id: '6', label: 'Consultation Details', type: 'textarea', placeholder: 'Describe your visa needs...', required: false },
   ],
   umrahVisaOrder: [
@@ -1151,7 +1151,7 @@ const DEFAULT_FORM_FIELDS_STATE: Record<string, Array<{ id: string; label: strin
   flightInquiry: [
     { id: '1', label: 'Full Name (As per Passport)', type: 'text', placeholder: 'Full Name', required: true },
     { id: '2', label: 'Email Address', type: 'email', placeholder: 'example@email.com', required: true },
-    { id: '3', label: 'Phone Number', type: 'tel', placeholder: '+1 234 567 890', required: true },
+    { id: '3', label: 'Phone Number', type: 'tel', placeholder: '+44 795 7197 390', required: true },
     { id: '4', label: 'Departure City', type: 'text', placeholder: 'e.g. London', required: true },
     { id: '5', label: 'Destination City', type: 'text', placeholder: 'e.g. Jeddah', required: true },
     { id: '6', label: 'Travel Date', type: 'date', placeholder: 'e.g. March 10, 2025', required: true },
@@ -1170,7 +1170,7 @@ const DEFAULT_FORM_FIELDS_STATE: Record<string, Array<{ id: string; label: strin
   ],
   blogSidebarForm: [
     { id: '1', label: 'Full Name', type: 'text', placeholder: 'Full Name', required: true },
-    { id: '2', label: 'Phone Number', type: 'tel', placeholder: '+1 905 624 8344', required: true },
+    { id: '2', label: 'Phone Number', type: 'tel', placeholder: '+44 177 2252 996', required: true },
     { id: '3', label: 'Email Address', type: 'email', placeholder: 'Email', required: true },
     { id: '4', label: 'Select Package', type: 'select', placeholder: 'Select Hajj or Umrah package', required: true },
     { id: '5', label: 'Travel Month', type: 'select', placeholder: 'Preferred travel month', required: false },
@@ -1619,8 +1619,8 @@ export async function savePageSeoAction(pageId: number | string, seoData: any) {
 
     revalidatePath('/admin/pages');
     revalidatePath('/admin/dashboard');
-    revalidateTag('page-seo', 'max');
-    revalidateTag(`page-seo-${numId}`, 'max');
+    updateTag('page-seo');
+    updateTag(`page-seo-${numId}`);
     return { success: true };
   } catch (err: any) {
     console.error('savePageSeoAction error:', err);
@@ -1719,7 +1719,7 @@ export async function saveSeoIntelligenceSettingsAction(settings: any) {
       details: 'Updated site indexing, Google Search Console, Google Analytics, and Sitemap configurations.',
     });
 
-    revalidateTag('seo-intelligence', 'max');
+    updateTag('seo-intelligence');
     revalidatePath('/', 'layout');
     revalidatePath('/sitemap.xml');
     revalidatePath('/robots.txt');

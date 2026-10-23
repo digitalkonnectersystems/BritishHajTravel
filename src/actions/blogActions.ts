@@ -5,7 +5,7 @@ import { requireAdmin } from '@/lib/requireAdmin';
 import { db } from '@/db';
 import { blogPosts, siteSettings } from '@/db/schema';
 import { eq, desc, ne, and } from 'drizzle-orm';
-import { revalidatePath, revalidateTag, unstable_cache } from 'next/cache';
+import { revalidatePath, updateTag, unstable_cache } from 'next/cache';
 import { logAdminActivityAction } from '@/actions/activityActions';
 
 // ─── Auto-slugify title ────────────────────────────────────────────────────
@@ -156,13 +156,13 @@ export async function updateBlogOrderAction(orderedIds: number[]) {
 
     revalidatePath('/blogs');
     revalidatePath('/admin/blogs');
-    revalidateTag('blogs', 'max');
+    updateTag('blogs');
     return { success: true };
   } catch (err: any) {
     console.warn('updateBlogOrderAction error:', err);
     revalidatePath('/blogs');
     revalidatePath('/admin/blogs');
-    revalidateTag('blogs', 'max');
+    updateTag('blogs');
     return { success: false, error: err.message || 'Failed to update blog order' };
   }
 }
@@ -273,8 +273,8 @@ export async function saveBlogAction(data: BlogSavePayload) {
       revalidatePath('/blogs');
       revalidatePath(`/blogs/${slug}`);
       revalidatePath('/admin/blogs');
-      revalidateTag('blogs', 'max');
-      revalidateTag(`blog-${slug}`, 'max');
+      updateTag('blogs');
+      updateTag(`blog-${slug}`);
       return { success: true, blogId: id };
     } else {
       const insertData: any = {
@@ -306,8 +306,8 @@ export async function saveBlogAction(data: BlogSavePayload) {
 
       revalidatePath('/blogs');
       revalidatePath('/admin/blogs');
-      revalidateTag('blogs', 'max');
-      revalidateTag(`blog-${slug}`, 'max');
+      updateTag('blogs');
+      updateTag(`blog-${slug}`);
       return { success: true, blogId: savedId };
     }
   } catch (err: any) {
@@ -340,7 +340,7 @@ export async function deleteBlogAction(id: number) {
 
     revalidatePath('/blogs');
     revalidatePath('/admin/blogs');
-    revalidateTag('blogs', 'max');
+    updateTag('blogs');
     return { success: true };
   } catch (err: any) {
     console.error('deleteBlogAction DB error:', err);
@@ -359,8 +359,8 @@ export async function saveBlogSeoAction(blogId: number, seoData: any) {
     }).where(eq(blogPosts.id, blogId));
     
     revalidatePath('/admin/blogs');
-    revalidateTag('blogs', 'max');
-    revalidateTag(`blog-seo-${blogId}`, 'max');
+    updateTag('blogs');
+    updateTag(`blog-seo-${blogId}`);
     return { success: true };
   } catch (err: any) {
     console.error('saveBlogSeoAction error:', err);

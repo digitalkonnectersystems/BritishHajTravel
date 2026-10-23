@@ -1,5 +1,6 @@
 "use client";
 
+import { normalizeUkPhoneInput } from '@/lib/ukPhone';
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -196,7 +197,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any, page
 
   const [quoteForm, setQuoteForm] = useState({
     fullName: "",
-    phone: "",
+    phone: "+44",
     email: "",
     packageType: "Select your package",
     adults: 1,
@@ -243,7 +244,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any, page
         setQuoteStatus(null);
         setQuoteForm({
           fullName: "",
-          phone: "",
+          phone: "+44",
           email: "",
           packageType: "Select your package",
           adults: 1,
@@ -356,11 +357,9 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any, page
                         placeholder="+44(___) ___-____"
                         value={quoteForm.phone}
                         inputMode="numeric"
-                        maxLength={11}
+                        maxLength={13}
                         onChange={(e) => {
-                          const value = e.target.value
-                            .replace(/\D/g, "")
-                            .slice(0, 11);
+                          const value = normalizeUkPhoneInput(e.target.value);
 
                           setQuoteForm({
                             ...quoteForm,
@@ -370,7 +369,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any, page
                           if (quoteErrors.phone) {
                             setQuoteErrors((prev) => ({
                               ...prev,
-                              phone: "",
+                              phone: "+44",
                             }));
                           }
                         }}
@@ -403,7 +402,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any, page
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                     <div className="relative">
                       <label htmlFor="quote-package" className="text-white block text-xs font-bold uppercase tracking-wider mb-1.5">
-                        Select Your Package
+                        Package
                       </label>
                       <select
                         id="quote-package"
@@ -489,9 +488,9 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any, page
                         placeholder="+44(___) ___-____"
                         value={quoteForm.phone}
                         inputMode="numeric"
-                        maxLength={11}
+                        maxLength={13}
                         onChange={(e) => {
-                          const value = e.target.value.replace(/\D/g, "").slice(0, 11);
+                          const value = normalizeUkPhoneInput(e.target.value);
                           setQuoteForm({ ...quoteForm, phone: value });
                           if (quoteErrors.phone) {
                             setQuoteErrors((prev) => ({ ...prev, phone: "" }));
@@ -528,7 +527,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any, page
                     {/* 4. Select Package */}
                     <div className="relative">
                       <label htmlFor="quote-package" className="text-white block text-xs font-bold uppercase tracking-wider mb-1.5">
-                        Package
+                        Select Your Package
                       </label>
                       <select
                         id="quote-package"

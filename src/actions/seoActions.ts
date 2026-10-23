@@ -5,7 +5,7 @@ import { requireAdmin } from '@/lib/requireAdmin';
 import { db } from '@/db';
 import { blogPosts, destinations, packages, sitePages, siteSettings, visaServices } from '@/db/schema';
 import { eq } from 'drizzle-orm';
-import { revalidatePath, revalidateTag } from 'next/cache';
+import { revalidatePath, updateTag } from 'next/cache';
 import { getCurrentSession } from '@/lib/auth';
 import { logAdminActivityAction } from '@/actions/activityActions';
 import {
@@ -183,8 +183,8 @@ export async function saveEntitySeoAction(entityType: SeoEntityType, rawId: numb
     revalidatePath('/admin/blogs');
     revalidatePath('/admin/hajj-packages');
     revalidatePath('/admin/umrah-packages');
-    revalidateTag('pages', 'max');
-    revalidateTag('blogs', 'max');
+    updateTag('pages');
+    updateTag('blogs');
 
     return { success: true };
   } catch (err: any) {

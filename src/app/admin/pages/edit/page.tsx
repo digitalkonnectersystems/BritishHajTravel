@@ -1056,11 +1056,11 @@ function PageBuilderContent() {
 
                       branchAddress: '22 Ontario St S, Milton, ON L9T 2M6, UK',
 
-                      phone1: '+1 800-844-5464',
+                      phone1: '+44 795 7197 390',
 
-                      phone2: '+1 905-624-8555',
+                      phone2: '+44 177 2252 996',
 
-                      phone3: '+1 905-624-8344',
+                      phone3: '+44 177 2252 996',
 
                       email: 'saudivisa@britishhajjtravel.com'
 
@@ -1358,7 +1358,7 @@ function PageBuilderContent() {
 
             includes: [
 
-              { text: 'Return Flights from Toronto', icon: 'PlaneTakeoff', iconColor: 'text-ink-soft' },
+              { text: 'Return Flights from London', icon: 'PlaneTakeoff', iconColor: 'text-ink-soft' },
 
               { text: 'Luxury Ground Transportation', icon: 'Bus', iconColor: 'text-ink-soft' },
 
@@ -8666,7 +8666,7 @@ function PageBuilderContent() {
 
                                       type="text"
 
-                                      value={sec.data?.phone || '+1 905-624-8344'}
+                                      value={sec.data?.phone || '+44 177 2252 996'}
 
                                       onChange={(e) => updateSectionData(sec.id, 'phone', e.target.value)}
 
@@ -8887,7 +8887,7 @@ function PageBuilderContent() {
 
                                         originCode: "YYZ",
 
-                                        originCity: "Toronto",
+                                        originCity: "London",
 
                                         destCode: "JED",
 
@@ -10604,11 +10604,11 @@ function PageBuilderContent() {
 
                                             : [
 
-                                              { phone: sec.data?.phone1 || '+1 800-844-5464', label: '', text: sec.data?.phone1 || '+1 800-844-5464', url: `tel:${(sec.data?.phone1 || '+18008445464').replace(/\s+/g, '')}`, openInNewTab: false },
+                                              { phone: sec.data?.phone1 || '+44 795 7197 390', label: '', text: sec.data?.phone1 || '+44 795 7197 390', url: `tel:${(sec.data?.phone1 || '+44 795 7197 390').replace(/\s+/g, '')}`, openInNewTab: false },
 
-                                              { phone: sec.data?.phone2 || '+1 905-624-8555', label: 'Reservation', text: `${sec.data?.phone2 || '+1 905-624-8555'} - Reservation`, url: `tel:${(sec.data?.phone2 || '+19056248555').replace(/\s+/g, '')}`, openInNewTab: false },
+                                              { phone: sec.data?.phone2 || '+44 177 2252 996', label: 'Reservation', text: `${sec.data?.phone2 || '+44 177 2252 996'} - Reservation`, url: `tel:${(sec.data?.phone2 || '+44 177 2252 996').replace(/\s+/g, '')}`, openInNewTab: false },
 
-                                              { phone: sec.data?.phone3 || '+1 905-624-8344', label: 'Saudi Visa', text: `${sec.data?.phone3 || '+1 905-624-8344'} - Saudi Visa`, url: `tel:${(sec.data?.phone3 || '+19056248344').replace(/\s+/g, '')}`, openInNewTab: false },
+                                              { phone: sec.data?.phone3 || '+44 177 2252 996', label: 'Saudi Visa', text: `${sec.data?.phone3 || '+44 177 2252 996'} - Saudi Visa`, url: `tel:${(sec.data?.phone3 || '+44 177 2252 996').replace(/\s+/g, '')}`, openInNewTab: false },
 
                                             ];
 
@@ -10760,7 +10760,7 @@ function PageBuilderContent() {
 
                                                     type="text"
 
-                                                    placeholder="Phone / Text (e.g. +1905-624-8555)"
+                                                    placeholder="Phone / Text (e.g. +44 177 2252 996"
 
                                                     value={item.phone || item.text || ''}
 
@@ -10858,7 +10858,7 @@ function PageBuilderContent() {
 
                                                     type="text"
 
-                                                    placeholder="Action Link (e.g. tel:+19056248555)"
+                                                    placeholder="Action Link (e.g. tel:+441772252996"
 
                                                     value={item.url || ''}
 
@@ -11702,9 +11702,9 @@ function PageBuilderContent() {
 
                                               : [
 
-                                                { number: sec.data?.tollFree || '+1 800 844 5464', label: 'Toll Free / Main', openInNewTab: sec.data?.tollFreeNewTab ?? true },
+                                                { number: sec.data?.tollFree || '+44 795 7197 390', label: 'Toll Free / Main', openInNewTab: sec.data?.tollFreeNewTab ?? true },
 
-                                                { number: sec.data?.localNum1 || '+1 905-624-8555', label: 'Local Line 2', openInNewTab: sec.data?.localNum1NewTab ?? true },
+                                                { number: sec.data?.localNum1 || '+44 177 2252 996', label: 'Local Line 2', openInNewTab: sec.data?.localNum1NewTab ?? true },
 
                                               ];
 
@@ -11734,9 +11734,9 @@ function PageBuilderContent() {
 
                                           : [
 
-                                            { number: sec.data?.tollFree !== undefined ? sec.data.tollFree : '+1 800 844 5464', label: 'Toll Free / Main', openInNewTab: sec.data?.tollFreeNewTab ?? true },
+                                            { number: sec.data?.tollFree !== undefined ? sec.data.tollFree : '+44 795 7197 390', label: 'Toll Free / Main', openInNewTab: sec.data?.tollFreeNewTab ?? true },
 
-                                            { number: sec.data?.localNum1 !== undefined ? sec.data.localNum1 : '+1 905-624-8555', label: 'Local Line 2', openInNewTab: sec.data?.localNum1NewTab ?? true },
+                                            { number: sec.data?.localNum1 !== undefined ? sec.data.localNum1 : '+44 177 2252 996', label: 'Local Line 2', openInNewTab: sec.data?.localNum1NewTab ?? true },
 
                                           ];
 
@@ -11830,7 +11830,7 @@ function PageBuilderContent() {
 
                                                     }}
 
-                                                    placeholder="Number (e.g. +1 800 844 5464)"
+                                                    placeholder="Number (e.g. +44 795 7197 390"
 
                                                     className="w-full px-2.5 py-1.5 rounded-md border border-slate-300 text-xs font-mono text-slate-800 outline-none bg-white focus:border-primary"
 
@@ -11898,9 +11898,9 @@ function PageBuilderContent() {
 
                                               : [
 
-                                                { number: sec.data?.waReservation || '905-624-8555', label: sec.data?.waReservationLabel || 'Reservation', openInNewTab: sec.data?.waReservationNewTab ?? true },
+                                                { number: sec.data?.waReservation || '+44 795 7197 390', label: sec.data?.waReservationLabel || 'Reservation', openInNewTab: sec.data?.waReservationNewTab ?? true },
 
-                                                { number: sec.data?.waVisa || '647-982-8555', label: sec.data?.waVisaLabel || 'Saudi Visa', openInNewTab: sec.data?.waVisaNewTab ?? true },
+                                                { number: sec.data?.waVisa || '+44 177 2252 996', label: sec.data?.waVisaLabel || 'Saudi Visa', openInNewTab: sec.data?.waVisaNewTab ?? true },
 
                                               ];
 
@@ -11930,9 +11930,9 @@ function PageBuilderContent() {
 
                                           : [
 
-                                            { number: sec.data?.waReservation !== undefined ? sec.data.waReservation : '905-624-8555', label: sec.data?.waReservationLabel !== undefined ? sec.data.waReservationLabel : 'Reservation', openInNewTab: sec.data?.waReservationNewTab ?? true },
+                                            { number: sec.data?.waReservation !== undefined ? sec.data.waReservation : '+44 795 7197 390', label: sec.data?.waReservationLabel !== undefined ? sec.data.waReservationLabel : 'Reservation', openInNewTab: sec.data?.waReservationNewTab ?? true },
 
-                                            { number: sec.data?.waVisa !== undefined ? sec.data.waVisa : '647-982-8555', label: sec.data?.waVisaLabel !== undefined ? sec.data.waVisaLabel : 'Saudi Visa', openInNewTab: sec.data?.waVisaNewTab ?? true },
+                                            { number: sec.data?.waVisa !== undefined ? sec.data.waVisa : '+44 177 2252 996', label: sec.data?.waVisaLabel !== undefined ? sec.data.waVisaLabel : 'Saudi Visa', openInNewTab: sec.data?.waVisaNewTab ?? true },
 
                                           ];
 
@@ -12014,7 +12014,7 @@ function PageBuilderContent() {
 
                                                     type="text"
 
-                                                    placeholder="Number (e.g. 905-624-8555)"
+                                                    placeholder="Number (e.g. +44 795 7197 390)"
 
                                                     value={item.number || ''}
 

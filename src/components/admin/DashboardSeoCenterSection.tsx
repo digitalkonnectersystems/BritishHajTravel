@@ -14,34 +14,36 @@ import {
   Layers,
 } from 'lucide-react';
 import SeoCenterModal from '@/components/admin/SeoCenterModal';
+import type { SeoAuditItem } from '@/actions/seoActions';
 
 interface DashboardSeoCenterSectionProps {
   pages: any[];
+  audit?: SeoAuditItem[];
 }
 
-export default function DashboardSeoCenterSection({ pages }: DashboardSeoCenterSectionProps) {
+export default function DashboardSeoCenterSection({ pages, audit = [] }: DashboardSeoCenterSectionProps) {
   const [selectedSeoPage, setSelectedSeoPage] = useState<any>(null);
   const [seoModalOpen, setSeoModalOpen] = useState(false);
 
-  const totalPages = pages.length || 8;
-  const passedPagesCount = Math.max(1, Math.floor(totalPages * 0.85));
-  const needingFixesCount = Math.max(0, totalPages - passedPagesCount);
-  const healthRating = Math.round((passedPagesCount / totalPages) * 100);
-
-  // Monthly SEO Performance Bar Graph Data (Jan - Dec / Last 8 months)
-  const monthlyData = [
-    { month: 'Jan', score: 45, color: '#004B39' },
-    { month: 'Feb', score: 52, color: '#004B39' },
-    { month: 'Mar', score: 60, color: '#004B39' },
-    { month: 'Apr', score: 68, color: '#004B39' },
-    { month: 'May', score: 75, color: '#DB9E30' },
-    { month: 'Jun', score: 82, color: '#DB9E30' },
-    { month: 'Jul', score: 88, color: '#004B39' },
-    { month: 'Aug', score: healthRating, color: '#004B39' },
-  ];
+  const totalPages = audit.length;
+  const passedPagesCount = audit.filter(item => !item.issues.some(issue => issue.severity === 'error')).length;
+  const needingFixesCount = totalPages - passedPagesCount;
+  const healthRating = totalPages ? Math.round(audit.reduce((sum,item)=>sum+item.score,0)/totalPages) : 0;
+  // Measured configuration coverage, not Google's rankings or AI crawler verification.
+  const ratio = (test: (item: SeoAuditItem) => boolean) => totalPages
+    ? Math.round(audit.filter(test).length * 100 / totalPages) : 0;
+  const metaCoverage = ratio(item => !!item.metadata.title && !!item.metadata.description);
+  const heroAltCoverage = ratio(item => !!item.seoData?.heroAlt);
+  const socialCoverage = ratio(item => !!item.metadata.ogTitle && !!item.metadata.ogImage);
+  const schemaCoverage = ratio(item => !!item.seoData?.schemaType || !!item.seoData?.jsonLdPayload);
+  const auditedPages = audit.filter(item => item.entityType === 'page');
+  // No historical SEO snapshots exist in the supplied database. Show only current measured score.
+  const monthlyData = [{ month: 'Current', score: healthRating, color: '#004B39' }];
 
   // Map pages requiring attention with accurate Alt Text & Meta checks
   const pagesNeedingAttention = pages.map((p) => {
+    const audited = auditedPages.find(item => item.entityId === p.id);
+    const measuredIssues = audited?.issues.map(issue => issue.message) || [];
     const seo = p.seoData || {};
     const metaTitleVal = p.metaTitle || seo.metaTitle || '';
     const metaDescVal = p.metaDescription || seo.metaDescription || '';
@@ -64,8 +66,8 @@ export default function DashboardSeoCenterSection({ pages }: DashboardSeoCenterS
 
     return {
       ...p,
-      score,
-      actionItems,
+      score: audited?.score ?? score,
+      actionItems: audited ? (measuredIssues.length ? measuredIssues : ['✓ No configured SEO audit issues']) : actionItems,
     };
   }).slice(0, 6);
 
@@ -87,7 +89,7 @@ export default function DashboardSeoCenterSection({ pages }: DashboardSeoCenterS
               </span>
             </div>
             <p className="text-xs text-slate-500 m-0 mt-0.5">
-              Real-time automated diagnostic health &amp; AI search engine indexability across all {totalPages} pages
+              Current local metadata audit across {totalPages} CMS entities, not an external Google/AI indexation measurement
             </p>
           </div>
         </div>
@@ -133,7 +135,7 @@ export default function DashboardSeoCenterSection({ pages }: DashboardSeoCenterS
             {needingFixesCount > 0 ? 'Action Required' : 'Good Standing'}
           </div>
           <div className="text-[10px] text-slate-500 font-semibold mt-0.5">
-            {passedPagesCount} of {totalPages} Pages 100% Passed
+            {passedPagesCount} of {totalPages} Entities with no critical errors
           </div>
         </div>
 
@@ -146,31 +148,31 @@ export default function DashboardSeoCenterSection({ pages }: DashboardSeoCenterS
           <div className="space-y-2">
             <div>
               <div className="flex justify-between text-[11px] font-bold text-slate-700 mb-1">
-                <span>Traditional Meta SEO</span>
-                <span className="text-slate-900 font-mono">88%</span>
+                <span>Configured title and description</span>
+                <span className="text-slate-900 font-mono">{metaCoverage}%</span>
               </div>
               <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-                <div className="bg-emerald-500 h-full rounded-full w-[88%]" />
+                <div className="bg-emerald-500 h-full rounded-full" style={{width:`${metaCoverage}%`}} />
               </div>
             </div>
 
             <div>
               <div className="flex justify-between text-[11px] font-bold text-slate-700 mb-1">
-                <span>Image Accessibility (Alt Text)</span>
-                <span className="text-slate-900 font-mono">100%</span>
+                <span>Configured hero-image alt text</span>
+                <span className="text-slate-900 font-mono">{heroAltCoverage}%</span>
               </div>
               <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-                <div className="bg-cyan-500 h-full rounded-full w-full" />
+                <div className="bg-cyan-500 h-full rounded-full" style={{width:`${heroAltCoverage}%`}} />
               </div>
             </div>
 
             <div>
               <div className="flex justify-between text-[11px] font-bold text-slate-700 mb-1">
-                <span>Technical &amp; Social Sharing</span>
-                <span className="text-slate-900 font-mono">92%</span>
+                <span>Open Graph title and image</span>
+                <span className="text-slate-900 font-mono">{socialCoverage}%</span>
               </div>
               <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-                <div className="bg-purple-500 h-full rounded-full w-[92%]" />
+                <div className="bg-purple-500 h-full rounded-full" style={{width:`${socialCoverage}%`}} />
               </div>
             </div>
           </div>
@@ -185,31 +187,31 @@ export default function DashboardSeoCenterSection({ pages }: DashboardSeoCenterS
           <div className="space-y-2">
             <div>
               <div className="flex justify-between text-[11px] font-bold text-slate-700 mb-1">
-                <span>Generative AI (ChatGPT/Perplexity)</span>
-                <span className="text-slate-900 font-mono">90%</span>
+                <span>Schema / AI metadata configuration</span>
+                <span className="text-slate-900 font-mono">{schemaCoverage}%</span>
               </div>
               <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-                <div className="bg-primary h-full rounded-full w-[90%]" />
+                <div className="bg-primary h-full rounded-full" style={{width:`${schemaCoverage}%`}} />
               </div>
             </div>
 
             <div>
               <div className="flex justify-between text-[11px] font-bold text-slate-700 mb-1">
-                <span>Voice Search &amp; Answer Engines (AEO)</span>
-                <span className="text-slate-900 font-mono">85%</span>
+                <span>Voice / Answer Engine verification</span>
+                <span className="text-slate-900 font-mono">Not measured</span>
               </div>
               <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-                <div className="bg-indigo-500 h-full rounded-full w-[85%]" />
+                <div className="bg-indigo-500 h-full rounded-full" style={{width:`0%`}} />
               </div>
             </div>
 
             <div>
               <div className="flex justify-between text-[11px] font-bold text-slate-700 mb-1">
-                <span>JSON-LD Knowledge Graph</span>
-                <span className="text-slate-900 font-mono">95%</span>
+                <span>Structured data configuration</span>
+                <span className="text-slate-900 font-mono">{schemaCoverage}%</span>
               </div>
               <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-                <div className="bg-emerald-500 h-full rounded-full w-[95%]" />
+                <div className="bg-emerald-500 h-full rounded-full" style={{width:`${schemaCoverage}%`}} />
               </div>
             </div>
           </div>
@@ -243,14 +245,14 @@ export default function DashboardSeoCenterSection({ pages }: DashboardSeoCenterS
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-xs font-extrabold text-slate-900 m-0 flex items-center gap-1.5">
-              <BarChart2 className="w-4 h-4 text-primary" /> Monthly SEO Indexability &amp; Health Performance
+              <BarChart2 className="w-4 h-4 text-primary" /> Current SEO Audit Score
             </h3>
             <p className="text-[11px] text-slate-400 m-0 mt-0.5">
-              Month-over-month trend of overall search engine indexability and AI readiness score
+              Historical measurements were not supplied; only the current database metadata score is shown
             </p>
           </div>
           <span className="text-[10px] font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
-            ↑ +43% Growth Year-to-Date
+            Current snapshot
           </span>
         </div>
 

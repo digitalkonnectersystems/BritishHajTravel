@@ -64,7 +64,7 @@ const defaultUmrahCardData = {
   isActiveCard: false,
   btnLabel: 'BOOK NOW',
   btnLink: '/contact',
-  includes: ['Return Flights from Toronto', '5 Star Hotel in Makkah', '5 Star Hotel in Madinah', 'Visa & Registration', 'Imam & Guide'],
+  includes: ['Return Flights from London', '5 Star Hotel in Makkah', '5 Star Hotel in Madinah', 'Visa & Registration', 'Imam & Guide'],
   makkahHotel: { image: '', name: '5 Star Hotel in Makkah', location: 'Near to Haram', badge: 'Breakfast', nights: '5 Nights' },
   madinahHotel: { image: '', name: '5 Star Hotel in Madinah', location: 'Near to Masjid Nabawi', badge: 'Breakfast', nights: '5 Nights' },
 };
@@ -547,7 +547,7 @@ function UmrahCardFields({ pkgData, setPkgData }: { pkgData: any; setPkgData: (v
                 type="text"
                 value={inc.text || ''}
                 onChange={e => updateIncludes(idx, { ...inc, text: e.target.value })}
-                placeholder="e.g. Return Flights from Toronto"
+                placeholder="e.g. Return Flights from London"
                 className="flex-1 px-2.5 py-2 rounded-xl border border-slate-200 text-xs outline-none focus:border-primary"
               />
               <button

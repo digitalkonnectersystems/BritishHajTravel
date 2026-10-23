@@ -59,7 +59,7 @@ async function runMigrationAndSeed() {
         \`month\` varchar(100),
         \`year\` int DEFAULT 2026,
         \`duration_days\` int DEFAULT 14,
-        \`departure_city\` varchar(100) DEFAULT 'Toronto',
+        \`departure_city\` varchar(100) DEFAULT 'London',
         \`destination\` varchar(100) DEFAULT 'Makkah & Madinah',
         \`starting_price\` decimal(10,2) NOT NULL,
         \`currency\` varchar(10) DEFAULT '£',

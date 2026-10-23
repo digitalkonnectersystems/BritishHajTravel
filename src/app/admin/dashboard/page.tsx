@@ -8,6 +8,8 @@ import { getPagesList } from '@/actions/pageActions';
 import { getUsersList } from '@/actions/userActions';
 import { getRecentActivities } from '@/actions/activityActions';
 import DashboardClient from './DashboardClient';
+import { getDashboardRealtimeAction } from '@/actions/dashboardRealtimeActions';
+import { getSeoAuditReportAction } from '@/actions/seoActions';
 
 export default async function AdminDashboardPage() {
   const session = await getCurrentSession();
@@ -20,6 +22,9 @@ export default async function AdminDashboardPage() {
   const usersList = ['super_admin', 'admin'].includes(session.role) ? await getUsersList() : [];
   const activities = await getRecentActivities(10);
 
+  const realtime = await getDashboardRealtimeAction().catch(() => null);
+  const seoAudit = ['super_admin', 'admin', 'seo_manager', 'content_editor'].includes(session.role) ? await getSeoAuditReportAction().catch(() => []) : [];
+
   return (
     <AdminLayout user={session}>
       <DashboardClient
@@ -30,6 +35,8 @@ export default async function AdminDashboardPage() {
         initialPages={pages}
         initialUsers={usersList}
         initialActivities={activities}
+        initialSeoAudit={seoAudit}
+        initialRealtime={realtime}
       />
     </AdminLayout>
   );

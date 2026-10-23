@@ -264,7 +264,7 @@ h2.section-heading {
   align-items: center;
   gap: 10px;
   display: inline-block;
-  margin-bottom: 10px;
+  margin-bottom: 16px;
 }
 
 /* Custom CSS override */
@@ -689,10 +689,11 @@ header {
 }
 
 .hero h1 {
-  font-size: clamp(36px,3vw,48px);
+  font-size: clamp(36px, 3vw, 48px);
   font-weight: bold;
   color: var(--paper);
   margin-top: 10px;
+  width: 90%;
 }
 
 .hero h1 em,
@@ -702,12 +703,12 @@ header {
 }
 
 .hero p.lead {
-  margin-top: 10px;
-  max-width: 95%;
-  font-size: 18px;
-  line-height: 1.75;
   color: #d7ded9;
+  max-width: 95%;
+  margin-top: 10px;
+  font-size: 18px;
   font-weight: 300;
+  line-height: 1.75;
 }
 
 .hero-cta {

@@ -369,7 +369,7 @@ export default function AdminSettingsPage() {
     ],
     quoteForm: [
       { id: '1', label: 'Your Name', type: 'text', placeholder: 'Full Name', required: true },
-      { id: '2', label: 'Phone Number', type: 'tel', placeholder: '+1 905 624 8344', required: true },
+      { id: '2', label: 'Phone Number', type: 'tel', placeholder: '+44 177 2252 996', required: true },
       { id: '3', label: 'Email Address', type: 'email', placeholder: 'Email', required: true },
       { id: '4', label: 'Select Your Package', type: 'select', placeholder: 'Select your package choice', required: true },
       { id: '5', label: 'Departure Date', type: 'date', placeholder: 'mm/dd/yyyy', required: true },
@@ -378,7 +378,7 @@ export default function AdminSettingsPage() {
     // ── Merged Umrah Package Form (Detail Page + Popup Modal) ──
     packageDetailForm: [
       { id: '1', label: 'Full Name', type: 'text', placeholder: 'Full Name', required: true },
-      { id: '2', label: 'Phone Number', type: 'tel', placeholder: '+1', required: true },
+      { id: '2', label: 'Phone Number', type: 'tel', placeholder: '+44', required: true },
       { id: '3', label: 'Email Address', type: 'email', placeholder: 'Email', required: true },
       { id: '4', label: 'Adults', type: 'select', placeholder: '1', required: true },
       { id: '5', label: 'Children', type: 'select', placeholder: '0', required: false },
@@ -389,7 +389,7 @@ export default function AdminSettingsPage() {
     // ── Merged Hajj Package Form (Detail Page + Popup Modal) ──
     hajjPackageDetailForm: [
       { id: '1', label: 'Full Name', type: 'text', placeholder: 'Full Name', required: true },
-      { id: '2', label: 'Phone Number', type: 'tel', placeholder: '+1', required: true },
+      { id: '2', label: 'Phone Number', type: 'tel', placeholder: '+44', required: true },
       { id: '3', label: 'Email Address', type: 'email', placeholder: 'Email', required: true },
       { id: '4', label: 'Adults', type: 'select', placeholder: '1', required: true },
       { id: '5', label: 'Children', type: 'select', placeholder: '0', required: false },
@@ -399,19 +399,19 @@ export default function AdminSettingsPage() {
     hajjCustomizeForm: [
       { id: '1', label: 'Full Name', type: 'text', placeholder: 'Full Name', required: true },
       { id: '2', label: 'Email Address', type: 'email', placeholder: 'Email', required: true },
-      { id: '3', label: 'Phone Number', type: 'tel', placeholder: '+1 905 624 8344', required: true },
+      { id: '3', label: 'Phone Number', type: 'tel', placeholder: '+44 177 2252 996', required: true },
       { id: '4', label: 'Room Occupancy', type: 'select', placeholder: 'Quad / Triple / Double', required: true },
     ],
     contact: [
       { id: '1', label: 'Full Name', type: 'text', placeholder: 'Full Name', required: true },
       { id: '2', label: 'Email Address', type: 'email', placeholder: 'name@example.com', required: true },
-      { id: '3', label: 'Phone Number', type: 'tel', placeholder: '+1 (555) 000-0000', required: true },
+      { id: '3', label: 'Phone Number', type: 'tel', placeholder: '+44 795 7197 390', required: true },
       { id: '4', label: 'Subject', type: 'text', placeholder: 'Inquiry subject', required: false },
       { id: '5', label: 'Message', type: 'textarea', placeholder: 'Write your message here...', required: true },
     ],
     packageInquiry: [
       { id: '1', label: 'Pilgrim Name', type: 'text', placeholder: 'Lead pilgrim full name', required: true },
-      { id: '2', label: 'Contact Phone', type: 'tel', placeholder: '+1 (555) 000-0000', required: true },
+      { id: '2', label: 'Contact Phone', type: 'tel', placeholder: '+44 795 7197 390', required: true },
       { id: '3', label: 'Email Address', type: 'email', placeholder: 'name@example.com', required: true },
       { id: '4', label: 'Select Package', type: 'select', placeholder: 'Select package choice', required: true },
       { id: '5', label: 'Number of Travelers', type: 'text', placeholder: 'e.g. 4 adults', required: true },
@@ -422,7 +422,7 @@ export default function AdminSettingsPage() {
       { id: '2', label: 'Nationality', type: 'text', placeholder: 'e.g. British', required: true },
       { id: '3', label: 'Passport Type', type: 'select', placeholder: 'Regular / Diplomatic', required: true },
       { id: '4', label: 'Destination', type: 'text', placeholder: 'Saudi Arabia', required: true },
-      { id: '5', label: 'Phone Number', type: 'tel', placeholder: '+1 (555) 000-0000', required: true },
+      { id: '5', label: 'Phone Number', type: 'tel', placeholder: '+44 795 7197 390', required: true },
       { id: '6', label: 'Consultation Details', type: 'textarea', placeholder: 'Describe your visa needs...', required: false },
     ],
     umrahVisaOrder: [
@@ -435,7 +435,7 @@ export default function AdminSettingsPage() {
     flightInquiry: [
       { id: '1', label: 'Full Name (As per Passport)', type: 'text', placeholder: 'Full Name', required: true },
       { id: '2', label: 'Email Address', type: 'email', placeholder: 'example@email.com', required: true },
-      { id: '3', label: 'Phone Number', type: 'tel', placeholder: '+1 234 567 890', required: true },
+      { id: '3', label: 'Phone Number', type: 'tel', placeholder: '+44 795 7197 390', required: true },
       { id: '4', label: 'Departure City', type: 'text', placeholder: 'e.g. London', required: true },
       { id: '5', label: 'Destination City', type: 'text', placeholder: 'e.g. Jeddah', required: true },
       { id: '6', label: 'Travel Date', type: 'date', placeholder: 'e.g. March 10, 2025', required: true },
@@ -454,7 +454,7 @@ export default function AdminSettingsPage() {
     ],
     blogSidebarForm: [
       { id: '1', label: 'Full Name', type: 'text', placeholder: 'Full Name', required: true },
-      { id: '2', label: 'Phone Number', type: 'tel', placeholder: '+1 905 624 8344', required: true },
+      { id: '2', label: 'Phone Number', type: 'tel', placeholder: '+44 177 2252 996', required: true },
       { id: '3', label: 'Email Address', type: 'email', placeholder: 'Email', required: true },
       { id: '4', label: 'Select Package', type: 'select', placeholder: 'Select Hajj or Umrah package', required: true },
       { id: '5', label: 'Travel Month', type: 'select', placeholder: 'Preferred travel month', required: false },
@@ -2057,7 +2057,7 @@ export default function AdminSettingsPage() {
                         <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-2 w-full">
                           <input
                             type="text"
-                            placeholder="Phone / Text (e.g. +1905-624-8555)"
+                            placeholder="Phone / Text (e.g. +44 177 2252 996"
                             value={item.phone || item.text || ''}
                             onChange={(e) => {
                               const updated = [...footerData.supportItems];
@@ -2107,7 +2107,7 @@ export default function AdminSettingsPage() {
                           />
                           <input
                             type="text"
-                            placeholder="Action Link (e.g. tel:+19056248555 or mailto:...)"
+                            placeholder="Action Link (e.g. tel:+441772252996or mailto:...)"
                             value={item.url || ''}
                             onChange={(e) => {
                               const updated = [...footerData.supportItems];
@@ -2818,7 +2818,7 @@ export default function AdminSettingsPage() {
                           value={identityData.whatsappHeaderText || ''}
                           onChange={(e) => setIdentityData({ ...identityData, whatsappHeaderText: e.target.value })}
                           className="w-full p-2.5 rounded-xl border border-slate-300 bg-white text-xs font-semibold outline-none focus:border-primary"
-                          placeholder="e.g. +1 905-624-8344"
+                          placeholder="e.g. +44 177 2252 996"
                         />
                       </div>
                       <div>

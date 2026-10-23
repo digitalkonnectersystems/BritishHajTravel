@@ -1,5 +1,6 @@
 "use client";
 
+import { normalizeUkPhoneInput } from '@/lib/ukPhone';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, CheckCircle2, ChevronDown, Mail, MapPin, ShieldCheck } from 'lucide-react';
@@ -29,7 +30,7 @@ export default function SeasonalUmrahLanding({
   const [packageSlug, setPackageSlug] = useState('');
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
+  const [phone, setPhone] = useState('+44');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
@@ -102,7 +103,7 @@ export default function SeasonalUmrahLanding({
             <form onSubmit={submit}>
               <label>Your Name *<input autoComplete="name" value={fullName} maxLength={255} required onChange={e=>setFullName(e.target.value)} placeholder="Full name"/></label>
               <label>Your Email *<input autoComplete="email" type="email" value={email} maxLength={254} required onChange={e=>setEmail(e.target.value)} placeholder="Email address"/></label>
-              <label>Phone *<input autoComplete="tel" type="tel" value={phone} maxLength={50} required onChange={e=>setPhone(e.target.value)} placeholder="Phone number"/></label>
+              <label>Phone *<input autoComplete="tel" type="tel" value={phone} maxLength={13} required onChange={e=>setPhone(normalizeUkPhoneInput(e.target.value))} pattern="\+44[0-9]{10}" placeholder="+44xxxxxxxxxx"/></label>
               <label>Subject<input value={subject} maxLength={200} onChange={e=>setSubject(e.target.value)} placeholder="Optional"/></label>
               <label className={styles.fullSpan}>Package Name *<span className={styles.selectWrap}><select required value={packageSlug} onChange={e=>{setPackageSlug(e.target.value); setStatus('');}} disabled={selectablePackages.length===0}><option value="" disabled>{selectablePackages.length ? 'Select an Umrah package' : 'No Umrah packages currently available'}</option>{selectablePackages.map(p=><option key={p.id} value={p.slug}>{p.title}</option>)}</select><ChevronDown size={15}/></span></label>
               <label className={styles.fullSpan}>Your Message<textarea value={message} onChange={e=>setMessage(e.target.value)} rows={2} maxLength={3000} placeholder="Preferred dates or questions (optional)"/></label>

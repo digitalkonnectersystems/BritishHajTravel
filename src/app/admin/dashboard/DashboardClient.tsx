@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import DashboardSeoCenterSection from '@/components/admin/DashboardSeoCenterSection';
+import RealtimeAnalytics from '@/components/admin/RealtimeAnalytics';
+import type { AnalyticsSnapshot } from '@/components/admin/RealtimeAnalytics';
+import type { SeoAuditItem } from '@/actions/seoActions';
 import { ActivityItem } from '@/actions/activityActions';
 import {
   ClipboardList,
@@ -31,6 +34,8 @@ interface DashboardClientProps {
   initialPages: any[];
   initialUsers: any[];
   initialActivities: ActivityItem[];
+  initialSeoAudit?: SeoAuditItem[];
+  initialRealtime: AnalyticsSnapshot | null;
 }
 
 const TYPE_CONFIG: Record<string, { label: string; bg: string; text: string; dot: string; border: string }> = {
@@ -241,6 +246,8 @@ export default function DashboardClient({
   initialPages,
   initialUsers,
   initialActivities,
+  initialSeoAudit = [],
+  initialRealtime,
 }: DashboardClientProps) {
   const [timeRange, setTimeRange] = useState<'Today' | '7 Days' | '30 Days'>('Today');
   const [filterMenuOpen, setFilterMenuOpen] = useState(false);
@@ -366,6 +373,8 @@ export default function DashboardClient({
         </div>
       </div>
 
+      {initialRealtime && <RealtimeAnalytics initial={initialRealtime} />}
+
       {/* ── Compact 5 Stat Cards Row ── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
         {/* Card 1: Total Enquiries */}
@@ -450,7 +459,7 @@ export default function DashboardClient({
       </div>
 
       {/* ── SEO Center Global Audit Dashboard with Monthly Bar Graph ── */}
-      <DashboardSeoCenterSection pages={initialPages} />
+      <DashboardSeoCenterSection pages={initialPages} audit={initialSeoAudit} />
 
       {/* ── Main Dashboard 2-Column Grid (Left: 7/12, Right: 5/12) ── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

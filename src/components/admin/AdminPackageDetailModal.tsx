@@ -53,7 +53,7 @@ DURING STAY AT MINA - Near Jamarat Maktab-A-Category (Full Board)
 
 DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
 12 to 14 Dhul-Hajjah Stay and preparation for departure.
-14 Dhul-Hajjah Check out from Aziziya and leave for Jeddah airport for departure to Toronto.`
+14 Dhul-Hajjah Check out from Aziziya and leave for Jeddah airport for departure to London.`
       );
       setHighlights(
         pkg.highlights ||

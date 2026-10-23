@@ -1,4 +1,5 @@
 "use client";
+import { normalizeUkPhoneInput } from '@/lib/ukPhone';
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
@@ -20,7 +21,7 @@ export default function PackageDetailPageClient({
   const rawSlug = initialSlug;
   const [pkg] = useState<any>(() => initialPackage || null);
   const [fullName, setFullName] = useState("");
-  const [phone, setPhone] = useState("+1 ");
+  const [phone, setPhone] = useState("+44");
   const [email, setEmail] = useState("");
   const [adults, setAdults] = useState("1");
   const [childrenCount, setChildrenCount] = useState("0");
@@ -267,7 +268,7 @@ export default function PackageDetailPageClient({
       groupTitle: "DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)",
       items: [
         "12 to 14 Dhul-Hajjah Stay, Tawaf Ziyarah, and preparation for departure.",
-        "14 Dhul-Hajjah Check out from Aziziya and leave for Jeddah airport for departure to Toronto."
+        "14 Dhul-Hajjah Check out from Aziziya and leave for Jeddah airport for departure to London."
       ]
     }
   ];
@@ -863,14 +864,14 @@ export default function PackageDetailPageClient({
                     <input
                       type="tel"
                       placeholder="Phone Number"
-                      maxLength={11}
+                      maxLength={13}
                       value={phone}
                       onChange={(e) => {
                         let val = e.target.value;
                         const startsWithPlus = val.startsWith("+");
                         const digits = val.replace(/[^0-9]/g, "");
                         val = (startsWithPlus ? "+" : "") + digits;
-                        if (val.length > 11) val = val.slice(0, 11);
+                        val = normalizeUkPhoneInput(val);
                         setPhone(val);
                         if (errors.phone) setErrors((prev) => ({ ...prev, phone: false }));
                       }}

@@ -49,7 +49,7 @@ const defaultUmrahCardData = {
   btnLabel: 'BOOK NOW',
   btnLink: '/contact',
   includes: [
-    { icon: 'Plane', text: 'Return Flights from Toronto' },
+    { icon: 'Plane', text: 'Return Flights from London' },
     { icon: 'Hotel', text: '5 Star Hotel in Makkah' },
     { icon: 'Hotel', text: '5 Star Hotel in Madinah' },
     { icon: 'FileCheck', text: 'Visa & Registration' },
@@ -578,7 +578,7 @@ function UmrahCardFields({ pkgData, setPkgData }: { pkgData: any; setPkgData: (v
                 type="text"
                 value={inc.text || ''}
                 onChange={e => updateIncludes(idx, { ...inc, text: e.target.value })}
-                placeholder="e.g. Return Flights from Toronto"
+                placeholder="e.g. Return Flights from London"
                 className="flex-1 px-2.5 py-2 rounded-xl border border-slate-200 text-xs outline-none focus:border-primary"
               />
               <button

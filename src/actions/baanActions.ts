@@ -1,5 +1,6 @@
 'use server';
 import { db } from '@/db';
+import { isValidUkPhone } from '@/lib/ukPhone';
 import { siteSettings, enquiries } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
@@ -90,7 +91,7 @@ export async function submitBaanInterest(data: {
 }) {
   const clean = Object.fromEntries(Object.entries(data).map(([k,v]) => [k, typeof v === 'string' ? v.trim() : v])) as typeof data;
   if (!clean.name || !clean.email || !clean.phone || !clean.postcode || !clean.airport || !clean.packageTier || !clean.days || !clean.room || !clean.budget ||
-      !/^\S+@\S+\.\S+$/.test(clean.email) || clean.name.length > 255 || clean.phone.length > 50 || !Number.isInteger(clean.passengers) || clean.passengers < 1 || clean.passengers > 100) {
+      !/^\S+@\S+\.\S+$/.test(clean.email) || clean.name.length > 255 || !isValidUkPhone(clean.phone) || !Number.isInteger(clean.passengers) || clean.passengers < 1 || clean.passengers > 100) {
     return { success: false, error: 'Please complete all required fields with valid details.' };
   }
   const enquiryNumber = `BH-${crypto.randomUUID()}`;
