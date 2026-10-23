@@ -209,7 +209,7 @@ export default function UpcomingUmrahPackages({
                       {starRating}
                     </div>
                   </div>
-                  <div className="p-8 flex-1 flex flex-col">
+                  <div className="p-4 flex-1 flex flex-col">
                     <div
                       className={`${isGold ? "text-white/90" : "text-gray-500"
                         } text-xs font-bold uppercase tracking-widest mb-2`}

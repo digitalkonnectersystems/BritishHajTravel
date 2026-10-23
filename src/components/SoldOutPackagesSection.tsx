@@ -147,7 +147,7 @@ export default function SoldOutPackagesSection({ data, initialPackages }: { data
                     </div>
                   )}
 
-                  <div className="p-8 flex-1 flex flex-col">
+                  <div className="p-4 flex-1 flex flex-col">
                     <div className="ink-soft text-[10px] font-black uppercase tracking-widest mb-2 flex items-center gap-1">
                       {pkg.type === "hajj" ? <LucideIcons.Tent className="w-3.5 h-3.5" /> : <LucideIcons.MoonStar className="w-3.5 h-3.5" />}
                       {monthLabel}
