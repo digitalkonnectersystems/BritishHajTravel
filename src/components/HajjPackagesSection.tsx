@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { getPackagesByType, getPackagesByIds } from "@/actions/packageActions";
@@ -7,7 +6,6 @@ import PackageBookingModal from "@/components/PackageBookingModal";
 import PackageDetailModal from "@/components/PackageDetailModal";
 import { isTbcPrice } from "@/lib/priceDisplay";
 import HajjLandscapeCard from "@/components/HajjLandscapeCard";
-import HajjPackagePager from "@/components/HajjPackagePager";
 export default function HajjPackagesSection({
   data,
   initialPackages,
@@ -24,14 +22,12 @@ export default function HajjPackagesSection({
     data?.description ||
     data?.subtext ||
     "Luxury Hajj 2027 Packages with 5-Star Hotels, VIP Services & Complete Spiritual Guidance.";
-
   const isHajjListingPage =
     pathname === "/hajj-packages" ||
     pathname === "/hajj" ||
     pathname?.startsWith("/hajj") ||
     pageData?.slug === "/hajj-packages" ||
     pageData?.slug === "hajj-packages";
-
   const isHomepage =
     pathname === "/" ||
     pathname === "" ||
@@ -41,23 +37,19 @@ export default function HajjPackagesSection({
     pageData?.slug === "/home" ||
     pageData?.slug === "home" ||
     (!isHajjListingPage && (!pathname || pathname === "/"));
-
   const [pkgs, setPkgs] = useState<any[]>(initialPackages || []);
   const [loading, setLoading] = useState(!initialPackages);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [selectedPkgForBooking, setSelectedPkgForBooking] = useState<any>(null);
   const [detailModalOpen, setDetailModalOpen] = useState(false);
   const [selectedPkgForDetail, setSelectedPkgForDetail] = useState<any>(null);
-
   useEffect(() => {
     const packageIds = data?.packageIds || [];
-
     if (data?.isDestinationSection && initialPackages) {
       setPkgs(initialPackages);
       setLoading(false);
       return;
     }
-
     // If we have initialPackages and no specific packageIds are selected, 
     // we don't need to fetch on mount, because the server already gave us all packages.
     if (initialPackages && packageIds.length === 0) {
@@ -65,7 +57,6 @@ export default function HajjPackagesSection({
       setLoading(false);
       return;
     }
-
     if (packageIds.length > 0) {
       getPackagesByIds(packageIds)
         .then((rows) => setPkgs(rows))
@@ -78,14 +69,22 @@ export default function HajjPackagesSection({
         .finally(() => setLoading(false));
     }
   }, [data?.packageIds, initialPackages]);
+  // The package pagination is separate from the hotel arrows inside each card.
+  const PACKAGES_PER_PAGE = 4;
+  const [packagePage, setPackagePage] = useState(0);
+  const pageCount = Math.ceil(pkgs.length / PACKAGES_PER_PAGE);
+  const safePage = Math.min(packagePage, Math.max(pageCount - 1, 0));
+  const visiblePackages = pkgs.slice(
+    safePage * PACKAGES_PER_PAGE,
+    (safePage + 1) * PACKAGES_PER_PAGE
+  );
 
   const sectionClass = isHomepage
     ? "pb-12 md:pb-16 md:pt-16 bg-white"
     : "pt-12 md:pb-16 bg-blue-lt";
-
   return (
     <section className={sectionClass}>
-      <div className="max-w-[1400px] mx-auto px-5">
+      <div className="mx-auto max-w-[1500px] px-4 sm:px-5 lg:px-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-12 gap-6 text-center md:text-left">
           <div className="flex flex-col items-center md:items-start">
@@ -96,11 +95,10 @@ export default function HajjPackagesSection({
             {description}
           </div>
         </div>
-
         {/* Loading skeleton */}
         {loading && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[1, 2, 3].map((i) => (
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
+            {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
                 className="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 animate-pulse"
@@ -117,19 +115,17 @@ export default function HajjPackagesSection({
             ))}
           </div>
         )}
-
         {/* No packages configured */}
         {!loading && pkgs.length === 0 && (
-          <p className="text-center text-white">
+          <p className="text-center text-primary">
             No Hajj packages added to this section yet.
           </p>
         )}
-
-        {/* Landscape cards: four packages per page, arrows only if there are more than four. */}
+        {/* Four equal-width cards per row on desktop. Four packages per page. */}
         {!loading && pkgs.length > 0 && (
-          <HajjPackagePager
-            items={pkgs}
-            renderCard={(pkg: any, idx: number) => {
+          <>
+            <div className="grid grid-cols-1 items-stretch gap-5 md:grid-cols-2 xl:grid-cols-4 xl:gap-4">
+              {visiblePackages.map((pkg: any, idx: number) => {
               let cd = pkg.cardData || {};
               if (typeof cd === 'string') {
                 try {
@@ -181,19 +177,16 @@ export default function HajjPackagesSection({
               const madinahHotel = cd.madinahHotel || pkg.madinahHotel;
               const aziziyaHotel = cd.aziziyaHotel || pkg.aziziyaHotel;
               const minaHotel = cd.minaHotel || pkg.minaHotel;
-
               const isDurEnabled = (h: any) => {
                 if (!h) return false;
                 if (h.durationEnabled === false || h.enabled === false) return false;
                 return true;
               };
-
               const isBadgeEnabled = (h: any) => {
                 if (!h) return false;
                 if (h.badgeEnabled === false) return false;
                 return true;
               };
-
               const defaultAccommodations = [
                 {
                   city: makkahHotel?.label || 'MAKKAH',
@@ -243,7 +236,6 @@ export default function HajjPackagesSection({
                 // If fields are empty, do not display accommodation on frontend
                 return Boolean(acc.subtitle || acc.location || acc.image || (acc.durationEnabled && acc.nights) || (acc.badgeEnabled && acc.badge));
               });
-
               const inclusionsList = (Array.isArray(cd.inclusions)
                 ? cd.inclusions
                 : Array.isArray(pkg.inclusions) ? pkg.inclusions
@@ -255,7 +247,6 @@ export default function HajjPackagesSection({
                   { icon: 'Bus', text: 'Transport in\nSaudi Arabia' },
                   { icon: 'MessageCircle', text: 'Guidance &\nSupport' },
                 ]).filter((inc: any) => cleanText(typeof inc === "string" ? inc : inc?.text));
-
               const eligibilityList = (Array.isArray(cd.eligibility)
                 ? cd.eligibility
                 : Array.isArray(pkg.eligibility) ? pkg.eligibility
@@ -265,10 +256,9 @@ export default function HajjPackagesSection({
                   'All foreign passport holders with Pakistan passport.',
                   'Side trip to Pakistan or any other destination available with an additional cost.',
                 ]).map(cleanText).filter(Boolean);
-
               return (
                 <HajjLandscapeCard
-                  key={pkg.id || idx}
+                  key={pkg.id ?? `hajj-${safePage}-${idx}`}
                   heroImage={heroImage}
                   packageTitle={packageTitle}
                   badgeTag={data?.isDestinationSection ? "" : badgeTag}
@@ -298,11 +288,34 @@ export default function HajjPackagesSection({
                   }}
                 />
               );
-            }}
-          />
+              })}
+            </div>
+            {pageCount > 1 && (
+              <nav aria-label="Hajj package pagination" className="mt-8 flex flex-wrap items-center justify-center gap-4">
+                <button
+                  type="button"
+                  onClick={() => setPackagePage((current) => Math.max(0, Math.min(current, pageCount - 1) - 1))}
+                  disabled={safePage === 0}
+                  className="rounded-lg border border-primary px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Previous
+                </button>
+                <span aria-live="polite" className="text-sm font-semibold text-primary">
+                  Page {safePage + 1} of {pageCount}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setPackagePage((current) => Math.min(pageCount - 1, Math.min(current, pageCount - 1) + 1))}
+                  disabled={safePage >= pageCount - 1}
+                  className="rounded-lg border border-primary px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Next
+                </button>
+              </nav>
+            )}
+          </>
         )}
       </div>
-
       <PackageBookingModal
         isOpen={bookingModalOpen}
         onClose={() => setBookingModalOpen(false)}
