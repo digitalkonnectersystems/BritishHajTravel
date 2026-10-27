@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { getPackagesByType, getPackagesByIds } from "@/actions/packageActions";
 import PackageBookingModal from "@/components/PackageBookingModal";
@@ -69,22 +70,83 @@ export default function HajjPackagesSection({
         .finally(() => setLoading(false));
     }
   }, [data?.packageIds, initialPackages]);
-  // The package pagination is separate from the hotel arrows inside each card.
-  const PACKAGES_PER_PAGE = 4;
-  const [packagePage, setPackagePage] = useState(0);
-  const pageCount = Math.ceil(pkgs.length / PACKAGES_PER_PAGE);
-  const safePage = Math.min(packagePage, Math.max(pageCount - 1, 0));
-  const visiblePackages = pkgs.slice(
-    safePage * PACKAGES_PER_PAGE,
-    (safePage + 1) * PACKAGES_PER_PAGE
-  );
+  // One-card-at-a-time horizontal carousel. All cards retain their React state
+  // when they move, including the independent hotel navigation inside each card.
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const [sliderControls, setSliderControls] = useState({
+    hasOverflow: false,
+    canGoPrevious: false,
+    canGoNext: false,
+  });
+
+  const updateSliderControls = useCallback(() => {
+    const slider = sliderRef.current;
+    if (!slider) return;
+
+    const maxScroll = Math.max(0, slider.scrollWidth - slider.clientWidth);
+    const hasOverflow = maxScroll > 2;
+    const canGoPrevious = slider.scrollLeft > 2;
+    const canGoNext = slider.scrollLeft < maxScroll - 2;
+    setSliderControls((previous) =>
+      previous.hasOverflow === hasOverflow &&
+      previous.canGoPrevious === canGoPrevious &&
+      previous.canGoNext === canGoNext
+        ? previous
+        : { hasOverflow, canGoPrevious, canGoNext }
+    );
+  }, []);
+
+  useEffect(() => {
+    if (loading || pkgs.length === 0) return;
+    const slider = sliderRef.current;
+    if (!slider) return;
+
+    // Start at the first package when the data set changes.
+    slider.scrollLeft = 0;
+    updateSliderControls();
+
+    // Recompute arrow availability when the number of visible cards changes
+    // (4 on desktop, 2 on tablet, 1 on mobile).
+    if (typeof ResizeObserver !== "undefined") {
+      const resizeObserver = new ResizeObserver(updateSliderControls);
+      resizeObserver.observe(slider);
+      if (slider.firstElementChild) resizeObserver.observe(slider.firstElementChild);
+      return () => resizeObserver.disconnect();
+    }
+
+    window.addEventListener("resize", updateSliderControls);
+    return () => window.removeEventListener("resize", updateSliderControls);
+  }, [loading, pkgs, updateSliderControls]);
+
+  const slideOnePackage = (direction: -1 | 1) => {
+    const slider = sliderRef.current;
+    if (!slider || slider.children.length < 2) return;
+
+    // Distance from one card to the next includes the gap. This means one
+    // arrow click always shifts one card, not a page of four cards.
+    const first = slider.children[0] as HTMLElement;
+    const second = slider.children[1] as HTMLElement;
+    const step = second.offsetLeft - first.offsetLeft;
+    if (step <= 0) return;
+
+    const maxScroll = Math.max(0, slider.scrollWidth - slider.clientWidth);
+    const index = Math.round(slider.scrollLeft / step);
+    const nextPosition = Math.min(maxScroll, Math.max(0, (index + direction) * step));
+
+    slider.scrollTo({
+      left: nextPosition,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+    });
+  };
 
   const sectionClass = isHomepage
     ? "pb-12 md:pb-16 md:pt-16 bg-white"
     : "pt-12 md:pb-16 bg-blue-lt";
   return (
     <section className={sectionClass}>
-      <div className="mx-auto max-w-[1500px] px-4 sm:px-5 lg:px-6">
+      <div className="mx-auto max-w-[1600px] px-4 sm:px-5 lg:px-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-12 gap-6 text-center md:text-left">
           <div className="flex flex-col items-center md:items-start">
@@ -121,11 +183,19 @@ export default function HajjPackagesSection({
             No Hajj packages added to this section yet.
           </p>
         )}
-        {/* Four equal-width cards per row on desktop. Four packages per page. */}
+        {/* Four visible on desktop, sliding exactly one package per click. */}
         {!loading && pkgs.length > 0 && (
-          <>
-            <div className="grid grid-cols-1 items-stretch gap-5 md:grid-cols-2 xl:grid-cols-4 xl:gap-4">
-              {visiblePackages.map((pkg: any, idx: number) => {
+          <div className="relative">
+            <div
+              ref={sliderRef}
+              role="region"
+              aria-roledescription="carousel"
+              aria-label="Hajj packages"
+              tabIndex={0}
+              onScroll={updateSliderControls}
+              className="flex items-stretch gap-5 overflow-x-auto overscroll-x-contain snap-x snap-mandatory xl:gap-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            >
+              {pkgs.map((pkg: any, idx: number) => {
               let cd = pkg.cardData || {};
               if (typeof cd === 'string') {
                 try {
@@ -257,8 +327,14 @@ export default function HajjPackagesSection({
                   'Side trip to Pakistan or any other destination available with an additional cost.',
                 ]).map(cleanText).filter(Boolean);
               return (
-                <HajjLandscapeCard
-                  key={pkg.id ?? `hajj-${safePage}-${idx}`}
+                <div
+                  key={pkg.id ?? `hajj-${idx}`}
+                  role="group"
+                  aria-roledescription="slide"
+                  aria-label={`Package ${idx + 1} of ${pkgs.length}`}
+                  className="w-full min-w-0 shrink-0 snap-start md:w-[calc(50%-0.625rem)] xl:w-[calc(25%-0.75rem)]"
+                >
+                  <HajjLandscapeCard
                   heroImage={heroImage}
                   packageTitle={packageTitle}
                   badgeTag={data?.isDestinationSection ? "" : badgeTag}
@@ -286,34 +362,34 @@ export default function HajjPackagesSection({
                     setSelectedPkgForBooking(pkg);
                     setBookingModalOpen(true);
                   }}
-                />
+                  />
+                </div>
               );
               })}
             </div>
-            {pageCount > 1 && (
-              <nav aria-label="Hajj package pagination" className="mt-8 flex flex-wrap items-center justify-center gap-4">
+            {sliderControls.hasOverflow && (
+              <>
                 <button
                   type="button"
-                  onClick={() => setPackagePage((current) => Math.max(0, Math.min(current, pageCount - 1) - 1))}
-                  disabled={safePage === 0}
-                  className="rounded-lg border border-primary px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                  aria-label="Previous Hajj package"
+                  onClick={() => slideOnePackage(-1)}
+                  disabled={!sliderControls.canGoPrevious}
+                  className="absolute left-0 top-1/2 z-20 flex h-11 w-11 -translate-x-1/4 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-primary shadow-lg transition hover:bg-primary hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-white disabled:hover:text-primary md:-translate-x-1/2"
                 >
-                  Previous
+                  <ChevronLeft className="h-5 w-5" />
                 </button>
-                <span aria-live="polite" className="text-sm font-semibold text-primary">
-                  Page {safePage + 1} of {pageCount}
-                </span>
                 <button
                   type="button"
-                  onClick={() => setPackagePage((current) => Math.min(pageCount - 1, Math.min(current, pageCount - 1) + 1))}
-                  disabled={safePage >= pageCount - 1}
-                  className="rounded-lg border border-primary px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                  aria-label="Next Hajj package"
+                  onClick={() => slideOnePackage(1)}
+                  disabled={!sliderControls.canGoNext}
+                  className="absolute right-0 top-1/2 z-20 flex h-11 w-11 translate-x-1/4 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-primary shadow-lg transition hover:bg-primary hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-white disabled:hover:text-primary md:translate-x-1/2"
                 >
-                  Next
+                  <ChevronRight className="h-5 w-5" />
                 </button>
-              </nav>
+              </>
             )}
-          </>
+          </div>
         )}
       </div>
       <PackageBookingModal
