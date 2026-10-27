@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { adminLogout } from '@/actions/authActions';
+import { useAdminSession } from '@/components/admin/AdminSessionProvider';
 import AdminPackageDetailModal from '@/components/admin/AdminPackageDetailModal';
 import SessionTimer from '@/components/admin/SessionTimer';
 import UserPresenceWidget from '@/components/admin/UserPresenceWidget';
@@ -37,7 +38,9 @@ import {
 
 interface AdminLayoutProps {
   children: React.ReactNode;
-  user: { name: string; role: string; email?: string; loginTime?: number } | null;
+  // Deprecated: some older admin pages pass a hard-coded display role.
+  // The authenticated server session is always used instead.
+  user?: { name: string; role: string; email?: string; loginTime?: number } | null;
 }
 
 const navItems = [
@@ -128,7 +131,10 @@ const navItems = [
   },
 ];
 
-export default function AdminLayout({ children, user }: AdminLayoutProps) {
+export default function AdminLayout({ children }: AdminLayoutProps) {
+  // Only use the verified server session provided by /admin/layout.tsx.
+  // Ignoring the legacy `user` prop fixes the 'Super Admin' vs 'super_admin' mismatch.
+  const user = useAdminSession();
   const pathname = usePathname();
   const [identity, setIdentity] = useState<any>(null);
   const [profileOpen, setProfileOpen] = useState(false);
