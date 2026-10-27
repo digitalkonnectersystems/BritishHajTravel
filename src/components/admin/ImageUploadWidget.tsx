@@ -120,9 +120,10 @@ export default function ImageUploadWidget({
             placeholder="Or paste image URL..."
             className="w-full px-3 py-2 border border-primary/50 rounded-lg text-xs outline-none focus:border-primary/50 font-mono text-slate-600"
           />
-          {error && <p className="text-red-500 text-[10px] mt-1">{error}</p>}
         </div>
       )}
+      {error && <p role="alert" className="text-red-700 text-xs font-semibold mt-1">Upload failed: {error}</p>}
+      {value && !uploading && <p className="text-[10px] text-slate-500">Save the form to attach this image to the record.</p>}
     </div>
   );
 }

@@ -391,8 +391,9 @@ export async function getEnquiriesList() {
 
   try {
     return await db.select().from(enquiries).orderBy(desc(enquiries.createdAt));
-  } catch {
-    return [];
+  } catch (error) {
+    console.error('Failed to load unified enquiry records:', error);
+    throw new Error('Unable to load CRM enquiries. Verify that all required database columns have been migrated.');
   }
 }
 

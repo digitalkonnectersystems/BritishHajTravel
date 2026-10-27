@@ -47,7 +47,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'Administrator login required' }, { status: 401 });
     }
 
-    const provider = (process.env.MEDIA_STORAGE_PROVIDER || 'blob').toLowerCase();
+    const provider = (process.env.MEDIA_STORAGE_PROVIDER || 'local').toLowerCase();
+    if (process.env.MEDIA_STORAGE_ROOT && !path.isAbsolute(process.env.MEDIA_STORAGE_ROOT)) {
+      return NextResponse.json({ success: false, error: 'MEDIA_STORAGE_ROOT must be an absolute filesystem path' }, { status: 500 });
+    }
     if (!['blob', 'remote', 'local'].includes(provider)) {
       return NextResponse.json({ success: false, error: 'Unknown MEDIA_STORAGE_PROVIDER' }, { status: 500 });
     }
@@ -84,6 +87,11 @@ export async function POST(req: NextRequest) {
     const imageDocumentExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg', '.pdf', '.ico', '.avif'];
     const videoExtensions = ['.mp4', '.webm', '.mov'];
     const cleanExt = originalExt.toLowerCase();
+    // SVG is active XML and may contain scripts. Keep existing trusted SVG assets,
+    // but do not allow new untrusted SVG files to be uploaded to our origin.
+    if (cleanExt === '.svg') {
+      return NextResponse.json({ success: false, error: 'SVG uploads are disabled for security; upload PNG or WebP instead.' }, { status: 400 });
+    }
     const isVideo = videoExtensions.includes(cleanExt);
     const allowedExtensions = [...imageDocumentExtensions, ...videoExtensions];
 
@@ -95,6 +103,9 @@ export async function POST(req: NextRequest) {
     }
 
     const maxFileSize = isVideo ? MAX_VIDEO_SIZE_BYTES : MAX_FILE_SIZE_BYTES;
+    if (file.size === 0) {
+      return NextResponse.json({ success: false, error: 'Empty file cannot be uploaded' }, { status: 400 });
+    }
     if (file.size > maxFileSize) {
       return NextResponse.json(
         { success: false, error: `File size exceeds maximum allowed limit of ${isVideo ? '100MB' : '10MB'}.` },
@@ -106,8 +117,9 @@ export async function POST(req: NextRequest) {
       .basename(file.name, originalExt)
       .toLowerCase()
       .replace(/[^\w-]/g, '');
-    const uniqueFilename = `${cleanBaseName || 'media'}-${Date.now()}${cleanExt}`;
+    const uniqueFilename = `${cleanBaseName || 'media'}-${Date.now()}-${crypto.randomUUID().slice(0, 8)}${cleanExt}`;
 
+    // Provider is explicit; no cross-provider fallback is permitted.
     // An optional remote media server stores media outside Vercel Blob. The remote
     // server requires a private bearer token and must return a public HTTPS URL.
     // Do NOT fall back to Blob when remote uploads fail: doing so would silently
@@ -159,20 +171,24 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ success: false, error: 'Vercel Blob upload failed. Check Blob storage and limits.' }, { status: 502 });
       }
     }
-    if (provider === 'blob' && process.env.VERCEL) {
-      return NextResponse.json({ success: false, error: 'Blob provider requires BLOB_READ_WRITE_TOKEN on Vercel' }, { status: 503 });
+    if (provider === 'blob') {
+      return NextResponse.json({ success: false, error: 'Blob provider selected but BLOB_READ_WRITE_TOKEN is missing. No automatic local fallback was attempted.' }, { status: 503 });
     }
 
-    // Local development-only fallback (never reliable on Vercel serverless).
+    // Explicit local provider: writes never silently fall back from Blob or remote.
     try {
       const buffer = Buffer.from(await file.arrayBuffer());
-      const targetDir = path.join(process.cwd(), 'public', 'images_BHT', subfolder);
+      const storageRoot = process.env.MEDIA_STORAGE_ROOT
+        ? path.resolve(process.env.MEDIA_STORAGE_ROOT)
+        : path.join(process.cwd(), 'public', 'images_BHT');
+      const targetDir = path.join(storageRoot, subfolder);
       await fs.mkdir(targetDir, { recursive: true });
 
       const targetFilePath = path.join(targetDir, uniqueFilename);
       await fs.writeFile(targetFilePath, buffer);
 
-      const publicUrl = `/images_BHT/${subfolder}/${uniqueFilename}`;
+      // Media route supports a persistent shared storage root across deployments.
+      const publicUrl = `/media/${subfolder}/${uniqueFilename}`;
       const relativePath = `images_BHT/${subfolder}/${uniqueFilename}`;
 
       return NextResponse.json({

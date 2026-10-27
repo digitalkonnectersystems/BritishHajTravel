@@ -21,6 +21,18 @@ interface DashboardSeoCenterSectionProps {
   audit?: SeoAuditItem[];
 }
 
+/** Multi-color progress visualization: x axis is coverage percentage, not time. */
+function MetricWave({ value, label }: { value: number; label: string }) {
+  const pct = Math.max(0, Math.min(100, Number(value) || 0));
+  const id = `metric-${label.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
+  const end = 4 + pct * 1.92;
+  return <svg className="h-7 w-full" viewBox="0 0 200 28" role="img" aria-label={`${label}: ${pct} percent complete`}>
+    <defs><linearGradient id={`${id}-stroke`} x1="0" y1="0" x2="1" y2="0"><stop stopColor="#14b8a6"/><stop offset=".36" stopColor="#3b82f6"/><stop offset=".7" stopColor="#8b5cf6"/><stop offset="1" stopColor="#f59e0b"/></linearGradient><linearGradient id={`${id}-shade`} x1="0" y1="0" x2="0" y2="1"><stop stopColor="#14b8a6" stopOpacity=".18"/><stop offset="1" stopColor="#14b8a6" stopOpacity="0"/></linearGradient></defs>
+    <path d="M 4 15 L 196 15" stroke="#cbd5e1" strokeWidth="2" strokeLinecap="round" strokeDasharray="2 5" />
+    {pct > 0 && <><path d={`M 4 15 Q ${4+pct*.48} 9 ${end} 15 L ${end} 27 L 4 27 Z`} fill={`url(#${id}-shade)`}/><path d={`M 4 15 Q ${4+pct*.48} 9 ${end} 15`} stroke={`url(#${id}-stroke)`} strokeWidth="4" fill="none" strokeLinecap="round"/><circle cx={end} cy="15" r="3" fill="#059669" stroke="white" strokeWidth="1" /></>}
+  </svg>;
+}
+
 export default function DashboardSeoCenterSection({ pages, audit = [] }: DashboardSeoCenterSectionProps) {
   const [selectedSeoPage, setSelectedSeoPage] = useState<any>(null);
   const [seoModalOpen, setSeoModalOpen] = useState(false);
@@ -38,7 +50,7 @@ export default function DashboardSeoCenterSection({ pages, audit = [] }: Dashboa
   const schemaCoverage = ratio(item => !!item.seoData?.schemaType || !!item.seoData?.jsonLdPayload);
   const auditedPages = audit.filter(item => item.entityType === 'page');
   // No historical SEO snapshots exist in the supplied database. Show only current measured score.
-  const monthlyData = [{ month: 'Current', score: healthRating, color: '#004B39' }];
+  const actionItemCount = audit.reduce((sum, item) => sum + item.issues.filter(issue => issue.severity !== 'info').length, 0);
 
   // Map pages requiring attention with accurate Alt Text & Meta checks
   const pagesNeedingAttention = pages.map((p) => {
@@ -107,29 +119,10 @@ export default function DashboardSeoCenterSection({ pages, audit = [] }: Dashboa
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Health Rating Circle Gauge */}
         <div className="bg-[#F8FAFC] rounded-2xl p-5 border border-slate-200 flex flex-col items-center justify-center text-center relative overflow-hidden">
-          <div className="relative w-24 h-24 flex items-center justify-center mb-2">
-            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-              <path
-                className="text-slate-200"
-                strokeWidth="3.5"
-                stroke="currentColor"
-                fill="none"
-                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-              />
-              <path
-                className="text-emerald-500 transition-all duration-1000"
-                strokeDasharray={`${healthRating}, 100`}
-                strokeWidth="3.5"
-                strokeLinecap="round"
-                stroke="currentColor"
-                fill="none"
-                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-              />
-            </svg>
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-xl font-black text-slate-900">{healthRating}%</span>
-              <span className="text-[8px] font-extrabold text-slate-400 uppercase tracking-wider">HEALTH RATING</span>
-            </div>
+          <div className="w-full rounded-2xl bg-white/70 p-4 mb-3 border border-emerald-100 text-center">
+            <span className="block text-3xl font-black text-emerald-900">{healthRating}%</span>
+            <span className="block text-[9px] font-extrabold uppercase tracking-wider text-slate-500">Measured health rating</span>
+            <MetricWave value={healthRating} label="Overall SEO health" />
           </div>
           <div className="text-xs font-extrabold text-slate-800">
             {needingFixesCount > 0 ? 'Action Required' : 'Good Standing'}
@@ -151,9 +144,7 @@ export default function DashboardSeoCenterSection({ pages, audit = [] }: Dashboa
                 <span>Configured title and description</span>
                 <span className="text-slate-900 font-mono">{metaCoverage}%</span>
               </div>
-              <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-                <div className="bg-emerald-500 h-full rounded-full" style={{width:`${metaCoverage}%`}} />
-              </div>
+              <MetricWave value={metaCoverage} label="Title and Description" />
             </div>
 
             <div>
@@ -161,9 +152,7 @@ export default function DashboardSeoCenterSection({ pages, audit = [] }: Dashboa
                 <span>Configured hero-image alt text</span>
                 <span className="text-slate-900 font-mono">{heroAltCoverage}%</span>
               </div>
-              <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-                <div className="bg-cyan-500 h-full rounded-full" style={{width:`${heroAltCoverage}%`}} />
-              </div>
+              <MetricWave value={heroAltCoverage} label="Hero image alt text" />
             </div>
 
             <div>
@@ -171,9 +160,7 @@ export default function DashboardSeoCenterSection({ pages, audit = [] }: Dashboa
                 <span>Open Graph title and image</span>
                 <span className="text-slate-900 font-mono">{socialCoverage}%</span>
               </div>
-              <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-                <div className="bg-purple-500 h-full rounded-full" style={{width:`${socialCoverage}%`}} />
-              </div>
+              <MetricWave value={socialCoverage} label="Open Graph metadata" />
             </div>
           </div>
         </div>
@@ -190,9 +177,7 @@ export default function DashboardSeoCenterSection({ pages, audit = [] }: Dashboa
                 <span>Schema / AI metadata configuration</span>
                 <span className="text-slate-900 font-mono">{schemaCoverage}%</span>
               </div>
-              <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-                <div className="bg-primary h-full rounded-full" style={{width:`${schemaCoverage}%`}} />
-              </div>
+              <MetricWave value={schemaCoverage} label="AI metadata" />
             </div>
 
             <div>
@@ -200,9 +185,7 @@ export default function DashboardSeoCenterSection({ pages, audit = [] }: Dashboa
                 <span>Voice / Answer Engine verification</span>
                 <span className="text-slate-900 font-mono">Not measured</span>
               </div>
-              <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-                <div className="bg-indigo-500 h-full rounded-full" style={{width:`0%`}} />
-              </div>
+              <MetricWave value={0} label="Voice verification" />
             </div>
 
             <div>
@@ -210,9 +193,7 @@ export default function DashboardSeoCenterSection({ pages, audit = [] }: Dashboa
                 <span>Structured data configuration</span>
                 <span className="text-slate-900 font-mono">{schemaCoverage}%</span>
               </div>
-              <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-                <div className="bg-emerald-500 h-full rounded-full" style={{width:`${schemaCoverage}%`}} />
-              </div>
+              <MetricWave value={schemaCoverage} label="Structured data" />
             </div>
           </div>
         </div>
@@ -229,7 +210,7 @@ export default function DashboardSeoCenterSection({ pages, audit = [] }: Dashboa
               <div className="text-[9px] font-bold text-red-700 uppercase">Pages Needing Fixes</div>
             </div>
             <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-center">
-              <div className="text-xl font-black text-amber-700">{needingFixesCount * 2 + 1}</div>
+              <div className="text-xl font-black text-amber-700">{actionItemCount}</div>
               <div className="text-[9px] font-bold text-amber-800 uppercase">Total Action Items</div>
             </div>
           </div>
@@ -256,25 +237,18 @@ export default function DashboardSeoCenterSection({ pages, audit = [] }: Dashboa
           </span>
         </div>
 
-        {/* Bar Graph Graphic */}
-        <div className="h-44 w-full flex items-end justify-between gap-3 pt-6 px-2 border-b border-slate-200">
-          {monthlyData.map((d) => (
-            <div key={d.month} className="flex-1 flex flex-col items-center gap-2 h-full justify-end group cursor-pointer">
-              <div className="opacity-0 group-hover:opacity-100 text-[10px] font-mono font-bold text-slate-700 bg-white border border-slate-200 px-1.5 py-0.5 rounded shadow-xs transition-opacity -mb-1">
-                {d.score}%
-              </div>
-              <div
-                className="w-full max-w-[42px] rounded-t-xl transition-all duration-700 ease-out group-hover:brightness-110 shadow-xs"
-                style={{
-                  height: `${d.score}%`,
-                  background: `linear-gradient(to top, #004B39, ${d.color === '#DB9E30' ? '#DB9E30' : '#059669'})`,
-                }}
-              />
-              <span className="text-[11px] font-bold text-slate-500 group-hover:text-slate-900 transition-colors">
-                {d.month}
-              </span>
-            </div>
-          ))}
+        {/* A single measured score, not fabricated historical data. */}
+        <div className="rounded-2xl border border-slate-100 bg-gradient-to-b from-[#f8fbff] to-[#eefaf5] px-5 py-4">
+          <div className="mb-1 flex items-baseline justify-between"><span className="text-xs font-bold text-slate-600">Current measured audit score</span><span className="text-2xl font-black text-emerald-900">{healthRating}%</span></div>
+          <svg className="w-full" viewBox="0 0 500 90" role="img" aria-label={`Current SEO audit score: ${healthRating} percent. No historical data available.`}>
+            <defs>
+              <linearGradient id="seo-current-line" x1="0" y1="0" x2="1" y2="0"><stop stopColor="#0d9488"/><stop offset=".45" stopColor="#3b82f6"/><stop offset=".8" stopColor="#a855f7"/><stop offset="1" stopColor="#f59e0b"/></linearGradient>
+              <linearGradient id="seo-current-shade" x1="0" y1="0" x2="0" y2="1"><stop stopColor="#0d9488" stopOpacity=".2"/><stop offset="1" stopColor="#0d9488" stopOpacity="0"/></linearGradient>
+            </defs>
+            <path d={`M 10 ${70-healthRating*.53} C 130 ${70-healthRating*.53-4}, 365 ${70-healthRating*.53+4}, 490 ${70-healthRating*.53} L 490 80 L 10 80 Z`} fill="url(#seo-current-shade)"/>
+            <path d={`M 10 ${70-healthRating*.53} C 130 ${70-healthRating*.53-4}, 365 ${70-healthRating*.53+4}, 490 ${70-healthRating*.53}`} stroke="url(#seo-current-line)" strokeWidth="5" strokeLinecap="round" fill="none"/>
+          </svg>
+          <p className="mt-1 text-[11px] text-slate-500">Current snapshot only. Historical comparisons will be available when dated audit snapshots are stored.</p>
         </div>
       </div>
 

@@ -74,16 +74,15 @@ export function sanitizeMediaUrl(url: string): string {
   // /images_BHT would break images unless the file also exists in the Vercel app.
   if (/^https:\/\/media\.britishhajjtravel\.com\//i.test(url)) return url;
   if (url.startsWith('https://britishhajjtravel.com/media/')) {
-    return url.replace(/^https?:\/\/britishhajjtravel\.com\/media\//, `${mediaBase}/`);
+    return url;
   }
   if (url.startsWith('https://www.britishhajjtravel.com/media/')) {
-    return url.replace(/^https?:\/\/www\.britishhajjtravel\.com\/media\//, `${mediaBase}/`);
+    return url;
   }
 
-  // Rewrite legacy relative paths to /images_BHT/
-  if (url.startsWith('/media/')) {
-    return url.replace(/^\/media\//, `${mediaBase}/`);
-  }
+  // Preserve local media-route URLs. They can resolve files from MEDIA_STORAGE_ROOT,
+  // even when the upload is outside the immutable Next.js public/ directory.
+  if (url.startsWith('/media/')) return url;
   if (url.startsWith('/uploads/')) {
     return url.replace(/^\/uploads\//, `${mediaBase}/uploads/`);
   }

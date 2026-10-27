@@ -36,10 +36,15 @@ export default function AdminPagesListPage() {
   };
 
   const handleStatusChange = async (id: number, newStatus: 'published' | 'draft') => {
-    setPages((prevPages) =>
-      prevPages.map((p) => (p.id === id ? { ...p, status: newStatus, updatedAt: new Date() } : p))
-    );
-    await updatePageStatusAction(id, newStatus);
+    const previous = pages.find(page => page.id === id);
+    setPages(prev => prev.map(page => page.id === id ? { ...page, status: newStatus } : page));
+    try {
+      const result = await updatePageStatusAction(id, newStatus);
+      if (!result.success) throw new Error(result.error || 'Unable to update page status');
+    } catch (error) {
+      setPages(prev => prev.map(page => page.id === id ? { ...page, status: previous?.status } : page));
+      window.alert(error instanceof Error ? error.message : 'Page status update failed');
+    }
   };
 
   const handleDelete = (id: number, title: string) => {
@@ -79,7 +84,13 @@ export default function AdminPagesListPage() {
   const handleDragEnd = async () => {
     setDraggedIndex(null);
     const orderedIds = pages.map(p => p.id);
-    await updatePageOrderAction(orderedIds);
+    try {
+      const result = await updatePageOrderAction(orderedIds);
+      if (!result.success) throw new Error(result.error || 'Failed to save order');
+    } catch (error) {
+      getPagesList().then(setPages).catch(console.error);
+      window.alert(error instanceof Error ? error.message : 'Failed to save page order');
+    }
   };
 
   const filteredPages = pages.filter((p) => {
