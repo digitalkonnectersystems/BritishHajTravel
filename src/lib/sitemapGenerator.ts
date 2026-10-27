@@ -107,6 +107,10 @@ export async function gatherAllSitemapItems(baseUrl: string): Promise<SitemapIte
         
         const rawSlug = (page.slug || '').trim();
         const cleanSlug = rawSlug === 'home' || rawSlug === '/' || rawSlug === '' ? '' : rawSlug.replace(/^\/+/, '');
+        const normalizedPageSlug = cleanSlug.replace(/\/+$/, '').toLowerCase();
+        // Only the existing CMS flight page is listed, and only under /flights.
+        // Do not list alternate /airlines or duplicate /flights CMS records.
+        if (normalizedPageSlug === 'airlines' || normalizedPageSlug === 'flights') continue;
         const rawUrl = seo.canonicalUrl || seo.customUrl;
         let url: string;
         if (rawUrl && (rawUrl.startsWith('http://') || rawUrl.startsWith('https://'))) {
@@ -116,7 +120,11 @@ export async function gatherAllSitemapItems(baseUrl: string): Promise<SitemapIte
         } else {
           url = cleanSlug ? `${baseUrl}/${cleanSlug}` : baseUrl;
         }
-        
+        // Override even a legacy canonical URL saved in CMS SEO settings.
+        if (normalizedPageSlug === 'cheap-flights-air-tickets') {
+          url = `${baseUrl.replace(/\/+$/, '')}/flights`;
+        }
+
         items.push({
           loc: url,
           lastmod: pageConfig.includeLastModified !== false ? (seo.lastModifiedOverride || (page.updatedAt ? new Date(page.updatedAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0])) : undefined,

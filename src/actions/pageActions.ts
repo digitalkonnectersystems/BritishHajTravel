@@ -419,7 +419,7 @@ export async function getDefaultNavItems() {
     { id: '2', label: 'Umrah Packages', url: '/umrah-packages', level: 1, children: [] },
     { id: '3', label: 'Hajj Packages', url: '/hajj-packages', level: 1, children: [] },
     { id: '4', label: 'Saudi Visa', url: '/saudi-visa', level: 1, children: [] },
-    { id: '5', label: 'Flights', url: '/airlines', level: 1, children: [] },
+    { id: '5', label: 'Flights', url: '/flights', level: 1, children: [] },
     { id: 'hotels-directory', label: 'Hotels', url: '/hotels', level: 1, children: [] },
     { id: '6', label: 'Contact', url: '/contact', level: 1, children: [] },
   ];
@@ -529,7 +529,7 @@ export async function getDefaultFooterData() {
     servicesLinks: [
       { label: 'Umrah Packages', url: '/umrah-packages' },
       { label: 'Hajj Packages', url: '/hajj-packages' },
-      { label: 'Airline Tickets', url: '/airlines' },
+      { label: 'Airline Tickets', url: '/flights' },
       { label: 'Saudi Visa Services', url: '/saudi-visa' },
     ],
     sitemapTitle: 'SITEMAP',

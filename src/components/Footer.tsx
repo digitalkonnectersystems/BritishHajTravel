@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { normalizeFlightUrl } from "@/lib/flightUrl";
 
 export default function Footer({ initialFooterData = {} }: { initialFooterData?: any }) {
   const footerData = initialFooterData || {};
@@ -102,7 +103,7 @@ export default function Footer({ initialFooterData = {} }: { initialFooterData?:
             <ul className="list-none p-0 m-0 space-y-2.5">
               {(footerData.servicesLinks || []).map((link: any, sIdx: number) => (
                 <li key={sIdx} className="font-light">
-                  <Link href={link.url || '#'}>{link.label}</Link>
+                  <Link href={normalizeFlightUrl(link.url || '#')}>{link.label}</Link>
                 </li>
               ))}
             </ul>
@@ -114,7 +115,7 @@ export default function Footer({ initialFooterData = {} }: { initialFooterData?:
             <ul className="list-none p-0 m-0  space-y-2.5">
               {(footerData.sitemapLinks || []).map((link: any, mIdx: number) => (
                 <li key={mIdx} className="font-light ">
-                  <Link href={link.url || '#'}>{link.label}</Link>
+                  <Link href={normalizeFlightUrl(link.url || '#')}>{link.label}</Link>
                 </li>
               ))}
             </ul>

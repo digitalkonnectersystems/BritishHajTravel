@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { normalizeFlightUrl } from "@/lib/flightUrl";
 
 const DEFAULT_NAV_ITEMS = [
   { id: '1', label: 'Home', url: '/', level: 1, children: [] },
@@ -12,7 +13,7 @@ const DEFAULT_NAV_ITEMS = [
   { id: '4', label: 'Hajj Packages', url: '/hajj-packages', level: 1, children: [] },
   { id: 'baan-holding-hajj', label: 'BAAN HOLDING HAJJ', url: '/baan-holding-hajj', level: 1, children: [] },
   { id: '5', label: 'Saudi Visa', url: '/saudi-visa', level: 1, children: [] },
-  { id: '6', label: 'Flights', url: '/airlines', level: 1, children: [] },
+  { id: '6', label: 'Flights', url: '/flights', level: 1, children: [] },
   { id: '7', label: 'Contact', url: '/contact', level: 1, children: [] },
 ];
 
@@ -23,6 +24,9 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
   const navItems = initialNavItems?.length ? initialNavItems : DEFAULT_NAV_ITEMS;
   const identityData = initialIdentity;
   const pathname = usePathname();
+  const activePathname = pathname === '/cheap-flights-air-tickets' || pathname === '/airlines'
+    ? '/flights'
+    : pathname;
 
   useEffect(() => {
     setMenuActive(false);
@@ -75,13 +79,13 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
           {/* <nav className={`flex gap-[20px] max-lg:gap-[10px] items-center max-xl:hidden max-lg:flex-col max-lg:absolute max-lg:top-full max-lg:left-0 max-lg:w-full max-lg:bg-white max-lg:p-[20px] max-lg:shadow-[0_4px_10px_rgba(0,0,0,0.1)] max-lg:gap-y-[15px] max-lg:items-start ${menuActive ? "!flex" : ""}`} id="navLinks"> */}
             <nav className={`flex gap-[20px] max-xl:gap-[10px] items-center max-xl:hidden max-xl:flex-col max-xl:absolute max-xl:top-full max-xl:left-0 max-xl:w-full max-xl:bg-white max-xl:p-[20px] max-lg:shadow-[0_4px_10px_rgba(0,0,0,0.1)] max-xl:gap-y-[15px] max-xl:items-start ${menuActive ? "!flex" : ""}`} id="navLinks">
             {navItems.map((item) => {
-              const itemHref = item.url || item.href || '#';
+              const itemHref = normalizeFlightUrl(item.url || item.href || '#');
               const itemLabel = item.label || item.title;
               const hasChildren = item.children && item.children.length > 0;
-              const isParentActive = pathname === itemHref || (hasChildren && item.children.some((sub: any) => pathname === (sub.url || sub.href)));
+              const isParentActive = activePathname === itemHref || (hasChildren && item.children.some((sub: any) => activePathname === normalizeFlightUrl(sub.url || sub.href || '#')));
 
               if (!hasChildren) {
-                const isActive = pathname === itemHref;
+                const isActive = activePathname === itemHref;
                 return (
                   <Link
                     key={item.id || itemHref}
@@ -130,8 +134,8 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
 
                   <div className="dropdown-menu">
                     {item.children.map((sub: any) => {
-                      const subHref = sub.url || sub.href || '#';
-                      const isSubActive = pathname === subHref;
+                      const subHref = normalizeFlightUrl(sub.url || sub.href || '#');
+                      const isSubActive = activePathname === subHref;
                       return (
                         <Link
                           key={sub.id || subHref}

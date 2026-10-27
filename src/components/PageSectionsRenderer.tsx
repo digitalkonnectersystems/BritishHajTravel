@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { normalizeFlightUrl } from '@/lib/flightUrl';
 import MarqueeTrack from '@/components/MarqueeTrack';
 import DynamicIcon from '@/components/ui/DynamicIcon';
 import ContactFormSection from '@/components/ContactFormSection';
@@ -458,7 +459,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                 )}
                 {sec.data?.viewAllSlug && (
                   <div className="mt-7 text-center">
-                    <Link href={sec.data.viewAllSlug} className="inline-flex rounded-full bg-red px-5 py-2.5 text-md font-bold text-white hover:text-white transition-colors hover:bg-red-lt mt-7 text-center">
+                    <Link href={normalizeFlightUrl(sec.data.viewAllSlug)} className="inline-flex rounded-full bg-red px-5 py-2.5 text-md font-bold text-white hover:text-white transition-colors hover:bg-red-lt mt-7 text-center">
                       {sec.data.viewAllLabel || "View All"}
                     </Link>
                   </div>
@@ -529,7 +530,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
 
                     {sec.data?.airlineViewAllSlug && (
                       <div className="text-center">
-                        <Link href={sec.data.airlineViewAllSlug} className="inline-flex rounded-full bg-red px-5 py-2.5 text-md font-bold text-white hover:text-white transition-colors hover:bg-red-lt mt-7 text-center">
+                        <Link href={normalizeFlightUrl(sec.data.airlineViewAllSlug)} className="inline-flex rounded-full bg-red px-5 py-2.5 text-md font-bold text-white hover:text-white transition-colors hover:bg-red-lt mt-7 text-center">
                           {sec.data.airlineViewAllLabel || "View All Flights"}
                         </Link>
                       </div>
@@ -624,7 +625,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                 )}
                 {sec.data?.viewAllSlug && (
                   <div className="mt-7 text-center">
-                    <Link href={sec.data.viewAllSlug} className="inline-flex rounded-full bg-red px-5 py-2.5 text-md font-bold text-white hover:text-white transition-colors hover:bg-red-lt">
+                    <Link href={normalizeFlightUrl(sec.data.viewAllSlug)} className="inline-flex rounded-full bg-red px-5 py-2.5 text-md font-bold text-white hover:text-white transition-colors hover:bg-red-lt">
                       {sec.data.viewAllLabel || "View All"}
                     </Link>
                   </div>

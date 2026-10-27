@@ -972,7 +972,7 @@ function PageBuilderContent() {
 
                 ]);
 
-              } else if (p.slug === '/airlines' || pageId === 6) {
+              } else if ((p.slug === '/airlines' || p.slug === '/flights' || p.slug === '/cheap-flights-air-tickets') || pageId === 6) {
 
                 setSections([
 
@@ -1392,13 +1392,13 @@ function PageBuilderContent() {
 
           { icon: 'Briefcase', title: 'Hajj Packages', description: 'Fully accredited pilgrimage packages, curated end to end.', link: '/hajj-packages' },
 
-          { icon: 'ArrowLeftRight', title: 'Airline Tickets', description: 'Best-fare flights sourced from every route into Jeddah.', link: '/airlines' },
+          { icon: 'ArrowLeftRight', title: 'Airline Tickets', description: 'Best-fare flights sourced from every route into Jeddah.', link: '/flights' },
 
           { icon: 'CreditCard', title: 'Saudi Visa Services', description: 'Full visa processing, handled and confirmed before departure.', link: '/saudi-visa' },
 
           { icon: 'Home', title: 'Hotel Booking', description: '5-star stays within walking distance of the Haram.', link: '/contact' },
 
-          { icon: 'Globe', title: 'Global Flight Reservations', description: 'Worldwide reliable flight bookings for any itinerary.', link: '/airlines' },
+          { icon: 'Globe', title: 'Global Flight Reservations', description: 'Worldwide reliable flight bookings for any itinerary.', link: '/flights' },
 
           { icon: 'FileText', title: 'Travel Documentation', description: 'Guidance on every document your journey requires.', link: '/contact' },
 
@@ -1826,7 +1826,7 @@ function PageBuilderContent() {
 
         airlineViewAllLabel: 'View All Flights',
 
-        airlineViewAllSlug: '/airlines',
+        airlineViewAllSlug: '/flights',
 
         hotelEyebrow: 'HOTEL PARTNERS',
 
@@ -1864,7 +1864,7 @@ function PageBuilderContent() {
 
         viewAllLabel: 'View All Airlines',
 
-        viewAllSlug: '/airlines',
+        viewAllSlug: '/flights',
 
       };
 
@@ -9471,7 +9471,7 @@ function PageBuilderContent() {
 
                                       onChange={(e) => updateSectionData(sec.id, 'viewAllSlug', e.target.value)}
 
-                                      placeholder={sec.type === 'Hotels' ? '/hotels' : '/airlines'}
+                                      placeholder={sec.type === 'Hotels' ? '/hotels' : '/flights'}
 
                                       className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-mono text-slate-900 bg-white"
 
@@ -9858,7 +9858,7 @@ function PageBuilderContent() {
                                     </div>
                                     <div>
                                       <label className="block text-[10px] font-bold text-slate-600 mb-1">VIEW ALL PAGE SLUG</label>
-                                      <input type="text" value={sec.data?.airlineViewAllSlug || ''} onChange={(e) => updateSectionData(sec.id, 'airlineViewAllSlug', e.target.value)} placeholder="/airlines" className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-mono text-slate-900 bg-white" />
+                                      <input type="text" value={sec.data?.airlineViewAllSlug || ''} onChange={(e) => updateSectionData(sec.id, 'airlineViewAllSlug', e.target.value)} placeholder="/flights" className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-mono text-slate-900 bg-white" />
                                     </div>
                                     <div>
                                       <label className="block text-[10px] font-bold text-slate-600 mb-1">CAROUSEL SPEED (MS)</label>
