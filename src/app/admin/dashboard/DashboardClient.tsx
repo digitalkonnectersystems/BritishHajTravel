@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import DashboardSeoCenterSection from '@/components/admin/DashboardSeoCenterSection';
@@ -59,182 +59,59 @@ interface SliceData {
   subtext: string;
 }
 
+/** Category distribution (not a time series), rendered as a gradient-filled curved area. */
 function Cinematic3DPieChart({
-  title,
-  subtitle,
-  totalCount,
-  totalLabel,
-  badgeText,
-  badgeBg,
-  linkHref,
-  linkLabel,
-  slices,
+  title, subtitle, totalCount, totalLabel, linkHref, linkLabel, slices,
 }: {
-  title: string;
-  subtitle: string;
-  totalCount: number;
-  totalLabel: string;
-  badgeText: string;
-  badgeBg: string;
-  linkHref: string;
-  linkLabel: string;
-  slices: SliceData[];
+  title: string; subtitle: string; totalCount: number; totalLabel: string;
+  badgeText: string; badgeBg: string; linkHref: string; linkLabel: string; slices: SliceData[];
 }) {
-  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
-  const total = Math.max(
-    slices.reduce((acc, s) => acc + s.count, 0),
-    1
-  );
-
-  let accumulatedDash = 0;
-
+  const chartId = React.useId().replace(/:/g, '');
+  const max = Math.max(1, ...slices.map(slice => slice.count));
+  const points = slices.map((slice, index) => ({
+    x: 40 + index * 320 / Math.max(1, slices.length - 1),
+    y: 142 - 108 * slice.count / max,
+  }));
+  const line = points.map((point, index) => {
+    if (index === 0) return `M ${point.x} ${point.y}`;
+    const prev = points[index - 1];
+    const middle = (prev.x + point.x) / 2;
+    return ` C ${middle} ${prev.y} ${middle} ${point.y} ${point.x} ${point.y}`;
+  }).join('');
+  const area = points.length ? `${line} L ${points[points.length - 1].x} 152 L ${points[0].x} 152 Z` : '';
+  const total = Math.max(1, slices.reduce((sum, slice) => sum + slice.count, 0));
   return (
-    <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-2xs flex flex-col justify-between relative overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-slate-200">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4 z-10">
-        <div>
-          <h3 className="text-base font-extrabold text-slate-900 m-0 flex items-center gap-2">
-            <PieChartIcon className="w-4 h-4 text-primary animate-spin-slow" /> {title}
-          </h3>
-          <p className="text-xs text-slate-400 mt-0.5 mb-0">{subtitle}</p>
-        </div>
-        <Link
-          href={linkHref}
-          className="text-xs font-bold text-amber-600 hover:text-amber-700 no-underline flex items-center gap-1 bg-amber-50 px-3 py-1 rounded-full border border-amber-200 transition-all hover:scale-105 shadow-2xs"
-        >
-          {linkLabel} <ArrowUpRight className="w-3.5 h-3.5" />
-        </Link>
+    <section className="rounded-[28px] border border-slate-200/80 bg-white p-5 sm:p-6 shadow-[0_16px_40px_-30px_rgba(15,23,42,.45)] overflow-hidden">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div><h3 className="text-base font-extrabold text-slate-900">{title}</h3>
+          <p className="mt-1 text-xs text-slate-500">{subtitle}</p></div>
+        <Link href={linkHref} className="rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-800 hover:bg-emerald-100">{linkLabel} ↗</Link>
       </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center py-4 z-10">
-        {/* ── 3D Isometric Animated SVG Pie Chart ── */}
-        <div className="flex justify-center items-center relative group py-2">
-          {/* Ambient Radial Glow Backdrop */}
-          <div className="absolute inset-0 w-48 h-48 mx-auto my-auto rounded-full bg-gradient-to-tr from-emerald-500/20 via-[#DB9E30]/20 to-blue-500/20 blur-2xl animate-pulse pointer-events-none" />
-
-          {/* 3D Perspective Container */}
-          <div
-            className="relative w-48 h-48 flex items-center justify-center transition-transform duration-500 hover:scale-105 [perspective:1000px] [transform:perspective(1000px)_rotateX(25deg)_rotateZ(-6deg)] [transform-style:preserve-3d]"
-          >
-            {/* 3D Shadow Layer Below */}
-            <svg
-              width="192"
-              height="192"
-              viewBox="0 0 192 192"
-              className="absolute inset-0 transform translate-z-[-16px] blur-xs opacity-40"
-            >
-              <circle cx="96" cy="96" r="68" fill="none" stroke="#0f172a" strokeWidth="22" />
-            </svg>
-
-            {/* Main 3D Donut Chart SVG */}
-            <svg
-              width="192"
-              height="192"
-              viewBox="0 0 192 192"
-              className="transform -rotate-90 filter drop-shadow-lg"
-            >
-              <defs>
-                {slices.map((s) => (
-                  <linearGradient key={s.gradientId} id={s.gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor={s.gradientColors[0]} />
-                    <stop offset="100%" stopColor={s.gradientColors[1]} />
-                  </linearGradient>
-                ))}
-              </defs>
-
-              {/* Background Track */}
-              <circle cx="96" cy="96" r="68" fill="none" stroke="#f1f5f9" strokeWidth="22" />
-
-              {/* Animated Slices */}
-              {slices.map((s, idx) => {
-                const strokeDash = (s.count / total) * 427;
-                const strokeOffset = -accumulatedDash;
-                accumulatedDash += strokeDash;
-                const isHovered = hoveredIdx === idx;
-
-                return (
-                  <circle
-                    key={s.label}
-                    cx="96"
-                    cy="96"
-                    r="68"
-                    fill="none"
-                    stroke={`url(#${s.gradientId})`}
-                    strokeWidth={isHovered ? 26 : 22}
-                    strokeDasharray={`${strokeDash} 427`}
-                    strokeDashoffset={strokeOffset}
-                    strokeLinecap="round"
-                    onMouseEnter={() => setHoveredIdx(idx)}
-                    onMouseLeave={() => setHoveredIdx(null)}
-                    ref={(el) => {
-                      if (el) {
-                        el.style.transform = isHovered ? 'scale(1.04)' : 'scale(1)';
-                        el.style.transformOrigin = '96px 96px';
-                      }
-                    }}
-                    className="transition-all duration-500 ease-out cursor-pointer"
-                  />
-                );
-              })}
-            </svg>
-
-            {/* Elevated 3D Center Core Badge */}
-            <div
-              className="absolute inset-0 m-auto w-24 h-24 rounded-full bg-white/95 backdrop-blur-md shadow-xl border border-slate-100 flex flex-col items-center justify-center text-center pointer-events-none transition-transform duration-300 group-hover:translate-z-6 [transform:translateZ(20px)]"
-            >
-              <span className="text-[9px] font-extrabold uppercase tracking-widest text-slate-400">
-                {totalLabel}
-              </span>
-              <span className="text-2xl font-black text-slate-900 leading-none my-0.5 font-serif">
-                {totalCount}
-              </span>
-              <span className={`text-[9px] font-bold ${badgeBg} px-2 py-0.5 rounded-full shadow-2xs`}>
-                {badgeText}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Pie Chart Legend Breakdown */}
-        <div className="flex flex-col gap-2.5">
-          {slices.map((s, idx) => {
-            const pct = Math.round((s.count / total) * 100);
-            const isHovered = hoveredIdx === idx;
-
-            return (
-              <div
-                key={s.label}
-                onMouseEnter={() => setHoveredIdx(idx)}
-                onMouseLeave={() => setHoveredIdx(null)}
-                className={`p-3 rounded-2xl border transition-all duration-300 cursor-pointer flex items-center justify-between ${isHovered
-                  ? `${s.bgLight} ${s.borderLight} shadow-md translate-x-1 scale-[1.02]`
-                  : `${s.bgLight} border-slate-100/70 hover:border-slate-200`
-                  }`}
-              >
-                <div className="flex items-center gap-2.5">
-                  <span
-                    ref={(el) => {
-                      if (el) {
-                        el.style.background = `linear-gradient(135deg, ${s.gradientColors[0]}, ${s.gradientColors[1]})`;
-                        el.style.transform = isHovered ? 'scale(1.25)' : 'scale(1)';
-                      }
-                    }}
-                    className="w-3 h-3 rounded-full shadow-xs transition-transform"
-                  />
-                  <div>
-                    <div className="text-xs font-extrabold text-slate-900">{s.label}</div>
-                    <div className="text-[10px] text-slate-500 font-medium">
-                      {pct}% ({s.subtext})
-                    </div>
-                  </div>
-                </div>
-                <span className="text-sm font-black text-slate-900 font-mono">{s.count}</span>
-              </div>
-            );
-          })}
-        </div>
+      <div className="mt-5 rounded-2xl bg-gradient-to-br from-slate-50 to-emerald-50/60 p-4 border border-slate-100">
+        <div className="flex justify-between items-baseline"><span className="text-xs font-semibold text-slate-500">{totalLabel} · current database snapshot</span><strong className="text-2xl font-black text-slate-900 tabular-nums">{totalCount}</strong></div>
+        <svg viewBox="0 0 400 170" className="mt-1 w-full" role="img" aria-label={`${title}: category counts, not chronological changes`}>
+          <defs>
+            <linearGradient id={`${chartId}-stroke`} x1="0" x2="1" y1="0" y2="0">
+              {slices.map((slice,index)=><stop key={slice.label} offset={`${index*100/Math.max(1,slices.length-1)}%`} stopColor={slice.gradientColors[0]} />)}
+            </linearGradient>
+            <linearGradient id={`${chartId}-fill`} x1="0" x2="0" y1="0" y2="1"><stop stopColor="#14b8a6" stopOpacity=".24"/><stop offset="1" stopColor="#93c5fd" stopOpacity=".015"/></linearGradient>
+          </defs>
+          {[50,100,152].map(y=><line key={y} x1="24" y1={y} x2="376" y2={y} stroke="#cbd5e1" strokeDasharray="3 7" strokeOpacity=".65" />)}
+          {points.length > 0 && <path d={area} fill={`url(#${chartId}-fill)`} />}
+          {points.length > 0 && <path d={line} fill="none" stroke={`url(#${chartId}-stroke)`} strokeWidth="4" strokeLinecap="round" />}
+          {points.map((point,index)=><g key={slices[index].label}>
+            <circle cx={point.x} cy={point.y} r="5.5" fill={slices[index].gradientColors[0]} stroke="white" strokeWidth="2.5" />
+            <text x={point.x} y={point.y-14} textAnchor="middle" fontSize="12" fontWeight="700" fill="#0f172a">{slices[index].count}</text>
+          </g>)}
+        </svg>
       </div>
-    </div>
+      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
+        {slices.map(slice => <div key={slice.label} className="flex items-center justify-between gap-2 rounded-xl bg-slate-50/80 border border-slate-100 px-3 py-2.5">
+          <span className="flex min-w-0 items-center gap-2 text-xs font-semibold text-slate-600"><span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{backgroundColor:slice.gradientColors[0]}} />{slice.label}</span>
+          <span className="shrink-0 text-sm font-extrabold text-slate-900 tabular-nums">{slice.count} <small className="text-[10px] font-medium text-slate-400">({Math.round(slice.count*100/total)}%)</small></span>
+        </div>)}
+      </div>
+    </section>
   );
 }
 
@@ -267,94 +144,28 @@ export default function DashboardClient({
     };
   }, [router]);
 
-  // Animated counters state
-  const [animatedValues, setAnimatedValues] = useState({
-    enquiries: 0,
-    umrah: 0,
-    hajj: 0,
-    visas: 0,
-    pages: 0,
-    users: 0,
-    unread: 0,
-  });
-
-  const newEnquiriesCount = initialEnquiries.filter((e) => e.status === 'new').length;
-  const umrahCount = initialPackages.filter((p) => p.type === 'umrah').length;
-  const hajjCount = initialPackages.filter((p) => p.type === 'hajj').length;
-  const visaCount = initialVisas.length;
-  const totalPackages = initialPackages.length;
-
-  const quoteCount = initialEnquiries.filter((e) => e.type === 'quote_request').length;
-  const pkgBookingCount = initialEnquiries.filter((e) => e.type === 'package_enquiry').length;
-  const contactMsgCount = initialEnquiries.filter((e) => e.type === 'general_contact').length;
-  const visaQueryCount = initialEnquiries.filter((e) => e.type === 'visa_enquiry').length;
-
-  const targetValues = {
-    enquiries: initialEnquiries.length,
-    umrah: umrahCount,
-    hajj: hajjCount,
-    visas: visaCount,
-    pages: initialPages.length,
-    users: initialUsers.length,
-    unread: newEnquiriesCount,
-  };
-
-  // Smooth Count-Up Animation
-  useEffect(() => {
-    let animationFrameId: number;
-    const startTime = Date.now();
-    const duration = 900;
-
-    const animate = () => {
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const easeProgress = 1 - Math.pow(1 - progress, 3);
-
-      setAnimatedValues({
-        enquiries: Math.floor(targetValues.enquiries * easeProgress),
-        umrah: Math.floor(targetValues.umrah * easeProgress),
-        hajj: Math.floor(targetValues.hajj * easeProgress),
-        visas: Math.floor(targetValues.visas * easeProgress),
-        pages: Math.floor(targetValues.pages * easeProgress),
-        users: Math.floor(targetValues.users * easeProgress),
-        unread: Math.floor(targetValues.unread * easeProgress),
-      });
-
-      if (progress < 1) {
-        animationFrameId = requestAnimationFrame(animate);
-      } else {
-        setAnimatedValues(targetValues);
-      }
-    };
-
-    animationFrameId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [
-    targetValues.enquiries,
-    targetValues.umrah,
-    targetValues.hajj,
-    targetValues.visas,
-    targetValues.pages,
-    targetValues.users,
-    targetValues.unread,
-  ]);
-
-  // Pie Chart calculations
-  const totalOfferings = Math.max(umrahCount + hajjCount + visaCount, 1);
-  const umrahPct = Math.round((umrahCount / totalOfferings) * 100);
-  const hajjPct = Math.round((hajjCount / totalOfferings) * 100);
-  const visaPct = Math.round((visaCount / totalOfferings) * 100);
-
-  const totalFormQueries = Math.max(initialEnquiries.length, 1);
-  const quotePct = Math.round((quoteCount / totalFormQueries) * 100);
-  const pkgBookingPct = Math.round((pkgBookingCount / totalFormQueries) * 100);
-  const contactMsgPct = Math.round((contactMsgCount / totalFormQueries) * 100);
-  const visaQueryPct = Math.round((visaQueryCount / totalFormQueries) * 100);
+  // Every chart derives from the same database snapshot as the live KPI row.
+  const [liveSnapshot, setLiveSnapshot] = useState<AnalyticsSnapshot | null>(initialRealtime);
+  useEffect(() => setLiveSnapshot(initialRealtime), [initialRealtime]);
+  const counts = liveSnapshot?.counts;
+  const enquiryTypes = liveSnapshot?.enquiryTypes || {};
+  const umrahCount = counts?.umrah ?? initialPackages.filter(p => p.type === 'umrah').length;
+  const hajjCount = counts?.hajj ?? initialPackages.filter(p => p.type === 'hajj').length;
+  const visaCount = counts?.visas ?? initialVisas.length;
+  const quoteCount = enquiryTypes.quote_request ?? 0;
+  const pkgBookingCount = enquiryTypes.package_enquiry ?? 0;
+  const contactMsgCount = enquiryTypes.general_contact ?? 0;
+  const visaQueryCount = enquiryTypes.visa_enquiry ?? 0;
+  const flightQueryCount = enquiryTypes.flight_enquiry ?? 0;
+  const totalOfferings = umrahCount + hajjCount + visaCount;
+  const umrahPct = Math.round(umrahCount * 100 / Math.max(1,totalOfferings));
+  const hajjPct = Math.round(hajjCount * 100 / Math.max(1,totalOfferings));
+  const visaPct = Math.round(visaCount * 100 / Math.max(1,totalOfferings));
 
   return (
-    <div className="max-w-[1550px] mx-auto flex flex-col gap-6 font-sans">
+    <div className="max-w-[1600px] mx-auto flex flex-col gap-5 font-sans">
       {/* ── Cinematic Hero Header Banner ── */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-primary to-[#071814] text-white p-6 lg:p-7 border border-[#DB9E30]/25 shadow-2xl">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-primary to-[#071814] text-white p-6 lg:p-7 border border-[#DB9E30]/25 shadow-[0_20px_46px_-26px_rgba(0,74,57,.6)]">
         <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#DB9E30_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none" />
         <div className="absolute -top-32 -right-32 w-80 h-80 bg-red rounded-full blur-[100px] opacity-20 pointer-events-none" />
 
@@ -373,90 +184,8 @@ export default function DashboardClient({
         </div>
       </div>
 
-      {initialRealtime && <RealtimeAnalytics initial={initialRealtime} />}
-
-      {/* ── Compact 5 Stat Cards Row ── */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-        {/* Card 1: Total Enquiries */}
-        <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-2xs hover:shadow-md transition-shadow relative overflow-hidden group">
-          <div className="flex items-center justify-between mb-2">
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-primary shadow-2xs group-hover:scale-110 transition-transform">
-              <ClipboardList className="w-5 h-5" />
-            </div>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-              ↑ {newEnquiriesCount} New
-            </span>
-          </div>
-          <div className="text-2xl font-black text-slate-900 tracking-tight">
-            {animatedValues.enquiries}
-          </div>
-          <div className="text-xs text-slate-500 font-semibold mt-0.5">Total Enquiries</div>
-        </div>
-
-        {/* Card 2: Umrah Packages */}
-        <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-2xs hover:shadow-md transition-shadow relative overflow-hidden group">
-          <div className="flex items-center justify-between mb-2">
-            <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shadow-2xs group-hover:scale-110 transition-transform">
-              <Compass className="w-5 h-5" />
-            </div>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
-              ↑ Active
-            </span>
-          </div>
-          <div className="text-2xl font-black text-slate-900 tracking-tight">
-            {animatedValues.umrah}
-          </div>
-          <div className="text-xs text-slate-500 font-semibold mt-0.5">Umrah Packages</div>
-        </div>
-
-        {/* Card 3: Hajj Packages */}
-        <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-2xs hover:shadow-md transition-shadow relative overflow-hidden group">
-          <div className="flex items-center justify-between mb-2">
-            <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shadow-2xs group-hover:scale-110 transition-transform">
-              <Landmark className="w-5 h-5" />
-            </div>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-              ↑ 2027 Open
-            </span>
-          </div>
-          <div className="text-2xl font-black text-slate-900 tracking-tight">
-            {animatedValues.hajj}
-          </div>
-          <div className="text-xs text-slate-500 font-semibold mt-0.5">Hajj Packages</div>
-        </div>
-
-        {/* Card 4: Visa Categories */}
-        <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-2xs hover:shadow-md transition-shadow relative overflow-hidden group">
-          <div className="flex items-center justify-between mb-2">
-            <div className="w-10 h-10 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 shadow-2xs group-hover:scale-110 transition-transform">
-              <FileText className="w-5 h-5" />
-            </div>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200">
-              ↑ Authorized
-            </span>
-          </div>
-          <div className="text-2xl font-black text-slate-900 tracking-tight">
-            {animatedValues.visas}
-          </div>
-          <div className="text-xs text-slate-500 font-semibold mt-0.5">Visa Solutions</div>
-        </div>
-
-        {/* Card 5: CMS Pages */}
-        <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-2xs hover:shadow-md transition-shadow relative overflow-hidden group">
-          <div className="flex items-center justify-between mb-2">
-            <div className="w-10 h-10 rounded-xl bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-600 shadow-2xs group-hover:scale-110 transition-transform">
-              <FileCode2 className="w-5 h-5" />
-            </div>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-200">
-              ↑ Live CMS
-            </span>
-          </div>
-          <div className="text-2xl font-black text-slate-900 tracking-tight">
-            {animatedValues.pages}
-          </div>
-          <div className="text-xs text-slate-500 font-semibold mt-0.5">CMS Pages</div>
-        </div>
-      </div>
+      {initialRealtime ? <RealtimeAnalytics initial={initialRealtime} onSnapshot={setLiveSnapshot} /> :
+        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-semibold text-red-700" role="alert">Dashboard database statistics are unavailable. Figures below should not be treated as live totals. Check the application and database logs.</div>}
 
       {/* ── SEO Center Global Audit Dashboard with Monthly Bar Graph ── */}
       <DashboardSeoCenterSection pages={initialPages} audit={initialSeoAudit} />
@@ -468,7 +197,7 @@ export default function DashboardClient({
           {/* ── 3D Cinematic Animated Pie Chart 1: Offerings & Package Distribution ── */}
           <Cinematic3DPieChart
             title="Offerings Breakdown & Package Distribution"
-            subtitle="Ratio of live Umrah, Hajj & Visa services in database"
+            subtitle="Current counts across Umrah, Hajj and Visa categories (not a timeline)"
             totalCount={totalOfferings}
             totalLabel="Total"
             badgeText="Offerings"
@@ -511,9 +240,9 @@ export default function DashboardClient({
 
           {/* ── 3D Cinematic Animated Pie Chart 2: Forms Queries Breakdown by Database Table ── */}
           <Cinematic3DPieChart
-            title="Forms Queries Breakdown by Database Table"
-            subtitle="Real-time submission ratio across dedicated form database tables"
-            totalCount={initialEnquiries.length}
+            title="Forms Enquiries by Type"
+            subtitle="Current breakdown by enquiry type in the unified CRM table"
+            totalCount={counts?.enquiries ?? initialEnquiries.length}
             totalLabel="Total"
             badgeText="Queries"
             badgeBg="bg-blue-50 text-blue-700 border border-blue-200"
@@ -528,7 +257,7 @@ export default function DashboardClient({
                 gradientColors: ['#60A5FA', '#1D4ED8'],
                 bgLight: 'bg-blue-50/70',
                 borderLight: 'border-blue-200',
-                subtext: 'quote_enquiries',
+                subtext: 'quote_request',
               },
               {
                 label: 'Package Bookings',
@@ -538,7 +267,7 @@ export default function DashboardClient({
                 gradientColors: ['#34D399', '#047857'],
                 bgLight: 'bg-emerald-50/70',
                 borderLight: 'border-emerald-200',
-                subtext: 'package_booking_enquiries',
+                subtext: 'package_enquiry',
               },
               {
                 label: 'Contact Messages',
@@ -548,7 +277,7 @@ export default function DashboardClient({
                 gradientColors: ['#A78BFA', '#6D28D9'],
                 bgLight: 'bg-purple-50/70',
                 borderLight: 'border-purple-200',
-                subtext: 'contact_enquiries',
+                subtext: 'general_contact',
               },
               {
                 label: 'Visa Requests',
@@ -558,7 +287,12 @@ export default function DashboardClient({
                 gradientColors: ['#38BDF8', '#0369A1'],
                 bgLight: 'bg-sky-50/70',
                 borderLight: 'border-sky-200',
-                subtext: 'visa_enquiries',
+                subtext: 'visa_enquiry',
+              },
+              {
+                label: 'Flight Requests', count: flightQueryCount, color: '#e879f9',
+                gradientId: 'grad-flight', gradientColors: ['#d946ef', '#a21caf'],
+                bgLight: 'bg-fuchsia-50/70', borderLight: 'border-fuchsia-200', subtext: 'flight_enquiry',
               },
             ]}
           />
@@ -568,7 +302,7 @@ export default function DashboardClient({
             <div className="flex justify-between items-center mb-4">
               <div>
                 <h3 className="text-base font-extrabold text-slate-900 m-0">Recent Forms Queries</h3>
-                <p className="text-xs text-slate-400 mt-0.5 mb-0">Incoming lead inquiries and booking requests across form tables</p>
+                <p className="text-xs text-slate-400 mt-0.5 mb-0">Latest enquiry records from the unified CRM table</p>
               </div>
               <Link
                 href="/admin/enquiries"
@@ -579,7 +313,7 @@ export default function DashboardClient({
             </div>
 
             {initialEnquiries.length === 0 ? (
-              <div className="py-8 text-center text-slate-400 text-xs">No lead enquiries received yet.</div>
+              <div className="py-8 text-center text-slate-500 text-xs">No recent enquiry rows available. Check migration status if the KPI total is non-zero.</div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs border-collapse">

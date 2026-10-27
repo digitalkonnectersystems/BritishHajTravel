@@ -600,11 +600,9 @@ export async function saveFooterSettingsAction(footerData: any) {
     updateTag('footer-data');
     return { success: true };
   } catch (err: any) {
-    console.warn('saveFooterSettingsAction DB insert failed, fallback to memory cache:', err);
-    footerMemoryCache = footerData;
-    revalidatePath('/', 'layout');
-    updateTag('footer-data');
-    return { success: true, warning: 'Saved to session cache.' };
+    console.error('saveFooterSettingsAction DB write failed:', err);
+    footerMemoryCache = null;
+    return { success: false, error: 'Database write failed. Settings were not saved; check backend logs and retry.' };
   }
 }
 
@@ -776,11 +774,9 @@ export async function saveSiteIdentityAction(data: any) {
     updateTag('site-identity');
     return { success: true };
   } catch (err: any) {
-    console.warn('saveSiteIdentityAction DB query failed, saving to cache fallback:', err);
-    siteIdentityMemoryCache = data;
-    revalidatePath('/', 'layout');
-    updateTag('site-identity');
-    return { success: true, warning: 'Saved to session memory cache.' };
+    console.error('saveSiteIdentityAction DB write failed:', err);
+    siteIdentityMemoryCache = null;
+    return { success: false, error: 'Database write failed. Settings were not saved; check backend logs and retry.' };
   }
 }
 
@@ -858,10 +854,9 @@ export async function saveShareToolsAction(data: any) {
     updateTag('share-tools');
     return { success: true };
   } catch (err: any) {
-    console.warn('saveShareToolsAction DB query failed, saving to cache fallback:', err);
-    revalidatePath('/', 'layout');
-    updateTag('share-tools');
-    return { success: true, warning: 'Saved to session memory cache.' };
+    console.error('saveShareToolsAction DB write failed:', err);
+    shareToolsMemoryCache = null;
+    return { success: false, error: 'Database write failed. Settings were not saved; check backend logs and retry.' };
   }
 }
 
@@ -897,9 +892,8 @@ export async function saveGlobalCssAction(css: string) {
     revalidatePath('/', 'layout');
     return { success: true };
   } catch (err: any) {
-    console.warn('saveGlobalCssAction DB query failed:', err);
-    revalidatePath('/', 'layout');
-    return { success: true };
+    console.error('saveGlobalCssAction database write failed:', err);
+    return { success: false, error: 'Custom CSS was not saved. Check backend logs.' };
   }
 }
 
@@ -924,9 +918,8 @@ export async function updatePageOrderAction(orderedIds: number[]) {
     revalidatePath('/admin/pages');
     return { success: true };
   } catch (err: any) {
-    console.warn('updatePageOrderAction DB query failed:', err);
-    revalidatePath('/admin/pages');
-    return { success: true };
+    console.error('updatePageOrderAction database write failed:', err);
+    return { success: false, error: 'Page order could not be saved.' };
   }
 }
 
@@ -1012,11 +1005,8 @@ export async function saveLoginAuthSettingsAction(data: any) {
     updateTag('login-auth-settings');
     return { success: true };
   } catch (err: any) {
-    console.warn('saveLoginAuthSettingsAction DB query failed:', err);
-    revalidatePath('/letstravel');
-    revalidatePath('/', 'layout');
-    updateTag('login-auth-settings');
-    return { success: true };
+    console.error('saveLoginAuthSettingsAction database write failed:', err);
+    return { success: false, error: 'Login settings were not saved. Check backend logs.' };
   }
 }
 
@@ -1060,9 +1050,9 @@ export async function saveDisclaimerSettingsAction(data: DisclaimerSettings) {
     revalidatePath('/', 'layout');
     return { success: true };
   } catch (err: any) {
-    console.warn('saveDisclaimerSettingsAction DB query failed:', err);
-    revalidatePath('/', 'layout');
-    return { success: true };
+    console.error('saveDisclaimerSettingsAction database write failed:', err);
+    disclaimerMemoryCache = null;
+    return { success: false, error: 'Disclaimer settings were not saved. Check backend logs.' };
   }
 }
 
@@ -1527,10 +1517,9 @@ export async function saveFormsSettingsAction(settingsData: any) {
     revalidatePath('/', 'layout');
     return { success: true };
   } catch (err: any) {
-    console.warn('saveFormsSettingsAction DB query failed, saving to cache fallback:', err);
-    formsSettingsMemoryCache = nextSettings;
-    revalidatePath('/', 'layout');
-    return { success: true, warning: 'Database write failed; settings are available only in the current server process.' };
+    console.error('saveFormsSettingsAction DB write failed:', err);
+    formsSettingsMemoryCache = null;
+    return { success: false, error: 'Database write failed. Settings were not saved; check backend logs and retry.' };
   }
 }
 
