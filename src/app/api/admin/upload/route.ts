@@ -188,7 +188,7 @@ export async function POST(req: NextRequest) {
       await fs.writeFile(targetFilePath, buffer);
 
       // Media route supports a persistent shared storage root across deployments.
-      const publicUrl = `/media/${subfolder}/${uniqueFilename}`;
+      const publicUrl = `/images_BHT/${subfolder}/${uniqueFilename}`;
       const relativePath = `images_BHT/${subfolder}/${uniqueFilename}`;
 
       return NextResponse.json({
