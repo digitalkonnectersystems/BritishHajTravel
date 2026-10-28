@@ -243,11 +243,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 href={item.href}
                 className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[12px] transition-all duration-200 ${isActive
                   ? 'text-white font-bold bg-linear-to-r from-[#020e43] via-[#041e8f] to-[#5d7afa] shadow-[0_8px_22px_-10px_rgba(4,120,87,.65)]'
-                  : 'text-slate-600 font-semibold group hover:bg-emerald-50 hover:text-emerald-900'
+                  : 'text-slate-600 font-semibold group hover:bg-blue-100 hover:text-[#020E43]'
                   }`}
                   onClick={() => setSidebarOpen(false)}
               >
-                <span className={`shrink-0 ${isActive ? 'text-white' : 'text-slate-500 group-hover:text-emerald-700'}`}>
+                <span className={`shrink-0 ${isActive ? 'text-white' : 'text-slate-500 group-hover:text-[#020E43]'}`}>
                   {item.icon}
                 </span>
                 {item.label}

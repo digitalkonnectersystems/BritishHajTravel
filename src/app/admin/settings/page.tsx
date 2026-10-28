@@ -969,7 +969,10 @@ export default function AdminSettingsPage() {
     if (res.success) {
       setSaveMsg('✅ Navigation Menu Updated!');
       setTimeout(() => setSaveMsg(null), 3000);
+    } else {
+      showNotification('Navigation Not Saved', res.error || 'Unable to save the navigation menu.', 'error');
     }
+    return res;
   };
 
   const handleSaveNavItem = (updatedItem: any) => {
@@ -1037,9 +1040,7 @@ export default function AdminSettingsPage() {
   };
 
   const handleSaveIdentity = () => {
-    const updatedIdentity = {
-      ...identityData,
-    };
+    const updatedIdentity = { ...identityData };
     setConfirmConfig({
       icon: '🏷️',
       title: 'Save Site Identity',
@@ -1048,41 +1049,52 @@ export default function AdminSettingsPage() {
       cancelText: 'Cancel',
       variant: 'primary',
       onConfirm: async () => {
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('bht_site_identity', JSON.stringify(updatedIdentity));
-          window.dispatchEvent(new Event('identity_updated'));
-          if (updatedIdentity.favicon) {
-            updateBrowserFavicon(updatedIdentity.favicon);
+        try {
+          const res = await saveSiteIdentityAction(updatedIdentity);
+          if (!res.success) {
+            showNotification('Site Identity Not Saved', res.error || 'Unable to save site identity to the database.', 'error');
+            return;
           }
-        }
-        const res = await saveSiteIdentityAction(updatedIdentity);
-        if (res.success) {
-          if (res.warning) {
-            showNotification('Site Identity Saved', 'Branding settings saved to session cache! ' + res.warning, 'warning');
-          } else {
-            showNotification('Site Identity Published!', 'Site identity & branding updated successfully!', 'success');
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('bht_site_identity', JSON.stringify(updatedIdentity));
+            window.dispatchEvent(new Event('identity_updated'));
+            if (updatedIdentity.favicon) {
+              updateBrowserFavicon(updatedIdentity.favicon);
+            }
           }
+          showNotification('Site Identity Published!', 'Site identity & branding updated successfully!', 'success');
+        } catch (error) {
+          showNotification('Site Identity Not Saved', error instanceof Error ? error.message : 'An unexpected error occurred while saving.', 'error');
         }
       },
     });
   };
 
   const handleSaveHeaderAll = async () => {
-    const updatedIdentity = {
-      ...identityData,
-    };
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('bht_site_identity', JSON.stringify(updatedIdentity));
-      window.dispatchEvent(new Event('identity_updated'));
-    }
-    const res = await saveSiteIdentityAction(updatedIdentity);
-    await handleSaveNav(navTree);
-    if (res.success) {
-      if (res.warning) {
-        showNotification('Header Settings Saved', 'Header settings & navigation saved to session cache! ' + res.warning, 'warning');
-      } else {
-        showNotification('Header Settings Published!', 'Header navigation, logo, and site identity published live successfully!', 'success');
+    const updatedIdentity = { ...identityData };
+    try {
+      const identityResult = await saveSiteIdentityAction(updatedIdentity);
+      if (!identityResult.success) {
+        showNotification('Header Settings Not Saved', identityResult.error || 'Unable to save site identity to the database.', 'error');
+        return;
       }
+
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('bht_site_identity', JSON.stringify(updatedIdentity));
+        window.dispatchEvent(new Event('identity_updated'));
+        if (updatedIdentity.favicon) {
+          updateBrowserFavicon(updatedIdentity.favicon);
+        }
+      }
+
+      const navigationResult = await handleSaveNav(navTree);
+      if (!navigationResult.success) {
+        showNotification('Header Partially Saved', 'Site identity was saved, but the navigation menu could not be saved. Please retry the navigation update.', 'warning');
+        return;
+      }
+      showNotification('Header Settings Published!', 'Header navigation, logo, and site identity published live successfully!', 'success');
+    } catch (error) {
+      showNotification('Header Settings Not Saved', error instanceof Error ? error.message : 'An unexpected error occurred while saving.', 'error');
     }
   };
 
