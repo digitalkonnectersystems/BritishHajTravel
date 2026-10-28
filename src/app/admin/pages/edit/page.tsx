@@ -35,6 +35,7 @@ import TiptapEditor from '@/components/admin/TiptapEditor';
 import SeoSettingsForm, { SeoSettings } from '@/components/admin/SeoSettingsForm';
 
 import ImageUploadWidget from '@/components/admin/ImageUploadWidget';
+import HomepageSideBannerFields, { DEFAULT_HOMEPAGE_SIDE_BANNERS, readHomepageSideBanners } from '@/components/admin/HomepageSideBannerFields';
 
 import { formatTravelMonth } from '@/lib/packageHelpers';
 
@@ -517,6 +518,7 @@ function PageBuilderContent() {
   const [uploadingJourneyIllustration, setUploadingJourneyIllustration] = useState(false);
 
   const [visaCards, setVisaCards] = useState<any[]>(DEFAULT_HOMEPAGE_VISA_CARDS);
+  const [homepageSideBanners, setHomepageSideBanners] = useState(() => readHomepageSideBanners(DEFAULT_HOMEPAGE_SIDE_BANNERS));
 
 
 
@@ -874,6 +876,8 @@ function PageBuilderContent() {
                 setSections(loadedSections);
 
                 const heroSec = parsed.find((s: any) => s.type === 'Homepage Hero Banner' || s.type === 'Hero Slider');
+
+                setHomepageSideBanners(readHomepageSideBanners(heroSec?.data));
 
                 if (heroSec && heroSec.data) {
 
@@ -2149,6 +2153,8 @@ function PageBuilderContent() {
 
             visaCards,
 
+            ...homepageSideBanners,
+
             bannerBgImage,
 
             bannerPosition,
@@ -3044,6 +3050,8 @@ function PageBuilderContent() {
           </div>
 
 
+
+          <HomepageSideBannerFields value={homepageSideBanners} onChange={setHomepageSideBanners} />
 
           {/* Homepage visa pricing cards & dynamic banner controls */}
 

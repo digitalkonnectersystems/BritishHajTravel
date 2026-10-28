@@ -271,25 +271,27 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
     journeyTextTop: data?.journeyTextTop || "YOUR JOURNEY",
     journeyTextBottom: data?.journeyTextBottom || "BEGINS HERE",
     journeyIllustrationUrl: data?.journeyIllustrationUrl || "",
-    hotelEyebrow: data?.hotelEyebrow || "HOTEL BOOKING",
-    hotelTitle: data?.hotelTitle || "Hotels in Makkah &",
-    hotelHighlight: data?.hotelHighlight || "Madinah",
-    hotelDescription: data?.hotelDescription || "Rooms close to the Haram, at prices booked direct.",
-    hotelImage: data?.hotelImage || "/images_BHT/hotels/makkah-clock-tower-sunset.jpg",
-    hotelCaption: data?.hotelCaption || "Makkah hotel / Clock Tower skyline (no people)",
+    hotelEyebrow: data?.hotelEyebrow ?? "HOTEL BOOKING",
+    hotelTitle: data?.hotelTitle ?? "Hotels in Makkah &",
+    hotelHighlight: data?.hotelHighlight ?? "Madinah",
+    hotelDescription: data?.hotelDescription ?? "Rooms close to the Haram, at prices booked direct.",
+    hotelImage: data?.hotelImage ?? "/images_BHT/hotels/makkah-clock-tower-sunset.jpg",
+    hotelVisible: data?.hotelVisible !== false,
+    hotelCaption: data?.hotelCaption ?? "Makkah hotel / Clock Tower skyline (no people)",
     hotelTags:
-      Array.isArray(data?.hotelTags) && data.hotelTags.length > 0 ? data.hotelTags : ["Haram view", "3★ - 5★", "Family rooms"],
-    hotelButtonLabel: data?.hotelButtonLabel || "Book a Hotel",
-    hotelButtonLink: data?.hotelButtonLink || "/hotels",
-    flightsEyebrow: data?.flightsEyebrow || "FLIGHTS",
-    flightsTitle: data?.flightsTitle || "Cheap Flights to Jeddah & Madinah",
-    flightsDescription: data?.flightsDescription || "Direct and connecting fares from London, Manchester & Birmingham.",
-    flightsImage: data?.flightsImage || "/images_BHT/flights/british-airways-sunset.jpg",
-    flightsCaption: data?.flightsCaption || "Aircraft / runway at sunset (no people)",
-    flightsRouteFrom: data?.flightsRouteFrom || "LHR",
-    flightsRouteTo: data?.flightsRouteTo || "JED",
-    flightsButtonLabel: data?.flightsButtonLabel || "Search Flights",
-    flightsButtonLink: data?.flightsButtonLink || "/flights",
+      Array.isArray(data?.hotelTags) ? data.hotelTags.filter((tag: unknown): tag is string => typeof tag === "string" && tag.trim().length > 0) : ["Haram view", "3★ - 5★", "Family rooms"],
+    hotelButtonLabel: data?.hotelButtonLabel ?? "Book a Hotel",
+    hotelButtonLink: data?.hotelButtonLink ?? "/hotels",
+    flightsEyebrow: data?.flightsEyebrow ?? "FLIGHTS",
+    flightsTitle: data?.flightsTitle ?? "Cheap Flights to Jeddah & Madinah",
+    flightsDescription: data?.flightsDescription ?? "Direct and connecting fares from London, Manchester & Birmingham.",
+    flightsImage: data?.flightsImage ?? "/images_BHT/flights/british-airways-sunset.jpg",
+    flightsVisible: data?.flightsVisible !== false,
+    flightsCaption: data?.flightsCaption ?? "Aircraft / runway at sunset (no people)",
+    flightsRouteFrom: data?.flightsRouteFrom ?? "LHR",
+    flightsRouteTo: data?.flightsRouteTo ?? "JED",
+    flightsButtonLabel: data?.flightsButtonLabel ?? "Search Flights",
+    flightsButtonLink: data?.flightsButtonLink ?? "/flights",
     quoteTitle: data?.quoteTitle || "Get a free Quote",
   };
 
@@ -305,6 +307,10 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMsg, setModalMsg] = useState("");
   const [modalRef, setModalRef] = useState("");
+  const sidePanelCount = Number(heroData.hotelVisible) + Number(heroData.flightsVisible);
+  const heroGridItemClass = sidePanelCount === 0
+    ? "sm:col-span-1 2xl:order-2 2xl:col-span-1"
+    : "sm:col-span-2 2xl:order-2 2xl:col-span-1";
 
   const handleQuoteSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -362,22 +368,29 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
       <section className="bg-[#f8fafc]">
         <div className="mx-auto w-full px-0">
           <div className="overflow-hidden bg-white shadow-[0_20px_65px_rgba(2,12,27,0.15)]">
-            <div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-[minmax(0,1.08fr)_minmax(0,3.35fr)_minmax(0,1fr)]">
-              <HeroSidePanel
-                theme="blue"
-                eyebrow={heroData.hotelEyebrow}
-                title={heroData.hotelTitle}
-                highlight={heroData.hotelHighlight}
-                description={heroData.hotelDescription}
-                image={heroData.hotelImage}
-                caption={heroData.hotelCaption}
-                chips={heroData.hotelTags}
-                buttonLabel={heroData.hotelButtonLabel}
-                buttonLink={heroData.hotelButtonLink}
-                className="order-2 sm:order-2 2xl:order-1"
-              />
+            <div className={sidePanelCount === 2
+              ? "grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-[minmax(0,1.08fr)_minmax(0,3.35fr)_minmax(0,1fr)]"
+              : sidePanelCount === 1
+                ? "grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-[minmax(0,3.35fr)_minmax(0,1fr)]"
+                : "grid grid-cols-1"
+            }>
+              {heroData.hotelVisible ? (
+                <HeroSidePanel
+                  theme="blue"
+                  eyebrow={heroData.hotelEyebrow}
+                  title={heroData.hotelTitle}
+                  highlight={heroData.hotelHighlight}
+                  description={heroData.hotelDescription}
+                  image={heroData.hotelImage}
+                  caption={heroData.hotelCaption}
+                  chips={heroData.hotelTags}
+                  buttonLabel={heroData.hotelButtonLabel}
+                  buttonLink={heroData.hotelButtonLink}
+                  className="order-2 sm:order-2 2xl:order-1"
+                />
+              ) : null}
 
-              <div className="relative order-1 min-w-0 overflow-hidden bg-[linear-gradient(90deg,#1A1B6C_0%,#2B256E_55%,#2D225F_100%)] text-white sm:col-span-2 2xl:order-2 2xl:col-span-1">
+              <div className={`relative order-1 min-w-0 overflow-hidden bg-[linear-gradient(90deg,#1A1B6C_0%,#2B256E_55%,#2D225F_100%)] text-white ${heroGridItemClass}`}>
                 {heroData.bgImage ? (
                   <>
                     <Image
@@ -533,18 +546,20 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
                 </div>
               </div>
 
-              <HeroSidePanel
-                theme="red"
-                eyebrow={heroData.flightsEyebrow}
-                title={heroData.flightsTitle}
-                description={heroData.flightsDescription}
-                image={heroData.flightsImage}
-                caption={heroData.flightsCaption}
-                buttonLabel={heroData.flightsButtonLabel}
-                buttonLink={heroData.flightsButtonLink}
-                route={{ from: heroData.flightsRouteFrom, to: heroData.flightsRouteTo }}
-                className="order-3 sm:order-3 2xl:order-3"
-              />
+              {heroData.flightsVisible ? (
+                <HeroSidePanel
+                  theme="red"
+                  eyebrow={heroData.flightsEyebrow}
+                  title={heroData.flightsTitle}
+                  description={heroData.flightsDescription}
+                  image={heroData.flightsImage}
+                  caption={heroData.flightsCaption}
+                  buttonLabel={heroData.flightsButtonLabel}
+                  buttonLink={heroData.flightsButtonLink}
+                  route={{ from: heroData.flightsRouteFrom, to: heroData.flightsRouteTo }}
+                  className="order-3 sm:order-3 2xl:order-3"
+                />
+              ) : null}
             </div>
           </div>
         </div>
