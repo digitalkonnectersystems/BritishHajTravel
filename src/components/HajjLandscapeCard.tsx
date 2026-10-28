@@ -84,7 +84,7 @@ export default function HajjLandscapeCard({
 
       <div className="flex min-w-0 flex-1 flex-col px-3.5 pt-3 sm:px-4">
         <div className="flex min-w-0 items-start justify-between gap-2">
-          <h3 title={packageTitle} className="line-clamp-2 h-[50px] min-w-0 flex-1 text-[19px] font-extrabold leading-[25px] tracking-tight text-primary [overflow-wrap:anywhere]">
+          <h3 title={packageTitle} className="line-clamp-2 min-w-0 flex-1 text-[19px] font-extrabold !leading-[25px] tracking-tight text-primary [overflow-wrap:anywhere]">
             {packageTitle}
           </h3>
           <span className="mt-1 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#eff3fa] text-red" aria-hidden="true">

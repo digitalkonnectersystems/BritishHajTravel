@@ -601,7 +601,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
           }
           return (
             <section key={idx} className="py-12 bg-white">
-              <div className="max-w-7xl mx-auto px-4">
+              <div className="w-full mx-auto px-0">
                 <div className="flex flex-col items-center text-center mb-8">
                   {sec.data?.eyebrow && (
                     <span className="eyebrow mx-auto">

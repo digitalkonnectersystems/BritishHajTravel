@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { normalizeFlightUrl } from "@/lib/flightUrl";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
 const DEFAULT_NAV_ITEMS = [
   { id: '1', label: 'Home', url: '/', level: 1, children: [] },
@@ -187,7 +187,7 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
               </button>
             </div>
 
-            <div className="flex flex-col space-y-1 pt-4 xl:flex-row xl:items-center xl:space-y-0 xl:pt-0 h-full">
+            <div className="flex flex-col space-y-1 pt-4 xl:flex-row xl:items-center xl:space-y-0 xl:pt-0 h-full gap-1">
               {navItems.map((item, index) => {
                 const itemHref = normalizeFlightUrl(item.url || item.href || '#');
                 const itemLabel = item.label || item.title;
@@ -195,7 +195,7 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
                 const isParentActive = activePathname === itemHref || (hasChildren && item.children.some((sub: any) => activePathname === normalizeFlightUrl(sub.url || sub.href || '#')));
                 const dropdownId = `nav-dropdown-${index}`;
                 const isDropdownOpen = openDropdown === dropdownId;
-                const linkClasses = `block w-full rounded-lg px-3 py-3 text-left text-sm font-bold uppercase tracking-[0.02em] text-[#2E3192] transition-colors hover:bg-gray-50 hover:text-[#ED1C24] xl:w-auto xl:rounded-none xl:px-2 xl:py-6 xl:text-[clamp(0.75rem,0.92vw,0.95rem)] xl:hover:bg-transparent ${
+                const linkClasses = `block w-full rounded-lg px-3 py-3 text-left text-sm font-bold uppercase tracking-[0.02em] text-[var(--ink)] transition-colors hover:bg-gray-50 hover:text-[var(--red)] xl:w-auto xl:rounded-none xl:px-2 xl:py-6 xl:text-[clamp(0.75rem,0.92vw,1rem)] xl:hover:bg-transparent ${
                   isParentActive ? "!text-[#ED1C24]" : ""
                 }`;
 
@@ -234,7 +234,7 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
                         onFocus={() => {
                           if (window.innerWidth >= 1280) setOpenDropdown(dropdownId);
                         }}
-                        className={`${linkClasses} flex-1 xl:flex-none ${isParentActive ? "!text-[#ED1C24]" : ""}`}
+                        className={`${linkClasses} flex-1 xl:flex-none xl:pr-1 ${isParentActive ? "!text-[#ED1C24]" : ""}`}
                       >
                         {itemLabel}
                       </Link>
@@ -244,12 +244,11 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
                         aria-controls={dropdownId}
                         aria-expanded={isDropdownOpen}
                         onClick={() => setOpenDropdown((current) => current === dropdownId ? null : dropdownId)}
-                        className="ml-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-[#2E3192] transition hover:bg-gray-50 hover:text-[#ED1C24] xl:h-auto xl:w-auto xl:rounded-none xl:hover:bg-transparent"
+                        className="ml-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-[#2E3192] transition hover:bg-gray-50 hover:text-[#ED1C24] xl:ml-0 xl:h-auto xl:w-auto xl:rounded-none xl:hover:bg-transparent"
                       >
-                        <ChevronDown
-                          size={15}
+                        <span
                           aria-hidden="true"
-                          className={`transition-transform duration-200 xl:h-3 xl:w-3 ${isDropdownOpen ? "rotate-180" : ""}`}
+                          className={`block h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-t-current transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`}
                         />
                       </button>
                     </div>
@@ -322,7 +321,7 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
               </span>
               <a
                 href={`tel:${whatsappText.replace(/[^\d+]/g, "")}`}
-                className="text-xs font-extrabold leading-tight tracking-tight text-[#25D366] hover:underline md:text-sm"
+                className="text-xs font-extrabold leading-tight tracking-tight text-[#25D366] hover:underline md:text-lg"
               >
                 {whatsappText}
               </a>

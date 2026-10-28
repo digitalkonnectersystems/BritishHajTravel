@@ -365,7 +365,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
 
   return (
     <>
-      <section className="bg-[#f8fafc]">
+      <section className="">
         <div className="mx-auto w-full px-0">
           <div className="overflow-hidden bg-white shadow-[0_20px_65px_rgba(2,12,27,0.15)]">
             <div className={sidePanelCount === 2
@@ -411,7 +411,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
                   <div className="flex min-w-0 flex-col justify-center">
                     <div className="hero">
                       <div className="mb-5 text-[13px] font-extrabold uppercase tracking-[0.18em] text-white/85">{heroData.heroEyebrow}</div>
-                      <h1 className="font-serif text-[clamp(2rem,4vw,3.5rem)] leading-[0.98]" dangerouslySetInnerHTML={{ __html: heroData.title }} />
+                      <h1 className="font-serif text-[clamp(1.25rem,2.2vw,2.125rem)] leading-[0.98]" dangerouslySetInnerHTML={{ __html: heroData.title }} />
                       <p className="mt-5 max-w-[36rem] text-[16px] leading-7 text-white/88 sm:mt-6 lg:text-[17px] lg:leading-8">{heroData.description}</p>
 
                       <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:gap-4">
