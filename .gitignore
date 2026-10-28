@@ -88,3 +88,4 @@ fix.js
 alter_table.mjs
 *.cjs
 docs/performance
+env.local

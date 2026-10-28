@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { redirect } from 'next/navigation';
 import { getCurrentSession } from '@/lib/auth';
 import AdminSessionProvider from '@/components/admin/AdminSessionProvider';
+import MediaPickerProvider from '@/components/admin/MediaPickerProvider';
 
 export default async function AdminAuthLayout({ children }: { children: ReactNode }) {
   const session = await getCurrentSession();
@@ -16,7 +17,7 @@ export default async function AdminAuthLayout({ children }: { children: ReactNod
         loginTime: session.loginTime,
       }}
     >
-      {children}
+      <MediaPickerProvider>{children}</MediaPickerProvider>
     </AdminSessionProvider>
   );
-}
+}
