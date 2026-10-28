@@ -191,12 +191,12 @@ function HeroSidePanel({
 
         {image ? (
           <div className="mt-5 rounded-2xl border border-white/10 bg-white/5 p-2">
-            <div className="relative h-[150px] overflow-hidden rounded-xl bg-white/5">
+            <div className="relative h-[180px] overflow-hidden rounded-xl bg-white/5">
               <img src={image} alt="" className="h-full w-full object-cover" loading="lazy" />
             </div>
           </div>
         ) : (
-          <div className="mt-5 flex h-[150px] items-center justify-center rounded-2xl border border-dashed border-white/15 bg-white/5 text-center text-sm text-white/45">
+          <div className="mt-5 flex h-[180px] items-center justify-center rounded-2xl border border-dashed border-white/15 bg-white/5 text-center text-sm text-white/45">
             <div>
               <ImageIcon className="mx-auto mb-2 h-8 w-8" />
               <div>{caption || "Add panel image"}</div>
@@ -204,7 +204,7 @@ function HeroSidePanel({
           </div>
         )}
 
-        {!route && caption ? <p className="mt-4 text-center text-sm leading-6 text-white/45">{caption}</p> : null}
+        {/* {!route && caption ? <p className="mt-4 text-center text-sm leading-6 text-white/45">{caption}</p> : null} */}
 
         {route ? (
           <div className="mt-auto pt-7">
@@ -272,7 +272,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
     hotelTitle: data?.hotelTitle || "Hotels in Makkah &",
     hotelHighlight: data?.hotelHighlight || "Madinah",
     hotelDescription: data?.hotelDescription || "Rooms close to the Haram, at prices booked direct.",
-    hotelImage: data?.hotelImage || "",
+    hotelImage: data?.hotelImage || "/images_BHT/hotels/makkah-clock-tower-sunset.jpg",
     hotelCaption: data?.hotelCaption || "Makkah hotel / Clock Tower skyline (no people)",
     hotelTags:
       Array.isArray(data?.hotelTags) && data.hotelTags.length > 0 ? data.hotelTags : ["Haram view", "3★ - 5★", "Family rooms"],
@@ -281,7 +281,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
     flightsEyebrow: data?.flightsEyebrow || "FLIGHTS",
     flightsTitle: data?.flightsTitle || "Cheap Flights to Jeddah & Madinah",
     flightsDescription: data?.flightsDescription || "Direct and connecting fares from London, Manchester & Birmingham.",
-    flightsImage: data?.flightsImage || "",
+    flightsImage: data?.flightsImage || "/images_BHT/flights/british-airways-sunset.jpg",
     flightsCaption: data?.flightsCaption || "Aircraft / runway at sunset (no people)",
     flightsRouteFrom: data?.flightsRouteFrom || "LHR",
     flightsRouteTo: data?.flightsRouteTo || "JED",
