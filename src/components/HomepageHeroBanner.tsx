@@ -415,7 +415,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
                   </div>
 
                   <div className="mx-auto w-full max-w-[440px] rounded-[28px] bg-[#0B1672] p-6 shadow-[0_22px_40px_rgba(2,12,27,0.25)] md:p-7">
-                    <h2 className="mb-6 text-center font-serif text-[32px] leading-none text-white md:text-[36px]">{heroData.quoteTitle}</h2>
+                    <h2 className="mb-6 text-center font-serif text-[26px] leading-none text-white md:text-[30px]">{heroData.quoteTitle}</h2>
                     {quoteStatus ? <p className="mb-4 text-center text-sm font-semibold text-white/85">{quoteStatus}</p> : null}
 
                     <form noValidate className="flex h-full flex-col gap-5" onSubmit={handleQuoteSubmit}>
