@@ -63,6 +63,28 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
     };
   }, [menuActive]);
 
+  useEffect(() => {
+    if (!openDropdown) return;
+
+    const dismissOnOutsidePointer = (event: PointerEvent) => {
+      const dropdown = document.getElementById(openDropdown);
+      if (event.target instanceof Node && dropdown?.parentElement && !dropdown.parentElement.contains(event.target)) {
+        setOpenDropdown(null);
+      }
+    };
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpenDropdown(null);
+    };
+
+    document.addEventListener("pointerdown", dismissOnOutsidePointer);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", dismissOnOutsidePointer);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [openDropdown]);
+
   if (pathname?.startsWith("/admin") || pathname === "/letstravel") {
     return null;
   }
@@ -79,7 +101,7 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
   return (
     <>
       <header className="sticky top-0 z-[1000] w-full border-b border-gray-100 bg-white shadow-[0_2px_24px_-12px_rgba(19,39,35,0.18)]">
-        <div className="mx-auto flex h-20 w-full max-w-[1400px] items-center justify-between gap-2 px-5 pe-4 xl:gap-4 xl:px-4 2xl:px-0">
+        <div className="mx-auto flex h-20 w-full max-w-[1400px] items-center justify-between gap-2 px-5 pe-4 xl:p-0 xl:gap-4 ">
           
 
           <div className="w-full max-w-[200px] shrink-0 transition-opacity hover:opacity-95 sm:max-w-[250px]">
@@ -186,11 +208,32 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
                 }
 
                 return (
-                  <div key={item.id || itemHref} className="relative xl:group">
+                  <div
+                    key={item.id || itemHref}
+                    className="relative xl:group"
+                    onMouseEnter={() => {
+                      if (window.matchMedia("(min-width: 1280px) and (hover: hover) and (pointer: fine)").matches) {
+                        setOpenDropdown(dropdownId);
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      if (window.matchMedia("(min-width: 1280px) and (hover: hover) and (pointer: fine)").matches) {
+                        setOpenDropdown((current) => current === dropdownId ? null : current);
+                      }
+                    }}
+                    onBlur={(event) => {
+                      if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+                        setOpenDropdown((current) => current === dropdownId ? null : current);
+                      }
+                    }}
+                  >
                     <div className="flex items-center">
                       <Link
                         href={itemHref}
                         onClick={closeMenu}
+                        onFocus={() => {
+                          if (window.innerWidth >= 1280) setOpenDropdown(dropdownId);
+                        }}
                         className={`${linkClasses} flex-1 xl:flex-none ${isParentActive ? "!text-[#ED1C24]" : ""}`}
                       >
                         {itemLabel}
@@ -201,29 +244,24 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
                         aria-controls={dropdownId}
                         aria-expanded={isDropdownOpen}
                         onClick={() => setOpenDropdown((current) => current === dropdownId ? null : dropdownId)}
-                        className="ml-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-[#2E3192] transition hover:bg-gray-50 hover:text-[#ED1C24] xl:hidden"
+                        className="ml-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-[#2E3192] transition hover:bg-gray-50 hover:text-[#ED1C24] xl:h-auto xl:w-auto xl:rounded-none xl:hover:bg-transparent"
                       >
                         <ChevronDown
                           size={15}
                           aria-hidden="true"
-                          className={`transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`}
+                          className={`transition-transform duration-200 xl:h-3 xl:w-3 ${isDropdownOpen ? "rotate-180" : ""}`}
                         />
                       </button>
-                      <ChevronDown
-                        size={12}
-                        aria-hidden="true"
-                        className="ml-1 hidden shrink-0 text-[#2E3192] transition-transform duration-200 group-hover:rotate-180 xl:block"
-                      />
                     </div>
                     <div
                       id={dropdownId}
                       className={`header-nav-dropdown ml-3 border-l-2 border-gray-100 pl-2 ${
-                        isDropdownOpen ? "block" : "hidden"
-                      } xl:pointer-events-none xl:absolute xl:left-0 xl:top-full xl:z-20 xl:ml-0 xl:block xl:min-w-48 xl:translate-y-1 xl:rounded-b-xl xl:border xl:border-gray-100 xl:bg-white xl:py-2 xl:pl-0 xl:opacity-0 xl:shadow-xl xl:transition-all xl:duration-200 xl:group-hover:pointer-events-auto xl:group-hover:translate-y-0 xl:group-hover:opacity-100 xl:group-focus-within:pointer-events-auto xl:group-focus-within:translate-y-0 xl:group-focus-within:opacity-100`}
+                        isDropdownOpen ? "block xl:visible xl:pointer-events-auto xl:opacity-100" : "hidden xl:invisible xl:pointer-events-none xl:opacity-0"
+                      } xl:absolute xl:left-0 xl:top-full xl:z-20 xl:ml-0 xl:block xl:min-w-48 xl:rounded-b-xl xl:border xl:border-gray-100 xl:bg-white xl:py-2 xl:pl-0 xl:shadow-xl xl:transition-opacity xl:duration-200`}
                     >
                       {item.children.map((sub: any) => {
-                        const subHref = sub.url || sub.href || "#";
-                        const isSubActive = pathname === subHref;
+                        const subHref = normalizeFlightUrl(sub.url || sub.href || "#");
+                        const isSubActive = activePathname === subHref;
                         return (
                           <Link
                             key={sub.id || subHref}
