@@ -44,7 +44,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           'X-Content-Type-Options': 'nosniff',
           'Content-Security-Policy': "default-src 'none'; sandbox",
           'Content-Type': contentType,
-          'Cache-Control': 'public, max-age=31536000, immutable',
+          'Cache-Control': 'public, no-cache, must-revalidate',
         },
       });
     }
@@ -65,7 +65,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           'X-Content-Type-Options': 'nosniff',
           'Content-Security-Policy': "default-src 'none'; sandbox",
           'Content-Type': contentType,
-          'Cache-Control': 'public, max-age=31536000, immutable',
+          'Cache-Control': 'public, no-cache, must-revalidate',
         },
       });
     }
@@ -79,7 +79,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           'X-Content-Type-Options': 'nosniff',
           'Content-Security-Policy': "default-src 'none'; sandbox",
           'Content-Type': contentType,
-          'Cache-Control': 'public, max-age=31536000, immutable',
+          'Cache-Control': 'public, no-cache, must-revalidate',
         },
       });
     }

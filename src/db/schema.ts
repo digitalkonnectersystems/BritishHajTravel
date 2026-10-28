@@ -502,3 +502,20 @@ export const backendLogs = mysqlTable('backend_logs', {
   updatedAt: timestamp('updated_at').defaultNow().onUpdateNow(),
   deletedAt: timestamp('deleted_at'),
 }, table => ({createdIdx:index('backend_logs_created_idx').on(table.createdAt)}));
+
+export const mediaFiles = mysqlTable('media_files', {
+  id: int('id').autoincrement().primaryKey(),
+  name: varchar('name', {length:255}).notNull(),
+  relativePath: varchar('relative_path', {length:700}).notNull().unique(),
+  contentHash: varchar('content_hash', {length:64}),
+  mimeType: varchar('mime_type', {length:120}).notNull(),
+  sizeBytes: int('size_bytes').notNull().default(0),
+  storage: mysqlEnum('storage', ['local','public','blob','remote']).notNull().default('local'),
+  status: mysqlEnum('status', ['active','trash']).notNull().default('active'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow().onUpdateNow(),
+  deletedAt: timestamp('deleted_at'),
+}, table => ({
+  statusIdx: index('media_files_status_idx').on(table.status),
+  hashIdx: index('media_files_hash_idx').on(table.contentHash),
+}));

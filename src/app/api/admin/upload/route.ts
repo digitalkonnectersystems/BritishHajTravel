@@ -3,6 +3,10 @@ import fs from 'fs/promises';
 import path from 'path';
 import { put } from '@vercel/blob';
 import { getCurrentSession } from '@/lib/auth';
+import { db } from '@/db';
+import { mediaFiles } from '@/db/schema';
+import { eq, and } from 'drizzle-orm';
+import { getMediaRoot, hashBuffer, optimizeImage } from '@/lib/mediaStorage';
 
 // Strict allow-list of recognized media subfolders matching public/images_BHT
 const ALLOWED_SUBFOLDERS = new Set([
@@ -177,24 +181,52 @@ export async function POST(req: NextRequest) {
 
     // Explicit local provider: writes never silently fall back from Blob or remote.
     try {
-      const buffer = Buffer.from(await file.arrayBuffer());
-      const storageRoot = process.env.MEDIA_STORAGE_ROOT
-        ? path.resolve(process.env.MEDIA_STORAGE_ROOT)
-        : path.join(process.cwd(), 'public', 'images_BHT');
+      const sourceBuffer = Buffer.from(await file.arrayBuffer());
+      const rawHash = hashBuffer(sourceBuffer);
+      const rawMatches = await db.select().from(mediaFiles).where(and(eq(mediaFiles.contentHash,rawHash),eq(mediaFiles.status,'active'))).limit(10);
+      for (const match of rawMatches) {
+        if (match.storage === 'local' || match.storage === 'public') {
+          const root = match.storage === 'local' ? getMediaRoot() : path.join(process.cwd(),'public','images_BHT');
+          const exists = await fs.stat(path.join(root,match.relativePath)).then(stat=>stat.isFile()).catch(()=>false);
+          if (exists) return NextResponse.json({success:true,url:`/images_BHT/${match.relativePath}`,relativePath:`images_BHT/${match.relativePath}`,reused:true,sizeBytes:match.sizeBytes});
+        }
+      }
+      const transformed = await optimizeImage(sourceBuffer, cleanExt);
+      const buffer = transformed.buffer;
+      const finalFilename = uniqueFilename.replace(/\.[^.]+$/, transformed.extension);
+      const sha = hashBuffer(buffer);
+      // Content-addressed reuse ensures selecting the same file cannot create a duplicate.
+      const matches = await db.select().from(mediaFiles).where(and(eq(mediaFiles.contentHash,sha), eq(mediaFiles.status,'active'))).limit(10);
+      for (const match of matches) {
+        if (match.storage === 'local' || match.storage === 'public') {
+          const exists = await fs.stat(path.join(match.storage==='local'?getMediaRoot():path.join(process.cwd(),'public','images_BHT'),match.relativePath)).then(s=>s.isFile()).catch(()=>false);
+          if (exists) return NextResponse.json({success:true,url:`/images_BHT/${match.relativePath}`,relativePath:`images_BHT/${match.relativePath}`,reused:true,sizeBytes:match.sizeBytes});
+        }
+      }
+      const storageRoot = getMediaRoot();
       const targetDir = path.join(storageRoot, subfolder);
       await fs.mkdir(targetDir, { recursive: true });
 
-      const targetFilePath = path.join(targetDir, uniqueFilename);
-      await fs.writeFile(targetFilePath, buffer);
+      const targetFilePath = path.join(targetDir, finalFilename);
+      await fs.writeFile(targetFilePath, buffer, {flag:'wx'});
+      const relative = `${subfolder}/${finalFilename}`;
+      try {
+        await db.insert(mediaFiles).values({name:finalFilename, relativePath:relative,contentHash:sha,sizeBytes:buffer.length,mimeType:transformed.extension==='.webp'?'image/webp':file.type||'application/octet-stream', storage:'local'});
+      } catch (databaseError) {
+        await fs.unlink(targetFilePath).catch(()=>{});
+        throw databaseError;
+      }
 
       // Media route supports a persistent shared storage root across deployments.
-      const publicUrl = `/images_BHT/${subfolder}/${uniqueFilename}`;
-      const relativePath = `images_BHT/${subfolder}/${uniqueFilename}`;
+      const publicUrl = `/images_BHT/${subfolder}/${finalFilename}`;
+      const relativePath = `images_BHT/${subfolder}/${finalFilename}`;
 
       return NextResponse.json({
         success: true,
         url: publicUrl,
         relativePath,
+        sizeBytes: buffer.length,
+        optimized: transformed.optimized,
       });
     } catch (fsErr: any) {
       // If local filesystem is read-only (EROFS) and Blob wasn't configured
