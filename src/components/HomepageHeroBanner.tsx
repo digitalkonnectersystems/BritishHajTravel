@@ -359,7 +359,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
       <section className="bg-[#f8fafc]">
         <div className="mx-auto w-full px-0">
           <div className="overflow-hidden bg-white shadow-[0_20px_65px_rgba(2,12,27,0.15)]">
-            <div className="grid lg:grid-cols-[1.08fr_2fr_1.35fr_1fr]">
+            <div className="grid lg:grid-cols-[1.08fr_3.35fr_1fr]">
               <HeroSidePanel
                 theme="blue"
                 eyebrow={heroData.hotelEyebrow}
@@ -373,7 +373,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
                 buttonLink={heroData.hotelButtonLink}
               />
 
-              <div className="relative overflow-hidden bg-[linear-gradient(90deg,#1A1B6C_0%,#2B256E_55%,#2D225F_100%)] px-7 py-8 text-white md:px-10 lg:px-12 lg:py-12">
+              <div className="relative overflow-hidden bg-[linear-gradient(90deg,#1A1B6C_0%,#2B256E_55%,#2D225F_100%)] text-white">
                 {heroData.bgImage ? (
                   <>
                     <Image
@@ -381,148 +381,151 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
                       alt=""
                       fill
                       priority
-                      sizes="(max-width: 1024px) 100vw, 40vw"
+                      sizes="(max-width: 1024px) 100vw, 65vw"
                       className="object-cover opacity-[0.16] mix-blend-screen"
                       style={{ objectPosition: heroData.position || "center center", objectFit: (heroData.size as any) || "cover" }}
                     />
-                    <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(15,23,96,0.94)_0%,rgba(31,32,93,0.88)_58%,rgba(35,25,71,0.92)_100%)]" />
+                    <div className="absolute " />
+                    {/* <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(15,23,96,0.94)_0%,rgba(31,32,93,0.88)_58%,rgba(35,25,71,0.92)_100%)]" /> */}
                   </>
                 ) : null}
 
-                <div className="relative z-10 flex h-full flex-col justify-center">
-                  <div className="mb-5 text-[13px] font-extrabold uppercase tracking-[0.18em] text-white/85">{heroData.heroEyebrow}</div>
-                  <h1 className="max-w-[12ch] font-serif text-[36px] leading-[1.04] sm:text-[42px] lg:text-[56px]" dangerouslySetInnerHTML={{ __html: heroData.title }} />
-                  <p className="mt-6 max-w-[36rem] text-[16px] leading-8 text-white/88 lg:text-[17px]">{heroData.description}</p>
+                <div className="relative z-10 grid h-full grid-cols-1 items-center gap-10 px-7 py-8 md:px-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:gap-12 lg:px-12 lg:py-12">
+                  <div className="flex h-full flex-col justify-center">
+                    <div className="hero">
+                      <div className="mb-5 text-[13px] font-extrabold uppercase tracking-[0.18em] text-white/85">{heroData.heroEyebrow}</div>
+                      <h1 className="font-serif text-[34px] leading-[0.95] md:text-[44px]" dangerouslySetInnerHTML={{ __html: heroData.title }} />
+                      <p className="mt-6 max-w-[36rem] text-[16px] leading-8 text-white/88 lg:text-[17px]">{heroData.description}</p>
 
-                  <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
-                    <Link
-                      href={heroData.primaryBtnLink}
-                      className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-red px-7 text-center text-[15px] font-extrabold uppercase tracking-[0.1em] text-white transition hover:translate-y-[-1px] hover:bg-red/90 hover:shadow-lg"
-                    >
-                      {heroData.primaryBtnLabel}
-                    </Link>
-                    <Link
-                      href={heroData.secondaryBtnLink}
-                      className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-white px-7 text-center text-[15px] font-extrabold uppercase tracking-[0.1em] text-primary transition hover:translate-y-[-1px] hover:bg-slate-100 hover:shadow-lg"
-                    >
-                      {heroData.secondaryBtnLabel}
-                    </Link>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-[linear-gradient(180deg,#091B82_0%,#0B1970_100%)] px-6 py-7 text-white md:px-8 md:py-8">
-                <div className="mx-auto h-full max-w-[380px] rounded-[28px] bg-[#0B1672] p-6 shadow-[0_22px_40px_rgba(2,12,27,0.25)] md:p-7">
-                  <h2 className="mb-6 text-center font-serif text-[32px] leading-none text-white md:text-[36px]">{heroData.quoteTitle}</h2>
-                  {quoteStatus ? <p className="mb-4 text-center text-sm font-semibold text-white/85">{quoteStatus}</p> : null}
-
-                  <form noValidate className="flex h-full flex-col gap-5" onSubmit={handleQuoteSubmit}>
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                      <div>
-                        <label htmlFor="quote-fullName" className="mb-2 block text-xs font-extrabold uppercase tracking-wide text-white">
-                          Your Name
-                        </label>
-                        <input
-                          id="quote-fullName"
-                          type="text"
-                          placeholder="Full Name"
-                          value={quoteForm.fullName}
-                          onChange={(e) => {
-                            setQuoteForm({ ...quoteForm, fullName: e.target.value });
-                            if (quoteErrors.fullName) setQuoteErrors((prev) => ({ ...prev, fullName: "" }));
-                          }}
-                          className={`h-14 w-full rounded-none border bg-white px-4 text-[15px] text-slate-900 outline-none transition ${
-                            quoteErrors.fullName ? "border-red-600 ring-1 ring-red-600" : "border-slate-200 focus:border-red"
-                          }`}
-                        />
-                        {quoteErrors.fullName ? <span className="mt-1 block text-xs font-semibold text-red-200">{quoteErrors.fullName}</span> : null}
-                      </div>
-
-                      <div>
-                        <label htmlFor="quote-phone" className="mb-2 block text-xs font-extrabold uppercase tracking-wide text-white">
-                          Phone Number
-                        </label>
-                        <input
-                          id="quote-phone"
-                          type="tel"
-                          placeholder="+44"
-                          inputMode="numeric"
-                          maxLength={13}
-                          value={quoteForm.phone}
-                          onChange={(e) => {
-                            const value = normalizeUkPhoneInput(e.target.value);
-                            setQuoteForm({ ...quoteForm, phone: value });
-                            if (quoteErrors.phone) setQuoteErrors((prev) => ({ ...prev, phone: "" }));
-                          }}
-                          className={`h-14 w-full rounded-none border bg-white px-4 text-[15px] text-slate-900 outline-none transition ${
-                            quoteErrors.phone ? "border-red-600 ring-1 ring-red-600" : "border-slate-200 focus:border-red"
-                          }`}
-                        />
-                        {quoteErrors.phone ? <span className="mt-1 block text-xs font-semibold text-red-200">{quoteErrors.phone}</span> : null}
-                      </div>
-
-                      <div>
-                        <label htmlFor="quote-email" className="mb-2 block text-xs font-extrabold uppercase tracking-wide text-white">
-                          Email Address
-                        </label>
-                        <input
-                          id="quote-email"
-                          type="email"
-                          placeholder="your@email.com"
-                          value={quoteForm.email}
-                          onChange={(e) => {
-                            setQuoteForm({ ...quoteForm, email: e.target.value });
-                            if (quoteErrors.email) setQuoteErrors((prev) => ({ ...prev, email: "" }));
-                          }}
-                          className={`h-14 w-full rounded-none border bg-white px-4 text-[15px] text-slate-900 outline-none transition ${
-                            quoteErrors.email ? "border-red-600 ring-1 ring-red-600" : "border-slate-200 focus:border-red"
-                          }`}
-                        />
-                        {quoteErrors.email ? <span className="mt-1 block text-xs font-semibold text-red-200">{quoteErrors.email}</span> : null}
-                      </div>
-
-                      <div>
-                        <label htmlFor="quote-package" className="mb-2 block text-xs font-extrabold uppercase tracking-wide text-white">
-                          Select Your Package
-                        </label>
-                        <select
-                          id="quote-package"
-                          value={quoteForm.packageType}
-                          onChange={(e) => setQuoteForm({ ...quoteForm, packageType: e.target.value })}
-                          className="h-14 w-full cursor-pointer appearance-none rounded-none border border-slate-200 bg-white px-4 text-[15px] text-slate-900 outline-none transition focus:border-red"
+                      <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
+                        <Link
+                          href={heroData.primaryBtnLink}
+                          className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-red px-7 text-center text-[15px] font-extrabold uppercase tracking-[0.1em] text-white transition hover:translate-y-[-1px] hover:bg-red/90 hover:shadow-lg"
                         >
-                          <option>Select Package</option>
-                          <option>Umrah Package</option>
-                          <option>Hajj Package</option>
-                          <option>Flight Only</option>
-                          <option>Saudi Visa</option>
-                        </select>
+                          {heroData.primaryBtnLabel}
+                        </Link>
+                        <Link
+                          href={heroData.secondaryBtnLink}
+                          className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-white px-7 text-center text-[15px] font-extrabold uppercase tracking-[0.1em] text-primary transition hover:translate-y-[-1px] hover:bg-slate-100 hover:shadow-lg"
+                        >
+                          {heroData.secondaryBtnLabel}
+                        </Link>
                       </div>
                     </div>
+                  </div>
 
-                    <div>
-                      <label htmlFor="quote-pilgrims" className="mb-2 block text-xs font-extrabold uppercase tracking-wide text-white">
-                        Number of Pilgrims
-                      </label>
-                      <input
-                        id="quote-pilgrims"
-                        type="number"
-                        min="1"
-                        value={quoteForm.adults}
-                        onChange={(e) => setQuoteForm({ ...quoteForm, adults: parseInt(e.target.value, 10) || 1 })}
-                        className="h-14 w-full rounded-none border border-slate-200 bg-white px-4 text-[15px] text-slate-900 outline-none transition focus:border-red"
-                      />
-                    </div>
+                  <div className="mx-auto w-full max-w-[440px] rounded-[28px] bg-[#0B1672] p-6 shadow-[0_22px_40px_rgba(2,12,27,0.25)] md:p-7">
+                    <h2 className="mb-6 text-center font-serif text-[32px] leading-none text-white md:text-[36px]">{heroData.quoteTitle}</h2>
+                    {quoteStatus ? <p className="mb-4 text-center text-sm font-semibold text-white/85">{quoteStatus}</p> : null}
 
-                    <div className="pt-2">
-                      <button
-                        type="submit"
-                        className="inline-flex min-h-[60px] w-full items-center justify-center bg-red px-6 text-center text-[16px] font-extrabold uppercase tracking-[0.12em] text-white transition hover:bg-red/90"
-                      >
-                        Submit
-                      </button>
-                    </div>
-                  </form>
+                    <form noValidate className="flex h-full flex-col gap-5" onSubmit={handleQuoteSubmit}>
+                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div>
+                          <label htmlFor="quote-fullName" className="mb-2 block text-xs font-extrabold uppercase tracking-wide text-white">
+                            Your Name
+                          </label>
+                          <input
+                            id="quote-fullName"
+                            type="text"
+                            placeholder="Full Name"
+                            value={quoteForm.fullName}
+                            onChange={(e) => {
+                              setQuoteForm({ ...quoteForm, fullName: e.target.value });
+                              if (quoteErrors.fullName) setQuoteErrors((prev) => ({ ...prev, fullName: "" }));
+                            }}
+                            className={`h-14 w-full rounded-none border bg-white px-4 text-[15px] text-slate-900 outline-none transition ${
+                              quoteErrors.fullName ? "border-red-600 ring-1 ring-red-600" : "border-slate-200 focus:border-red"
+                            }`}
+                          />
+                          {quoteErrors.fullName ? <span className="mt-1 block text-xs font-semibold text-red-200">{quoteErrors.fullName}</span> : null}
+                        </div>
+
+                        <div>
+                          <label htmlFor="quote-phone" className="mb-2 block text-xs font-extrabold uppercase tracking-wide text-white">
+                            Phone Number
+                          </label>
+                          <input
+                            id="quote-phone"
+                            type="tel"
+                            placeholder="+44"
+                            inputMode="numeric"
+                            maxLength={13}
+                            value={quoteForm.phone}
+                            onChange={(e) => {
+                              const value = normalizeUkPhoneInput(e.target.value);
+                              setQuoteForm({ ...quoteForm, phone: value });
+                              if (quoteErrors.phone) setQuoteErrors((prev) => ({ ...prev, phone: "" }));
+                            }}
+                            className={`h-14 w-full rounded-none border bg-white px-4 text-[15px] text-slate-900 outline-none transition ${
+                              quoteErrors.phone ? "border-red-600 ring-1 ring-red-600" : "border-slate-200 focus:border-red"
+                            }`}
+                          />
+                          {quoteErrors.phone ? <span className="mt-1 block text-xs font-semibold text-red-200">{quoteErrors.phone}</span> : null}
+                        </div>
+
+                        <div>
+                          <label htmlFor="quote-email" className="mb-2 block text-xs font-extrabold uppercase tracking-wide text-white">
+                            Email Address
+                          </label>
+                          <input
+                            id="quote-email"
+                            type="email"
+                            placeholder="your@email.com"
+                            value={quoteForm.email}
+                            onChange={(e) => {
+                              setQuoteForm({ ...quoteForm, email: e.target.value });
+                              if (quoteErrors.email) setQuoteErrors((prev) => ({ ...prev, email: "" }));
+                            }}
+                            className={`h-14 w-full rounded-none border bg-white px-4 text-[15px] text-slate-900 outline-none transition ${
+                              quoteErrors.email ? "border-red-600 ring-1 ring-red-600" : "border-slate-200 focus:border-red"
+                            }`}
+                          />
+                          {quoteErrors.email ? <span className="mt-1 block text-xs font-semibold text-red-200">{quoteErrors.email}</span> : null}
+                        </div>
+
+                        <div>
+                          <label htmlFor="quote-package" className="mb-2 block text-xs font-extrabold uppercase tracking-wide text-white">
+                            Select Your Package
+                          </label>
+                          <select
+                            id="quote-package"
+                            value={quoteForm.packageType}
+                            onChange={(e) => setQuoteForm({ ...quoteForm, packageType: e.target.value })}
+                            className="h-14 w-full cursor-pointer appearance-none rounded-none border border-slate-200 bg-white px-4 text-[15px] text-slate-900 outline-none transition focus:border-red"
+                          >
+                            <option>Select Package</option>
+                            <option>Umrah Package</option>
+                            <option>Hajj Package</option>
+                            <option>Flight Only</option>
+                            <option>Saudi Visa</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label htmlFor="quote-pilgrims" className="mb-2 block text-xs font-extrabold uppercase tracking-wide text-white">
+                          Number of Pilgrims
+                        </label>
+                        <input
+                          id="quote-pilgrims"
+                          type="number"
+                          min="1"
+                          value={quoteForm.adults}
+                          onChange={(e) => setQuoteForm({ ...quoteForm, adults: parseInt(e.target.value, 10) || 1 })}
+                          className="h-14 w-full rounded-none border border-slate-200 bg-white px-4 text-[15px] text-slate-900 outline-none transition focus:border-red"
+                        />
+                      </div>
+
+                      <div className="pt-2">
+                        <button
+                          type="submit"
+                          className="inline-flex min-h-[60px] w-full items-center justify-center bg-red px-6 text-center text-[16px] font-extrabold uppercase tracking-[0.12em] text-white transition hover:bg-red/90"
+                        >
+                          Submit
+                        </button>
+                      </div>
+                    </form>
+                  </div>
                 </div>
               </div>
 

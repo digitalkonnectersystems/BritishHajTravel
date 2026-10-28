@@ -18,7 +18,7 @@ export default function MarqueeTrack({ type, images, speedMs = 35000, direction 
 
   return (
     <div className="marquee-widget">
-      <div className="marquee-wrapper overflow-hidden md:overflow-visible">
+      <div className="marquee-wrapper overflow-hidden">
         <div
           ref={(el) => {
             if (el) {
