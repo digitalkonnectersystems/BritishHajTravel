@@ -173,7 +173,7 @@ function HeroSidePanel({
   return (
     <div
       className={[
-        "relative flex h-full min-h-[360px] flex-col overflow-hidden px-6 py-7 text-white",
+        "relative flex h-full min-h-[360px] flex-col overflow-hidden px-6 pt-6 pb-14 text-white",
         isRed
           ? "bg-gradient-to-b from-[#A40918] via-[#890514] to-[#69020F]"
           : "bg-gradient-to-b from-[#101D83] via-[#0C1972] to-[#091460]",
@@ -182,12 +182,12 @@ function HeroSidePanel({
       <div className="relative z-10 flex h-full flex-col">
         <div className="mb-3 text-[11px] font-extrabold uppercase tracking-[0.42em] text-white/85">{eyebrow}</div>
 
-        <h3 className="font-serif text-[34px] leading-[0.95] md:text-[44px]">
+        <h3 className="font-serif text-[34px] leading-[0.95] md:text-[34px]">
           {title}
           {highlight ? <span className="block text-red">{highlight}</span> : null}
         </h3>
 
-        <p className="mt-4 max-w-[19rem] text-[15px] leading-8 text-white/90">{description}</p>
+        <p className="mt-4 max-w-[19rem] text-[15px] leading-6 text-white/90">{description}</p>
 
         {image ? (
           <div className="mt-5 rounded-2xl border border-white/10 bg-white/5 p-2">
@@ -394,7 +394,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
                   <div className="flex h-full flex-col justify-center">
                     <div className="hero">
                       <div className="mb-5 text-[13px] font-extrabold uppercase tracking-[0.18em] text-white/85">{heroData.heroEyebrow}</div>
-                      <h1 className="font-serif text-[34px] leading-[0.95] md:text-[44px]" dangerouslySetInnerHTML={{ __html: heroData.title }} />
+                      <h1 className="font-serif text-[34px] leading-[0.95] md:text-[34px]" dangerouslySetInnerHTML={{ __html: heroData.title }} />
                       <p className="mt-6 max-w-[36rem] text-[16px] leading-8 text-white/88 lg:text-[17px]">{heroData.description}</p>
 
                       <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
