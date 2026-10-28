@@ -155,6 +155,7 @@ function HeroSidePanel({
   buttonLabel,
   buttonLink,
   route,
+  className,
 }: {
   theme?: "blue" | "red";
   eyebrow: string;
@@ -167,36 +168,38 @@ function HeroSidePanel({
   buttonLabel: string;
   buttonLink: string;
   route?: { from: string; to: string };
+  className?: string;
 }) {
   const isRed = theme === "red";
 
   return (
     <div
       className={[
-        "relative flex h-full min-h-[360px] flex-col overflow-hidden px-6 pt-6 pb-14 text-white",
+        "relative flex h-full min-h-[360px] min-w-0 flex-col overflow-hidden px-5 py-6 pb-[44px] text-white sm:px-6 sm:pb-[60px]",
+        className,
         isRed
           ? "bg-gradient-to-b from-[#A40918] via-[#890514] to-[#69020F]"
           : "bg-gradient-to-b from-[#101D83] via-[#0C1972] to-[#091460]",
       ].join(" ")}
     >
-      <div className="relative z-10 flex h-full flex-col">
-        <div className="mb-3 text-[11px] font-extrabold uppercase tracking-[0.42em] text-white/85">{eyebrow}</div>
+      <div className="relative z-10 flex h-full min-w-0 flex-col">
+        <div className="mb-3 text-[11px] font-extrabold uppercase tracking-[0.2em] text-white/85 sm:tracking-[0.3em] 2xl:tracking-[0.42em]">{eyebrow}</div>
 
-        <h3 className="font-serif text-[34px] leading-[0.95] md:text-[34px]">
+        <h3 className="font-serif text-[clamp(1.25rem,2.2vw,2.125rem)] leading-[0.98] lg:whitespace-nowrap 2xl:whitespace-normal">
           {title}
-          {highlight ? <span className="block text-red">{highlight}</span> : null}
+          {highlight ? <span className="block text-red lg:ml-2 lg:inline 2xl:ml-0 2xl:block">{highlight}</span> : null}
         </h3>
 
-        <p className="mt-4 max-w-[19rem] text-[15px] leading-6 text-white/90">{description}</p>
+        <p className="mt-4 text-[15px] leading-6 text-white/90 lg:whitespace-nowrap lg:text-[12px] lg:leading-5 2xl:whitespace-normal 2xl:text-[15px] 2xl:leading-6">{description}</p>
 
         {image ? (
           <div className="mt-5 rounded-2xl border border-white/10 bg-white/5 p-2">
-            <div className="relative h-[180px] overflow-hidden rounded-xl bg-white/5">
+            <div className="relative h-40 overflow-hidden rounded-xl bg-white/5 sm:h-44 2xl:h-[180px]">
               <img src={image} alt="" className="h-full w-full object-cover" loading="lazy" />
             </div>
           </div>
         ) : (
-          <div className="mt-5 flex h-[180px] items-center justify-center rounded-2xl border border-dashed border-white/15 bg-white/5 text-center text-sm text-white/45">
+          <div className="mt-5 flex h-40 items-center justify-center rounded-2xl border border-dashed border-white/15 bg-white/5 text-center text-sm text-white/45 sm:h-44 2xl:h-[180px]">
             <div>
               <ImageIcon className="mx-auto mb-2 h-8 w-8" />
               <div>{caption || "Add panel image"}</div>
@@ -208,7 +211,7 @@ function HeroSidePanel({
 
         {route ? (
           <div className="mt-auto pt-7">
-            <div className="mb-6 flex items-center justify-between font-serif text-[32px] tracking-tight text-white md:text-[38px]">
+            <div className="mb-6 flex items-center justify-between font-serif text-[clamp(1.75rem,3vw,2.375rem)] tracking-tight text-white">
               <span>{route.from}</span>
               <span className="mx-3 flex-1 border-t border-dashed border-white/40" />
               <span>{route.to}</span>
@@ -223,9 +226,9 @@ function HeroSidePanel({
         ) : (
           <>
             {chips && chips.length > 0 ? (
-              <div className="mt-auto flex flex-wrap gap-3 pt-7">
+              <div className="mt-auto flex flex-wrap gap-2 pt-7 sm:gap-3">
                 {chips.map((chip) => (
-                  <span key={chip} className="inline-flex items-center rounded-full border border-white/55 px-4 py-2 text-sm font-semibold text-white/95">
+                  <span key={chip} className="inline-flex items-center rounded-full border border-white/55 px-3 py-1.5 text-xs font-semibold text-white/95 sm:px-4 sm:py-2 sm:text-sm">
                     {chip}
                   </span>
                 ))}
@@ -359,7 +362,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
       <section className="bg-[#f8fafc]">
         <div className="mx-auto w-full px-0">
           <div className="overflow-hidden bg-white shadow-[0_20px_65px_rgba(2,12,27,0.15)]">
-            <div className="grid lg:grid-cols-[1.08fr_3.35fr_1fr]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-[minmax(0,1.08fr)_minmax(0,3.35fr)_minmax(0,1fr)]">
               <HeroSidePanel
                 theme="blue"
                 eyebrow={heroData.hotelEyebrow}
@@ -371,9 +374,10 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
                 chips={heroData.hotelTags}
                 buttonLabel={heroData.hotelButtonLabel}
                 buttonLink={heroData.hotelButtonLink}
+                className="order-2 sm:order-2 2xl:order-1"
               />
 
-              <div className="relative overflow-hidden bg-[linear-gradient(90deg,#1A1B6C_0%,#2B256E_55%,#2D225F_100%)] text-white">
+              <div className="relative order-1 min-w-0 overflow-hidden bg-[linear-gradient(90deg,#1A1B6C_0%,#2B256E_55%,#2D225F_100%)] text-white sm:col-span-2 2xl:order-2 2xl:col-span-1">
                 {heroData.bgImage ? (
                   <>
                     <Image
@@ -381,7 +385,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
                       alt=""
                       fill
                       priority
-                      sizes="(max-width: 1024px) 100vw, 65vw"
+                      sizes="(max-width: 1535px) 100vw, 63vw"
                       className="object-cover opacity-[0.16] mix-blend-screen"
                       style={{ objectPosition: heroData.position || "center center", objectFit: (heroData.size as any) || "cover" }}
                     />
@@ -390,23 +394,23 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
                   </>
                 ) : null}
 
-                <div className="relative z-10 grid h-full grid-cols-1 items-center gap-10 px-7 py-8 md:px-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:gap-12 lg:px-12 lg:py-12">
-                  <div className="flex h-full flex-col justify-center">
+                <div className="relative z-10 grid h-full grid-cols-1 items-center gap-8 px-5 py-8 sm:px-8 md:px-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,400px)] lg:gap-8 lg:px-8 2xl:grid-cols-[minmax(0,1fr)_minmax(0,440px)] 2xl:gap-10 2xl:px-10 2xl:py-12">
+                  <div className="flex min-w-0 flex-col justify-center">
                     <div className="hero">
                       <div className="mb-5 text-[13px] font-extrabold uppercase tracking-[0.18em] text-white/85">{heroData.heroEyebrow}</div>
-                      <h1 className="font-serif text-[34px] leading-[0.95] md:text-[34px]" dangerouslySetInnerHTML={{ __html: heroData.title }} />
-                      <p className="mt-6 max-w-[36rem] text-[16px] leading-8 text-white/88 lg:text-[17px]">{heroData.description}</p>
+                      <h1 className="font-serif text-[clamp(2rem,4vw,3.5rem)] leading-[0.98]" dangerouslySetInnerHTML={{ __html: heroData.title }} />
+                      <p className="mt-5 max-w-[36rem] text-[16px] leading-7 text-white/88 sm:mt-6 lg:text-[17px] lg:leading-8">{heroData.description}</p>
 
-                      <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
+                      <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:gap-4">
                         <Link
                           href={heroData.primaryBtnLink}
-                          className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-red px-7 text-center text-[15px] font-extrabold uppercase tracking-[0.1em] text-white transition hover:translate-y-[-1px] hover:bg-red/90 hover:shadow-lg"
+                          className="inline-flex min-h-[56px] max-w-full items-center justify-center rounded-full bg-red px-6 text-center text-[15px] font-extrabold uppercase tracking-[0.1em] text-white transition hover:translate-y-[-1px] hover:bg-red/90 hover:shadow-lg sm:px-7"
                         >
                           {heroData.primaryBtnLabel}
                         </Link>
                         <Link
                           href={heroData.secondaryBtnLink}
-                          className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-white px-7 text-center text-[15px] font-extrabold uppercase tracking-[0.1em] text-primary transition hover:translate-y-[-1px] hover:bg-slate-100 hover:shadow-lg"
+                          className="inline-flex min-h-[56px] max-w-full items-center justify-center rounded-full bg-white px-6 text-center text-[15px] font-extrabold uppercase tracking-[0.1em] text-primary transition hover:translate-y-[-1px] hover:bg-slate-100 hover:shadow-lg sm:px-7"
                         >
                           {heroData.secondaryBtnLabel}
                         </Link>
@@ -414,7 +418,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
                     </div>
                   </div>
 
-                  <div className="mx-auto w-full max-w-[440px] rounded-[28px] bg-[#0B1672] p-6 shadow-[0_22px_40px_rgba(2,12,27,0.25)] md:p-7">
+                  <div className="mx-auto w-full max-w-[400px] min-w-0 rounded-2xl bg-[#0B1672] p-5 shadow-[0_22px_40px_rgba(2,12,27,0.25)] sm:rounded-[28px] sm:p-6 md:p-7 2xl:max-w-[440px]">
                     <h2 className="mb-6 text-center font-serif text-[26px] leading-none text-white md:text-[30px]">{heroData.quoteTitle}</h2>
                     {quoteStatus ? <p className="mb-4 text-center text-sm font-semibold text-white/85">{quoteStatus}</p> : null}
 
@@ -539,6 +543,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
                 buttonLabel={heroData.flightsButtonLabel}
                 buttonLink={heroData.flightsButtonLink}
                 route={{ from: heroData.flightsRouteFrom, to: heroData.flightsRouteTo }}
+                className="order-3 sm:order-3 2xl:order-3"
               />
             </div>
           </div>
