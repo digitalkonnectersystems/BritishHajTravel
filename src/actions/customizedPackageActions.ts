@@ -7,7 +7,8 @@ import { isValidUkPhone } from '@/lib/ukPhone';
 import { requireAdmin } from '@/lib/requireAdmin';
 import { desc, eq, isNull, and, inArray } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
-import { writeBackendLog } from '@/actions/backendLogActions';
+import { writeBackendLog } from '@/lib/backendLogger';
+import { recordPublicEnquiry } from '@/lib/publicEnquiryAudit';
 
 export type CustomizedEnquiryInput = {
   category: 'hajj' | 'umrah'; fullName: string; email: string; phone: string;
@@ -74,6 +75,7 @@ export async function submitCustomizedPackageAction(raw: CustomizedEnquiryInput)
         message: `Reference: ${enquiryNumber}. View full preferences in Customized Enquiries.`, status: 'new',
       });
     });
+    await recordPublicEnquiry('Customized Package',enquiryNumber);
     revalidatePath('/admin/enquiries');
     revalidatePath('/admin/customized-enquiries');
     revalidatePath('/admin/dashboard');

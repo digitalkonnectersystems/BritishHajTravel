@@ -348,6 +348,87 @@ export async function deleteBlogAction(id: number) {
   }
 }
 
+export async function toggleBlogPublicationAction(id: number, isPublished: boolean) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
+  try {
+    const previousEntry = (await db.select().from(blogPosts).where(eq(blogPosts.id, id)).limit(1))[0];
+    if (!previousEntry) return { success: false, error: 'Blog post not found.' };
+
+    await db.update(blogPosts).set({ isPublished, updatedAt: new Date() }).where(eq(blogPosts.id, id));
+    const newEntry = { ...previousEntry, isPublished, updatedAt: new Date() };
+    await logAdminActivityAction({
+      type: 'blogs',
+      action: isPublished ? 'Published Blog Post' : 'Unpublished Blog Post',
+      details: `${isPublished ? 'Published' : 'Unpublished'} blog post "${previousEntry.title}"`,
+      previousEntry,
+      newEntry,
+    });
+
+    revalidatePath('/blogs');
+    revalidatePath('/admin/blogs');
+    updateTag('blogs');
+    if (previousEntry.slug) {
+      revalidatePath(`/blogs/${previousEntry.slug}`);
+      updateTag(`blog-${previousEntry.slug}`);
+    }
+    return { success: true };
+  } catch (err) {
+    console.error('toggleBlogPublicationAction error:', err);
+    return { success: false, error: err instanceof Error ? err.message : 'Failed to update blog visibility.' };
+  }
+}
+
+export async function duplicateBlogAction(id: number) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
+  try {
+    const source = (await db.select().from(blogPosts).where(eq(blogPosts.id, id)).limit(1))[0];
+    if (!source) return { success: false, error: 'Blog post not found.' };
+
+    const copySuffix = ' (Copy)';
+    const title = `${source.title.slice(0, 255 - copySuffix.length)}${copySuffix}`;
+    const baseSlug = (await slugifyBlogTitle(source.slug || source.title)).slice(0, 120) || 'blog';
+    let slug = `${baseSlug}-copy`;
+    let suffix = 2;
+    while ((await db.select({ id: blogPosts.id }).from(blogPosts).where(eq(blogPosts.slug, slug)).limit(1)).length > 0) {
+      const ending = `-copy-${suffix++}`;
+      slug = `${baseSlug.slice(0, 128 - ending.length)}${ending}`;
+    }
+
+    const content = { ...source };
+    delete (content as { id?: number }).id;
+    const inserted = await db.insert(blogPosts).values({
+      ...content,
+      title,
+      slug,
+      isPublished: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }).$returningId();
+    const duplicate = inserted[0]?.id
+      ? (await db.select().from(blogPosts).where(eq(blogPosts.id, inserted[0].id)).limit(1))[0]
+      : null;
+
+    await logAdminActivityAction({
+      type: 'blogs',
+      action: 'Duplicated Blog Post',
+      details: `Duplicated blog post "${source.title}" as "${title}"`,
+      previousEntry: source,
+      newEntry: duplicate,
+    });
+    revalidatePath('/blogs');
+    revalidatePath(`/blogs/${slug}`);
+    revalidatePath('/admin/blogs');
+    updateTag('blogs');
+    updateTag(`blog-${slug}`);
+    return { success: true, blog: duplicate };
+  } catch (err) {
+    console.error('duplicateBlogAction error:', err);
+    return { success: false, error: err instanceof Error ? err.message : 'Failed to duplicate blog post.' };
+  }
+}
+
 // ─── BLOG SEO — SAVE ───────────────────────────────────────────────────────
 export async function saveBlogSeoAction(blogId: number, seoData: any) {
   await requireAdmin(['admin', 'content_editor', 'seo_manager']);
@@ -358,6 +439,7 @@ export async function saveBlogSeoAction(blogId: number, seoData: any) {
       updatedAt: new Date(),
     }).where(eq(blogPosts.id, blogId));
     
+    await logAdminActivityAction({type:'blogs',action:'Updated Blog SEO',details:`Updated SEO metadata for blog #${blogId}`,newEntry:{id:blogId}});
     revalidatePath('/admin/blogs');
     updateTag('blogs');
     updateTag(`blog-seo-${blogId}`);

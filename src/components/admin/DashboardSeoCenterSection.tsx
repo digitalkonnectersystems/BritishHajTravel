@@ -240,14 +240,11 @@ export default function DashboardSeoCenterSection({ pages, audit = [] }: Dashboa
         {/* A single measured score, not fabricated historical data. */}
         <div className="rounded-2xl border border-slate-100 bg-gradient-to-b from-[#f8fbff] to-[#eefaf5] px-5 py-4">
           <div className="mb-1 flex items-baseline justify-between"><span className="text-xs font-bold text-slate-600">Current measured audit score</span><span className="text-2xl font-black text-emerald-900">{healthRating}%</span></div>
-          <svg className="w-full" viewBox="0 0 500 90" role="img" aria-label={`Current SEO audit score: ${healthRating} percent. No historical data available.`}>
-            <defs>
-              <linearGradient id="seo-current-line" x1="0" y1="0" x2="1" y2="0"><stop stopColor="#0d9488"/><stop offset=".45" stopColor="#3b82f6"/><stop offset=".8" stopColor="#a855f7"/><stop offset="1" stopColor="#f59e0b"/></linearGradient>
-              <linearGradient id="seo-current-shade" x1="0" y1="0" x2="0" y2="1"><stop stopColor="#0d9488" stopOpacity=".2"/><stop offset="1" stopColor="#0d9488" stopOpacity="0"/></linearGradient>
-            </defs>
-            <path d={`M 10 ${70-healthRating*.53} C 130 ${70-healthRating*.53-4}, 365 ${70-healthRating*.53+4}, 490 ${70-healthRating*.53} L 490 80 L 10 80 Z`} fill="url(#seo-current-shade)"/>
-            <path d={`M 10 ${70-healthRating*.53} C 130 ${70-healthRating*.53-4}, 365 ${70-healthRating*.53+4}, 490 ${70-healthRating*.53}`} stroke="url(#seo-current-line)" strokeWidth="5" strokeLinecap="round" fill="none"/>
-          </svg>
+          <div className="relative mt-5 mb-6 overflow-hidden rounded-full bg-slate-200/75 h-5" role="meter" aria-label="Current SEO audit score" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.max(0, Math.min(100, healthRating))}>
+            <div className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-teal-500 via-sky-400 to-violet-500 opacity-25 blur-sm" style={{ width: `${Math.max(0, Math.min(100, healthRating))}%` }} />
+            <div className="relative h-full rounded-full shadow-[0_4px_16px_rgba(56,189,248,.32)] transition-[width] duration-500" style={{ width: `${Math.max(0, Math.min(100, healthRating))}%`, background: "linear-gradient(90deg,#0d9488 0%,#38bdf8 28%,#6366f1 62%,#a855f7 80%,#f59e0b 100%)" }} />
+          </div>
+          <div className="flex justify-between text-[10px] font-bold text-slate-400"><span>0 · Needs attention</span><span>50 · Improving</span><span>100 · Excellent</span></div>
           <p className="mt-1 text-[11px] text-slate-500">Current snapshot only. Historical comparisons will be available when dated audit snapshots are stored.</p>
         </div>
       </div>

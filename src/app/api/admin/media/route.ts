@@ -5,6 +5,7 @@ import { asc, count, desc, eq, like, or, and, gt, gte } from 'drizzle-orm';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { getCurrentSession } from '@/lib/auth';
+import { logAdminActivityAction } from '@/actions/activityActions';
 import { getMediaDirectories, getMediaRoot, hashBuffer, imageType, MAX_OPTIMIZED_BYTES, safeMediaPath, validMediaPath, walkMediaFiles } from '@/lib/mediaStorage';
 import sharp from 'sharp';
 
@@ -94,6 +95,7 @@ export async function POST(req: NextRequest) {
       const ids: number[] = Array.isArray(body.ids) ? body.ids.filter((v:unknown) => Number.isInteger(v) && Number(v)>0).slice(0,100) : [];
       if (!ids.length) return NextResponse.json({success:false,error:'Choose media files'}, {status:400});
       for (const id of ids) await db.update(mediaFiles).set({status:action==='trash'?'trash':'active',deletedAt:action==='trash'?new Date():null}).where(eq(mediaFiles.id,id));
+      await logAdminActivityAction({type:'media',action:action==='trash'?'Moved Media to Trash':'Restored Media',details:`${ids.length} media records`,newEntry:{ids}});
       // Never unlink shared media here: a URL may be used by many pages.
       return NextResponse.json({success:true,updated:ids.length});
     }
@@ -126,6 +128,7 @@ export async function POST(req: NextRequest) {
           if (stats.failures.length<10) stats.failures.push(`${row.name}: ${error instanceof Error ? error.message : 'Failed'}`);
         } finally { if (tempFile) await fs.unlink(tempFile).catch(()=>{}); }
       }
+      if (id && stats.optimized>0) await logAdminActivityAction({type:'media',action:'Optimized Media Asset',details:`Optimized media #${id}`,newEntry:{id,bytesSaved:stats.bytesSaved}});
       return NextResponse.json({success:true,...stats,hasMore:!id&&allRows.length>12,nextCursor:rows.length?rows[rows.length-1].id:cursor});
     }
     return NextResponse.json({success:false,error:'Unknown action'}, {status:400});

@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getBlogsList, deleteBlogAction, saveBlogAction, slugifyBlogTitle, updateBlogOrderAction } from '@/actions/blogActions';
+import { getBlogsList, deleteBlogAction, duplicateBlogAction, saveBlogAction, slugifyBlogTitle, toggleBlogPublicationAction, updateBlogOrderAction } from '@/actions/blogActions';
 import { uploadFile } from '@/lib/uploadClient';
 import ConfirmModal, { ConfirmModalConfig } from '@/components/ui/ConfirmModal';
 import GlassNotificationModal from '@/components/ui/GlassNotificationModal';
 import SeoCenterModal from '@/components/admin/SeoCenterModal';
-import { Trash2, Pencil, Sliders, Upload, Plus, X, GripVertical, Star } from 'lucide-react';
+import { Trash2, Pencil, Sliders, Upload, Plus, X, GripVertical, Star, Copy, Eye, EyeOff } from 'lucide-react';
 import CategoryDropdown from '@/components/admin/CategoryDropdown';
 import { getBlogFeaturedImage } from '@/lib/blogImages';
 
@@ -71,6 +71,27 @@ export default function AdminBlogsPage() {
         setDeletingId(null);
       },
     });
+  };
+
+  const handleTogglePublication = async (blog: { id: number; title: string; isPublished: boolean }) => {
+    const isPublished = !blog.isPublished;
+    const res = await toggleBlogPublicationAction(blog.id, isPublished);
+    if (!res.success) {
+      notify('Visibility Update Failed', res.error || 'Failed to update blog visibility.', 'error');
+      return;
+    }
+    setBlogs((prev) => prev.map((item) => item.id === blog.id ? { ...item, isPublished } : item));
+    notify(isPublished ? 'Blog Published' : 'Blog Hidden', `"${blog.title}" is ${isPublished ? 'visible' : 'hidden'} on the public website.`);
+  };
+
+  const handleDuplicate = async (blog: { id: number; title: string }) => {
+    const res = await duplicateBlogAction(blog.id);
+    if (!res.success || !res.blog) {
+      notify('Duplicate Failed', res.error || 'Failed to duplicate blog post.', 'error');
+      return;
+    }
+    setBlogs((prev) => [res.blog, ...prev]);
+    notify('Blog Duplicated', `Created draft copy "${res.blog.title}".`);
   };
 
   const filtered = blogs.filter((b) => {
@@ -214,6 +235,24 @@ export default function AdminBlogsPage() {
                     {/* Actions */}
                     <td className="py-3 px-4 text-right whitespace-nowrap">
                       <div className="inline-flex gap-2 items-center">
+                        <button
+                          type="button"
+                          onClick={() => handleTogglePublication(b)}
+                          aria-label={b.isPublished ? 'Hide blog from public website' : 'Show blog on public website'}
+                          title={b.isPublished ? 'Hide blog from public website' : 'Show blog on public website'}
+                          className="p-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200"
+                        >
+                          {b.isPublished ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDuplicate(b)}
+                          aria-label="Duplicate blog post"
+                          title="Duplicate blog post"
+                          className="p-2 rounded-lg bg-violet-50 text-violet-700 hover:bg-violet-100"
+                        >
+                          <Copy className="w-3.5 h-3.5" />
+                        </button>
                         <button
                           type="button"
                           onClick={() => { setSelectedSeoBlog(b); setSeoModalOpen(true); }}

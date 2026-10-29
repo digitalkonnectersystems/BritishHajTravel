@@ -134,12 +134,12 @@ function KaabaJourneyIllustration({
 }
 
 const defaultVisaCards = [
-  { country: "Pakistan", passportLabel: "Passport Holders", price: "From £165", slug: "pakistan" },
-  { country: "India", passportLabel: "Passport Holders", price: "From £155", slug: "india" },
-  { country: "Bangladesh", passportLabel: "Passport Holders", price: "From £155", slug: "bangladesh" },
-  { country: "Afghanistan", passportLabel: "Passport Holders", price: "From £170", slug: "afghanistan" },
-  { country: "British", passportLabel: "Passport Holders", price: "From £139", slug: "british" },
-  { country: "Saudi ETA", passportLabel: "Quick Processing", price: "From £49", slug: "saudi-eta" },
+  { country: "Pakistan", passportLabel: "Passport Holders", price: "From £165", slug: "pakistani-passport" },
+  { country: "India", passportLabel: "Passport Holders", price: "From £155", slug: "indian-passport" },
+  { country: "Bangladesh", passportLabel: "Passport Holders", price: "From £155", slug: "bangladeshi-passport" },
+  { country: "Afghanistan", passportLabel: "Passport Holders", price: "From £170", slug: "afghan-passport" },
+  { country: "British", passportLabel: "Passport Holders", price: "From £139", slug: "british-passport" },
+  { country: "Saudi ETA", passportLabel: "Quick Processing", price: "From £49", slug: "eta-saudi-visa" },
   { country: "More", passportLabel: "Visa Options", price: "View All", slug: "saudi-visa" },
 ];
 
@@ -598,9 +598,12 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
 
             <div className="flex snap-x snap-mandatory gap-2.5 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden xl:grid xl:grid-cols-7 xl:overflow-visible xl:pb-0 lg:gap-3">
               {heroData.visaCards.map((visa: any, index: number) => {
-                const cardHref = visa.slug?.startsWith("/") || visa.slug?.startsWith("http")
-                  ? visa.slug
-                  : `/saudi-visa?visa=${encodeURIComponent(visa.slug || "")}`;
+                const normalizedVisaSlug = String(visa.slug || visa.country || "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+                const cardHref = visa.country === "More" && visa.slug === "saudi-visa"
+                  ? "/saudi-visa"
+                  : visa.slug?.startsWith("/visa-processing/")
+                    ? visa.slug
+                    : `/visa-processing/${encodeURIComponent(normalizedVisaSlug)}`;
 
                 return (
                   <Link

@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { put } from '@vercel/blob';
 import { getCurrentSession } from '@/lib/auth';
+import { logAdminActivityAction } from '@/actions/activityActions';
 import { db } from '@/db';
 import { mediaFiles } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
@@ -149,6 +150,7 @@ export async function POST(req: NextRequest) {
         if (!result.ok || !response?.success || typeof response.url !== 'string' || !response.url.startsWith('https://')) {
           throw new Error('The remote media server did not accept this file');
         }
+        await logAdminActivityAction({type:'media',action:'Uploaded Media File',details:`Uploaded ${uniqueFilename} to remote storage`});
         return NextResponse.json({ success: true, url: response.url, relativePath: response.relativePath || null });
       } catch (error) {
         console.error('Remote media upload failed:', error);
@@ -165,6 +167,7 @@ export async function POST(req: NextRequest) {
           addRandomSuffix: false,
         });
 
+        await logAdminActivityAction({type:'media',action:'Uploaded Media File',details:`Uploaded ${uniqueFilename} to blob storage`});
         return NextResponse.json({
           success: true,
           url: blob.url,
@@ -221,6 +224,7 @@ export async function POST(req: NextRequest) {
       const publicUrl = `/images_BHT/${subfolder}/${finalFilename}`;
       const relativePath = `images_BHT/${subfolder}/${finalFilename}`;
 
+      await logAdminActivityAction({type:'media',action:'Uploaded Media File',details:`Uploaded ${finalFilename} to persistent storage`});
       return NextResponse.json({
         success: true,
         url: publicUrl,

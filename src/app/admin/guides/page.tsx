@@ -2,10 +2,10 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { BookOpen, FileText, GripVertical, Pencil, Plus, Trash2 } from 'lucide-react';
+import { BookOpen, Copy, Eye, EyeOff, FileText, GripVertical, Pencil, Plus, Trash2 } from 'lucide-react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import ConfirmModal, { ConfirmModalConfig } from '@/components/ui/ConfirmModal';
-import { deleteGuideAction, getGuidesList, moveGuideToPagesAction, reorderGuidesAction, type GuideCategory } from '@/actions/pageActions';
+import { deleteGuideAction, duplicateGuideAction, getGuidesList, moveGuideToPagesAction, reorderGuidesAction, updateGuideStatusAction, type GuideCategory } from '@/actions/pageActions';
 
 type Guide = Awaited<ReturnType<typeof getGuidesList>>[number];
 
@@ -83,6 +83,25 @@ export default function AdminGuidesPage() {
     });
   };
 
+  const handleTogglePublication = async (guide: Guide) => {
+    const status = guide.status === 'published' ? 'draft' : 'published';
+    const result = await updateGuideStatusAction(guide.id, status);
+    if (!result.success) {
+      window.alert(result.error || 'Failed to update guide visibility.');
+      return;
+    }
+    setGuides((current) => current.map((item) => item.id === guide.id ? { ...item, status } : item));
+  };
+
+  const handleDuplicate = async (guide: Guide) => {
+    const result = await duplicateGuideAction(guide.id);
+    if (!result.success || !result.guide) {
+      window.alert(result.error || 'Failed to duplicate guide.');
+      return;
+    }
+    setGuides((current) => [result.guide as Guide, ...current]);
+  };
+
   return (
     <AdminLayout user={{ name: 'Admin User', role: 'Super Admin' }}>
       <div className="flex flex-col gap-6">
@@ -127,7 +146,10 @@ export default function AdminGuidesPage() {
                   <td className="py-4 px-5"><div className="flex items-center gap-3"><button type="button" disabled={Boolean(search.trim())} className="text-slate-400 cursor-grab disabled:cursor-not-allowed" title="Drag to reposition"><GripVertical className="w-4 h-4" /></button><span className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center"><BookOpen className="w-4 h-4" /></span><span className="font-bold text-slate-900">{guide.title}</span></div></td>
                   <td className="py-4 px-5 text-slate-500 font-mono">{guide.slug}</td>
                   <td className="py-4 px-5"><span className={`rounded-full px-2.5 py-1 text-[10px] font-bold ${guide.status === 'published' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>{guide.status}</span></td>
-                  <td className="py-4 px-5 text-right"><div className="inline-flex items-center gap-2"><Link href={`/admin/guides/edit?id=${guide.id}&category=${category}`} className="p-2 rounded-lg bg-slate-100 text-slate-600" title="Edit guide"><Pencil className="w-3.5 h-3.5" /></Link><button type="button" onClick={() => handleMoveToPages(guide)} className="p-2 rounded-lg bg-blue-50 text-primary" title="Move to Admin Pages"><FileText className="w-3.5 h-3.5" /></button><button type="button" onClick={() => handleDelete(guide)} className="p-2 rounded-lg bg-red-50 text-red-600" title="Delete guide"><Trash2 className="w-3.5 h-3.5" /></button></div></td>
+                  <td className="py-4 px-5 text-right"><div className="inline-flex items-center gap-2">
+                    <button type="button" onClick={() => handleTogglePublication(guide)} aria-label={guide.status === 'published' ? 'Hide guide from public website' : 'Show guide on public website'} title={guide.status === 'published' ? 'Hide guide from public website' : 'Show guide on public website'} className="p-2 rounded-lg bg-slate-100 text-slate-600">{guide.status === 'published' ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}</button>
+                    <button type="button" onClick={() => handleDuplicate(guide)} aria-label="Duplicate guide" title="Duplicate guide" className="p-2 rounded-lg bg-violet-50 text-violet-700"><Copy className="w-3.5 h-3.5" /></button>
+                    <Link href={`/admin/guides/edit?id=${guide.id}&category=${category}`} className="p-2 rounded-lg bg-slate-100 text-slate-600" title="Edit guide"><Pencil className="w-3.5 h-3.5" /></Link><button type="button" onClick={() => handleMoveToPages(guide)} className="p-2 rounded-lg bg-blue-50 text-primary" title="Move to Admin Pages"><FileText className="w-3.5 h-3.5" /></button><button type="button" onClick={() => handleDelete(guide)} className="p-2 rounded-lg bg-red-50 text-red-600" title="Delete guide"><Trash2 className="w-3.5 h-3.5" /></button></div></td>
                 </tr>
               ))}
               {filteredGuides.length === 0 && <tr><td colSpan={4} className="py-12 text-center text-slate-400">No {category} guides found.</td></tr>}

@@ -76,6 +76,11 @@ const navItems = [
     icon: <FileText className="w-4 h-4" />,
   },
   {
+    label: 'Visa Processing',
+    href: '/admin/visa-processing',
+    icon: <FileText className="w-4 h-4" />,
+  },
+  {
     label: 'Hotels',
     href: '/admin/hotels',
     icon: <Building2 className="w-4 h-4" />,
