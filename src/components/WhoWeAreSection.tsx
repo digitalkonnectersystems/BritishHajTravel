@@ -216,7 +216,7 @@ export default function WhoWeAreSection({ data }: { data: any }) {
       {/* light overlay */}
       <div className="absolute inset-0 bg-white/20" />
 
-      <div className="relative max-w-[1500px] mx-auto px-5 md:px-8">
+      <div className="relative max-w-[1400px] mx-auto px-5 md:px-8">
         <div
           className="
             grid grid-cols-1

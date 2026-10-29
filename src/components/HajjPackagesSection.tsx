@@ -146,7 +146,7 @@ export default function HajjPackagesSection({
     : "pt-12 md:pb-16 bg-blue-lt";
   return (
     <section className={sectionClass}>
-      <div className="mx-auto max-w-[1600px] px-4 sm:px-5 lg:px-6">
+      <div className="max-w-[1400px] mx-auto px-5">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-12 gap-6 text-center md:text-left">
           <div className="flex flex-col items-center md:items-start">

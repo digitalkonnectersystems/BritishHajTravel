@@ -496,7 +496,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
 
           return (
             <section key={idx} className="py-12 bg-blue-lt">
-              <div className="max-w-[1500px] mx-auto px-5 md:px-8">
+              <div className="max-w-[1400px] mx-auto px-5 md:px-8">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-stretch">
 
                   {/* ── Left: Airlines only ── */}

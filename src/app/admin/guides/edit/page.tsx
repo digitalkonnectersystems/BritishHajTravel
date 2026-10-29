@@ -164,7 +164,7 @@ function GuideEditorContent() {
 
   return (
     <AdminLayout user={{ name: 'Admin User', role: 'Super Admin' }}>
-      <div className="mx-auto flex min-w-0 w-full max-w-[1500px] flex-col gap-6">
+      <div className="mx-auto flex min-w-0 w-full max-w-[1400px] flex-col gap-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="min-w-0">
             <Link href="/admin/guides" className="mb-2 inline-flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-primary"><ArrowLeft className="h-3.5 w-3.5" /> Back to Guides</Link>
