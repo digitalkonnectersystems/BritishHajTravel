@@ -566,7 +566,7 @@ export default function HomepageHeroBanner({ data, pageData, publishedVisaCards 
           </div>
         </div>
 
-        {visibleVisaCards.length > 0 ? <div className="mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-8">
+        {visibleVisaCards.length > 0 ? <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-8">
           <div className="relative z-20 -mt-2 overflow-hidden rounded-3xl border border-slate-100/90 bg-white p-5 shadow-[0_20px_50px_-12px_rgba(15,23,42,0.12)] sm:-mt-4 sm:p-6 md:-mt-6 md:rounded-[30px] md:p-7 lg:-mt-8">
             <div className="mb-6 flex flex-col items-center justify-between gap-4 md:mb-7 md:flex-row">
               <div className="hidden w-1/4 items-center justify-start lg:flex">
@@ -598,13 +598,13 @@ export default function HomepageHeroBanner({ data, pageData, publishedVisaCards 
               </div>
             </div>
 
-            <div className="flex snap-x snap-mandatory gap-2.5 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden xl:flex-wrap xl:justify-center xl:overflow-visible xl:pb-0 lg:gap-3">
+            <div className="flex snap-x snap-mandatory gap-2.5 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden min-[1140px]:grid min-[1140px]:grid-cols-7 min-[1140px]:overflow-visible min-[1140px]:pb-0 xl:grid xl:grid-cols-7 xl:overflow-visible xl:pb-0 lg:gap-3">
               {visibleVisaCards.map(({ card: visa, href: cardHref }, index: number) => {
                 return (
                   <Link
                     key={`${visa.slug || visa.country}-${index}`}
                     href={cardHref}
-                    className="group flex min-w-[170px] flex-1 snap-start flex-col justify-between rounded-2xl border border-slate-100/90 bg-white p-3.5 shadow-[0_4px_16px_rgba(15,23,42,0.04)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(15,23,42,0.12)] sm:min-w-[185px] xl:min-w-[150px] xl:max-w-[188px] xl:flex-[0_1_178px]"
+                    className="group flex min-w-[170px] flex-1 snap-start flex-col justify-between rounded-2xl border border-slate-100/90 bg-white p-3 shadow-[0_4px_16px_rgba(15,23,42,0.04)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(15,23,42,0.12)] sm:min-w-[185px] min-[1140px]:min-w-0 xl:min-w-0 xl:p-3.5"
                   >
                     <div className="flex items-center gap-2.5">
                       <div className="flex h-6 w-9 shrink-0 items-center justify-center overflow-hidden rounded-[5px] border border-slate-200/80 bg-slate-50 shadow-xs">
