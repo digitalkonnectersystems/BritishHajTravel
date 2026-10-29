@@ -247,7 +247,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 key={item.href}
                 href={item.href}
                 className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[12px] transition-all duration-200 ${isActive
-                  ? 'text-white font-bold bg-linear-to-r from-[#020e43] via-[#041e8f] to-[#5d7afa] shadow-[0_8px_22px_-10px_rgba(4,120,87,.65)]'
+                  ? 'text-white font-bold bg-linear-to-r from-[#020e43] via-[#041e8f] to-[#5d7afa] shadow-[0_8px_22px_-10px_rgba(4,30,143,0.65)]'
                   : 'text-slate-600 font-semibold group hover:bg-blue-100 hover:text-[#020E43]'
                   }`}
                   onClick={() => setSidebarOpen(false)}
