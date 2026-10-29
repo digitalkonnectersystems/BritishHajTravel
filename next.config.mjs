@@ -1,5 +1,11 @@
 /** @type {import("next").NextConfig} */
 const nextConfig = {
+  deploymentId:
+    process.env.NEXT_DEPLOYMENT_ID ||
+    process.env.VERCEL_DEPLOYMENT_ID ||
+    process.env.VERCEL_GIT_COMMIT_SHA ||
+    process.env.GITHUB_SHA ||
+    undefined,
   // experimental: {
   //   inlineCss: true,
   // },
