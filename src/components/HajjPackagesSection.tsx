@@ -348,7 +348,7 @@ export default function HajjPackagesSection({
                   operatorRating={operatorRating}
                   priceSubtext={priceSubtext}
                   price={price}
-                  bookLabel={data?.isDestinationSection ? (cd.btnLabel || "Book Now") : (data?.buttonLabel || "Book Hajj 2027")}
+                  bookLabel={data?.isDestinationSection ? (cd.btnLabel || "Book Now") : (data?.buttonLabel || "BOOK NOW")}
                   onViewDetail={() => {
                     if (data?.isDestinationSection) {
                       if (pkg.destinationSlug) window.location.href = `/destinations/${pkg.destinationSlug}`;

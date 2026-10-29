@@ -3,7 +3,7 @@
 import { useState, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-/** Two landscape cards per desktop row, four packages per page. Arrows only when >4 items. */
+/** Four compact cards per desktop row, four packages per page. Arrows only when >4 items. */
 export default function HajjPackagePager<T>({
   items,
   renderCard,
@@ -19,7 +19,7 @@ export default function HajjPackagePager<T>({
 
   return (
     <div className="min-w-0">
-      <div className="grid min-w-0 grid-cols-1 items-stretch gap-5 xl:grid-cols-2">
+      <div className="grid min-w-0 grid-cols-1 items-stretch gap-5 md:grid-cols-2 xl:grid-cols-4">
         {pageItems.map((item, index) => renderCard(item, page * 4 + index))}
       </div>
       {showControls && (

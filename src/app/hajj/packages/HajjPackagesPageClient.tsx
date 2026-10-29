@@ -221,7 +221,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
               const packageCode = String(
                 card.packageCode || cd.packageCode || detail.packageCode || ''
               ).trim();
-              const btnLabel = cd.btnLabel || card.btnLabel || "Book Hajj 2027";
+              const btnLabel = cd.btnLabel || card.btnLabel || "BOOK NOW";
 
               const makkahHotel = cd.makkahHotel || card.makkahHotel;
               const madinahHotel = cd.madinahHotel || card.madinahHotel;
