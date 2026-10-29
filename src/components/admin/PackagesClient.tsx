@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { createPackage, updatePackageAction, deletePackage, updatePackageStatus, updatePackageOrderAction, bulkGeneratePackageCodesAction } from '@/actions/packageActions';
+import { createPackage, updatePackageAction, deletePackage, updatePackageStatus, updatePackageOrderAction, bulkGeneratePackageCodesAction, updatePackageVisibilityAction, duplicatePackageAction } from '@/actions/packageActions';
 import {
   getPackageCategories,
   createPackageCategoryAction,
@@ -12,7 +12,7 @@ import {
   PackageCategoryWithCount,
 } from '@/actions/packageCategoryActions';
 import ConfirmModal, { ConfirmModalConfig } from '@/components/ui/ConfirmModal';
-import { Trash2, Edit2, Plus, Sparkles, Sliders, X, BookOpen, Hotel, Plane, GripVertical, Utensils, Tags, ChevronUp, ChevronDown, Pencil, Check, Eye } from 'lucide-react';
+import { Trash2, Edit2, Plus, Sparkles, Sliders, X, BookOpen, Hotel, Plane, GripVertical, Utensils, Tags, ChevronUp, ChevronDown, Pencil, Check, Eye, EyeOff, Copy } from 'lucide-react';
 import SeoCenterModal from '@/components/admin/SeoCenterModal';
 import ImageUploadWidget from '@/components/admin/ImageUploadWidget';
 import DetailPageDataFields from '@/components/admin/DetailPageDataFields';
@@ -705,6 +705,36 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
     setPackagesList(prev => prev.map(p => (p.id === id ? { ...p, status: nextStatus } : p)));
   };
 
+  const handleVisibilityToggle = async (pkg: any) => {
+    const result = await updatePackageVisibilityAction(pkg.id, pkg.status === 'draft');
+    if (!result.success || !result.status) {
+      alert(result.error || 'Unable to update package visibility.');
+      return;
+    }
+    setPackagesList((current) => current.map((item) => item.id === pkg.id ? { ...item, status: result.status } : item));
+  };
+
+  const handleDuplicatePackage = async (id: number) => {
+    const result = await duplicatePackageAction(id);
+    if (!result.success || !result.id) {
+      alert(result.error || 'Unable to duplicate package.');
+      return;
+    }
+    const source = packagesList.find((item) => item.id === id);
+    if (source) {
+      setPackagesList((current) => [{
+        ...source,
+        id: result.id,
+        title: result.title || `Copy of ${source.title}`,
+        slug: result.slug || `${source.slug}-copy`,
+        status: 'draft',
+        isFeatured: false,
+      }, ...current]);
+    }
+    setSaveMsg('Package duplicated as a hidden draft.');
+    window.setTimeout(() => setSaveMsg(''), 3500);
+  };
+
   // ── Category handlers ──────────────────────────────────────────────────────
   const handleCreateCategory = async () => {
     const name = newCategoryName.trim();
@@ -1299,6 +1329,24 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
                               <Eye className="w-3.5 h-3.5" />
                             </Link>
                           )}
+                          <button
+                            type="button"
+                            onClick={() => void handleVisibilityToggle(pkg)}
+                            title={pkg.status === 'draft' ? 'Show on frontend' : 'Hide from frontend'}
+                            aria-label={`${pkg.status === 'draft' ? 'Show' : 'Hide'} ${pkg.title} on frontend`}
+                            className={`w-7 h-7 rounded-full flex items-center justify-center transition-all ${pkg.status === 'draft' ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white' : 'bg-amber-50 text-amber-700 hover:bg-amber-500 hover:text-white'}`}
+                          >
+                            {pkg.status === 'draft' ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => void handleDuplicatePackage(pkg.id)}
+                            title="Duplicate as hidden draft"
+                            aria-label={`Duplicate ${pkg.title}`}
+                            className="w-7 h-7 rounded-full bg-violet-50 text-violet-700 hover:bg-violet-600 hover:text-white flex items-center justify-center transition-all"
+                          >
+                            <Copy className="w-3.5 h-3.5" />
+                          </button>
                           <button
                             type="button"
                             onClick={() => setSelectedSeoPkg(pkg)}

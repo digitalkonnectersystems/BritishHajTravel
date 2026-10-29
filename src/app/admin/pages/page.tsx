@@ -1,26 +1,31 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import type { ComponentProps } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
-import { getPagesList, deletePageAction, updatePageOrderAction, updatePageStatusAction } from '@/actions/pageActions';
+import { getPagesList, deletePageAction, updatePageOrderAction, updatePageStatusAction, duplicatePageAction } from '@/actions/pageActions';
 import Link from 'next/link';
 
 import ConfirmModal, { ConfirmModalConfig } from '@/components/ui/ConfirmModal';
-import { Trash2, Pencil, Copy, Check, Sliders, Eye } from 'lucide-react';
+import { Trash2, Pencil, Copy, Check, Sliders, Eye, EyeOff } from 'lucide-react';
 import SeoCenterModal from '@/components/admin/SeoCenterModal';
 
+type AdminPage = Awaited<ReturnType<typeof getPagesList>>[number];
+type SeoPageData = NonNullable<ComponentProps<typeof SeoCenterModal>['pageData']>;
+
 export default function AdminPagesListPage() {
-  const [pages, setPages] = useState<any[]>([]);
+  const [pages, setPages] = useState<AdminPage[]>([]);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [duplicatingId, setDuplicatingId] = useState<number | null>(null);
   const [confirmConfig, setConfirmConfig] = useState<ConfirmModalConfig | null>(null);
   const [copiedId, setCopiedId] = useState<number | null>(null);
 
   // SEO Modal State
   const [seoModalOpen, setSeoModalOpen] = useState(false);
-  const [selectedSeoPage, setSelectedSeoPage] = useState<any>(null);
+  const [selectedSeoPage, setSelectedSeoPage] = useState<SeoPageData | null>(null);
 
   useEffect(() => {
     getPagesList().then((res) => {
@@ -36,13 +41,11 @@ export default function AdminPagesListPage() {
   };
 
   const handleStatusChange = async (id: number, newStatus: 'published' | 'draft') => {
-    const previous = pages.find(page => page.id === id);
-    setPages(prev => prev.map(page => page.id === id ? { ...page, status: newStatus } : page));
     try {
       const result = await updatePageStatusAction(id, newStatus);
       if (!result.success) throw new Error(result.error || 'Unable to update page status');
+      setPages((current) => current.map((page) => page.id === id ? { ...page, status: newStatus } : page));
     } catch (error) {
-      setPages(prev => prev.map(page => page.id === id ? { ...page, status: previous?.status } : page));
       window.alert(error instanceof Error ? error.message : 'Page status update failed');
     }
   };
@@ -64,6 +67,22 @@ export default function AdminPagesListPage() {
         setDeletingId(null);
       },
     });
+  };
+
+  const handleDuplicate = async (id: number) => {
+    setDuplicatingId(id);
+    try {
+      const result = await duplicatePageAction(id);
+      if (!result.success || !result.page) {
+        window.alert(result.error || 'Unable to duplicate page.');
+        return;
+      }
+      setPages((current) => [result.page, ...current]);
+    } catch (error) {
+      window.alert(error instanceof Error ? error.message : 'Unable to duplicate page.');
+    } finally {
+      setDuplicatingId(null);
+    }
   };
 
   const handleDragStart = (e: React.DragEvent, index: number) => {
@@ -157,7 +176,7 @@ export default function AdminPagesListPage() {
               </tr>
             </thead>
             <tbody>
-              {filteredPages.map((p: any, idx: number) => (
+              {filteredPages.map((p, idx) => (
                 <tr
                   key={p.id}
                   draggable
@@ -188,24 +207,9 @@ export default function AdminPagesListPage() {
                     </div>
                   </td>
                   <td className="py-4 px-5">
-                    <div className="relative inline-block">
-                      <select
-                        value={p.status || 'published'}
-                        onChange={(e) => handleStatusChange(p.id, e.target.value as 'published' | 'draft')}
-                        className={`appearance-none font-bold text-[11px] px-3 py-1 pr-4 rounded-full cursor-pointer transition-colors border outline-none shadow-2xs uppercase tracking-normal ${p.status === 'published' ? 'bg-emerald-50 text-primary border-emerald-200' : 'bg-amber-50 text-amber-600 border-amber-200'
-                          }`}
-                      >
-                        <option value="published" className="bg-white text-emerald-800 font-bold py-1">
-                          • Published
-                        </option>
-                        <option value="draft" className="bg-white text-amber-800 font-bold py-1">
-                          • Draft
-                        </option>
-                      </select>
-                      <span className={`pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[8px] ${p.status === 'published' ? 'text-primary' : 'text-amber-600'}`}>
-                        ▼
-                      </span>
-                    </div>
+                    <span className={`inline-flex rounded-full px-3 py-1 text-[11px] font-bold uppercase ${p.status === 'published' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>
+                      {p.status === 'published' ? 'Visible' : 'Hidden'}
+                    </span>
                   </td>
                   <td className="py-4 px-5 text-slate-400 text-xs">
                     {p.updatedAt ? new Date(p.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recently'}
@@ -225,8 +229,36 @@ export default function AdminPagesListPage() {
                       )}
                       <button
                         type="button"
+                        onClick={() => handleStatusChange(p.id, p.status === 'published' ? 'draft' : 'published')}
+                        title={p.status === 'published' ? 'Hide from frontend' : 'Show on frontend'}
+                        aria-label={`${p.status === 'published' ? 'Hide' : 'Show'} ${p.title} on frontend`}
+                        className={`inline-flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${p.status === 'published' ? 'bg-amber-50 text-amber-700 hover:bg-amber-100' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'}`}
+                      >
+                        {p.status === 'published' ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => void handleDuplicate(p.id)}
+                        disabled={duplicatingId === p.id}
+                        title="Duplicate as hidden draft"
+                        aria-label={`Duplicate ${p.title}`}
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-violet-50 text-violet-700 transition-colors hover:bg-violet-100 disabled:opacity-50"
+                      >
+                        <Copy className="h-4 w-4" />
+                      </button>
+                      <button
+                        type="button"
                         onClick={() => {
-                          setSelectedSeoPage(p);
+                          setSelectedSeoPage({
+                            id: p.id,
+                            title: p.title,
+                            slug: p.slug,
+                            metaTitle: p.metaTitle || undefined,
+                            metaDescription: p.metaDescription || undefined,
+                            bannerBgImage: p.bannerBgImage || undefined,
+                            sections: p.sections,
+                            seoData: p.seoSettings || undefined,
+                          });
                           setSeoModalOpen(true);
                         }}
                         className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-emerald-50 text-primary border border-emerald-300 text-[11px] font-extrabold hover:bg-primary hover:text-white transition-all cursor-pointer shadow-xs"

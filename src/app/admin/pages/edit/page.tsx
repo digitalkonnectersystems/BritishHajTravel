@@ -15,6 +15,7 @@ import { Field, FieldLabel } from '@/components/ui/field';
 import { Switch } from '@/components/ui/switch';
 
 import { getPageById, getGuidesList, savePageAction, type GuideCategory } from '@/actions/pageActions';
+import { getVisaProcessingById, saveVisaProcessingAction } from '@/actions/visaProcessingActions';
 
 import { getAllPackages } from '@/actions/packageActions';
 
@@ -458,6 +459,7 @@ interface SectionItem {
 function PageBuilderContent() {
 
   const searchParams = useSearchParams();
+  const processingMode = searchParams.get('table') === 'visa_processing';
 
   const pageId = searchParams.get('id') ? Number(searchParams.get('id')) : null;
 
@@ -784,7 +786,7 @@ function PageBuilderContent() {
 
     if (pageId) {
 
-      getPageById(pageId).then((p) => {
+      (processingMode ? getVisaProcessingById(pageId) : getPageById(pageId)).then((p) => {
 
         if (p) {
 
@@ -851,7 +853,7 @@ function PageBuilderContent() {
               if (Array.isArray(parsed) && parsed.length > 0) {
 
                 const loadedSections = [...parsed];
-                const isSaudiVisaPage = p.slug === '/saudi-visa' || pageId === 5;
+                const isSaudiVisaPage = p.slug === '/saudi-visa' || pageId === 5 || processingMode;
                   if (isSaudiVisaPage) {
                   const combinedSection = loadedSections.find((section: any) => section.type === 'Umrah Visa Application');
                   if (combinedSection) {
@@ -937,7 +939,7 @@ function PageBuilderContent() {
 
                 ]);
 
-              } else if (p.slug === '/saudi-visa' || pageId === 5) {
+              } else if (p.slug === '/saudi-visa' || pageId === 5 || processingMode) {
 
                 setSections([
 
@@ -1304,7 +1306,7 @@ function PageBuilderContent() {
 
     }
 
-  }, [pageId]);
+  }, [pageId, processingMode]);
 
 
 
@@ -2109,7 +2111,7 @@ function PageBuilderContent() {
 
         const updatedSections = [...sections];
 
-        if (slug === '/' || pageId === 1) {
+        if (slug === '/' || (!processingMode && pageId === 1)) {
 
           const heroSecData = {
 
@@ -2245,7 +2247,7 @@ function PageBuilderContent() {
 
         try {
 
-          const res = await savePageAction(fd);
+          const res = await (processingMode ? saveVisaProcessingAction(fd) : savePageAction(fd));
 
           if (res.success) {
 
@@ -2293,13 +2295,13 @@ function PageBuilderContent() {
 
           <Link
 
-            href="/admin/pages"
+            href={processingMode ? "/admin/visa-processing" : "/admin/pages"}
 
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-200/90 text-slate-700 hover:border-primary hover:bg-primary hover:text-white text-xs font-bold transition-all shadow-2xs no-underline"
 
           >
 
-            ← Back to Pages
+            {processingMode ? "← Back to Visa Processing" : "← Back to Pages"}
 
           </Link>
 
@@ -2330,6 +2332,8 @@ function PageBuilderContent() {
             type="button"
 
             onClick={() => setSeoModalOpen(true)}
+            disabled={processingMode}
+            title={processingMode ? "Visa Processing SEO is edited in the page metadata fields below" : "Open Page SEO"}
 
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-emerald-50 text-primary border border-emerald-300 text-xs font-extrabold hover:bg-primary hover:text-white transition-all cursor-pointer shadow-2xs"
 
@@ -2401,7 +2405,7 @@ function PageBuilderContent() {
 
       {/* Page Banner Management & Real-Time Preview */}
 
-      {slug === '/' || pageId === 1 ? (
+      {slug === '/' || (!processingMode && pageId === 1) ? (
 
         /* HOMEPAGE HERO BANNER EDITOR (1920px x 640px, MIN-HEIGHT 640px) */
 
@@ -12651,7 +12655,7 @@ function PageBuilderContent() {
 
       <SeoCenterModal
 
-        isOpen={seoModalOpen}
+        isOpen={seoModalOpen && !processingMode}
 
         onClose={() => setSeoModalOpen(false)}
 
@@ -12677,7 +12681,7 @@ function PageBuilderContent() {
 
           if (pageId) {
 
-            getPageById(pageId).then((p) => {
+            (processingMode ? getVisaProcessingById(pageId) : getPageById(pageId)).then((p) => {
 
               if (p) {
 

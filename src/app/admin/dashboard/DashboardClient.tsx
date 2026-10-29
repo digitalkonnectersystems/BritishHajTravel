@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import DashboardSeoCenterSection from '@/components/admin/DashboardSeoCenterSection';
 import RealtimeAnalytics from '@/components/admin/RealtimeAnalytics';
+import { WaveAnalyticsChart } from '@/components/admin/WaveAnalyticsChart';
 import type { AnalyticsSnapshot } from '@/components/admin/RealtimeAnalytics';
 import type { SeoAuditItem } from '@/actions/seoActions';
 import { ActivityItem } from '@/actions/activityActions';
@@ -60,25 +61,12 @@ interface SliceData {
 }
 
 /** Category distribution (not a time series), rendered as a gradient-filled curved area. */
-function Cinematic3DPieChart({
+function DistributionWaveCard({
   title, subtitle, totalCount, totalLabel, linkHref, linkLabel, slices,
 }: {
   title: string; subtitle: string; totalCount: number; totalLabel: string;
   badgeText: string; badgeBg: string; linkHref: string; linkLabel: string; slices: SliceData[];
 }) {
-  const chartId = React.useId().replace(/:/g, '');
-  const max = Math.max(1, ...slices.map(slice => slice.count));
-  const points = slices.map((slice, index) => ({
-    x: 40 + index * 320 / Math.max(1, slices.length - 1),
-    y: 142 - 108 * slice.count / max,
-  }));
-  const line = points.map((point, index) => {
-    if (index === 0) return `M ${point.x} ${point.y}`;
-    const prev = points[index - 1];
-    const middle = (prev.x + point.x) / 2;
-    return ` C ${middle} ${prev.y} ${middle} ${point.y} ${point.x} ${point.y}`;
-  }).join('');
-  const area = points.length ? `${line} L ${points[points.length - 1].x} 152 L ${points[0].x} 152 Z` : '';
   const total = Math.max(1, slices.reduce((sum, slice) => sum + slice.count, 0));
   return (
     <section className="rounded-[28px] border border-slate-200/80 bg-white p-5 sm:p-6 shadow-[0_16px_40px_-30px_rgba(15,23,42,.45)] overflow-hidden">
@@ -89,21 +77,15 @@ function Cinematic3DPieChart({
       </div>
       <div className="mt-5 rounded-2xl bg-gradient-to-br from-slate-50 to-emerald-50/60 p-4 border border-slate-100">
         <div className="flex justify-between items-baseline"><span className="text-xs font-semibold text-slate-500">{totalLabel} · current database snapshot</span><strong className="text-2xl font-black text-slate-900 tabular-nums">{totalCount}</strong></div>
-        <svg viewBox="0 0 400 170" className="mt-1 w-full" role="img" aria-label={`${title}: category counts, not chronological changes`}>
-          <defs>
-            <linearGradient id={`${chartId}-stroke`} x1="0" x2="1" y1="0" y2="0">
-              {slices.map((slice,index)=><stop key={slice.label} offset={`${index*100/Math.max(1,slices.length-1)}%`} stopColor={slice.gradientColors[0]} />)}
-            </linearGradient>
-            <linearGradient id={`${chartId}-fill`} x1="0" x2="0" y1="0" y2="1"><stop stopColor="#14b8a6" stopOpacity=".24"/><stop offset="1" stopColor="#93c5fd" stopOpacity=".015"/></linearGradient>
-          </defs>
-          {[50,100,152].map(y=><line key={y} x1="24" y1={y} x2="376" y2={y} stroke="#cbd5e1" strokeDasharray="3 7" strokeOpacity=".65" />)}
-          {points.length > 0 && <path d={area} fill={`url(#${chartId}-fill)`} />}
-          {points.length > 0 && <path d={line} fill="none" stroke={`url(#${chartId}-stroke)`} strokeWidth="4" strokeLinecap="round" />}
-          {points.map((point,index)=><g key={slices[index].label}>
-            <circle cx={point.x} cy={point.y} r="5.5" fill={slices[index].gradientColors[0]} stroke="white" strokeWidth="2.5" />
-            <text x={point.x} y={point.y-14} textAnchor="middle" fontSize="12" fontWeight="700" fill="#0f172a">{slices[index].count}</text>
-          </g>)}
-        </svg>
+        <WaveAnalyticsChart
+          compact
+          title=""
+          description=""
+          mode="categories"
+          labels={slices.map(slice => slice.label)}
+          series={[{ name: 'Number of records per category', values: slices.map(slice => slice.count) }]}
+          emptyText="No records in these categories"
+        />
       </div>
       <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
         {slices.map(slice => <div key={slice.label} className="flex items-center justify-between gap-2 rounded-xl bg-slate-50/80 border border-slate-100 px-3 py-2.5">
@@ -194,8 +176,8 @@ export default function DashboardClient({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* LEFT COLUMN: Pie Chart Card + Recent Pilgrim Enquiries Table */}
         <div className="lg:col-span-7 flex flex-col gap-6">
-          {/* ── 3D Cinematic Animated Pie Chart 1: Offerings & Package Distribution ── */}
-          <Cinematic3DPieChart
+          {/* Category snapshot — not a pie chart or a time-series trend */}
+          <DistributionWaveCard
             title="Offerings Breakdown & Package Distribution"
             subtitle="Current counts across Umrah, Hajj and Visa categories (not a timeline)"
             totalCount={totalOfferings}
@@ -238,8 +220,8 @@ export default function DashboardClient({
             ]}
           />
 
-          {/* ── 3D Cinematic Animated Pie Chart 2: Forms Queries Breakdown by Database Table ── */}
-          <Cinematic3DPieChart
+          {/* Category snapshot — enquiry counts by type */}
+          <DistributionWaveCard
             title="Forms Enquiries by Type"
             subtitle="Current breakdown by enquiry type in the unified CRM table"
             totalCount={counts?.enquiries ?? initialEnquiries.length}

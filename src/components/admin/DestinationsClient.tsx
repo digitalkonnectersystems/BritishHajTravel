@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Eye, Pencil, Plus, Trash2, X } from 'lucide-react';
+import { Copy, Eye, EyeOff, Pencil, Plus, Trash2, X } from 'lucide-react';
 import Link from 'next/link';
-import { deleteDestinationAction, saveDestinationAction, updateDestinationOrderAction } from '@/actions/destinationActions';
+import { deleteDestinationAction, duplicateDestinationAction, saveDestinationAction, updateDestinationOrderAction, updateDestinationStatusAction } from '@/actions/destinationActions';
 import ImageUploadWidget from '@/components/admin/ImageUploadWidget';
 import { HajjCardFields } from '@/app/admin/packages/[id]/EditPackageClient';
 import DetailPageDataFields, { defaultDetailPageData } from '@/components/admin/DetailPageDataFields';
@@ -73,6 +73,22 @@ export default function DestinationsClient({ initialDestinations }: { initialDes
     if (!window.confirm('Delete this destination package?')) return;
     const result = await deleteDestinationAction(id);
     if (result.success) setItems((current) => current.filter((item) => item.id !== id));
+    else setMessage(result.error || 'Could not delete destination.');
+  };
+
+  const togglePublication = async (destination: { id: number; status: 'published' | 'draft' }) => {
+    const status = destination.status === 'published' ? 'draft' : 'published';
+    const result = await updateDestinationStatusAction(destination.id, status);
+    if (!result.success) { setMessage(result.error || 'Could not update destination visibility.'); return; }
+    setItems((current) => current.map((item) => item.id === destination.id ? { ...item, status } : item));
+    setMessage(status === 'published' ? 'Destination shown on the public website.' : 'Destination hidden from the public website.');
+  };
+
+  const duplicate = async (destination: { id: number }) => {
+    const result = await duplicateDestinationAction(destination.id);
+    if (!result.success || !result.destination) { setMessage(result.error || 'Could not duplicate destination.'); return; }
+    setItems((current) => [result.destination, ...current]);
+    setMessage('Draft destination copy created.');
   };
 
   const updateBanner = (index: number, value: string) => {
@@ -120,7 +136,21 @@ export default function DestinationsClient({ initialDestinations }: { initialDes
       </form>}
 
       <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-xs">
-        {items.length === 0 ? <p className="p-8 text-center text-sm text-slate-400">No destination packages created yet.</p> : items.map((item, index) => { const pkg = getPackage(item); return <div key={item.id} draggable onDragStart={() => setDraggedIndex(index)} onDragOver={(event) => handleDragOver(event, index)} onDragEnd={handleDragEnd} className={`flex items-center gap-4 border-b border-slate-100 p-4 last:border-0 ${draggedIndex === index ? 'bg-emerald-50 opacity-60' : ''}`}><span className="cursor-grab select-none text-slate-400">⋮⋮</span><div className="w-20 h-14 bg-slate-100 rounded-lg overflow-hidden shrink-0">{pkg.cardData?.bannerImage && <img src={pkg.cardData.bannerImage} alt="" className="w-full h-full object-cover" />}</div><div className="min-w-0 flex-1"><div className="font-bold text-sm text-slate-900">{item.title}</div><div className="text-xs text-slate-400">/destinations/{item.slug} · {pkg.title || item.title} · {pkg.status || 'available'}</div></div>{item.slug && item.status === 'published' && <Link href={`/destinations/${item.slug}`} target="_blank" rel="noopener noreferrer" className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg" title="Preview public destination detail"><Eye className="w-4 h-4" /></Link>}<button type="button" onClick={() => beginEdit(item)} className="p-2 text-primary" title="Edit destination package"><Pencil className="w-4 h-4" /></button><button type="button" onClick={() => remove(item.id)} className="p-2 text-red-500" title="Delete destination package"><Trash2 className="w-4 h-4" /></button></div>; })}
+        {items.length === 0 ? <p className="p-8 text-center text-sm text-slate-400">No destination packages created yet.</p> : items.map((item, index) => {
+          const pkg = getPackage(item);
+          return (
+            <div key={item.id} draggable onDragStart={() => setDraggedIndex(index)} onDragOver={(event) => handleDragOver(event, index)} onDragEnd={handleDragEnd} className={`flex items-center gap-4 border-b border-slate-100 p-4 last:border-0 ${draggedIndex === index ? 'bg-emerald-50 opacity-60' : ''}`}>
+              <span className="cursor-grab select-none text-slate-400">⋮⋮</span>
+              <div className="w-20 h-14 bg-slate-100 rounded-lg overflow-hidden shrink-0">{pkg.cardData?.bannerImage && <img src={pkg.cardData.bannerImage} alt="" className="w-full h-full object-cover" />}</div>
+              <div className="min-w-0 flex-1"><div className="font-bold text-sm text-slate-900">{item.title}</div><div className="text-xs text-slate-400">/destinations/{item.slug} · {pkg.title || item.title} · {pkg.status || 'available'}</div></div>
+              {item.slug && item.status === 'published' && <Link href={`/destinations/${item.slug}`} target="_blank" rel="noopener noreferrer" className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg" title="Preview public destination detail"><Eye className="w-4 h-4" /></Link>}
+              <button type="button" onClick={() => togglePublication(item)} aria-label={item.status === 'published' ? 'Hide destination from public website' : 'Show destination on public website'} title={item.status === 'published' ? 'Hide destination from public website' : 'Show destination on public website'} className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg">{item.status === 'published' ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</button>
+              <button type="button" onClick={() => duplicate(item)} aria-label="Duplicate destination package" title="Duplicate destination package" className="p-2 text-violet-700 hover:bg-violet-50 rounded-lg"><Copy className="w-4 h-4" /></button>
+              <button type="button" onClick={() => beginEdit(item)} className="p-2 text-primary" title="Edit destination package"><Pencil className="w-4 h-4" /></button>
+              <button type="button" onClick={() => remove(item.id)} className="p-2 text-red-500" title="Delete destination package"><Trash2 className="w-4 h-4" /></button>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

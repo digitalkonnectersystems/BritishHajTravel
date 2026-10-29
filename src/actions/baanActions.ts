@@ -7,6 +7,8 @@ import { revalidatePath } from 'next/cache';
 import { getCurrentSession } from '@/lib/auth';
 import { dispatchFormEmails } from '@/lib/emailService';
 import { defaultBaanContent, type BaanContent } from '@/lib/baanContent';
+import { logAdminActivityAction } from '@/actions/activityActions';
+import { recordPublicEnquiry } from '@/lib/publicEnquiryAudit';
 
 type ReadResult = { content: BaanContent; databaseAvailable: boolean };
 
@@ -77,6 +79,7 @@ export async function saveBaanContent(payload: BaanContent) {
     await db.insert(siteSettings)
       .values({ key: 'baan_holding_page', value })
       .onDuplicateKeyUpdate({ set: { value, updatedAt: new Date() } });
+    await logAdminActivityAction({type:'baan',action:'Updated BAAN Holding Hajj Page',details:'Updated BAAN landing page sections and settings'});
     revalidatePath('/baan-holding-hajj');
     return { success: true };
   } catch (error) {
@@ -100,6 +103,7 @@ export async function submitBaanInterest(data: {
   try {
     await db.insert(enquiries).values({ enquiryNumber, type: 'quote_request', fullName: clean.name, email: clean.email, phone: clean.phone,
       preferredPackageType: 'BAAN Holding Hajj 2027', adults: clean.passengers, message, sourceForm: 'BAAN Holding Hajj Interest Form', status: 'new' });
+    await recordPublicEnquiry('BAAN Holding Hajj Interest Form',enquiryNumber);
     const mail = await dispatchFormEmails('BAAN Holding Hajj Interest Form', { enquiryNumber, fullName: clean.name, email: clean.email, phone: clean.phone, ...fields }, undefined,
       async (audit) => { await db.update(enquiries).set({ emailTo: audit.to.join(', '), emailCc: audit.cc.join(', '), emailBcc: audit.bcc.join(', '), emailSubject: audit.subject, emailHtml: audit.html, emailDeliveryStatus: audit.status }).where(eq(enquiries.enquiryNumber, enquiryNumber)); });
     revalidatePath('/admin/enquiries');

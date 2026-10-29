@@ -706,6 +706,86 @@ export async function moveGuideToPagesAction(id: number) {
   }
 }
 
+export async function updateGuideStatusAction(id: number, status: 'published' | 'draft') {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
+  try {
+    const previousEntry = (await db.select().from(sitePages).where(eq(sitePages.id, id)).limit(1))[0];
+    if (!previousEntry || !previousEntry.guideCategory) {
+      return { success: false, error: 'Guide not found.' };
+    }
+
+    await db.update(sitePages).set({ status, updatedAt: new Date() }).where(eq(sitePages.id, id));
+    const updatedGuide = { ...previousEntry, status, updatedAt: new Date() };
+    await logAdminActivityAction({
+      type: 'pages',
+      action: status === 'published' ? 'Published Guide' : 'Unpublished Guide',
+      details: `${status === 'published' ? 'Published' : 'Unpublished'} guide "${previousEntry.title}"`,
+      previousEntry,
+      newEntry: updatedGuide,
+    });
+    revalidatePath('/admin/guides');
+    revalidatePath(previousEntry.slug);
+    revalidatePath('/', 'layout');
+    updateTag('pages');
+    updateTag(`page-slug-${previousEntry.slug}`);
+    return { success: true };
+  } catch (err) {
+    console.error('updateGuideStatusAction failed:', err);
+    return { success: false, error: err instanceof Error ? err.message : 'Failed to update guide visibility.' };
+  }
+}
+
+export async function duplicateGuideAction(id: number) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
+  try {
+    const source = (await db.select().from(sitePages).where(eq(sitePages.id, id)).limit(1))[0];
+    if (!source || !source.guideCategory) return { success: false, error: 'Guide not found.' };
+
+    const baseSlug = (source.slug || '').replace(/^\/+|\/+$/g, '').toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 115) || 'guide';
+    let slug = `/${baseSlug}-copy`;
+    let suffix = 2;
+    while ((await db.select({ id: sitePages.id }).from(sitePages).where(eq(sitePages.slug, slug)).limit(1)).length > 0) {
+      const ending = `-copy-${suffix++}`;
+      slug = `/${baseSlug.slice(0, 127 - ending.length)}${ending}`;
+    }
+
+    const copySuffix = ' (Copy)';
+    const title = `${source.title.slice(0, 255 - copySuffix.length)}${copySuffix}`;
+    const content = { ...source };
+    delete (content as { id?: number }).id;
+    const inserted = await db.insert(sitePages).values({
+      ...content,
+      title,
+      slug,
+      status: 'draft',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }).$returningId();
+    const duplicate = inserted[0]?.id
+      ? (await db.select().from(sitePages).where(eq(sitePages.id, inserted[0].id)).limit(1))[0]
+      : null;
+
+    await logAdminActivityAction({
+      type: 'pages',
+      action: 'Duplicated Guide',
+      details: `Duplicated guide "${source.title}" as "${title}"`,
+      previousEntry: source,
+      newEntry: duplicate,
+    });
+    revalidatePath('/admin/guides');
+    revalidatePath(slug);
+    revalidatePath('/', 'layout');
+    updateTag('pages');
+    updateTag(`page-slug-${slug}`);
+    return { success: true, guide: duplicate };
+  } catch (err) {
+    console.error('duplicateGuideAction failed:', err);
+    return { success: false, error: err instanceof Error ? err.message : 'Failed to duplicate guide.' };
+  }
+}
+
 export async function getDefaultSiteIdentity() {
   return {
     siteName: 'British Hajj Travel',
@@ -927,6 +1007,8 @@ export async function updatePageStatusAction(id: number, status: 'published' | '
   await requireAdmin(['admin', 'content_editor', 'seo_manager']);
 
   try {
+    const [page] = await db.select({ slug: sitePages.slug }).from(sitePages).where(eq(sitePages.id, id)).limit(1);
+    if (!page) return { success: false, error: 'Page not found.' };
     await db.update(sitePages).set({ status, updatedAt: new Date() }).where(eq(sitePages.id, id));
 
     // Log Activity
@@ -937,11 +1019,62 @@ export async function updatePageStatusAction(id: number, status: 'published' | '
     });
 
     revalidatePath('/admin/pages');
+    revalidatePath(page.slug);
+    revalidatePath('/', 'layout');
     updateTag('pages');
     return { success: true };
   } catch (err: any) {
     console.error('updatePageStatusAction DB error:', err);
     return { success: false, error: err.message || 'Failed to update status' };
+  }
+}
+
+export async function duplicatePageAction(id: number) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+  if (!Number.isSafeInteger(id) || id < 1) return { success: false, error: 'Invalid page ID.' };
+
+  try {
+    const [source] = await db.select().from(sitePages).where(eq(sitePages.id, id)).limit(1);
+    if (!source || source.guideCategory) return { success: false, error: 'Page not found.' };
+
+    const baseSlug = source.slug.replace(/-\d+$/, '');
+    let suffixText = '-copy';
+    let slug = `${baseSlug.slice(0, 128 - suffixText.length)}${suffixText}`;
+    let suffix = 2;
+    while ((await db.select({ id: sitePages.id }).from(sitePages).where(eq(sitePages.slug, slug)).limit(1)).length > 0) {
+      suffixText = `-copy-${suffix++}`;
+      slug = `${baseSlug.slice(0, 128 - suffixText.length)}${suffixText}`;
+    }
+
+    const title = `Copy of ${source.title}`.slice(0, 255);
+    const inserted = await db.insert(sitePages).values({
+      ...source,
+      id: undefined,
+      title,
+      slug,
+      status: 'draft',
+      showInMenu: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }).$returningId();
+    const pageId = inserted[0]?.id;
+    if (!pageId) return { success: false, error: 'Unable to create the duplicate page.' };
+    const [duplicatePage] = await db.select().from(sitePages).where(eq(sitePages.id, pageId)).limit(1);
+    if (!duplicatePage) return { success: false, error: 'The duplicate page was created but could not be reloaded.' };
+
+    await logAdminActivityAction({
+      type: 'pages',
+      action: 'Duplicated CMS Page',
+      details: `${source.title} → ${title} (${slug})`,
+      previousEntry: { id: source.id, title: source.title, slug: source.slug },
+      newEntry: { id: pageId, title, slug, status: 'draft' },
+    });
+    revalidatePath('/admin/pages');
+    revalidatePath('/admin/pages/edit');
+    return { success: true, page: duplicatePage };
+  } catch (error) {
+    console.error('duplicatePageAction failed:', error);
+    return { success: false, error: 'Unable to duplicate the page.' };
   }
 }
 

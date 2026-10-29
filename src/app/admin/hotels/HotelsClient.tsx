@@ -10,11 +10,14 @@ import {
   deleteHotelCategoryAction,
   updateHotelCategoryOrderAction,
   getHotelAdminData,
+  duplicateHotelAction,
+  toggleHotelPublicationAction,
   updateHotelAction,
   updateHotelCategoryAction,
   updateHotelOrderAction,
   type HotelInput,
 } from '@/actions/hotelActions';
+import { Copy, Eye, EyeOff } from 'lucide-react';
 
 const emptyHotel: HotelInput = {
   categoryId: 0,
@@ -84,6 +87,21 @@ export default function HotelsClient() {
     setEditingHotelId(null);
     notify('Hotel saved.');
     await loadData();
+  };
+
+  const toggleHotelPublication = async (hotel: { id: number; isPublished: boolean }) => {
+    const isPublished = !hotel.isPublished;
+    const result = await toggleHotelPublicationAction(hotel.id, isPublished);
+    if (!result.success) return notify(result.error || 'Unable to update hotel visibility.');
+    setHotels((current) => current.map((item) => item.id === hotel.id ? { ...item, isPublished } : item));
+    notify(isPublished ? 'Hotel shown on the public website.' : 'Hotel hidden from the public website.');
+  };
+
+  const duplicateHotel = async (hotel: { id: number }) => {
+    const result = await duplicateHotelAction(hotel.id);
+    if (!result.success || !result.hotel) return notify(result.error || 'Unable to duplicate hotel.');
+    setHotels((current) => [result.hotel, ...current]);
+    notify('Draft hotel copy created.');
   };
 
   const editHotel = (hotel: any) => {
@@ -222,7 +240,12 @@ export default function HotelsClient() {
                     {hotel.imageUrl ? <img src={hotel.imageUrl} alt="" className="h-14 w-20 rounded object-cover" /> : <div className="h-14 w-20 rounded bg-slate-100" />}
                     <div className="min-w-0"><p className="m-0 text-sm font-bold text-slate-900">{hotel.name}</p><p className="m-0 text-xs text-slate-500">{hotel.city} · {categories.find((category) => category.id === hotel.categoryId)?.name || 'Uncategorised'}</p></div>
                   </div>
-                  <div className="flex justify-self-end gap-2"><button type="button" onClick={() => editHotel(hotel)} className="rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700">Edit</button><button type="button" onClick={() => removeHotel(hotel.id)} className="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-bold text-red-600">Delete</button></div>
+                  <div className="flex justify-self-end gap-2">
+                    <button type="button" onClick={() => toggleHotelPublication(hotel)} aria-label={hotel.isPublished ? 'Hide hotel from public website' : 'Show hotel on public website'} title={hotel.isPublished ? 'Hide hotel from public website' : 'Show hotel on public website'} className="rounded-lg bg-slate-100 p-2 text-slate-600">{hotel.isPublished ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}</button>
+                    <button type="button" onClick={() => duplicateHotel(hotel)} aria-label="Duplicate hotel" title="Duplicate hotel" className="rounded-lg bg-violet-50 p-2 text-violet-700"><Copy className="h-4 w-4" /></button>
+                    <button type="button" onClick={() => editHotel(hotel)} className="rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700">Edit</button>
+                    <button type="button" onClick={() => removeHotel(hotel.id)} className="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-bold text-red-600">Delete</button>
+                  </div>
                 </div>
               ))}
               {!hotels.length && <p className="p-5 text-sm text-slate-500">No hotels added yet.</p>}

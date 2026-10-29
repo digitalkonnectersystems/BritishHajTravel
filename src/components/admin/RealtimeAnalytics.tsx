@@ -1,21 +1,68 @@
 'use client';
-import { useEffect,useState } from 'react';
+
+import { useCallback, useEffect, useState } from 'react';
 import { getDashboardRealtimeAction } from '@/actions/dashboardRealtimeActions';
-export type AnalyticsSnapshot=Awaited<ReturnType<typeof getDashboardRealtimeAction>>;
-const colors=['#0d9488','#2563eb','#f59e0b'];
-function SmoothPlot({values,color,id}:{values:number[];color:string;id:string}) {
- const top=Math.max(1,...values); const height=100, width=400;
- const pts=values.map((v,i)=>({x:i*width/(Math.max(1,values.length-1)),y:height-8-(v/top)*(height-16)}));
- const path=pts.map((p,i)=>{if(!i)return `M ${p.x} ${p.y}`;const prev=pts[i-1];const mid=(prev.x+p.x)/2;return ` C ${mid} ${prev.y}, ${mid} ${p.y}, ${p.x} ${p.y}`}).join('');
- const area=pts.length?`${path} L ${pts[pts.length-1].x} 100 L ${pts[0].x} 100 Z`:'';
- return <g><defs><linearGradient id={`${id}-shade`} x1="0" x2="0" y1="0" y2="1"><stop offset="0" stopColor={color} stopOpacity=".23"/><stop offset="1" stopColor={color} stopOpacity=".01"/></linearGradient></defs><path d={area} fill={`url(#${id}-shade)`}/><path d={path} fill="none" stroke={color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/></g>;
-}
-export default function RealtimeAnalytics({initial,onSnapshot}:{initial:AnalyticsSnapshot; onSnapshot?:(data:AnalyticsSnapshot)=>void}) {
- const [snapshot,setSnapshot]=useState(initial);const [error,setError]=useState('');
- useEffect(()=>{let mounted=true;const refresh=async()=>{if(document.visibilityState!=='visible')return;try{const result=await getDashboardRealtimeAction();if(mounted){setSnapshot(result);onSnapshot?.(result);setError('');}}catch{if(mounted)setError('Refresh unavailable. Showing last successfully fetched database counts.');}};const timer=window.setInterval(refresh,60000);return()=>{mounted=false;window.clearInterval(timer);};},[onSnapshot]);
- useEffect(()=>setSnapshot(initial),[initial]);
- const items=[['Enquiries',snapshot.counts.enquiries],['New enquiries',snapshot.counts.newEnquiries],['Umrah packages',snapshot.counts.umrah],['Hajj packages',snapshot.counts.hajj],['Visa solutions',snapshot.counts.visas],['CMS pages',snapshot.counts.pages],['Published blogs',snapshot.counts.blogs],['404 paths',snapshot.counts.brokenPaths],['Active redirects',snapshot.counts.redirects]] as const;
- const max=Math.max(1,...snapshot.enquiryTrend,...snapshot.activityTrend);
- const share=snapshot.enquiryTrend.map((v,i)=>Math.round(100*v/Math.max(1,v+snapshot.activityTrend[i])));
- return <section className="rounded-[28px] border border-slate-200/80 bg-white p-5 shadow-[0_14px_35px_-28px_rgba(15,23,42,.5)]"><div className="mb-4 flex flex-wrap justify-between gap-3"><div><h2 className="text-lg font-bold text-slate-900 mb-2">Project Visual Analytics</h2><p className="text-xs text-slate-500">Live database totals and 14-day daily activity. Refreshes every 60 seconds when this tab is visible.</p></div><time className="text-xs text-slate-500">Synced: {new Date(snapshot.refreshedAt).toLocaleTimeString('en-GB')}</time></div>{error&&<p role="status" className="text-sm text-amber-700">{error}</p>}<div className="mb-5 grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-9">{items.map(([label,value])=><div key={label} className="rounded-2xl border border-slate-100 bg-gradient-to-br from-white to-[#f1f7f8] p-3 shadow-xs"><p className="text-[10px] font-semibold text-slate-500">{label}</p><p className="text-2xl font-extrabold text-slate-900">{value}</p></div>)}</div><div className="rounded-2xl border border-slate-100 bg-gradient-to-b from-[#f8fbff] to-[#edf8f4] p-4"><div className="flex flex-wrap gap-4 text-xs font-semibold"><span style={{color:colors[0]}}>● Enquiries per day</span><span style={{color:colors[1]}}>● Admin activities per day</span><span style={{color:colors[2]}}>● Enquiry share (scaled)</span></div><svg className="mt-3 w-full" viewBox="0 0 400 115" role="img" aria-label="14-day line chart for actual enquiries, admin activity counts and relative share"><SmoothPlot values={snapshot.enquiryTrend} color={colors[0]} id="enquiries-trend"/><SmoothPlot values={snapshot.activityTrend} color={colors[1]} id="activity-trend"/><SmoothPlot values={share.map(v=>v*max/100)} color={colors[2]} id="share-trend"/></svg><div className="flex justify-between text-[10px] text-slate-500"><span>{snapshot.days[0]}</span><span>{snapshot.days[snapshot.days.length-1]}</span></div></div></section>;
+import { WaveAnalyticsChart } from '@/components/admin/WaveAnalyticsChart';
+
+export type AnalyticsSnapshot = Awaited<ReturnType<typeof getDashboardRealtimeAction>>;
+
+export default function RealtimeAnalytics({ initial, onSnapshot }: { initial: AnalyticsSnapshot; onSnapshot?: (data: AnalyticsSnapshot) => void }) {
+  const [snapshot, setSnapshot] = useState(initial);
+  const [error, setError] = useState('');
+  const refresh = useCallback(async () => {
+    if (document.visibilityState !== 'visible') return;
+    try {
+      const result = await getDashboardRealtimeAction();
+      setSnapshot(result);
+      onSnapshot?.(result);
+      setError('');
+    } catch {
+      setError('Refresh unavailable. Showing the last successfully fetched database counts.');
+    }
+  }, [onSnapshot]);
+  useEffect(() => {
+    const timer = window.setInterval(() => { void refresh(); }, 60000);
+    return () => window.clearInterval(timer);
+  }, [refresh]);
+  useEffect(() => setSnapshot(initial), [initial]);
+
+  const items = [
+    ['Enquiries', snapshot.counts.enquiries],
+    ['New enquiries', snapshot.counts.newEnquiries],
+    ['Umrah packages', snapshot.counts.umrah],
+    ['Hajj packages', snapshot.counts.hajj],
+    ['Visa solutions', snapshot.counts.visas],
+    ['CMS pages', snapshot.counts.pages],
+    ['Published blogs', snapshot.counts.blogs],
+    ['404 paths', snapshot.counts.brokenPaths],
+    ['Active redirects', snapshot.counts.redirects],
+  ] as const;
+  const average = snapshot.enquiryTrend.map((_, i, entries) => {
+    const window = entries.slice(Math.max(0, i - 2), i + 1);
+    return Number((window.reduce((sum, v) => sum + v, 0) / window.length).toFixed(2));
+  });
+  const labels = snapshot.days.map(date => new Date(`${date}T00:00:00Z`).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', timeZone: 'UTC' }));
+  return <section className="rounded-[28px] border border-slate-200/80 bg-white p-5 sm:p-6 shadow-[0_16px_40px_-30px_rgba(15,23,42,.45)]">
+    <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
+      <div><h2 className="m-0 text-lg font-extrabold text-slate-900">Project Visual Analytics</h2><p className="mt-1 text-xs text-slate-500">Live database totals and actual daily counts over the last 14 days. Refreshes every 60 seconds while visible.</p></div>
+      <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[11px] font-bold text-slate-500">Synced {new Date(snapshot.refreshedAt).toLocaleTimeString('en-GB')}</span>
+    </div>
+    {error && <p role="status" className="mb-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">{error}</p>}
+    <div className="mb-5 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-9">
+      {items.map(([label, value], i) => <div key={label} className="relative overflow-hidden rounded-2xl border border-slate-100 bg-gradient-to-br from-white via-slate-50 to-sky-50 p-3 shadow-[0_10px_28px_-24px_rgba(15,23,42,.55)]">
+        <span className="absolute inset-x-0 top-0 h-[3px]" style={{ background: ['linear-gradient(90deg,#0d9488,#38bdf8)', 'linear-gradient(90deg,#3b82f6,#8b5cf6)', 'linear-gradient(90deg,#ec4899,#f59e0b)'][i % 3] }} />
+        <p className="text-[10px] font-bold text-slate-500">{label}</p><p className="mt-1 text-2xl font-black tabular-nums text-slate-900">{value}</p>
+      </div>)}
+    </div>
+    <WaveAnalyticsChart
+      title="Enquiries & administrative activity"
+      description="Daily counts share one scale; the third line is the actual three-day rolling average of enquiries."
+      labels={labels}
+      series={[
+        { name: 'Enquiries', values: snapshot.enquiryTrend },
+        { name: 'Admin activities', values: snapshot.activityTrend },
+        { name: 'Enquiries · 3-day average', values: average },
+      ]}
+    />
+  </section>;
 }

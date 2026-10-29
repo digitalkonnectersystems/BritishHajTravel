@@ -1,4 +1,5 @@
 export const defaultBaanContent = {
+  isVisible: true,
   eyebrow: 'BAAN HOLDING HAJJ PACKAGES',
   heading: 'Hajj 2027 with BAAN Holding',
   description: 'Explore selected BAAN Holding Hajj packages with guidance and enquiry support from British Haj Travel in the UK.',
@@ -34,4 +35,4 @@ export const defaultBaanContent = {
     { question: 'Are package prices fixed?', answer: 'No. Pricing, availability and conditions depend on the Hajj season and provider arrangements.' },
   ],
 };
-export type BaanContent = typeof defaultBaanContent;
+export type BaanContent = Omit<typeof defaultBaanContent, 'isVisible'> & { isVisible: boolean };

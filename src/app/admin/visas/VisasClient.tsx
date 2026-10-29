@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { createVisaService, updateVisaServiceAction, deleteVisaServiceAction } from '@/actions/visaActions';
+import { useEffect, useState } from 'react';
+import { createVisaService, deleteVisaServiceAction, duplicateVisaServiceAction, getVisaAdminServicesList, toggleVisaPublicationAction, updateVisaServiceAction } from '@/actions/visaActions';
 import ConfirmModal, { ConfirmModalConfig } from '@/components/ui/ConfirmModal';
-import { Trash2, Edit2, Plus } from 'lucide-react';
+import { Trash2, Edit2, Plus, Copy, Eye, EyeOff } from 'lucide-react';
 
 interface VisasClientProps {
   initialVisas: any[];
@@ -15,6 +15,12 @@ export default function VisasClient({ initialVisas }: VisasClientProps) {
   const [isCreating, setIsCreating] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
   const [confirmConfig, setConfirmConfig] = useState<ConfirmModalConfig | null>(null);
+
+  useEffect(() => {
+    getVisaAdminServicesList()
+      .then(setVisas)
+      .catch((error) => alert(error?.message || 'Failed to load all visa services.'));
+  }, []);
 
   const [newVisa, setNewVisa] = useState({
     title: '',
@@ -92,6 +98,29 @@ export default function VisasClient({ initialVisas }: VisasClientProps) {
         }
       },
     });
+  };
+
+  const handleTogglePublication = async (visa: { id: number; isPublished: boolean }) => {
+    const isPublished = !visa.isPublished;
+    const result = await toggleVisaPublicationAction(visa.id, isPublished);
+    if (!result.success) {
+      alert(result.error || 'Failed to update visa visibility.');
+      return;
+    }
+    setVisas((current) => current.map((item) => item.id === visa.id ? { ...item, isPublished } : item));
+    setSaveMsg(isPublished ? 'Visa service shown on the website.' : 'Visa service hidden from the website.');
+    setTimeout(() => setSaveMsg(null), 3000);
+  };
+
+  const handleDuplicate = async (visa: { id: number }) => {
+    const result = await duplicateVisaServiceAction(visa.id);
+    if (!result.success || !result.visa) {
+      alert(result.error || 'Failed to duplicate visa service.');
+      return;
+    }
+    setVisas((current) => [result.visa, ...current]);
+    setSaveMsg('Draft copy created.');
+    setTimeout(() => setSaveMsg(null), 3000);
   };
 
   return (
@@ -278,6 +307,24 @@ export default function VisasClient({ initialVisas }: VisasClientProps) {
                   <div className="flex items-center gap-1.5">
                     <button
                       type="button"
+                      onClick={() => handleTogglePublication(v)}
+                      aria-label={v.isPublished ? 'Hide visa service from public website' : 'Show visa service on public website'}
+                      title={v.isPublished ? 'Hide visa service from public website' : 'Show visa service on public website'}
+                      className="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center border-none cursor-pointer transition-all"
+                    >
+                      {v.isPublished ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDuplicate(v)}
+                      aria-label="Duplicate visa service"
+                      title="Duplicate visa service"
+                      className="w-7 h-7 rounded-full bg-violet-50 hover:bg-violet-100 text-violet-700 flex items-center justify-center border-none cursor-pointer transition-all"
+                    >
+                      <Copy className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      type="button"
                       onClick={() => setEditingVisa(v)}
                       title="Edit Category"
                       className="w-7 h-7 rounded-full bg-slate-100 hover:bg-primary text-slate-600 hover:text-white flex items-center justify-center border-none cursor-pointer transition-all"
@@ -300,8 +347,8 @@ export default function VisasClient({ initialVisas }: VisasClientProps) {
               </div>
 
               <div className="pt-3 border-t border-slate-100 flex justify-between items-center">
-                <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
-                  ✓ Published
+                <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${v.isPublished ? 'text-emerald-700 bg-emerald-50 border border-emerald-200' : 'text-amber-700 bg-amber-50 border border-amber-200'}`}>
+                  {v.isPublished ? '✓ Published' : 'Hidden'}
                 </span>
                 <span className="text-[10px] font-mono text-slate-400">ID: {v.id}</span>
               </div>

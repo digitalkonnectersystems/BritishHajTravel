@@ -1,4 +1,5 @@
 import { db } from '@/db';
+import { writeBackendLog } from '@/lib/backendLogger';
 import { siteSettings, emailDeliveryLogs } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { getResponsiveEmailTemplateHtml, formatFieldLabel } from './emailTemplate';
@@ -193,9 +194,8 @@ export async function dispatchFormEmails(
 
     // 2. Check if SMTP Credentials exist
     if (!smtpHost || !smtpUser || !smtpPass) {
-      console.error(
-        `[Email Dispatcher] SMTP is not configured.`
-      );
+      console.error('[Email Dispatcher] SMTP is not configured.');
+      await writeBackendLog({severity:'error',category:'Email Delivery',source:'emailService',message:'SMTP is not configured. Check server-side mail settings.'});
       try {
         await db.insert(emailDeliveryLogs).values({
           formId: formName,
@@ -282,7 +282,8 @@ export async function dispatchFormEmails(
         });
       } catch (logErr) { console.error('Failed to log admin email success', logErr); }
     } else {
-      console.error(`❌ [Email Dispatcher] Failed to send Admin email:`, adminResult.reason?.message || adminResult.reason);
+      console.error('[Email Dispatcher] Failed to send admin email:', adminResult.reason?.message || adminResult.reason);
+      await writeBackendLog({severity:'error',category:'Email Delivery',source:'emailService',message:'Admin notification SMTP delivery failed.'});
       try {
         await db.insert(emailDeliveryLogs).values({
           formId: formName,
@@ -305,7 +306,8 @@ export async function dispatchFormEmails(
         });
       } catch (logErr) { console.error('Failed to log user email success', logErr); }
     } else if (userResult.status === 'rejected') {
-      console.error(`❌ [Email Dispatcher] Failed to send User email to ${userEmail}:`, userResult.reason?.message || userResult.reason);
+      console.error('[Email Dispatcher] Failed to send user confirmation:', userResult.reason?.message || userResult.reason);
+      await writeBackendLog({severity:'warning',category:'Email Delivery',source:'emailService',message:'User confirmation SMTP delivery failed.'});
       try {
         await db.insert(emailDeliveryLogs).values({
           formId: formName,
@@ -331,6 +333,7 @@ export async function dispatchFormEmails(
     };
   } catch (err: any) {
     console.error('dispatchFormEmails error:', err);
+    await writeBackendLog({severity:'error',category:'Email Delivery',source:'emailService',message:'Unexpected email dispatcher exception.'});
     try {
       const fallbackRecipient = submittedData.email || submittedData.emailAddress || submittedData.userEmail || 'unknown';
       await db.insert(emailDeliveryLogs).values({
@@ -346,10 +349,10 @@ export async function dispatchFormEmails(
     if (lastAudit) {
       const failedAudit: FormEmailAudit = { ...lastAudit, status: 'Failed' };
       await persistAuditSnapshot(failedAudit);
-      return { adminSent: false, userSent: false, error: err.message, audit: failedAudit };
+      return { adminSent: false, userSent: false, error: 'Email delivery was unsuccessful; the enquiry was saved.', audit: failedAudit };
     }
 
-    return { adminSent: false, userSent: false, error: err.message };
+    return { adminSent: false, userSent: false, error: 'Email delivery was unsuccessful; the enquiry was saved.' };
   }
 }
 

@@ -405,6 +405,126 @@ export async function updatePackageStatus(id: number, status: 'available' | 'sol
   }
 }
 
+export async function updatePackageVisibilityAction(id: number, visible: boolean) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+  if (!Number.isSafeInteger(id) || id < 1) return { success: false, error: 'Invalid package ID.' };
+
+  try {
+    const [pkg] = await db.select().from(packages).where(eq(packages.id, id)).limit(1);
+    if (!pkg) return { success: false, error: 'Package not found.' };
+    const status = visible ? (pkg.status === 'draft' ? 'available' : pkg.status) : 'draft';
+    await db.update(packages).set({ status, updatedAt: new Date() }).where(eq(packages.id, id));
+    await logAdminActivityAction({
+      type: 'packages',
+      action: visible ? 'Showed Package on Frontend' : 'Hid Package from Frontend',
+      details: `Package "${pkg.title}" is ${visible ? 'visible' : 'hidden'}`,
+      previousEntry: { id, status: pkg.status },
+      newEntry: { id, status },
+    });
+    revalidatePath('/admin/packages');
+    revalidatePath('/admin/hajj-packages');
+    revalidatePath('/admin/umrah-packages');
+    revalidatePath('/hajj-packages');
+    revalidatePath('/umrah-packages');
+    revalidatePath('/march-umrah-packages');
+    revalidatePath('/august-umrah-packages');
+    revalidatePath('/package/[slug]', 'page');
+    revalidatePath('/', 'layout');
+    return { success: true, status };
+  } catch (error) {
+    console.error('updatePackageVisibilityAction failed:', error);
+    return { success: false, error: 'Unable to update package visibility.' };
+  }
+}
+
+export async function duplicatePackageAction(id: number) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+  if (!Number.isSafeInteger(id) || id < 1) return { success: false, error: 'Invalid package ID.' };
+
+  try {
+    const [source] = await db.select().from(packages).where(eq(packages.id, id)).limit(1);
+    if (!source) return { success: false, error: 'Package not found.' };
+
+    const baseSlug = source.slug.replace(/-\d+$/, '');
+    let suffixText = '-copy';
+    let slug = `${baseSlug.slice(0, 128 - suffixText.length)}${suffixText}`;
+    let suffix = 2;
+    while ((await db.select({ id: packages.id }).from(packages).where(eq(packages.slug, slug)).limit(1)).length > 0) {
+      suffixText = `-copy-${suffix++}`;
+      slug = `${baseSlug.slice(0, 128 - suffixText.length)}${suffixText}`;
+    }
+
+    const title = `Copy of ${source.title}`.slice(0, 255);
+    const sourcePrices = await db.select().from(packagePrices).where(eq(packagePrices.packageId, id));
+    const sourceHotels = await db.select().from(packageHotels).where(eq(packageHotels.packageId, id));
+    const newId = await db.transaction(async (transaction) => {
+      const [inserted] = await transaction.insert(packages).values({
+        type: source.type,
+        categoryId: source.categoryId,
+        title,
+        slug,
+        shortDescription: source.shortDescription,
+        fullDescription: source.fullDescription,
+        featuredImage: source.featuredImage,
+        month: source.month,
+        year: source.year,
+        durationDays: source.durationDays,
+        departureCity: source.departureCity,
+        destination: source.destination,
+        startingPrice: source.startingPrice,
+        currency: source.currency,
+        starRating: source.starRating,
+        status: 'draft',
+        isFeatured: false,
+        inclusions: source.inclusions,
+        exclusions: source.exclusions,
+        cardData: source.cardData,
+        detailPageData: source.detailPageData,
+        packagesGallery: source.packagesGallery,
+        seoSettings: source.seoSettings,
+      }).$returningId();
+      const duplicateId = inserted?.id;
+      if (!duplicateId) throw new Error('Package insert did not return an ID.');
+
+      if (sourcePrices.length) {
+        await transaction.insert(packagePrices).values(sourcePrices.map((price) => ({
+          packageId: duplicateId,
+          occupancyType: price.occupancyType,
+          amount: price.amount,
+          notes: price.notes,
+        })));
+      }
+      if (sourceHotels.length) {
+        await transaction.insert(packageHotels).values(sourceHotels.map((hotel) => ({
+          packageId: duplicateId,
+          hotelName: hotel.hotelName,
+          city: hotel.city,
+          starRating: hotel.starRating,
+          nights: hotel.nights,
+          distanceFromHaram: hotel.distanceFromHaram,
+          imageUrl: hotel.imageUrl,
+        })));
+      }
+      return duplicateId;
+    });
+
+    await logAdminActivityAction({
+      type: 'packages',
+      action: 'Duplicated Package',
+      details: `${source.title} → ${title} (${slug})`,
+      previousEntry: { id: source.id, title: source.title, slug: source.slug },
+      newEntry: { id: newId, title, slug, status: 'draft' },
+    });
+    revalidatePath('/admin/packages');
+    revalidatePath('/admin/hajj-packages');
+    revalidatePath('/admin/umrah-packages');
+    return { success: true, id: newId, title, slug };
+  } catch (error) {
+    console.error('duplicatePackageAction failed:', error);
+    return { success: false, error: 'Unable to duplicate package.' };
+  }
+}
+
 export async function deletePackage(id: number): Promise<void> {
   await requireAdmin(['admin', 'content_editor', 'seo_manager']);
 

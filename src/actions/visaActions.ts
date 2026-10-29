@@ -4,7 +4,7 @@ import { requireAdmin } from '@/lib/requireAdmin';
 
 import { db } from '@/db';
 import { visaServices } from '@/db/schema';
-import { eq, asc } from 'drizzle-orm';
+import { eq, asc, and } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { logAdminActivityAction } from '@/actions/activityActions';
 
@@ -88,19 +88,31 @@ export async function getVisaServicesList() {
       }
       list = await db.select().from(visaServices).orderBy(asc(visaServices.displayOrder));
     }
-    return list || [];
+    return (list || []).filter((visa) => visa.isPublished);
   } catch {
-    return defaultVisaServicesSeed as any[];
+    return defaultVisaServicesSeed.filter((visa) => visa.isPublished) as any[];
   }
+}
+
+export async function getVisaAdminServicesList() {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+  return db.select().from(visaServices).orderBy(asc(visaServices.displayOrder));
 }
 
 export async function getVisaServiceBySlug(slug: string) {
   try {
-    const list = await db.select().from(visaServices).where(eq(visaServices.slug, slug)).limit(1);
+    const list = await db.select().from(visaServices).where(and(
+      eq(visaServices.slug, slug),
+      eq(visaServices.isPublished, true)
+    )).limit(1);
     return list.length ? list[0] : null;
   } catch {
     return null;
   }
+}
+
+function slugifyVisaTitle(value: string) {
+  return value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
 }
 
 export async function createVisaService(formData: FormData): Promise<{ success: boolean; error?: string }> {
@@ -218,5 +230,79 @@ export async function deleteVisaServiceAction(id: number): Promise<{ success: bo
   } catch (error: any) {
     console.error('Error deleting visa service:', error);
     return { success: false, error: error.message || 'Failed to delete visa service.' };
+  }
+}
+
+export async function toggleVisaPublicationAction(id: number, isPublished: boolean) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
+  try {
+    const previousEntry = (await db.select().from(visaServices).where(eq(visaServices.id, id)).limit(1))[0];
+    if (!previousEntry) return { success: false, error: 'Visa service not found.' };
+
+    await db.update(visaServices).set({ isPublished }).where(eq(visaServices.id, id));
+    const updatedVisa = { ...previousEntry, isPublished };
+    await logAdminActivityAction({
+      type: 'visas',
+      action: isPublished ? 'Published Visa Service' : 'Unpublished Visa Service',
+      details: `${isPublished ? 'Published' : 'Unpublished'} visa service "${previousEntry.title}"`,
+      previousEntry,
+      newEntry: updatedVisa,
+    });
+
+    revalidatePath('/admin/visas');
+    revalidatePath('/saudi-visa');
+    revalidatePath('/');
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating visa visibility:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Failed to update visa visibility.' };
+  }
+}
+
+export async function duplicateVisaServiceAction(id: number) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
+  try {
+    const source = (await db.select().from(visaServices).where(eq(visaServices.id, id)).limit(1))[0];
+    if (!source) return { success: false, error: 'Visa service not found.' };
+
+    const copySuffix = ' (Copy)';
+    const title = `${source.title.slice(0, 255 - copySuffix.length)}${copySuffix}`;
+    const baseSlug = (slugifyVisaTitle(source.slug || source.title) || 'visa').slice(0, 120);
+    let slug = `${baseSlug}-copy`;
+    let suffix = 2;
+    while ((await db.select({ id: visaServices.id }).from(visaServices).where(eq(visaServices.slug, slug)).limit(1)).length > 0) {
+      const ending = `-copy-${suffix++}`;
+      slug = `${baseSlug.slice(0, 128 - ending.length)}${ending}`;
+    }
+
+    const content = { ...source };
+    delete (content as { id?: number }).id;
+    const inserted = await db.insert(visaServices).values({
+      ...content,
+      title,
+      slug,
+      isPublished: false,
+      createdAt: new Date(),
+    }).$returningId();
+    const duplicate = inserted[0]?.id
+      ? (await db.select().from(visaServices).where(eq(visaServices.id, inserted[0].id)).limit(1))[0]
+      : null;
+
+    await logAdminActivityAction({
+      type: 'visas',
+      action: 'Duplicated Visa Service',
+      details: `Duplicated visa service "${source.title}" as "${title}"`,
+      previousEntry: source,
+      newEntry: duplicate,
+    });
+    revalidatePath('/admin/visas');
+    revalidatePath('/saudi-visa');
+    revalidatePath('/');
+    return { success: true, visa: duplicate };
+  } catch (error) {
+    console.error('Error duplicating visa service:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Failed to duplicate visa service.' };
   }
 }

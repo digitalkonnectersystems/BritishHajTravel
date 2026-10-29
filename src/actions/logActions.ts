@@ -14,7 +14,7 @@ export async function getEmailDeliveryLogsAction() {
       .select()
       .from(emailDeliveryLogs)
       .orderBy(desc(emailDeliveryLogs.createdAt))
-      .limit(100);
+      .limit(250);
 
     return { success: true, logs };
   } catch (error: any) {

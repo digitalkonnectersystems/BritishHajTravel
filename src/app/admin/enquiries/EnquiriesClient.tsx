@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { updateEnquiryStatus, deleteEnquiryAction } from '@/actions/enquiryActions';
 import ConfirmModal, { ConfirmModalConfig } from '@/components/ui/ConfirmModal';
 import { Trash2, Search, Filter, Eye, X, Mail } from 'lucide-react';
+import { WaveAnalyticsChart, chartDays, dailySeries } from '@/components/admin/WaveAnalyticsChart';
 
 interface EnquiriesClientProps {
   initialEnquiries: any[];
@@ -41,6 +42,12 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
   });
 
   const newCount = enquiries.filter((e) => e.status === 'new').length;
+  const enquiryDays = chartDays(14);
+  const enquiryCharts = [
+    { name: 'Matching enquiries', values: dailySeries(filtered, enquiryDays.keys, item => item.createdAt || item.created_at) },
+    { name: 'New / unprocessed', values: dailySeries(filtered, enquiryDays.keys, item => item.createdAt || item.created_at, item => item.status === 'new') },
+    { name: 'Other statuses', values: dailySeries(filtered, enquiryDays.keys, item => item.createdAt || item.created_at, item => item.status !== 'new') },
+  ];
 
   const handleStatusChange = async (id: number, newStatus: string) => {
     await updateEnquiryStatus(id, newStatus as any);
@@ -142,6 +149,13 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
           </select>
         </div>
       </div>
+
+      <WaveAnalyticsChart
+        title="Form enquiry volume"
+        description="Daily submitted enquiries over the last 14 UTC days, based on stored creation timestamps. Form, search and status filters update these counts."
+        labels={enquiryDays.labels}
+        series={enquiryCharts}
+      />
 
       {/* Table Card */}
       <div className="bg-white rounded-3xl border border-slate-100 shadow-2xs overflow-hidden">

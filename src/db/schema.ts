@@ -369,6 +369,31 @@ export const sitePages = mysqlTable('site_pages', {
   updatedAt: timestamp('updated_at').defaultNow().onUpdateNow(),
 });
 
+// Separate CMS for each homepage visa-processing card; identical columns to site_pages.
+export const visaProcessing = mysqlTable('visa_processing', {
+  id: int('id').autoincrement().primaryKey(),
+  title: varchar('title', { length: 255 }).notNull(),
+  slug: varchar('slug', { length: 128 }).notNull().unique(),
+  status: mysqlEnum('status', ['published', 'draft']).notNull().default('published'),
+  showInMenu: boolean('show_in_menu').notNull().default(true),
+  parentPage: varchar('parent_page', { length: 128 }),
+  guideCategory: varchar('guide_category', { length: 20 }),
+  guideCardData: text('guide_card_data'),
+  bannerBgImage: text('banner_bg_image'),
+  bannerPosition: varchar('banner_position', { length: 50 }).default('center center'),
+  bannerSize: varchar('banner_size', { length: 50 }).default('cover'),
+  bannerTitle: text('banner_title'),
+  bannerDescription: text('banner_description'),
+  sections: longtext('sections'),
+  richText: longtext('rich_text'),
+  metaTitle: varchar('meta_title', { length: 255 }),
+  metaDescription: text('meta_description'),
+  seoSettings: json('seo_settings'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow().onUpdateNow(),
+});
+
+
 // 10a. Hotel Directory
 export const hotelCategories = mysqlTable('hotel_categories', {
   id: int('id').autoincrement().primaryKey(),

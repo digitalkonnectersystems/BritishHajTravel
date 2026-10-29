@@ -4,6 +4,7 @@ import { Fragment, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ActivityItem, getRecentActivities, clearActivityLogsAction } from '@/actions/activityActions';
 import { Search, Filter, RefreshCw, Check, Users, Activity, ChevronDown, ChevronUp } from 'lucide-react';
+import { WaveAnalyticsChart, chartDays, dailySeries } from '@/components/admin/WaveAnalyticsChart';
 
 interface ActivityLogsClientProps {
   initialActivities: ActivityItem[];
@@ -28,7 +29,14 @@ const TYPE_CONFIG: Record<string, { label: string; bg: string; text: string; dot
   blogs: { label: 'Blog Posts', bg: '#FDF4FF', text: '#A21CAF', dot: '#D946EF', border: '#F5D0FE' },
   destinations: { label: 'Destinations', bg: '#EFF6FF', text: '#1D4ED8', dot: '#3B82F6', border: '#BFDBFE' },
   visas: { label: 'Visas', bg: '#E0F2FE', text: '#0369A1', dot: '#0EA5E9', border: '#BAE6FD' },
-  enquiries: { label: 'Enquiries', bg: '#FFF1F2', text: '#BE123C', dot: '#F43F5E', border: '#FECDD3' },
+  enquiries: { label: 'Forms Enquiries', bg: '#FFF1F2', text: '#BE123C', dot: '#F43F5E', border: '#FECDD3' },
+  hotels: { label: 'Hotels', bg: '#EFF6FF', text: '#1D4ED8', dot: '#60A5FA', border: '#BFDBFE' },
+  media: { label: 'Media Library', bg: '#F0FDFA', text: '#0F766E', dot: '#14B8A6', border: '#99F6E4' },
+  guides: { label: 'Guides', bg: '#FDF4FF', text: '#A21CAF', dot: '#D946EF', border: '#F5D0FE' },
+  visa_processing: { label: 'Visa Processing', bg: '#EFF6FF', text: '#0369A1', dot: '#0EA5E9', border: '#BAE6FD' },
+  baan: { label: 'BAAN Holding Hajj', bg: '#FFFBEB', text: '#B45309', dot: '#F59E0B', border: '#FDE68A' },
+  seo: { label: 'SEO', bg: '#F0FDFA', text: '#0F766E', dot: '#14B8A6', border: '#99F6E4' },
+
   menus: { label: 'Menus', bg: '#F0FDFA', text: '#0F766E', dot: '#14B8A6', border: '#99F6E4' },
 };
 
@@ -108,6 +116,13 @@ export default function ActivityLogsClient({ initialActivities }: ActivityLogsCl
     const matchesUser = selectedUser === 'all' || act.user.toLowerCase() === selectedUser.toLowerCase();
     return matchesSearch && matchesType && matchesUser;
   });
+
+  const activityDays = chartDays(14);
+  const activityCharts = [
+    { name: 'All matching actions', values: dailySeries(filtered, activityDays.keys, item => item.timestamp) },
+    { name: 'User sign-ins', values: dailySeries(filtered, activityDays.keys, item => item.timestamp, item => /log(?:ged)?\s*in|sign[ -]?in/i.test(item.action)) },
+    { name: 'Content updates', values: dailySeries(filtered, activityDays.keys, item => item.timestamp, item => /updat|edit|publish/i.test(item.action)) },
+  ];
 
   return (
     <div className="flex flex-col gap-6">
@@ -202,7 +217,13 @@ export default function ActivityLogsClient({ initialActivities }: ActivityLogsCl
               <option value="blogs">Blog Posts</option>
               <option value="visas">Visas</option>
               <option value="destinations">Destinations</option>
-              <option value="enquiries">Enquiries</option>
+              <option value="enquiries">Forms Enquiries</option>
+              <option value="hotels">Hotels</option>
+              <option value="media">Media Library</option>
+              <option value="guides">Guides</option>
+              <option value="visa_processing">Visa Processing</option>
+              <option value="baan">BAAN Holding Hajj</option>
+              <option value="seo">SEO</option>
               <option value="menus">Menus</option>
               <option value="settings">Settings</option>
             </select>
@@ -257,6 +278,13 @@ export default function ActivityLogsClient({ initialActivities }: ActivityLogsCl
           );
         })}
       </div>
+
+      <WaveAnalyticsChart
+        title="Administrative activity overview"
+        description="Last 14 UTC days from the loaded audit entries. Search, entity and user filters also update the chart; counts are limited to the loaded log records."
+        labels={activityDays.labels}
+        series={activityCharts}
+      />
 
       {/* Activity Table */}
       <div className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-xs">

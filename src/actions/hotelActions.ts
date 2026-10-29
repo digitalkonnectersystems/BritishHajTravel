@@ -95,7 +95,7 @@ export async function createHotelCategoryAction(input: { name: string; displayOr
       displayOrder: Number(input.displayOrder || 0),
       isPublished: input.isPublished !== false,
     }).$returningId();
-    await logAdminActivityAction({ type: 'settings', action: 'Created Hotel Category', details: `Hotel category "${name}" created` });
+    await logAdminActivityAction({ type: 'hotels', action: 'Created Hotel Category', details: `Hotel category "${name}" created` });
     revalidatePath('/hotels');
     updateTag('hotel-directory');
     return { success: true, id: inserted[0]?.id };
@@ -117,6 +117,7 @@ export async function updateHotelCategoryAction(id: number, input: { name: strin
       isPublished: input.isPublished !== false,
       updatedAt: new Date(),
     }).where(eq(hotelCategories.id, id));
+    await logAdminActivityAction({type:'hotels',action:'Updated Hotel Category',details:`Hotel category #${id} updated`,newEntry:{id,name}});
     revalidatePath('/hotels');
     updateTag('hotel-directory');
     return { success: true };
@@ -130,6 +131,7 @@ export async function deleteHotelCategoryAction(id: number) {
 
   try {
     await db.delete(hotelCategories).where(eq(hotelCategories.id, id));
+    await logAdminActivityAction({type:'hotels',action:'Deleted Hotel Category',details:`Hotel category #${id} deleted`,previousEntry:{id}});
     revalidatePath('/hotels');
     updateTag('hotel-directory');
     return { success: true };
@@ -143,6 +145,7 @@ export async function updateHotelCategoryOrderAction(orderedIds: number[]) {
 
   try {
     await Promise.all(orderedIds.map((id, index) => db.update(hotelCategories).set({ displayOrder: index, updatedAt: new Date() }).where(eq(hotelCategories.id, id))));
+    await logAdminActivityAction({type:'hotels',action:'Reordered Hotel Categories',details:`Reordered ${orderedIds.length} hotel categories`,newEntry:{ids:orderedIds.slice(0,100)}});
     revalidatePath('/hotels');
     updateTag('hotel-directory');
     return { success: true };
@@ -190,7 +193,7 @@ export async function createHotelAction(input: HotelInput) {
   }
   try {
     const inserted = await db.insert(hotels).values(hotel).$returningId();
-    await logAdminActivityAction({ type: 'settings', action: 'Created Hotel', details: `Hotel "${hotel.name}" created` });
+    await logAdminActivityAction({ type: 'hotels', action: 'Created Hotel', details: `Hotel "${hotel.name}" created` });
     revalidatePath('/hotels');
     updateTag('hotel-directory');
     return { success: true, id: inserted[0]?.id };
@@ -208,6 +211,7 @@ export async function updateHotelAction(id: number, input: HotelInput) {
   }
   try {
     await db.update(hotels).set({ ...hotel, updatedAt: new Date() }).where(eq(hotels.id, id));
+    await logAdminActivityAction({type:'hotels',action:'Updated Hotel',details:`Hotel #${id} (${hotel.name}) updated`,newEntry:{id,name:hotel.name,city:hotel.city,categoryId:hotel.categoryId}});
     revalidatePath('/hotels');
     updateTag('hotel-directory');
     return { success: true };
@@ -216,11 +220,84 @@ export async function updateHotelAction(id: number, input: HotelInput) {
   }
 }
 
+export async function toggleHotelPublicationAction(id: number, isPublished: boolean) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
+  try {
+    const previousEntry = (await db.select().from(hotels).where(eq(hotels.id, id)).limit(1))[0];
+    if (!previousEntry) return { success: false, error: 'Hotel not found.' };
+
+    await db.update(hotels).set({ isPublished, updatedAt: new Date() }).where(eq(hotels.id, id));
+    const updatedHotel = { ...previousEntry, isPublished, updatedAt: new Date() };
+    await logAdminActivityAction({
+      type: 'hotels',
+      action: isPublished ? 'Published Hotel' : 'Unpublished Hotel',
+      details: `${isPublished ? 'Published' : 'Unpublished'} hotel "${previousEntry.name}"`,
+      previousEntry,
+      newEntry: updatedHotel,
+    });
+    revalidatePath('/hotels');
+    revalidatePath('/admin/hotels');
+    updateTag('hotel-directory');
+    return { success: true };
+  } catch (error) {
+    console.error('toggleHotelPublicationAction failed:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Failed to update hotel visibility.' };
+  }
+}
+
+export async function duplicateHotelAction(id: number) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
+  try {
+    const source = (await db.select().from(hotels).where(eq(hotels.id, id)).limit(1))[0];
+    if (!source) return { success: false, error: 'Hotel not found.' };
+
+    const copySuffix = ' (Copy)';
+    const baseName = `${source.name.slice(0, 255 - copySuffix.length)}${copySuffix}`;
+    let name = baseName;
+    let suffix = 2;
+    while ((await db.select({ id: hotels.id }).from(hotels).where(eq(hotels.name, name)).limit(1)).length > 0) {
+      const ending = ` (Copy ${suffix++})`;
+      name = `${source.name.slice(0, 255 - ending.length)}${ending}`;
+    }
+
+    const content = { ...source };
+    delete (content as { id?: number }).id;
+    const inserted = await db.insert(hotels).values({
+      ...content,
+      name,
+      isPublished: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }).$returningId();
+    const duplicate = inserted[0]?.id
+      ? (await db.select().from(hotels).where(eq(hotels.id, inserted[0].id)).limit(1))[0]
+      : null;
+
+    await logAdminActivityAction({
+      type: 'hotels',
+      action: 'Duplicated Hotel',
+      details: `Duplicated hotel "${source.name}" as "${name}"`,
+      previousEntry: source,
+      newEntry: duplicate,
+    });
+    revalidatePath('/hotels');
+    revalidatePath('/admin/hotels');
+    updateTag('hotel-directory');
+    return { success: true, hotel: duplicate };
+  } catch (error) {
+    console.error('duplicateHotelAction failed:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Failed to duplicate hotel.' };
+  }
+}
+
 export async function deleteHotelAction(id: number) {
   await requireAdmin(['admin', 'content_editor', 'seo_manager']);
 
   try {
     await db.delete(hotels).where(eq(hotels.id, id));
+    await logAdminActivityAction({type:'hotels',action:'Deleted Hotel',details:`Hotel #${id} deleted`,previousEntry:{id}});
     revalidatePath('/hotels');
     updateTag('hotel-directory');
     return { success: true };
@@ -234,6 +311,7 @@ export async function updateHotelOrderAction(orderedIds: number[]) {
 
   try {
     await Promise.all(orderedIds.map((id, index) => db.update(hotels).set({ displayOrder: index, updatedAt: new Date() }).where(eq(hotels.id, id))));
+    await logAdminActivityAction({type:'hotels',action:'Reordered Hotels',details:`Reordered ${orderedIds.length} hotels`,newEntry:{ids:orderedIds.slice(0,100)}});
     revalidatePath('/hotels');
     updateTag('hotel-directory');
     return { success: true };

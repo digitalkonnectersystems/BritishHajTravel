@@ -59,6 +59,21 @@ function inferStatus(action: string): string {
   return 'UPDATE';
 }
 
+function safeActivitySnapshot(value: unknown, depth=0): unknown {
+  if (depth > 5) return '[nested data omitted]';
+  if (Array.isArray(value)) return value.slice(0,100).map(v=>safeActivitySnapshot(v,depth+1));
+  if (value && typeof value === 'object') {
+    const result: Record<string,unknown>={};
+    for (const [key, entry] of Object.entries(value as Record<string,unknown>)) {
+      if (/(password|secret|token|otp|authorization|cookie|smtp|emailhtml|email_html|emailto|emailcc|emailbcc|passport|phone|whatsapp|card_number)/i.test(key)) result[key]='[redacted]';
+      else result[key]=safeActivitySnapshot(entry,depth+1);
+    }
+    return result;
+  }
+  if (typeof value==='string') return value.length>1000?value.slice(0,1000)+' [truncated]':value;
+  return value;
+}
+
 function safeParse(value: string | null | undefined): any {
   if (!value) return null;
   try {
@@ -243,8 +258,8 @@ export async function logAdminActivityAction(entry: ActivityPayload) {
       status: entry.status || inferStatus(entry.action),
       userId: resolvedUserId,
       ipAddress: await getRequestIp(),
-      previousEntry: previousEntry === null ? null : JSON.stringify(previousEntry),
-      newEntry: JSON.stringify(newEntry),
+      previousEntry: previousEntry === null ? null : JSON.stringify(safeActivitySnapshot(previousEntry)),
+      newEntry: JSON.stringify(safeActivitySnapshot(newEntry)),
     });
 
     revalidatePath('/admin/dashboard');

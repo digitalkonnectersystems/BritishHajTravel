@@ -1,6 +1,9 @@
 'use server';
 
 import { requireAdmin } from '@/lib/requireAdmin';
+import { randomUUID } from 'node:crypto';
+import { writeBackendLog, databaseErrorCode } from '@/lib/backendLogger';
+import { recordPublicEnquiry } from '@/lib/publicEnquiryAudit';
 import { isValidUkPhone } from '@/lib/ukPhone';
 
 import { db } from '@/db';
@@ -9,6 +12,15 @@ import { eq, desc, inArray } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { dispatchFormEmails, type FormEmailAudit } from '@/lib/emailService';
 import { logAdminActivityAction } from '@/actions/activityActions';
+
+const validEmail = (email: unknown) => typeof email === 'string' && email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+const validName = (name: unknown) => typeof name === 'string' && name.trim().length >= 2 && name.trim().length <= 255;
+const countOk = (count: unknown, min=0) => typeof count === 'number' && Number.isSafeInteger(count) && count >= min && count <= 99;
+const enquiryReference = (prefix: string) => `${prefix}-${randomUUID().replace(/-/g,'').slice(0,20).toUpperCase()}`;
+async function recordSubmissionFailure(source:string, error:unknown) {
+ await writeBackendLog({severity:'error',category:'Form Submissions',source,message:`Database submission failed (${databaseErrorCode(error)})`});
+}
+
 
 async function saveEnquiryEmailAudit(enquiryNumber: string, audit?: FormEmailAudit) {
   if (!audit) return;
@@ -54,15 +66,17 @@ export async function submitQuoteEnquiryAction(data: {
     const { fullName, phone, email, packageType = 'Umrah Package', numberOfPilgrims = 1, message = '', sourceFormName } = data;
 
     if (!isValidUkPhone(phone)) return {success: false, error: 'Phone must use +44 followed by exactly 10 digits.'};
-    if (!fullName || !email || !phone) {
+    if (!validName(fullName) || !validEmail(email) || !phone) {
       return { success: false, error: 'Full Name, Email, and Phone number are required.' };
     }
 
-    const enquiryNumber = `QT-${Date.now().toString().slice(-6)}`;
+    if (!countOk(numberOfPilgrims,1) || (message||'').length > 5000) return {success:false,error:'Check the number of pilgrims and message length.'};
+    const enquiryNumber = enquiryReference('QT');
 
     // 1. Insert into dedicated quote_enquiries table. Keep the dedicated
     // and unified records aligned so the admin CRUD operates on the same enquiry.
-    await db.insert(quoteEnquiries).values({
+    await db.transaction(async (tx) => {
+    await tx.insert(quoteEnquiries).values({
       enquiryNumber,
       fullName,
       phone,
@@ -73,7 +87,7 @@ export async function submitQuoteEnquiryAction(data: {
     });
 
     // 2. Aggregate in unified enquiries table
-    await db.insert(enquiries).values({
+    await tx.insert(enquiries).values({
       enquiryNumber,
       type: 'quote_request',
       fullName,
@@ -84,6 +98,9 @@ export async function submitQuoteEnquiryAction(data: {
       message,
       status: 'new',
     });
+    });
+
+    await recordPublicEnquiry('Get a Free Quote',enquiryNumber);
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
     const emailResult = await dispatchAndStoreEnquiryEmail(enquiryNumber, 
@@ -109,6 +126,7 @@ export async function submitQuoteEnquiryAction(data: {
     };
   } catch (error: any) {
     console.error('Error submitting quote enquiry:', error);
+    await recordSubmissionFailure('quote',error);
     return { success: false, error: 'Failed to submit quote request. Please try again.' };
   }
 }
@@ -146,14 +164,16 @@ export async function submitPackageBookingEnquiryAction(data: {
     } = data;
 
     if (!isValidUkPhone(phone)) return {success: false, error: 'Phone must use +44 followed by exactly 10 digits.'};
-    if (!fullName || !email || !phone) {
+    if (!validName(fullName) || !validEmail(email) || !phone) {
       return { success: false, error: 'Full Name, Email, and Phone number are required.' };
     }
 
-    const bookingNumber = `BK-${Date.now().toString().slice(-6)}`;
+    if (!countOk(adults,1) || !countOk(children) || !countOk(infants) || infants > adults || (message||'').length > 5000) return {success:false,error:'Check traveller counts or message length.'};
+    const bookingNumber = enquiryReference('BK');
 
     // 1. Insert into dedicated package_booking_enquiries table.
-    await db.insert(packageBookingEnquiries).values({
+    await db.transaction(async (tx) => {
+    await tx.insert(packageBookingEnquiries).values({
       bookingNumber,
       packageId,
       packageName,
@@ -169,7 +189,7 @@ export async function submitPackageBookingEnquiryAction(data: {
     });
 
     // 2. Aggregate in unified enquiries table
-    await db.insert(enquiries).values({
+    await tx.insert(enquiries).values({
       enquiryNumber: bookingNumber,
       type: 'package_enquiry',
       fullName,
@@ -184,6 +204,9 @@ export async function submitPackageBookingEnquiryAction(data: {
       status: 'new',
       message,
     });
+    });
+
+    await recordPublicEnquiry('Package Booking',bookingNumber);
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
     const emailResult = await dispatchAndStoreEnquiryEmail(bookingNumber, 
@@ -214,6 +237,7 @@ export async function submitPackageBookingEnquiryAction(data: {
     };
   } catch (error: any) {
     console.error('Error submitting package booking enquiry:', error);
+    await recordSubmissionFailure('package-booking',error);
     return { success: false, error: 'Failed to submit package booking. Please try again.' };
   }
 }
@@ -230,16 +254,18 @@ export async function submitContactEnquiryAction(data: {
   try {
     const { fullName, email, phone, website = '', packageType = '', message, sourceFormName } = data;
 
-    if (!fullName || !email) {
+    if (!validName(fullName) || !validEmail(email)) {
       return { success: false, error: 'Full Name and Email are required.' };
     }
 
     if (phone && phone !== '+44' && !isValidUkPhone(phone)) return {success:false,error:'Phone must use +44 followed by exactly 10 digits.'};
 
-    const ticketNumber = `TKT-${Date.now().toString().slice(-6)}`;
+    if ((message||'').length > 5000) return {success:false,error:'Message must be 5000 characters or fewer.'};
+    const ticketNumber = enquiryReference('TKT');
 
     // 1. Insert into dedicated contact_enquiries table.
-    await db.insert(contactEnquiries).values({
+    await db.transaction(async (tx) => {
+    await tx.insert(contactEnquiries).values({
       ticketNumber,
       fullName,
       email,
@@ -251,7 +277,7 @@ export async function submitContactEnquiryAction(data: {
     });
 
     // 2. Aggregate in unified enquiries table
-    await db.insert(enquiries).values({
+    await tx.insert(enquiries).values({
       enquiryNumber: ticketNumber,
       type: 'general_contact',
       fullName,
@@ -261,6 +287,9 @@ export async function submitContactEnquiryAction(data: {
       message,
       status: 'new',
     });
+    });
+
+    await recordPublicEnquiry('Contact Form',ticketNumber);
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
     const emailResult = await dispatchAndStoreEnquiryEmail(ticketNumber, sourceFormName || 'Contact Us Form', {
@@ -283,6 +312,7 @@ export async function submitContactEnquiryAction(data: {
     };
   } catch (error: any) {
     console.error('Error submitting contact enquiry:', error);
+    await recordSubmissionFailure('contact',error);
     return { success: false, error: 'Failed to send message. Please try again.' };
   }
 }
@@ -312,13 +342,15 @@ export async function submitVisaEnquiryAction(data: {
     } = data;
 
     if (!isValidUkPhone(phone)) return {success: false, error: 'Phone must use +44 followed by exactly 10 digits.'};
-    if (!fullName || !email || !phone) {
+    if (!validName(fullName) || !validEmail(email) || !phone) {
       return { success: false, error: 'Full Name, Email, and Phone are required.' };
     }
 
-    const enquiryNumber = `VSA-${Date.now().toString().slice(-6)}`;
+    if (!countOk(travelersCount,1) || (message||'').length > 5000) return {success:false,error:'Check traveller count or message length.'};
+    const enquiryNumber = enquiryReference('VSA');
 
-    await db.insert(visaEnquiries).values({
+    await db.transaction(async (tx) => {
+    await tx.insert(visaEnquiries).values({
       enquiryNumber,
       visaServiceId,
       visaTitle,
@@ -331,7 +363,7 @@ export async function submitVisaEnquiryAction(data: {
       status: 'new',
     });
 
-    await db.insert(enquiries).values({
+    await tx.insert(enquiries).values({
       enquiryNumber,
       type: 'visa_enquiry',
       fullName,
@@ -343,6 +375,9 @@ export async function submitVisaEnquiryAction(data: {
       message,
       status: 'new',
     });
+    });
+
+    await recordPublicEnquiry('Visa Enquiry',enquiryNumber);
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
     const emailResult = await dispatchAndStoreEnquiryEmail(enquiryNumber, sourceFormName || 'Visa Consultation Form', {
@@ -361,6 +396,7 @@ export async function submitVisaEnquiryAction(data: {
     return { success: true, enquiryNumber, emailWarning: emailResult.error, message: 'Visa consultation request received!' };
   } catch (error: any) {
     console.error('Error submitting visa enquiry:', error);
+    await recordSubmissionFailure('visa',error);
     return { success: false, error: 'Failed to submit visa enquiry.' };
   }
 }
@@ -458,13 +494,15 @@ export async function submitFlightInquiry(data: {
     } = data;
 
     if (!isValidUkPhone(phone)) return {success: false, error: 'Phone must use +44 followed by exactly 10 digits.'};
-    if (!fullName || !email || !phone) {
+    if (!validName(fullName) || !validEmail(email) || !phone) {
       return { success: false, error: 'Full Name, Email, and Phone are required.' };
     }
 
-    const enquiryNumber = `FLT-${Date.now().toString().slice(-6)}`;
+    if (!countOk(passengers,1) || (message||'').length > 5000) return {success:false,error:'Check passenger count or message length.'};
+    const enquiryNumber = enquiryReference('FLT');
 
-    await db.insert(flightEnquiries).values({
+    await db.transaction(async (tx) => {
+    await tx.insert(flightEnquiries).values({
       enquiryNumber,
       fullName,
       email,
@@ -480,7 +518,7 @@ export async function submitFlightInquiry(data: {
       status: 'new',
     });
 
-    await db.insert(enquiries).values({
+    await tx.insert(enquiries).values({
       enquiryNumber,
       type: 'flight_enquiry',
       fullName,
@@ -492,6 +530,9 @@ export async function submitFlightInquiry(data: {
       message,
       status: 'new',
     });
+    });
+
+    await recordPublicEnquiry('Flight Enquiry',enquiryNumber);
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
     const emailResult = await dispatchAndStoreEnquiryEmail(enquiryNumber, sourceFormName || 'Flight Booking Form', {
@@ -514,6 +555,7 @@ export async function submitFlightInquiry(data: {
     return { success: true, enquiryNumber, emailWarning: emailResult.error, message: 'Flight booking request received!' };
   } catch (error: any) {
     console.error('Error submitting flight enquiry:', error);
+    await recordSubmissionFailure('flight',error);
     return { success: false, error: 'Failed to submit flight enquiry.' };
   }
 }
