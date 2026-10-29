@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation';
 import { getPageBySlug } from "@/actions/pageActions";
 import { getAllPackages } from "@/actions/packageActions";
 import UmrahPackagesPageClient from "./UmrahPackagesPageClient";
@@ -6,6 +7,7 @@ import type { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {
   const pageData = await getPageBySlug("/umrah-packages").catch(() => null);
+  if (pageData?.status === 'draft') notFound();
   return buildPageMetadata(pageData || { title: "Umrah Packages" }, "/umrah-packages");
 }
 

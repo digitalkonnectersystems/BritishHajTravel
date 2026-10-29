@@ -16,9 +16,13 @@ import {
   getNavItems,
   getGalleryNavItems,
   getFooterData,
+  getHiddenSitePagePaths,
   getSeoIntelligenceSettings,
 } from "@/actions/pageActions";
 import { getHotelDirectory } from "@/actions/hotelActions";
+import { db } from "@/db";
+import { visaProcessing } from "@/db/schema";
+import { isHiddenInternalLink, removeHiddenNavigation } from "@/lib/publicPageVisibility";
 import "./globals.css";
 
 const marcellus = Marcellus({
@@ -89,8 +93,16 @@ export default async function RootLayout({
     getSeoIntelligenceSettings(),
     getHotelDirectory().catch(() => []),
   ]);
-  // Navigation, including destinations, is controlled only from Admin Settings.
-  const navWithDestinations = navItems;
+  const [unpublishedSitePaths, visaRecords] = await Promise.all([
+    getHiddenSitePagePaths(),
+    db.select({ slug: visaProcessing.slug, status: visaProcessing.status }).from(visaProcessing)
+      .catch(error => { console.error('[navigation] Visa visibility query failed', error); return [] as { slug: string; status: 'draft' | 'published' }[]; }),
+  ]);
+  const unpublishedVisaPaths = visaRecords.filter(page => page.status !== 'published').map(page => page.slug);
+  const publishedVisaPaths = visaRecords.filter(page => page.status === 'published').map(page => page.slug);
+  const hiddenPaths = [...unpublishedSitePaths, ...unpublishedVisaPaths];
+  // Keep configured links, but never link visitors to unpublished or missing visa CMS pages.
+  const navWithDestinations = removeHiddenNavigation(navItems, hiddenPaths, publishedVisaPaths);
   const liveNavItems = navWithDestinations.map((item: any) => {
     if (item.label?.toLowerCase() !== 'hotels') return item;
     const categoryChildren = hotelDirectory.map((category: any) => ({
@@ -104,7 +116,7 @@ export default async function RootLayout({
     return { ...item, children: [...categoryChildren, ...manualChildren] };
   });
   const existingGalleryItem = liveNavItems.find((item: any) => item.id === 'galleries' || item.label?.toLowerCase() === 'gallery');
-  if (galleryNavItems.length > 0) {
+  if (galleryNavItems.length > 0 && !hiddenPaths.includes('/gallery')) {
     if (existingGalleryItem) {
       existingGalleryItem.url = '/gallery';
       existingGalleryItem.children = galleryNavItems;
@@ -112,8 +124,15 @@ export default async function RootLayout({
       liveNavItems.push({ id: 'galleries', label: 'Gallery', url: '/gallery', level: 1, children: galleryNavItems });
     }
   }
+  const visibleFooterData = {
+    ...footerData,
+    servicesLinks: (footerData?.servicesLinks || []).filter((item: any) => !isHiddenInternalLink(item.url, hiddenPaths, publishedVisaPaths)),
+    sitemapLinks: (footerData?.sitemapLinks || []).filter((item: any) => !isHiddenInternalLink(item.url, hiddenPaths, publishedVisaPaths)),
+  };
   const faviconUrl = identity?.favicon || "/img/favicon.ico";
   const initialMaintenanceMode = loginAuth?.maintenanceMode ?? false;
+  const initialMaintenanceScope = loginAuth?.maintenanceScope === 'selected_pages' ? 'selected_pages' : 'entire_site';
+  const initialMaintenancePaths = Array.isArray(loginAuth?.maintenancePaths) ? loginAuth.maintenancePaths : [];
 
   const gaId = (seoSettings?.googleAnalyticsId || "").trim();
   const isGaActive = (seoSettings?.googleAnalyticsEnabled ?? true) && gaId.length > 0;
@@ -152,10 +171,10 @@ export default async function RootLayout({
 
       <body suppressHydrationWarning>
         <FaviconSync faviconUrl={faviconUrl} />
-        <FrontendMaintenanceWrapper initialMaintenanceMode={initialMaintenanceMode}>
+        <FrontendMaintenanceWrapper initialMaintenanceMode={initialMaintenanceMode} initialMaintenanceScope={initialMaintenanceScope} initialMaintenancePaths={initialMaintenancePaths}>
           <Header initialNavItems={liveNavItems} initialIdentity={identity} />
           {children}
-          <Footer initialFooterData={footerData} />
+          <Footer initialFooterData={visibleFooterData} />
           <WhatsAppFloat initialIdentity={identity} />
           <FloatingShareBar />
           <RevealOnScroll />

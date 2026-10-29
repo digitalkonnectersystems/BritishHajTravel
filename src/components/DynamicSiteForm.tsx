@@ -1,4 +1,5 @@
 "use client";
+import { FORM_SUCCESS_HEADING, FORM_SUCCESS_MESSAGE } from '@/lib/formSuccess';
 
 import React, { useState, useEffect } from "react";
 import { normalizeUkPhoneInput } from "@/lib/ukPhone";
@@ -256,7 +257,7 @@ export default function DynamicSiteForm({
           : "";
         setStatus({
           type: "success",
-          msg: `${formConfig?.successMessage || res.message || "Your request has been submitted successfully!"}${deliveryWarning}`,
+          msg: `${FORM_SUCCESS_MESSAGE}${deliveryWarning}`,
         });
         // Reset form
         const initialData: Record<string, string> = {};
@@ -319,7 +320,7 @@ export default function DynamicSiteForm({
         isOpen={status.type !== null}
         onClose={() => setStatus({ type: null, msg: "" })}
         type={status.type || "info"}
-        title={status.type === "success" ? "Success!" : "Error"}
+        title={status.type === "success" ? FORM_SUCCESS_HEADING : "Error"}
         message={status.msg}
         confirmText="Close"
       />

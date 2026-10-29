@@ -1,4 +1,5 @@
 'use client';
+import { FORM_SUCCESS_MESSAGE } from '@/lib/formSuccess';
 
 import { useEffect, useState, type FormEvent } from 'react';
 import { CalendarDays, Hotel, Plane, Settings2, X, Check } from 'lucide-react';
@@ -42,7 +43,7 @@ export default function PackageCustomizationCTA({ journey }: { journey: 'hajj' |
     setSending(true); setResult('');
     try {
       const response = await submitCustomizedPackageAction(form);
-      if (response.success) { setSaved(true); setResult(`Enquiry saved. Reference: ${response.enquiryNumber}`); }
+      if (response.success) { setSaved(true); setResult(`${FORM_SUCCESS_MESSAGE} Reference: ${response.enquiryNumber}`); }
       else setResult(response.error || 'Enquiry could not be submitted.');
     } catch { setResult('Connection error. Please try again.'); }
     finally { setSending(false); }

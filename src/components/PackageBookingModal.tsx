@@ -1,4 +1,5 @@
 "use client";
+import { FORM_SUCCESS_MESSAGE } from '@/lib/formSuccess';
 import { normalizeUkPhoneInput } from '@/lib/ukPhone';
 
 import { useState, useEffect } from "react";
@@ -121,7 +122,7 @@ export default function PackageBookingModal({
     })
     : null;
 
-  const currencyCode = cd.currencyCode || "£";
+  const currencyCode = "£";
   const badgeTag = cd.badgeTag || "Package";
 
   const isHajj =
@@ -185,8 +186,7 @@ export default function PackageBookingModal({
 
       if (res.success) {
         const msg =
-          res.message ||
-          "Thank you! Your package booking request has been received. Our team will contact you shortly.";
+          `${FORM_SUCCESS_MESSAGE}${res.emailWarning ? ` ${res.emailWarning}` : ""}`;
 
         setModalMsg(msg);
 

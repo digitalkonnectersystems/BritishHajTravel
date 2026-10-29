@@ -1,7 +1,6 @@
 'use client';
 
 import { Fragment, useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { ActivityItem, getRecentActivities, clearActivityLogsAction } from '@/actions/activityActions';
 import { Search, Filter, RefreshCw, Check, Users, Activity, ChevronDown, ChevronUp } from 'lucide-react';
 import { WaveAnalyticsChart, chartDays, dailySeries } from '@/components/admin/WaveAnalyticsChart';
@@ -41,7 +40,6 @@ const TYPE_CONFIG: Record<string, { label: string; bg: string; text: string; dot
 };
 
 export default function ActivityLogsClient({ initialActivities }: ActivityLogsClientProps) {
-  const router = useRouter();
   const [activities, setActivities] = useState<ActivityItem[]>(initialActivities);
   const [search, setSearch] = useState('');
   const [selectedType, setSelectedType] = useState('all');
@@ -57,7 +55,6 @@ export default function ActivityLogsClient({ initialActivities }: ActivityLogsCl
       const startTime = Date.now();
       const data = await getRecentActivities(150);
       setActivities(data);
-      router.refresh();
 
       // Ensure minimum 400ms feedback animation
       const elapsed = Date.now() - startTime;

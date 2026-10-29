@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import { submitQuoteEnquiryAction } from "@/actions/enquiryActions";
 import SubmissionSuccessModal from "@/components/SubmissionSuccessModal";
+import { FORM_SUCCESS_MESSAGE } from "@/lib/formSuccess";
+import { resolveVisibleVisaCards, type PublicVisaPage } from "@/lib/publicPageVisibility";
 
 function IndiaFlag() {
   return (
@@ -248,7 +250,7 @@ function HeroSidePanel({
   );
 }
 
-export default function HomepageHeroBanner({ data, pageData }: { data: any; pageData?: any }) {
+export default function HomepageHeroBanner({ data, pageData, publishedVisaCards = [], publishedSitePaths = [] }: { data: any; pageData?: any; publishedVisaCards?: PublicVisaPage[]; publishedSitePaths?: string[] }) {
   const heroData = {
     heroEyebrow: data?.heroEyebrow || "EST IN UK 2001 · LICENSED PILGRIMAGE OPERATOR",
     title: pageData?.bannerTitle || data?.title || "Trusted UK Hajj & Umrah<br/>Travel Agency in the UK",
@@ -295,6 +297,9 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
     quoteTitle: data?.quoteTitle || "Get a free Quote",
   };
 
+  const visibleVisaCards = resolveVisibleVisaCards<any>(heroData.visaCards, publishedVisaCards, publishedSitePaths);
+  const visaDocumentsVisible = publishedSitePaths.includes(heroData.visaDocumentsLink);
+
   const [quoteForm, setQuoteForm] = useState({
     fullName: "",
     phone: "+44",
@@ -331,7 +336,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
     }
 
     setQuoteErrors({});
-    setQuoteStatus("Submitting to Database...");
+    setQuoteStatus("Submitting...");
 
     try {
       const res = await submitQuoteEnquiryAction({
@@ -343,7 +348,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
       });
 
       if (res.success) {
-        const msg = res.message || "Thank you! Your quote request has been received. Our team will contact you shortly.";
+        const msg = `${FORM_SUCCESS_MESSAGE}${res.emailWarning ? ` ${res.emailWarning}` : ""}`;
         setModalMsg(msg);
         if (res.enquiryNumber) setModalRef(res.enquiryNumber);
         setModalOpen(true);
@@ -450,9 +455,8 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
                               setQuoteForm({ ...quoteForm, fullName: e.target.value });
                               if (quoteErrors.fullName) setQuoteErrors((prev) => ({ ...prev, fullName: "" }));
                             }}
-                            className={`h-14 w-full rounded-none border bg-white px-4 text-[15px] text-slate-900 outline-none transition ${
-                              quoteErrors.fullName ? "border-red-600 ring-1 ring-red-600" : "border-slate-200 focus:border-red"
-                            }`}
+                            className={`h-14 w-full rounded-none border bg-white px-4 text-[15px] text-slate-900 outline-none transition ${quoteErrors.fullName ? "border-red-600 ring-1 ring-red-600" : "border-slate-200 focus:border-red"
+                              }`}
                           />
                           {quoteErrors.fullName ? <span className="mt-1 block text-xs font-semibold text-red-200">{quoteErrors.fullName}</span> : null}
                         </div>
@@ -473,9 +477,8 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
                               setQuoteForm({ ...quoteForm, phone: value });
                               if (quoteErrors.phone) setQuoteErrors((prev) => ({ ...prev, phone: "" }));
                             }}
-                            className={`h-14 w-full rounded-none border bg-white px-4 text-[15px] text-slate-900 outline-none transition ${
-                              quoteErrors.phone ? "border-red-600 ring-1 ring-red-600" : "border-slate-200 focus:border-red"
-                            }`}
+                            className={`h-14 w-full rounded-none border bg-white px-4 text-[15px] text-slate-900 outline-none transition ${quoteErrors.phone ? "border-red-600 ring-1 ring-red-600" : "border-slate-200 focus:border-red"
+                              }`}
                           />
                           {quoteErrors.phone ? <span className="mt-1 block text-xs font-semibold text-red-200">{quoteErrors.phone}</span> : null}
                         </div>
@@ -493,9 +496,8 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
                               setQuoteForm({ ...quoteForm, email: e.target.value });
                               if (quoteErrors.email) setQuoteErrors((prev) => ({ ...prev, email: "" }));
                             }}
-                            className={`h-14 w-full rounded-none border bg-white px-4 text-[15px] text-slate-900 outline-none transition ${
-                              quoteErrors.email ? "border-red-600 ring-1 ring-red-600" : "border-slate-200 focus:border-red"
-                            }`}
+                            className={`h-14 w-full rounded-none border bg-white px-4 text-[15px] text-slate-900 outline-none transition ${quoteErrors.email ? "border-red-600 ring-1 ring-red-600" : "border-slate-200 focus:border-red"
+                              }`}
                           />
                           {quoteErrors.email ? <span className="mt-1 block text-xs font-semibold text-red-200">{quoteErrors.email}</span> : null}
                         </div>
@@ -564,7 +566,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
           </div>
         </div>
 
-        <div className="mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-8">
+        {visibleVisaCards.length > 0 ? <div className="mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-8">
           <div className="relative z-20 -mt-2 overflow-hidden rounded-3xl border border-slate-100/90 bg-white p-5 shadow-[0_20px_50px_-12px_rgba(15,23,42,0.12)] sm:-mt-4 sm:p-6 md:-mt-6 md:rounded-[30px] md:p-7 lg:-mt-8">
             <div className="mb-6 flex flex-col items-center justify-between gap-4 md:mb-7 md:flex-row">
               <div className="hidden w-1/4 items-center justify-start lg:flex">
@@ -585,31 +587,24 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
               </div>
 
               <div className="flex items-center justify-center lg:w-1/4 lg:justify-end">
-                <Link
+                {visaDocumentsVisible ? <Link
                   href={heroData.visaDocumentsLink}
                   className="inline-flex whitespace-nowrap rounded-full border border-slate-200/60 bg-[#F1F5F9] px-4 py-2 text-xs font-semibold text-primary shadow-sm transition-all hover:bg-[#E2E8F0] md:text-sm"
                 >
                   <FileText className="mr-2 h-4 w-4 text-primary" />
                   <span>{heroData.visaDocumentsLabel}</span>
                   <ChevronRight className="ml-2 h-3.5 w-3.5 text-primary" />
-                </Link>
+                </Link> : null}
               </div>
             </div>
 
-            <div className="flex snap-x snap-mandatory gap-2.5 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden xl:grid xl:grid-cols-7 xl:overflow-visible xl:pb-0 lg:gap-3">
-              {heroData.visaCards.map((visa: any, index: number) => {
-                const normalizedVisaSlug = String(visa.slug || visa.country || "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-                const cardHref = visa.country === "More" && visa.slug === "saudi-visa"
-                  ? "/saudi-visa"
-                  : visa.slug?.startsWith("/visa-processing/")
-                    ? visa.slug
-                    : `/visa-processing/${encodeURIComponent(normalizedVisaSlug)}`;
-
+            <div className="flex snap-x snap-mandatory gap-2.5 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden xl:flex-wrap xl:justify-center xl:overflow-visible xl:pb-0 lg:gap-3">
+              {visibleVisaCards.map(({ card: visa, href: cardHref }, index: number) => {
                 return (
                   <Link
                     key={`${visa.slug || visa.country}-${index}`}
                     href={cardHref}
-                    className="group flex min-w-[170px] flex-1 snap-start flex-col justify-between rounded-2xl border border-slate-100/90 bg-white p-3.5 shadow-[0_4px_16px_rgba(15,23,42,0.04)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(15,23,42,0.12)] sm:min-w-[185px] xl:min-w-0"
+                    className="group flex min-w-[170px] flex-1 snap-start flex-col justify-between rounded-2xl border border-slate-100/90 bg-white p-3.5 shadow-[0_4px_16px_rgba(15,23,42,0.04)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(15,23,42,0.12)] sm:min-w-[185px] xl:min-w-[150px] xl:max-w-[188px] xl:flex-[0_1_178px]"
                   >
                     <div className="flex items-center gap-2.5">
                       <div className="flex h-6 w-9 shrink-0 items-center justify-center overflow-hidden rounded-[5px] border border-slate-200/80 bg-slate-50 shadow-xs">
@@ -638,7 +633,7 @@ export default function HomepageHeroBanner({ data, pageData }: { data: any; page
               })}
             </div>
           </div>
-        </div>
+        </div> : null}
       </section>
 
       <SubmissionSuccessModal

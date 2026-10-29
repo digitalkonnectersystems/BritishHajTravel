@@ -53,9 +53,6 @@ export async function POST(req: NextRequest) {
     }
 
     const provider = (process.env.MEDIA_STORAGE_PROVIDER || 'local').toLowerCase();
-    if (process.env.MEDIA_STORAGE_ROOT && !path.isAbsolute(process.env.MEDIA_STORAGE_ROOT)) {
-      return NextResponse.json({ success: false, error: 'MEDIA_STORAGE_ROOT must be an absolute filesystem path' }, { status: 500 });
-    }
     if (!['blob', 'remote', 'local'].includes(provider)) {
       return NextResponse.json({ success: false, error: 'Unknown MEDIA_STORAGE_PROVIDER' }, { status: 500 });
     }

@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation';
 import { getPageBySlug } from "@/actions/pageActions";
 import AboutPageClient from "./AboutPageClient";
 import type { Metadata } from "next";
@@ -10,5 +11,6 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AboutPage() {
   const pageData = await getPageBySlug("/about");
+  if (pageData?.status === 'draft') notFound();
   return <AboutPageClient initialPageData={pageData} />;
 }

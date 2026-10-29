@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { updateEnquiryStatus, deleteEnquiryAction } from '@/actions/enquiryActions';
+import { useEffect, useState } from 'react';
+import { updateEnquiryStatus, deleteEnquiryAction, getEnquiriesList } from '@/actions/enquiryActions';
 import ConfirmModal, { ConfirmModalConfig } from '@/components/ui/ConfirmModal';
 import { Trash2, Search, Filter, Eye, X, Mail } from 'lucide-react';
 import { WaveAnalyticsChart, chartDays, dailySeries } from '@/components/admin/WaveAnalyticsChart';
@@ -20,6 +20,25 @@ const FORM_TAG_CONFIG: Record<string, { label: string; bg: string; text: string;
 
 export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientProps) {
   const [enquiries, setEnquiries] = useState<any[]>(initialEnquiries);
+  const [refreshError, setRefreshError] = useState('');
+  useEffect(() => {
+    let alive = true;
+    let pending = false;
+    const sync = async () => {
+      if (!alive || pending || document.visibilityState !== 'visible') return;
+      pending = true;
+      try {
+        const latest = await getEnquiriesList();
+        if (alive) { setEnquiries(latest); setRefreshError(''); }
+      } catch {
+        if (alive) setRefreshError('Latest enquiries could not be fetched.');
+      } finally { pending = false; }
+    };
+    const interval = window.setInterval(() => void sync(), 30000);
+    document.addEventListener('visibilitychange', sync);
+    return () => { alive = false; window.clearInterval(interval); document.removeEventListener('visibilitychange', sync); };
+  }, []);
+
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [formTypeTab, setFormTypeTab] = useState('all');
@@ -50,8 +69,10 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
   ];
 
   const handleStatusChange = async (id: number, newStatus: string) => {
-    await updateEnquiryStatus(id, newStatus as any);
-    setEnquiries((prev) => prev.map((e) => (e.id === id ? { ...e, status: newStatus } : e)));
+    try {
+      await updateEnquiryStatus(id, newStatus as any);
+      setEnquiries((prev) => prev.map((e) => (e.id === id ? { ...e, status: newStatus } : e)));
+    } catch { setRefreshError('Status update failed. Try again.'); return; }
     setSaveMsg('Enquiry status updated!');
     setTimeout(() => setSaveMsg(null), 2500);
   };
@@ -79,6 +100,7 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
 
   return (
     <div className="flex flex-col gap-6">
+      {refreshError && <p role="alert" className="rounded-lg border border-red-200 bg-red-50 p-3 text-xs text-red-800">{refreshError}</p>}
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200/60 pb-4">
         <div>

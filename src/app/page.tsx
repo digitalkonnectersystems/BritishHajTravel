@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import PageSectionsRenderer from "@/components/PageSectionsRenderer";
 import { getPageBySlug } from "@/actions/pageActions";
 import { getLatestBlogs } from "@/actions/blogActions";
+import { getPublishedVisaProcessingCards } from "@/actions/visaProcessingActions";
 import { getSoldOutPackages } from "@/actions/packageActions";
 import { buildPageMetadata } from "@/lib/seoMetadata";
 
@@ -11,9 +12,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const [pageData, blogs] = await Promise.all([
+  const [pageData, blogs, publishedVisaCards, saudiVisaPage] = await Promise.all([
     getPageBySlug("/"),
     getLatestBlogs(3),
+    getPublishedVisaProcessingCards(),
+    getPageBySlug("/saudi-visa"),
   ]);
 
   let dynamicSections: any[] = [];
@@ -39,6 +42,8 @@ export default async function Home() {
         sections={dynamicSections}
         pageData={pageData}
         initialBlogData={blogs}
+        publishedVisaCards={publishedVisaCards}
+        publishedSitePaths={saudiVisaPage?.status === "published" ? ["/saudi-visa"] : []}
         initialPackageData={{ soldOut: hasSoldOut ? soldOutPackages : undefined }}
       />
     </main>

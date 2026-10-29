@@ -6,9 +6,10 @@ import { db } from '@/db';
 import { sitePages, siteSettings } from '@/db/schema';
 import { and, eq, isNull } from 'drizzle-orm';
 import { revalidatePath, updateTag, unstable_cache } from 'next/cache';
-import { getResponsiveEmailTemplateHtml, getEditableEmailTemplateHtml, CANONICAL_FORM_SUBJECTS, FORM_SAMPLE_DATA } from '@/lib/emailTemplate';
+import { getEditableEmailTemplateHtml, getSharedEmailTemplateHtml, hasRequiredEmailTemplateTokens } from '@/lib/emailTemplate';
 import { logAdminActivityAction } from '@/actions/activityActions';
 import { dedupeRecipientChannels, hasInvalidEmailRecipient, normalizeEmailRecipients } from '@/lib/emailRecipients';
+import { normalizeFormRoutingRules } from '@/lib/formEmailRules';
 
 // Cached reads go stale after this long (seconds) and refetch in the background.
 // Saves from the admin also bust these instantly via updateTag(), so content
@@ -24,6 +25,18 @@ function safeJsonParse<T>(jsonStr: any, fallback: T): T {
   } catch (err) {
     console.warn('safeJsonParse fallback applied:', err);
     return fallback;
+  }
+}
+
+/** URLs of unpublished CMS pages. Used to suppress public links, not to authorize admin edits. */
+export async function getHiddenSitePagePaths(): Promise<string[]> {
+  try {
+    const pages = await db.select({ slug: sitePages.slug })
+      .from(sitePages).where(eq(sitePages.status, 'draft'));
+    return pages.map(page => page.slug);
+  } catch (error) {
+    console.error('[pages] Unable to retrieve hidden page paths', error);
+    return [];
   }
 }
 
@@ -480,9 +493,41 @@ export async function getGalleryNavItems() {
   }
 }
 
+function validateNavigationTree(items: unknown): string | null {
+  if (!Array.isArray(items) || items.length > 100) return 'Navigation must contain at most 100 top-level items.';
+  const seen = new Set<string>();
+  let total = 0;
+  const check = (entries: unknown[], depth: number): string | null => {
+    if (depth > 3 || entries.length > 100) return 'Navigation supports at most three levels and 100 items per level.';
+    for (const entry of entries) {
+      if (!entry || typeof entry !== 'object' || Array.isArray(entry)) return 'Invalid navigation item.';
+      const item = entry as Record<string, any>;
+      const id = String(item.id ?? '');
+      const label = typeof item.label === 'string' ? item.label.trim() : '';
+      const url = typeof item.url === 'string' ? item.url.trim() : '';
+      if (!id || id.length > 128 || seen.has(id)) return 'Navigation IDs must be unique and under 129 characters.';
+      if (!label || label.length > 180) return 'Each navigation item needs a label up to 180 characters.';
+      if (url.length > 2048 || (url && !/^(\/|#|https?:\/\/|mailto:|tel:)/i.test(url)) || /^\/\//.test(url) || /[\x00-\x1f]/.test(url)) {
+        return `Invalid navigation URL for \"${label}\".`;
+      }
+      seen.add(id);
+      if (++total > 300) return 'Maximum of 300 navigation items exceeded.';
+      if (item.children !== undefined && item.children !== null) {
+        if (!Array.isArray(item.children)) return 'Navigation children must be an array.';
+        if (item.children.length > 0 && depth === 3) return 'Navigation cannot exceed three levels.';
+        const error = check(item.children, depth + 1);
+        if (error) return error;
+      }
+    }
+    return null;
+  };
+  return check(items, 1);
+}
+
 export async function saveNavItemsAction(navItems: any[]) {
   await requireAdmin(['admin']);
-
+  const error = validateNavigationTree(navItems);
+  if (error) return {success:false,error};
   try {
     const existing = await db.select().from(siteSettings).where(eq(siteSettings.key, 'nav_items')).limit(1);
     if (existing && existing.length > 0) {
@@ -1086,6 +1131,8 @@ export async function getDefaultLoginAuthSettings() {
     backgroundAlt: 'Login screen background image',
     footerText: '© 2026 British Hajj Travel LTD. All Rights Reserved.',
     maintenanceMode: false,
+    maintenanceScope: 'entire_site',
+    maintenancePaths: [],
   };
 }
 
@@ -1118,14 +1165,34 @@ export async function getLoginAuthSettings() {
 export async function saveLoginAuthSettingsAction(data: any) {
   await requireAdmin(['admin']);
 
-  loginAuthMemoryCache = data;
+  const requestedPaths = Array.isArray(data?.maintenancePaths) ? data.maintenancePaths : [];
+  const normalizedPaths = [...new Set(requestedPaths.filter((path: unknown): path is string =>
+    typeof path === 'string' && path.startsWith('/') && !path.startsWith('//') &&
+    !path.includes('\\') && !path.includes('?') && !path.includes('#') && path.length <= 190 &&
+    !/^\/(?:admin|letstravel|api|_next)(?:\/|$)/i.test(path)
+  ).map((path: string) => path.replace(/\/+$/, '') || '/'))];
+  if (normalizedPaths.length > 250 || requestedPaths.length !== normalizedPaths.length) {
+    return { success: false, error: 'Select up to 250 unique valid public-page paths.' };
+  }
+  if (data?.maintenanceMode && data?.maintenanceScope === 'selected_pages' && !normalizedPaths.length) {
+    return { success: false, error: 'Select at least one public page or choose the entire website.' };
+  }
+  const safeData = {
+    backgroundImage: typeof data?.backgroundImage === 'string' ? data.backgroundImage.slice(0, 2048) : '',
+    backgroundAlt: typeof data?.backgroundAlt === 'string' ? data.backgroundAlt.slice(0, 300) : '',
+    footerText: typeof data?.footerText === 'string' ? data.footerText.slice(0, 1000) : '',
+    maintenanceMode: data?.maintenanceMode === true,
+    maintenanceScope: data?.maintenanceScope === 'selected_pages' ? 'selected_pages' : 'entire_site',
+    maintenancePaths: normalizedPaths,
+  };
   try {
     const existing = await db.select().from(siteSettings).where(eq(siteSettings.key, 'login_auth_settings')).limit(1);
     if (existing && existing.length > 0) {
-      await db.update(siteSettings).set({ value: JSON.stringify(data), updatedAt: new Date() }).where(eq(siteSettings.key, 'login_auth_settings'));
+      await db.update(siteSettings).set({ value: JSON.stringify(safeData), updatedAt: new Date() }).where(eq(siteSettings.key, 'login_auth_settings'));
     } else {
-      await db.insert(siteSettings).values({ key: 'login_auth_settings', value: JSON.stringify(data) });
+      await db.insert(siteSettings).values({ key: 'login_auth_settings', value: JSON.stringify(safeData) });
     }
+    loginAuthMemoryCache = safeData;
     // Log Activity
     await logAdminActivityAction({
       type: 'settings',
@@ -1172,14 +1239,20 @@ export async function getDisclaimerSettings(): Promise<DisclaimerSettings> {
 export async function saveDisclaimerSettingsAction(data: DisclaimerSettings) {
   await requireAdmin(['admin']);
 
-  disclaimerMemoryCache = data;
+  if (typeof data?.enabled !== 'boolean' || typeof data?.image !== 'string' || (data.enabled && !data.image.trim()) || data.image.length > 2048 ||
+      (data.image.trim() && !data.image.startsWith('/') && !/^https:\/\/[^\s]+$/i.test(data.image))) {
+    return {success:false,error:'Supply a valid HTTPS or site-relative image URL when enabling the disclaimer.'};
+  }
+  const safeData = {enabled:data.enabled,image:data.image.trim(),altText:typeof data.altText === 'string' ? data.altText.slice(0,300) : 'Disclaimer Popup Image'};
   try {
     const existing = await db.select().from(siteSettings).where(eq(siteSettings.key, 'disclaimer_settings')).limit(1);
     if (existing && existing.length > 0) {
-      await db.update(siteSettings).set({ value: JSON.stringify(data), updatedAt: new Date() }).where(eq(siteSettings.key, 'disclaimer_settings'));
+      await db.update(siteSettings).set({ value: JSON.stringify(safeData), updatedAt: new Date() }).where(eq(siteSettings.key, 'disclaimer_settings'));
     } else {
-      await db.insert(siteSettings).values({ key: 'disclaimer_settings', value: JSON.stringify(data) });
+      await db.insert(siteSettings).values({ key: 'disclaimer_settings', value: JSON.stringify(safeData) });
     }
+    disclaimerMemoryCache = safeData;
+    await logAdminActivityAction({type:'settings',action:'Updated Disclaimer Popup',details:safeData.enabled ? 'Disclaimer popup enabled' : 'Disclaimer popup disabled'});
     revalidatePath('/', 'layout');
     return { success: true };
   } catch (err: any) {
@@ -1406,40 +1479,18 @@ const DEFAULT_FORMS_DATA: Record<string, any> = {
 };
 
 const DEFAULT_EMAIL_CONFIGS: any = {
-  sendToEmail: 'saudivisa@britishhajjtravel.com',
-  emailSubjectLine: 'New Pilgrimage Form Submission',
+  sendToEmail: '',
+  emailSubjectLine: '[form_name]',
   fromName: 'British Hajj Travel UK',
-  fromEmail: 'no-reply@digitalkonnecter.com',
-  replyTo: 'no-reply@digitalkonnecter.com',
-  successHeading: 'Message Sent Successfully!',
-  successDescription: 'Thank you for contacting British Hajj Travel UK. We will respond within 24 hours.',
+  fromEmail: '',
+  replyTo: '',
+  successHeading: 'Request Received Successfully!',
+  successDescription: 'Thank you! Your request has been submitted. Our team will contact you shortly.',
   formRoutes: {},
   formCcRoutes: {},
   formBccRoutes: {},
-  formRoutingRules: [
-    { id: 'form_baanHoldingHajjForm', forms: ['baanHoldingHajjForm'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
-    { id: 'form_quoteForm', forms: ['quoteForm'], sendTo: 'saudivisa@britishhajjtravel.com', cc: '', bcc: '' },
-    { id: 'form_packageDetailForm', forms: ['packageDetailForm'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
-    { id: 'form_hajjPackageDetailForm', forms: ['hajjPackageDetailForm'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
-    { id: 'form_hajjCustomizeForm', forms: ['hajjCustomizeForm'], sendTo: 'saudivisa@britishhajjtravel.com', cc: '', bcc: '' },
-    { id: 'form_contact', forms: ['contact'], sendTo: 'saudivisa@britishhajjtravel.com', cc: '', bcc: '' },
-    { id: 'form_packageInquiry', forms: ['packageInquiry'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
-    { id: 'form_visaConsultation', forms: ['visaConsultation'], sendTo: 'visas@britishhajjtravel.com', cc: '', bcc: '' },
-    { id: 'form_umrahVisaOrder', forms: ['umrahVisaOrder'], sendTo: 'visas@britishhajjtravel.com', cc: '', bcc: '' },
-    { id: 'form_flightInquiry', forms: ['flightInquiry'], sendTo: 'flights@britishhajjtravel.com', cc: '', bcc: '' },
-    { id: 'form_dropUsMessage', forms: ['dropUsMessage'], sendTo: 'saudivisa@britishhajjtravel.com', cc: '', bcc: '' },
-    { id: 'form_blogSidebarForm', forms: ['blogSidebarForm'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
-  ],
+  formRoutingRules: [],
 };
-
-function buildDefaultEmailTemplates() {
-  return Object.fromEntries(
-    CANONICAL_FORM_SUBJECTS.map((subject) => [
-      subject,
-      getEditableEmailTemplateHtml(subject),
-    ])
-  );
-}
 
 async function readFullFormsSettings() {
   if (formsSettingsMemoryCache) return formsSettingsMemoryCache;
@@ -1459,34 +1510,20 @@ async function readFullFormsSettings() {
           }
         });
 
-        const rawRules = parsed.emailConfigs?.formRoutingRules || DEFAULT_EMAIL_CONFIGS.formRoutingRules;
-        const normalizedRules: any[] = [];
-        for (const rule of rawRules || []) {
-          const recipients = dedupeRecipientChannels(rule?.sendTo || '', rule?.cc || '', rule?.bcc || '');
-          const forms = Array.isArray(rule?.forms) ? Array.from(new Set(rule.forms.filter(Boolean))) : [];
-          for (const form of forms) {
-            normalizedRules.push({
-              id: `form_${form}`,
-              forms: [form],
-              sendTo: recipients.to.join(', '),
-              cc: recipients.cc.join(', '),
-              bcc: recipients.bcc.join(', '),
-            });
-          }
-        }
-
-        // Guarantee every configured form has its own independent routing rule.
-        for (const form of Object.keys(mergedFormsData)) {
-          if (normalizedRules.some((rule: any) => rule.forms[0] === form)) continue;
-          const defaultRule = DEFAULT_EMAIL_CONFIGS.formRoutingRules.find((rule: any) => rule.forms.includes(form));
-          normalizedRules.push({
-            id: `form_${form}`,
-            forms: [form],
-            sendTo: defaultRule?.sendTo || mergedFormsData[form]?.recipientEmail || DEFAULT_EMAIL_CONFIGS.sendToEmail,
-            cc: defaultRule?.cc || '',
-            bcc: defaultRule?.bcc || '',
-          });
-        }
+        // Saved routing is authoritative, including empty recipient fields.
+        // Only old per-form rules are grouped by identical recipient channels.
+        const savedConfig = parsed.emailConfigs || {};
+        const hasSavedRules = Array.isArray(savedConfig.formRoutingRules);
+        const legacyRules = !hasSavedRules
+          ? Object.keys({ ...(savedConfig.formRoutes || {}), ...(savedConfig.formCcRoutes || {}), ...(savedConfig.formBccRoutes || {}) })
+              .map((form) => ({
+                id: `form_${form}`, forms: [form],
+                sendTo: savedConfig.formRoutes?.[form] || '',
+                cc: savedConfig.formCcRoutes?.[form] || '',
+                bcc: savedConfig.formBccRoutes?.[form] || '',
+              }))
+          : [];
+        const normalizedRules = normalizeFormRoutingRules(hasSavedRules ? savedConfig.formRoutingRules : legacyRules);
 
         const mergedEmailConfigs = {
           ...DEFAULT_EMAIL_CONFIGS,
@@ -1498,8 +1535,7 @@ async function readFullFormsSettings() {
           formsData: mergedFormsData,
           formFieldsState: mergedFormFieldsState,
           emailConfigs: mergedEmailConfigs,
-          emailTemplates: { ...buildDefaultEmailTemplates(), ...(parsed.emailTemplates || {}) },
-          emailTemplateHtml: parsed.emailTemplateHtml || getResponsiveEmailTemplateHtml('Get a Free Quote Form', FORM_SAMPLE_DATA['Get a Free Quote Form']),
+          emailTemplateHtml: getSharedEmailTemplateHtml(parsed.emailTemplateHtml),
         };
 
         formsSettingsMemoryCache = result;
@@ -1514,8 +1550,7 @@ async function readFullFormsSettings() {
     formsData: DEFAULT_FORMS_DATA,
     formFieldsState: DEFAULT_FORM_FIELDS_STATE,
     emailConfigs: DEFAULT_EMAIL_CONFIGS,
-    emailTemplates: buildDefaultEmailTemplates(),
-    emailTemplateHtml: getResponsiveEmailTemplateHtml('Get a Free Quote Form', FORM_SAMPLE_DATA['Get a Free Quote Form']),
+    emailTemplateHtml: getEditableEmailTemplateHtml(),
   };
 
   return formsSettingsMemoryCache || defaultResult;
@@ -1539,14 +1574,28 @@ export async function getFormsSettings(): Promise<Record<string, any>> {
 /** Protected editor settings including email routing and templates. */
 export async function getAdminFormsSettings() {
   await requireAdmin(['admin']);
-  return readFullFormsSettings();
+  const saved = await readFullFormsSettings();
+  const emailConfigs = { ...(saved.emailConfigs || {}) };
+  const smtpPasswordConfigured = Boolean(process.env.SMTP_PASS);
+  for (const key of ['smtpPassword', 'smtpHost', 'smtpPort', 'smtpUsername', 'smtpEncryption']) delete emailConfigs[key];
+  return { ...saved, emailConfigs, smtpPasswordConfigured };
 }
 
 export async function saveFormsSettingsAction(settingsData: any) {
   await requireAdmin(['admin']);
 
   const nextSettings = JSON.parse(JSON.stringify(settingsData || {}));
+  // Remove previous per-form template copies. Routing and subjects remain form-specific.
+  delete nextSettings.emailTemplates;
+  if (!hasRequiredEmailTemplateTokens(nextSettings.emailTemplateHtml)) {
+    return { success: false, error: 'The shared email template must include {{FORM_NAME}} and {{SUBMISSION_ROWS}}.' };
+  }
+  if (nextSettings.emailTemplateHtml.length > 250000) {
+    return { success: false, error: 'The shared email template exceeds the 250 KB limit.' };
+  }
+  nextSettings.emailTemplateHtml = getSharedEmailTemplateHtml(nextSettings.emailTemplateHtml);
   const emailConfigs = nextSettings.emailConfigs || {};
+  for (const key of ['smtpPassword', 'smtpHost', 'smtpPort', 'smtpUsername', 'smtpEncryption']) delete emailConfigs[key];
 
   // Normalize recipient fields when settings are saved as well as when mail is
   // sent. The send-time pass remains the final safety net for older DB values.
@@ -1569,12 +1618,25 @@ export async function saveFormsSettingsAction(settingsData: any) {
     }
   }
 
+  if (String(emailConfigs.fromName || '').length > 120) return { success: false, error: 'FROM NAME is too long (maximum 120 characters).' };
+  for (const field of ['fromEmail', 'replyTo'] as const) {
+    const value = String(emailConfigs[field] || '').trim();
+    if (value && !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(value)) {
+      return { success: false, error: `Invalid ${field} email address.` };
+    }
+    emailConfigs[field] = value;
+  }
+  if (String(emailConfigs.emailSubjectLine || '').length > 240) return { success: false, error: 'Subject pattern is too long (maximum 240 characters).' };
   const routingRules = Array.isArray(emailConfigs.formRoutingRules) ? emailConfigs.formRoutingRules : [];
   const assignedForms = new Map<string, string>();
+  const usedRuleIds = new Set<string>();
+  const knownFormIds = new Set(Object.keys(nextSettings.formsData || {}));
   const normalizedRules: any[] = [];
   for (let index = 0; index < routingRules.length; index += 1) {
     const rule = routingRules[index] || {};
     const id = String(rule.id || `rule_${index + 1}`);
+    if (usedRuleIds.has(id)) return { success: false, error: `Duplicate email routing rule ID: ${id}.` };
+    usedRuleIds.add(id);
     const forms: string[] = Array.isArray(rule.forms)
       ? Array.from(
           new Set<string>(
@@ -1586,6 +1648,9 @@ export async function saveFormsSettingsAction(settingsData: any) {
       : [];
 
     for (const form of forms) {
+      if (knownFormIds.size && !knownFormIds.has(form)) {
+        return { success: false, error: `Unknown form assigned to email routing rule: ${form}.` };
+      }
       const previous = assignedForms.get(form);
       if (previous && previous !== id) {
         return { success: false, error: `Form "${form}" is assigned to multiple email routing rules.` };
@@ -1599,28 +1664,26 @@ export async function saveFormsSettingsAction(settingsData: any) {
       }
     }
 
-    const recipients = dedupeRecipientChannels(rule.sendTo || '', rule.cc || '', rule.bcc || '');
-    for (const form of forms) {
-      normalizedRules.push({
-        ...rule,
-        id: `form_${form}`,
-        forms: [form],
-        sendTo: recipients.to.join(', '),
-        cc: recipients.cc.join(', '),
-        bcc: recipients.bcc.join(', '),
-      });
-    }
+    const recipients = dedupeRecipientChannels(rule.sendTo, rule.cc, rule.bcc);
+    normalizedRules.push({
+      id,
+      forms,
+      sendTo: recipients.to.join(', '),
+      cc: recipients.cc.join(', '),
+      bcc: recipients.bcc.join(', '),
+    });
   }
+
   emailConfigs.formRoutingRules = normalizedRules;
   nextSettings.emailConfigs = emailConfigs;
 
   try {
-    const json = JSON.stringify(nextSettings);
     const existing = await db.select().from(siteSettings).where(eq(siteSettings.key, 'forms_settings')).limit(1);
     let previousSettings: any = null;
     if (existing?.[0]?.value) {
       try { previousSettings = JSON.parse(existing[0].value); } catch { previousSettings = null; }
     }
+    const json = JSON.stringify(nextSettings);
     if (existing && existing.length > 0) {
       await db.update(siteSettings).set({ value: json, updatedAt: new Date() }).where(eq(siteSettings.key, 'forms_settings'));
     } else {
@@ -1636,14 +1699,14 @@ export async function saveFormsSettingsAction(settingsData: any) {
     await logAdminActivityAction({
       type: 'settings',
       action: 'Updated Form Settings',
-      details: 'CRM enquiry, per-form email routing and form templates saved',
+      details: 'CRM enquiry, per-form email routing and one shared email template saved',
       previousEntry: previousSettings ? {
         emailConfigs: auditSafeEmailConfigs(previousSettings.emailConfigs),
-        emailTemplateKeys: Object.keys(previousSettings.emailTemplates || {}),
+        sharedEmailTemplateConfigured: hasRequiredEmailTemplateTokens(previousSettings.emailTemplateHtml),
       } : null,
       newEntry: {
         emailConfigs: auditSafeEmailConfigs(nextSettings.emailConfigs),
-        emailTemplateKeys: Object.keys(nextSettings.emailTemplates || {}),
+        sharedEmailTemplateConfigured: true,
       },
     });
 
@@ -1827,7 +1890,6 @@ export async function saveSeoIntelligenceSettingsAction(settings: any) {
   try {
     const existing = await db.select().from(siteSettings).where(eq(siteSettings.key, 'seo_intelligence')).limit(1);
     const value = JSON.stringify(settings);
-    seoIntelligenceMemoryCache = settings;
 
     if (existing && existing.length > 0) {
       await db.update(siteSettings).set({ value, updatedAt: new Date() }).where(eq(siteSettings.key, 'seo_intelligence'));
@@ -1835,6 +1897,7 @@ export async function saveSeoIntelligenceSettingsAction(settings: any) {
       await db.insert(siteSettings).values({ key: 'seo_intelligence', value });
     }
 
+    seoIntelligenceMemoryCache = settings;
     await logAdminActivityAction({
       type: 'settings',
       action: 'Updated SEO Intelligence',

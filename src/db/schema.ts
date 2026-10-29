@@ -456,6 +456,8 @@ export const emailDeliveryLogs = mysqlTable('email_delivery_logs', {
   sentTo: varchar('sent_to', { length: 255 }).notNull(),
   details: text('details'),
   createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow().onUpdateNow(),
+  deletedAt: timestamp('deleted_at'),
 });
 // Normalized Hajj/Umrah customization enquiries (no JSON payloads).
 export const customizedPackageEnquiries = mysqlTable('customized_package_enquiries', {

@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { FORM_SUCCESS_HEADING, FORM_SUCCESS_MESSAGE } from '@/lib/formSuccess';
 import { CheckCircle2, X } from 'lucide-react';
 
 interface SubmissionSuccessModalProps {
@@ -14,8 +15,8 @@ interface SubmissionSuccessModalProps {
 export default function SubmissionSuccessModal({
   isOpen,
   onClose,
-  title = 'Request Received Successfully!',
-  message = 'Thank you! Your message has been received. Our team will contact you shortly.',
+  title = FORM_SUCCESS_HEADING,
+  message = FORM_SUCCESS_MESSAGE,
   referenceNumber,
 }: SubmissionSuccessModalProps) {
   if (!isOpen) return null;
@@ -33,7 +34,7 @@ export default function SubmissionSuccessModal({
         </button>
 
         {/* Animated Green Checkmark Icon */}
-        <div className="w-20 h-20 rounded-full bg-emerald-50 text-primary border-4 border-emerald-100 flex items-center justify-center shadow-lg transform transition-transform hover:scale-105">
+        <div className="w-20 h-20 rounded-full bg-primary/5 text-primary border-4 border-primary/15 flex items-center justify-center shadow-lg transform transition-transform hover:scale-105">
           <CheckCircle2 className="w-10 h-10 text-primary" />
         </div>
 
@@ -49,9 +50,9 @@ export default function SubmissionSuccessModal({
 
         {/* Reference Badge if Available */}
         {referenceNumber && (
-          <div className="bg-emerald-50/80 border border-emerald-200/80 px-4 py-2 rounded-2xl w-full flex items-center justify-between text-xs font-bold text-primary">
+          <div className="bg-primary/5 border border-primary/20 px-4 py-2 rounded-2xl w-full flex items-center justify-between text-xs font-bold text-primary">
             <span className="text-slate-500 font-semibold text-[11px] uppercase tracking-wider">Reference #:</span>
-            <span className="font-mono text-sm tracking-wide bg-white px-2.5 py-0.5 rounded-lg border border-emerald-300 shadow-2xs">
+            <span className="font-mono text-sm tracking-wide bg-white px-2.5 py-0.5 rounded-lg border border-primary/30 shadow-2xs">
               {referenceNumber}
             </span>
           </div>
@@ -61,7 +62,7 @@ export default function SubmissionSuccessModal({
         <button
           type="button"
           onClick={onClose}
-          className="w-full mt-2 py-3.5 bg-primary hover:bg-[#00382B] text-white rounded-2xl text-xs font-extrabold tracking-wider uppercase transition-all shadow-md hover:shadow-lg cursor-pointer border-none"
+          className="w-full mt-2 py-3.5 bg-primary hover:brightness-110 text-white rounded-2xl text-xs font-extrabold tracking-wider uppercase transition-all shadow-md hover:shadow-lg cursor-pointer border-none"
         >
           Got it, Thanks!
         </button>

@@ -67,7 +67,7 @@ export function WaveAnalyticsChart({
     x: LEFT + (count === 1 ? chartWidth / 2 : (chartWidth * index / (count - 1))),
     y: baseY - Math.min(maxY, Math.max(0, Number.isFinite(value) ? value : 0)) * chartHeight / maxY,
   }));
-  const visibleTicks = count > 1 ? [0, Math.round((count - 1) / 2), count - 1] : count ? [0] : [];
+  const visibleTicks = count > 1 ? Array.from(new Set([0, Math.round((count - 1) / 2), count - 1])) : count ? [0] : [];
   const noData = maxValue === 0;
 
   return (

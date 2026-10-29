@@ -7,20 +7,28 @@ import Link from 'next/link';
 interface FrontendMaintenanceWrapperProps {
   children: React.ReactNode;
   initialMaintenanceMode?: boolean;
+  initialMaintenanceScope?: string;
+  initialMaintenancePaths?: string[];
 }
 
 export default function FrontendMaintenanceWrapper({
   children,
   initialMaintenanceMode = false,
+  initialMaintenanceScope = 'entire_site',
+  initialMaintenancePaths = [],
 }: FrontendMaintenanceWrapperProps) {
   const pathname = usePathname();
   const [maintenance, setMaintenance] = useState(initialMaintenanceMode);
+  const [scope, setScope] = useState(initialMaintenanceScope);
+  const [paths, setPaths] = useState<string[]>(initialMaintenancePaths);
 
   useEffect(() => {
     // Listen to custom maintenance updates if saved live from admin panel
     const handleMaintenanceUpdate = (e: CustomEvent) => {
       if (typeof e.detail?.maintenanceMode === 'boolean') {
         setMaintenance(e.detail.maintenanceMode);
+        setScope(e.detail.maintenanceScope === 'selected_pages' ? 'selected_pages' : 'entire_site');
+        setPaths(Array.isArray(e.detail.maintenancePaths) ? e.detail.maintenancePaths : []);
       }
     };
 
@@ -30,10 +38,12 @@ export default function FrontendMaintenanceWrapper({
     };
   }, []);
 
-  const isAdminRoute = pathname?.startsWith('/admin') || pathname?.startsWith('/letstravel');
+  const isAdminRoute = pathname === '/admin' || pathname?.startsWith('/admin/') || pathname === '/letstravel' || pathname?.startsWith('/letstravel/');
 
   // Maintenance mode ONLY applies to frontend public routes, NEVER to admin panel or login
-  if (maintenance && !isAdminRoute) {
+  const publicPath = (pathname || '/').replace(/\/+$/, '') || '/';
+  const selected = scope === 'selected_pages' && paths.some(path => (path.replace(/\/+$/, '') || '/') === publicPath);
+  if (maintenance && !isAdminRoute && (scope !== 'selected_pages' || selected)) {
     return (
       <div className="min-h-screen bg-[#071310] text-[#FBF8F1] flex flex-col items-center justify-center p-6 relative overflow-hidden font-sans text-center">
         {/* Background glow effects */}

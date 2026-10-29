@@ -213,7 +213,7 @@ export function getResponsiveEmailTemplateHtml(
                     </div>
                     <div style="margin: 8px 0 4px 0;">
                       <a href="https://britishhajjtravel.com" target="_blank" style="text-decoration: none; display: inline-block;">
-                        <img src="/images_BHT/branding/footer-logo-1788411772195.png" alt="British Hajj Travel UK" width="220" style="display: block; width: 220px; max-width: 100%; height: auto; border: 0; outline: none; text-decoration: none; margin: 0 auto;" />
+                        <img src="https://www.britishhajjtravel.com/images_BHT/branding/footer-logo-1788411772195.png" alt="British Hajj Travel UK" width="220" style="display: block; width: 220px; max-width: 100%; height: auto; border: 0; outline: none; text-decoration: none; margin: 0 auto;" />
                       </a>
                     </div>
                     <p style="font-size: 12px; margin: 6px 0 0 0; font-weight: 600;">
@@ -280,8 +280,7 @@ export function getResponsiveEmailTemplateHtml(
                       British Hajj Travel UK Ltd.
                     </p>
                     <p style="color: #ffffff; font-size: 11px; margin: 0; line-height: 1.5;">
-                      1325 Eglinton Ave E Suite Number 218, Mississauga, ON L4W 4L9, UK<br>
-                      TICO &amp; IATA Licensed Pilgrimage &amp; Flight Operator
+                      Official website: britishhajjtravel.com
                     </p>
                   </td>
                 </tr>
@@ -315,8 +314,7 @@ export function getResponsiveEmailTemplateHtml(
 </html>`;
 }
 
-export function getEditableEmailTemplateHtml(subject: string): string {
-  const safeSubject = escapeHtml(String(subject || 'Form Submission'));
+export function getEditableEmailTemplateHtml(): string {
   return `<!doctype html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head>
@@ -325,7 +323,7 @@ export function getEditableEmailTemplateHtml(subject: string): string {
     <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden">
       <div style="background:#102e74;color:#ffffff;padding:22px 24px">
         <div style="font-size:20px;font-weight:700">British Hajj Travel UK</div>
-        <div style="margin-top:5px;font-size:13px;opacity:.9">${safeSubject} · {{EMAIL_AUDIENCE}}</div>
+        <div style="margin-top:5px;font-size:13px;opacity:.9">{{FORM_NAME}} · {{EMAIL_AUDIENCE}}</div>
       </div>
       <div style="padding:24px">
         <p style="margin:0 0 14px;font-size:14px;line-height:1.6">Hello {{SUBMITTER_NAME}},</p>
@@ -339,6 +337,34 @@ export function getEditableEmailTemplateHtml(subject: string): string {
   </div>
 </body>
 </html>`;
+}
+
+/** Only one shared HTML template is permitted for all form notifications. */
+export function hasRequiredEmailTemplateTokens(value: unknown): value is string {
+  return typeof value === 'string' &&
+    value.includes('{{FORM_NAME}}') && value.includes('{{SUBMISSION_ROWS}}');
+}
+
+/** Shared client/server renderer; all untrusted customer data is HTML escaped. */
+export function renderSharedEmailTemplateHtml(
+  template: unknown,
+  formName: string,
+  data: Record<string, unknown>,
+  isForUser = false,
+): string | null {
+  if (!hasRequiredEmailTemplateTokens(template)) return null;
+  const excludedFields = new Set(['id', '_id', 'createdAt', 'updatedAt', 'deletedAt', 'userId', 'password', 'passwordHash']);
+  const rows = Object.entries(data)
+    .filter(([key, value]) => !excludedFields.has(key) && value !== undefined && value !== null && value !== '')
+    .map(([key, value]) => `<tr><td style="padding:8px 12px;border:1px solid #e2e8f0;font-weight:700;vertical-align:top">${escapeHtml(formatFieldLabel(key))}</td><td style="padding:8px 12px;border:1px solid #e2e8f0">${formatFieldValue(value)}</td></tr>`)
+    .join('');
+  const submitter = data.fullName || data.name || data.customerName || data.pilgrimName || 'Customer';
+  return template
+    .replaceAll('{{FORM_NAME}}', escapeHtml(formName))
+    .replaceAll('{{SUBMISSION_ROWS}}', rows)
+    .replaceAll('{{SUBMISSION_DATE}}', escapeHtml(new Date().toLocaleString('en-GB', { timeZone: 'Europe/London' })))
+    .replaceAll('{{SUBMITTER_NAME}}', escapeHtml(submitter))
+    .replaceAll('{{EMAIL_AUDIENCE}}', isForUser ? 'Customer Confirmation' : 'Admin Notification');
 }
 
 export const CANONICAL_FORM_SUBJECTS = [
@@ -356,6 +382,20 @@ export const CANONICAL_FORM_SUBJECTS = [
 ] as const;
 
 export type CanonicalFormSubject = (typeof CANONICAL_FORM_SUBJECTS)[number];
+
+/**
+ * One-time compatibility handling for previously saved per-form heading text.
+ * Retains custom master HTML, but removes a hard-coded form name immediately
+ * before the dynamic audience token in the old editor-generated header.
+ */
+export function getSharedEmailTemplateHtml(value: unknown): string {
+  if (!hasRequiredEmailTemplateTokens(value)) return getEditableEmailTemplateHtml();
+  let html = value;
+  for (const name of CANONICAL_FORM_SUBJECTS) {
+    html = html.replace(`${name} · {{EMAIL_AUDIENCE}}`, '{{FORM_NAME}} · {{EMAIL_AUDIENCE}}');
+  }
+  return html;
+}
 
 export const FORM_SAMPLE_DATA: Record<CanonicalFormSubject, Record<string, unknown>> = {
   'Get a Free Quote Form': {

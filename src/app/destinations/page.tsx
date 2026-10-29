@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation';
 import { getDestinations } from '@/actions/destinationActions';
 import { getPageBySlug } from '@/actions/pageActions';
 import PageBanner from '@/components/PageBanner';
@@ -12,6 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function DestinationsPage() {
   const [destinations, pageData] = await Promise.all([getDestinations(), getPageBySlug('/destinations')]);
+  if (pageData?.status === 'draft') notFound();
   const destinationPackages = destinations
     .map((destination: any) => ({ destination, pkg: destination.packageData || destination.packagesData?.[0] || null }))
     .filter(({ pkg }: any) => pkg && pkg.status !== 'draft' && pkg.status !== 'sold_out')

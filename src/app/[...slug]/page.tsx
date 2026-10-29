@@ -52,7 +52,9 @@ export default async function DynamicPage({
   ].includes(slugPath);
   const page = await getPageBySlug(slugPath);
 
-  if (!page || page.status === "draft") {
+  if (page?.status === 'draft') notFound();
+
+  if (!page) {
     if (slug.length === 1) {
       // Root-level blog URL, e.g. /nusuk-hajj-2027
       const blog = await getBlogBySlug(slug[0]).catch(() => null);

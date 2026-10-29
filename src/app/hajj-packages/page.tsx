@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation';
 import Link from "next/link";
 import Image from "next/image";
 import { getPackagesByType } from "@/actions/packageActions";
@@ -58,6 +59,7 @@ export default async function HajjPackagesPage() {
     console.error("Failed to load CMS page data:", err);
   }
 
+  if (pageData?.status === 'draft') notFound();
   const cards = liveCards;
 
   return (

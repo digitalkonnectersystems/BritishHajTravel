@@ -21,7 +21,7 @@ const DEFAULT_NAV_ITEMS = [
 export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIdentity = null }: { initialNavItems?: any[]; initialIdentity?: any }) {
   const [menuActive, setMenuActive] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const navItems = initialNavItems?.length ? initialNavItems : DEFAULT_NAV_ITEMS;
+  const navItems = Array.isArray(initialNavItems) ? initialNavItems : DEFAULT_NAV_ITEMS;
   const identityData = initialIdentity;
   const pathname = usePathname();
   const activePathname = pathname === '/cheap-flights-air-tickets' || pathname === '/airlines'

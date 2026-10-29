@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getHotelDirectory } from '@/actions/hotelActions';
 import { getPageBySlug } from '@/actions/pageActions';
@@ -24,6 +25,7 @@ export default async function HotelsPage() {
     getPageBySlug('/hotels'),
   ]);
   const hasHotels = categories.some((category) => category.hotels.length > 0);
+  if (page?.status === 'draft') notFound();
 
   return (
     <main className="min-h-screen bg-blue-lt pb-16">

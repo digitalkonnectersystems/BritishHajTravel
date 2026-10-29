@@ -2,7 +2,7 @@
 import { db } from '@/db';
 import { enquiries, packages, visaServices, sitePages, blogPosts, activityLogs, notFoundHits, redirectRules } from '@/db/schema';
 import { requireAdmin } from '@/lib/requireAdmin';
-import { count, eq, gte, sql, desc } from 'drizzle-orm';
+import { and, count, eq, gte, isNull, sql, desc } from 'drizzle-orm';
 
 const days = 14;
 const dayKey = (date:Date) => date.toISOString().slice(0,10);
@@ -17,10 +17,10 @@ export async function getDashboardRealtimeAction() {
     db.select({value:count()}).from(visaServices),
     db.select({value:count()}).from(sitePages),
     db.select({value:count()}).from(blogPosts).where(eq(blogPosts.isPublished,true)),
-    db.select({value:count()}).from(notFoundHits),
-    db.select({value:count()}).from(redirectRules).where(eq(redirectRules.status,'active')),
+    db.select({value:count()}).from(notFoundHits).where(isNull(notFoundHits.deletedAt)),
+    db.select({value:count()}).from(redirectRules).where(and(eq(redirectRules.status,'active'),isNull(redirectRules.deletedAt))),
     db.select({day:sql<string>`DATE_FORMAT(${enquiries.createdAt},'%Y-%m-%d')`,total:count()}).from(enquiries).where(gte(enquiries.createdAt,earliest)).groupBy(sql`DATE(${enquiries.createdAt})`),
-    db.select({day:sql<string>`DATE_FORMAT(${activityLogs.createdAt},'%Y-%m-%d')`,total:count()}).from(activityLogs).where(gte(activityLogs.createdAt,earliest)).groupBy(sql`DATE(${activityLogs.createdAt})`),
+    db.select({day:sql<string>`DATE_FORMAT(${activityLogs.createdAt},'%Y-%m-%d')`,total:count()}).from(activityLogs).where(and(gte(activityLogs.createdAt,earliest),isNull(activityLogs.deletedAt))).groupBy(sql`DATE(${activityLogs.createdAt})`),
     db.select({ type: enquiries.type, total: count() }).from(enquiries).groupBy(enquiries.type),
   ]);
   const labels=Array.from({length:days},(_,i)=>{const d=new Date(earliest);d.setUTCDate(d.getUTCDate()+i);return dayKey(d)});

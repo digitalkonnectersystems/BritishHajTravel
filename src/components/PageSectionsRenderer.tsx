@@ -36,7 +36,7 @@ import ProcessStepsSection from '@/components/ProcessStepsSection';
 import GuideVideoSection from '@/components/GuideVideoSection';
 import { RICH_TEXT_PROSE_CLASS } from '@/lib/richTextProseClass';
 import { useEffect, useRef, useState } from "react";
-export default function PageSectionsRenderer({ sections, pageData, initialPackageData, initialDestinationData, initialBlogData, initialGuideData }: { sections: any[], pageData?: any, initialPackageData?: any, initialDestinationData?: any[], initialBlogData?: any[], initialGuideData?: any[] }) {
+export default function PageSectionsRenderer({ sections, pageData, initialPackageData, initialDestinationData, initialBlogData, initialGuideData, publishedVisaCards, publishedSitePaths }: { sections: any[], pageData?: any, initialPackageData?: any, initialDestinationData?: any[], initialBlogData?: any[], initialGuideData?: any[], publishedVisaCards?: { slug: string; title: string }[], publishedSitePaths?: string[] }) {
   if (!sections || !Array.isArray(sections)) return null;
 
   return (
@@ -652,7 +652,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         }
 
         if (sec.type === "Homepage Hero Banner" || sec.type === "Hero Slider") {
-          return <HomepageHeroBanner key={idx} data={sec.data} pageData={pageData} />;
+          return <HomepageHeroBanner key={idx} data={sec.data} pageData={pageData} publishedVisaCards={publishedVisaCards} publishedSitePaths={publishedSitePaths} />;
         }
 
         if (sec.type === "Who We Are" || sec.type === "Image+Text" || sec.type === "Intro") {

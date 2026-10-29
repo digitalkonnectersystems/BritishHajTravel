@@ -191,7 +191,7 @@ export default function PackageDetailPageClient({
   const bannerPrice = minFormattedPrice;
   const priceSubtext = `PER PERSON - ${minPriceItem.packageType.toUpperCase()}`;
   const exclusiveBadge = detailData.exclusiveBadge || cardData.exclusiveBadge || pkg.exclusiveBadge || "STARTING FROM";
-  const currencyCode = pkg.currency || pkg.currencyCode || "£";
+  const currencyCode = "£";
 
   // Default selected package type is the minimum priced package (or single price if only 1)
   useEffect(() => {

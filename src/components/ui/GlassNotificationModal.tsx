@@ -26,14 +26,14 @@ export default function GlassNotificationModal({
     switch (type) {
       case "success":
         return {
-          bgGradient: "from-[#071F19]/90 via-[#0A3328]/95 to-primary/90",
-          border: "border-emerald-500/40",
-          glow: "shadow-[0_0_50px_rgba(16,185,129,0.3)]",
-          iconBg: "bg-emerald-500/20 text-emerald-400 border-emerald-400/40",
+          bgGradient: "from-[#071F3F]/90 via-[#0A2A66]/95 to-primary/90",
+          border: "border-blue-500/40",
+          glow: "shadow-[0_0_50px_rgba(59,130,246,0.3)]",
+          iconBg: "bg-blue-500/20 text-emerald-400 border-blue-400/40",
           icon: <CheckCircle2 className="w-8 h-8 text-emerald-400 animate-pulse" />,
           badgeText: "SUCCESS",
           buttonBg: "bg-emerald-500 hover:bg-emerald-400 text-slate-950",
-          titleColor: "text-emerald-300",
+          titleColor: "text-emerald-600",
         };
       case "warning":
         return {

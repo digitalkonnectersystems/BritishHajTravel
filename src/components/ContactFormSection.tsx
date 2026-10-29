@@ -4,6 +4,7 @@ import { normalizeUkPhoneInput } from '@/lib/ukPhone';
 import { useState } from "react";
 import { submitContactEnquiryAction } from "@/actions/enquiryActions";
 import SubmissionSuccessModal from "@/components/SubmissionSuccessModal";
+import { FORM_SUCCESS_MESSAGE } from "@/lib/formSuccess";
 
 interface ContactSectionData {
   title?: string;
@@ -78,7 +79,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
       });
 
       if (res.success) {
-        const msg = `${data.successMessage || res.message || "Thank you! Your message has been received. Our team will contact you shortly."}${res.emailWarning ? ` ${res.emailWarning}` : ""}`;
+        const msg = `${FORM_SUCCESS_MESSAGE}${res.emailWarning ? ` ${res.emailWarning}` : ""}`;
         setModalMsg(msg);
         if (res.ticketNumber) setModalRef(res.ticketNumber);
         setModalOpen(true);
@@ -173,12 +174,12 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                 <h4 className="">EMAIL</h4>
                 <div className="">
                   <a
-                    href={`mailto:${data.email || "info@britishhajjtravel.com"}`}
+                    href={`mailto:${data.email || "[EMAIL_ADDRESS]"}`}
                     target={data.emailNewTab ?? true ? "_blank" : "_self"}
                     rel={data.emailNewTab ?? true ? "noopener noreferrer" : undefined}
                     className="hover:text-primary transition-colors"
                   >
-                    {data.email || "info@britishhajjtravel.com"}
+                    {data.email || "[EMAIL_ADDRESS]"}
                   </a>
                 </div>
               </div>

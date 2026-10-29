@@ -1,4 +1,5 @@
 "use client";
+import { FORM_SUCCESS_MESSAGE } from '@/lib/formSuccess';
 
 import { normalizeUkPhoneInput } from '@/lib/ukPhone';
 import { useEffect, useRef, useState } from 'react';
@@ -78,7 +79,7 @@ export default function SeasonalUmrahLanding({
         setSuccess(true); setMessage(''); setSubject('');
         setStatus(result.emailWarning
           ? `Enquiry ${result.bookingNumber || ''} was saved, but email delivery could not be confirmed.`
-          : `Thank you. Enquiry ${result.bookingNumber || ''} was received. Our team will contact you.`);
+          : `${FORM_SUCCESS_MESSAGE} Reference: ${result.bookingNumber || ''}`);
       } else setStatus(result.error || 'Unable to send your enquiry. Please try again.');
     } catch { setStatus('Unable to send your enquiry. Please try again.'); }
     finally { setBusy(false); }

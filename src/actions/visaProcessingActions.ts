@@ -15,6 +15,17 @@ export async function getVisaProcessingList() {
   return db.select().from(visaProcessing).orderBy(desc(visaProcessing.updatedAt));
 }
 
+/** Public-safe projection: only published pages, no draft content or private editor fields. */
+export async function getPublishedVisaProcessingCards() {
+  try {
+    return await db.select({slug: visaProcessing.slug, title: visaProcessing.title})
+      .from(visaProcessing).where(eq(visaProcessing.status, 'published'));
+  } catch (error) {
+    console.error('[visa-processing] Unable to load published homepage cards', error);
+    return [];
+  }
+}
+
 export async function getVisaProcessingById(id: number) {
   await requireAdmin([...ROLE]);
   if (!Number.isSafeInteger(id) || id < 1) return null;
@@ -80,7 +91,7 @@ export async function saveVisaProcessingAction(fd: FormData): Promise<{success:b
     if (id) await db.update(visaProcessing).set({...value,updatedAt:new Date()}).where(eq(visaProcessing.id,id));
     await logAdminActivityAction({type:'visa_processing',action:id?'Updated Visa Processing Page':'Created Visa Processing Page',details:`${title} (${slug})`,previousEntry:before?{id:before.id,slug:before.slug,title:before.title,status:before.status}:null,newEntry:{id:newId,slug,title,status:value.status}});
     revalidatePath('/admin/visa-processing'); revalidatePath('/admin/pages/edit'); revalidatePath(slug);
-    revalidatePath('/');
+    revalidatePath('/', 'layout');
     return {success:true,id:newId};
   } catch(error) {console.error('[visa-processing] Save failed', error);return {success:false,error:'Unable to save visa processing page. Check the database migration and server logs.'};}
 }
@@ -93,7 +104,7 @@ export async function deleteVisaProcessingAction(id:number) {
     if (!before) return {success:false,error:'Record not found.'};
     await db.delete(visaProcessing).where(eq(visaProcessing.id,id));
     await logAdminActivityAction({type:'visa_processing',action:'Deleted Visa Processing Page',details:`${before.title} (${before.slug})`,previousEntry:{id:before.id,title:before.title,slug:before.slug}});
-    revalidatePath(before.slug);revalidatePath('/admin/visa-processing');revalidatePath('/');
+    revalidatePath(before.slug);revalidatePath('/admin/visa-processing');revalidatePath('/', 'layout');
     return {success:true};
   } catch(error) {console.error('[visa-processing] Delete failed',error);return {success:false,error:'Could not delete the page.'};}
 }
@@ -126,7 +137,7 @@ export async function updateVisaProcessingSlugAction(id: number, rawSlug: string
     revalidatePath(page.slug);
     revalidatePath(slug);
     revalidatePath('/admin/visa-processing');
-    revalidatePath('/');
+    revalidatePath('/', 'layout');
     return { success: true, slug };
   } catch (error) {
     console.error('[visa-processing] URL update failed', error);
@@ -152,7 +163,7 @@ export async function updateVisaProcessingVisibilityAction(id: number, isVisible
     });
     revalidatePath(page.slug);
     revalidatePath('/admin/visa-processing');
-    revalidatePath('/');
+    revalidatePath('/', 'layout');
     return { success: true, status };
   } catch (error) {
     console.error('[visa-processing] Visibility update failed', error);

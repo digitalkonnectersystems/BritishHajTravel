@@ -151,7 +151,7 @@ export default function PackageDetailModal({ isOpen, onClose, pkg }: PackageDeta
   const bannerPrice = minFormattedPrice;
   const priceSubtext = `PER PERSON - ${minPriceItem.packageType.toUpperCase()}`;
   const exclusiveBadge = detailData.exclusiveBadge || cardData.exclusiveBadge || pkg.exclusiveBadge || "STARTING FROM";
-  const currencyCode = detailData.currencyCode || pkg.currencyCode || "£";
+  const currencyCode = "£";
 
   // Selected package type price for booking calculation
   const selectedPriceItem = packagePrices.find((p) => p.packageType === effectivePackageType);

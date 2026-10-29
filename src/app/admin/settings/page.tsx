@@ -28,10 +28,11 @@ import {
   saveSeoIntelligenceSettingsAction,
 } from '@/actions/pageActions';
 import { getDestinations } from '@/actions/destinationActions';
-import { getEmailDeliveryLogsAction } from '@/actions/logActions';
+import { getEmailDeliveryLogsAction, getMailRuntimeStatusAction } from '@/actions/logActions';
+import { resolveSubmissionSubject } from '@/lib/emailSubject';
 import {
-  getResponsiveEmailTemplateHtml,
   getEditableEmailTemplateHtml,
+  renderSharedEmailTemplateHtml,
   CANONICAL_FORM_SUBJECTS,
   FORM_SAMPLE_DATA,
   CanonicalFormSubject,
@@ -87,13 +88,6 @@ const TABS = [
   { id: 'forms', label: 'Forms', icon: '📝' },
 ];
 
-const DEFAULT_EMAIL_TEMPLATES = Object.fromEntries(
-  CANONICAL_FORM_SUBJECTS.map((subject) => [
-    subject,
-    getEditableEmailTemplateHtml(subject),
-  ])
-) as Record<CanonicalFormSubject, string>;
-
 export default function AdminSettingsPage() {
   const [activeTab, setActiveTab] = useState('header-footer');
   const [subTab, setSubTab] = useState<'header' | 'footer'>('header');
@@ -137,11 +131,44 @@ export default function AdminSettingsPage() {
   // Drag-and-drop state (native HTML5 — no external library)
   const dragL1Id = useRef<string | null>(null);           // dragged level-1 item id
   const dragL2Key = useRef<string | null>(null);          // dragged level-2 item: "parentId::subId"
+  const dragL3Key = useRef<string | null>(null);
+  const [dragOverL3, setDragOverL3] = useState<string | null>(null);
   const [dragOverL1, setDragOverL1] = useState<string | null>(null);
   const [dragOverL2, setDragOverL2] = useState<string | null>(null); // "parentId::subId"
 
   // Footer Builder State
   const [footerData, setFooterData] = useState<any>({});
+  const footerDrag = useRef<{ section: string; index: number } | null>(null);
+  const reorderFooterItems = (section: string, index: number) => {
+    const from = footerDrag.current;
+    footerDrag.current = null;
+    if (!from || from.section !== section || from.index === index) return;
+    setFooterData((previous: any) => {
+      const oldItems = previous?.[section];
+      if (!Array.isArray(oldItems) || !oldItems[from.index] || !oldItems[index]) return previous;
+      const items = [...oldItems];
+      const [moving] = items.splice(from.index, 1);
+      items.splice(index, 0, moving);
+      return { ...previous, [section]: items };
+    });
+  };
+  const footerDragHandlers = (section: string, index: number) => ({
+    draggable: true,
+    onDragStart: (event: React.DragEvent<HTMLDivElement>) => {
+      footerDrag.current = { section, index };
+      event.dataTransfer.effectAllowed = 'move';
+    },
+    onDragOver: (event: React.DragEvent<HTMLDivElement>) => {
+      if (footerDrag.current?.section === section) event.preventDefault();
+    },
+    onDrop: (event: React.DragEvent<HTMLDivElement>) => {
+      event.preventDefault();
+      event.stopPropagation();
+      reorderFooterItems(section, index);
+    },
+    onDragEnd: () => { footerDrag.current = null; },
+  });
+
   const [footerSaveMsg, setFooterSaveMsg] = useState<string | null>(null);
   const [confirmConfig, setConfirmConfig] = useState<ConfirmModalConfig | null>(null);
 
@@ -239,6 +266,8 @@ export default function AdminSettingsPage() {
     backgroundAlt: '',
     footerText: '© 2026 British Hajj Travel LTD. All Rights Reserved.',
     maintenanceMode: false,
+    maintenanceScope: 'entire_site',
+    maintenancePaths: [],
   });
   const [loginSaveMsg, setLoginSaveMsg] = useState<string | null>(null);
   const [savingLogin, setSavingLogin] = useState(false);
@@ -252,6 +281,10 @@ export default function AdminSettingsPage() {
   const [disclaimerSaveMsg, setDisclaimerSaveMsg] = useState<string | null>(null);
   const [savingDisclaimer, setSavingDisclaimer] = useState(false);
 
+  useEffect(() => {
+    try { localStorage.removeItem('bht_email_configs'); localStorage.removeItem('bht_forms_settings'); } catch { /* Storage is optional. */ }
+  }, []);
+
   // Forms Manager state
   const [formsSubTab, setFormsSubTab] = useState<
     'all' | 'emailConfigs' | 'emailTemplate' | 'inbox' | 'sentHistory' | 'emailLogs'
@@ -260,6 +293,7 @@ export default function AdminSettingsPage() {
 
   const [emailLogs, setEmailLogs] = useState<any[]>([]);
   const [isLoadingLogs, setIsLoadingLogs] = useState(false);
+  const [mailRuntimeStatus, setMailRuntimeStatus] = useState<Awaited<ReturnType<typeof getMailRuntimeStatusAction>> | null>(null);
 
   const [inboxEnquiries, setInboxEnquiries] = useState<any[]>([]);
   const [isLoadingInbox, setIsLoadingInbox] = useState(false);
@@ -340,8 +374,8 @@ export default function AdminSettingsPage() {
       if (formsSubTab === 'emailLogs') {
         fetchEmailLogs();
         const interval = setInterval(() => {
-          fetchEmailLogs();
-        }, 10000);
+          if (document.visibilityState === 'visible') fetchEmailLogs();
+        }, 60000);
         return () => clearInterval(interval);
       }
       if (formsSubTab === 'inbox') {
@@ -352,6 +386,18 @@ export default function AdminSettingsPage() {
         return () => clearInterval(interval);
       }
     }
+  }, [activeTab, formsSubTab]);
+
+  useEffect(() => {
+    if (activeTab !== 'forms' || formsSubTab !== 'emailConfigs') return;
+    let mounted = true;
+    const refreshStatus = () => {
+      if (document.visibilityState !== 'visible') return;
+      getMailRuntimeStatusAction().then(data => { if (mounted) setMailRuntimeStatus(data); }).catch(() => { if (mounted) setMailRuntimeStatus(null); });
+    };
+    refreshStatus();
+    const interval = window.setInterval(refreshStatus, 60000);
+    return () => { mounted = false; window.clearInterval(interval); };
   }, [activeTab, formsSubTab]);
 
   const [formFieldsState, setFormFieldsState] = useState<Record<string, Array<{ id: string; label: string; type: string; placeholder: string; required: boolean }>>>({
@@ -481,13 +527,13 @@ export default function AdminSettingsPage() {
     formBccRoutes?: Record<string, string>;
     formRoutingRules?: Array<{ id: string; forms: string[]; sendTo: string; cc: string; bcc: string }>;
   }>({
-    sendToEmail: 'saudivisa@britishhajjtravel.com',
-    emailSubjectLine: 'New Pilgrimage Form Submission',
+    sendToEmail: '',
+    emailSubjectLine: '[form_name]',
     fromName: 'British Hajj Travel UK',
-    fromEmail: 'no-reply@digitalkonnecter.com',
-    replyTo: 'no-reply@digitalkonnecter.com',
-    successHeading: 'Message Sent Successfully!',
-    successDescription: 'Thank you for contacting British Hajj Travel UK. We will respond within 24 hours.',
+    fromEmail: '',
+    replyTo: '',
+    successHeading: 'Request Received Successfully!',
+    successDescription: 'Thank you! Your request has been submitted. Our team will contact you shortly.',
     smtpHost: '',
     smtpPort: '465',
     smtpUsername: '',
@@ -496,29 +542,13 @@ export default function AdminSettingsPage() {
     formRoutes: {},
     formCcRoutes: {},
     formBccRoutes: {},
-    formRoutingRules: [
-      { id: 'form_baanHoldingHajjForm', forms: ['baanHoldingHajjForm'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
-      { id: 'form_quoteForm', forms: ['quoteForm'], sendTo: 'saudivisa@britishhajjtravel.com', cc: '', bcc: '' },
-      { id: 'form_packageDetailForm', forms: ['packageDetailForm'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
-      { id: 'form_hajjPackageDetailForm', forms: ['hajjPackageDetailForm'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
-      { id: 'form_hajjCustomizeForm', forms: ['hajjCustomizeForm'], sendTo: 'saudivisa@britishhajjtravel.com', cc: '', bcc: '' },
-      { id: 'form_contact', forms: ['contact'], sendTo: 'saudivisa@britishhajjtravel.com', cc: '', bcc: '' },
-      { id: 'form_packageInquiry', forms: ['packageInquiry'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
-      { id: 'form_visaConsultation', forms: ['visaConsultation'], sendTo: 'visas@britishhajjtravel.com', cc: '', bcc: '' },
-      { id: 'form_umrahVisaOrder', forms: ['umrahVisaOrder'], sendTo: 'visas@britishhajjtravel.com', cc: '', bcc: '' },
-      { id: 'form_flightInquiry', forms: ['flightInquiry'], sendTo: 'flights@britishhajjtravel.com', cc: '', bcc: '' },
-      { id: 'form_dropUsMessage', forms: ['dropUsMessage'], sendTo: 'saudivisa@britishhajjtravel.com', cc: '', bcc: '' },
-      { id: 'form_blogSidebarForm', forms: ['blogSidebarForm'], sendTo: 'booking@britishhajjtravel.com', cc: '', bcc: '' },
-    ],
+    formRoutingRules: [],
   });
 
-  const [selectedTemplateSubject, setSelectedTemplateSubject] =
-    useState<CanonicalFormSubject>('Get a Free Quote Form');
-
-  const [emailTemplates, setEmailTemplates] = useState<Record<CanonicalFormSubject, string>>(() => ({ ...DEFAULT_EMAIL_TEMPLATES }));
-  const [emailTemplateHtml, setEmailTemplateHtml] = useState<string>(() =>
-    DEFAULT_EMAIL_TEMPLATES['Get a Free Quote Form']
-  );
+  // One master template is edited once and shared by every form.
+  // Selecting a form below changes only the sample preview, never saved HTML.
+  const [previewForm, setPreviewForm] = useState<CanonicalFormSubject>('Get a Free Quote Form');
+  const [emailTemplateHtml, setEmailTemplateHtml] = useState<string>(() => getEditableEmailTemplateHtml());
 
   const [formsData, setFormsData] = useState<any>({
     baanHoldingHajjForm: { title: 'BAAN Holding Hajj Interest Form', subtitle: 'BAAN Holding Hajj page registration modal at /baan-holding-hajj/.', recipientEmail: 'booking@britishhajjtravel.com', successMessage: 'Your BAAN Holding Hajj enquiry has been received.', enabled: true, buttonText: 'Submit Enquiry' },
@@ -663,23 +693,10 @@ export default function AdminSettingsPage() {
             ...prev,
             ...data.emailConfigs,
           }));
-        } else if (typeof window !== 'undefined') {
-          const localEmailCfg = localStorage.getItem('bht_email_configs') || localStorage.getItem('king_travel_email_configs');
-          if (localEmailCfg) {
-            try { setEmailConfigs(JSON.parse(localEmailCfg)); } catch (e) { }
-          }
         }
-        const loadedTemplates = { ...DEFAULT_EMAIL_TEMPLATES, ...(data.emailTemplates || {}) } as Record<CanonicalFormSubject, string>;
-        setEmailTemplates(loadedTemplates);
-        setEmailTemplateHtml(loadedTemplates['Get a Free Quote Form'] || data.emailTemplateHtml || DEFAULT_EMAIL_TEMPLATES['Get a Free Quote Form']);
+        setEmailTemplateHtml(data.emailTemplateHtml || getEditableEmailTemplateHtml());
       }
     });
-    if (typeof window !== 'undefined') {
-      const localEmailCfg = localStorage.getItem('bht_email_configs') || localStorage.getItem('king_travel_email_configs');
-      if (localEmailCfg) {
-        try { setEmailConfigs(JSON.parse(localEmailCfg)); } catch (e) { }
-      }
-    }
   }, []);
 
   const handleSaveSeoSettings = async () => {
@@ -767,23 +784,11 @@ export default function AdminSettingsPage() {
     setSavingForms(true);
     setFormsSaveMsg(null);
 
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('bht_email_configs', JSON.stringify(emailConfigs));
-      localStorage.setItem('bht_forms_settings', JSON.stringify({
-        formsData,
-        formFieldsState,
-        emailConfigs,
-        emailTemplateHtml,
-        emailTemplates: { ...emailTemplates, [selectedTemplateSubject]: emailTemplateHtml },
-      }));
-    }
-
     const fullPayload = {
       formsData,
       formFieldsState,
       emailConfigs,
       emailTemplateHtml,
-      emailTemplates: { ...emailTemplates, [selectedTemplateSubject]: emailTemplateHtml },
     };
 
     const res = await saveFormsSettingsAction(fullPayload);
@@ -833,7 +838,6 @@ export default function AdminSettingsPage() {
       formFieldsState: updatedFormFieldsState,
       emailConfigs,
       emailTemplateHtml,
-      emailTemplates: { ...emailTemplates, [selectedTemplateSubject]: emailTemplateHtml },
     };
     const res = await saveFormsSettingsAction(fullPayload);
     setSavingForms(false);
@@ -942,11 +946,14 @@ export default function AdminSettingsPage() {
     const res = await saveLoginAuthSettingsAction(loginAuthData);
     setSavingLogin(false);
     if (res.success) {
+      showNotification('Maintenance Settings Saved', loginAuthData.maintenanceMode ? (loginAuthData.maintenanceScope === 'selected_pages' ? 'Maintenance enabled for selected public pages.' : 'Maintenance enabled across the public website.') : 'Maintenance disabled. Public pages are accessible again.', loginAuthData.maintenanceMode ? 'warning' : 'success');
       if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('maintenance_updated', { detail: { maintenanceMode: loginAuthData.maintenanceMode } }));
+        window.dispatchEvent(new CustomEvent('maintenance_updated', { detail: { maintenanceMode: loginAuthData.maintenanceMode, maintenanceScope: loginAuthData.maintenanceScope, maintenancePaths: loginAuthData.maintenancePaths } }));
       }
       setLoginSaveMsg('✅ Login Auth Settings Saved!');
       setTimeout(() => setLoginSaveMsg(null), 3000);
+    } else {
+      showNotification('Maintenance Save Failed', res.error || 'Settings were not saved.', 'error');
     }
   };
 
@@ -1034,6 +1041,8 @@ export default function AdminSettingsPage() {
         if (res.success) {
           setFooterSaveMsg('✅ Footer Settings Saved & Published!');
           setTimeout(() => setFooterSaveMsg(null), 4000);
+        } else {
+          showNotification('Footer Save Failed', res.error || 'Footer settings could not be saved. Existing data was preserved.', 'error');
         }
       },
     });
@@ -1465,9 +1474,31 @@ export default function AdminSettingsPage() {
                               </div>
                             </div>
 
-                            {/* Level 3 Sub-items (not draggable — keep existing behaviour) */}
-                            {sub.children && sub.children.map((sub3: any) => (
-                              <div key={sub3.id} className="ml-6 flex items-center justify-between p-2 rounded-lg border border-sky-200 bg-sky-50 shadow-xs">
+                            {/* Level 3 Sub-items — reorder within their immediate parent */}
+                            {sub.children && sub.children.map((sub3: any) => {
+                              const l3key = `${item.id}::${sub.id}::${sub3.id}`;
+                              return <div key={sub3.id} draggable
+                                onDragStart={e => { e.stopPropagation(); dragL3Key.current = l3key; dragL2Key.current = null; dragL1Id.current = null; e.dataTransfer.effectAllowed = 'move'; }}
+                                onDragOver={e => { e.preventDefault(); e.stopPropagation(); if (dragL3Key.current && dragL3Key.current !== l3key) setDragOverL3(l3key); }}
+                                onDragLeave={e => { e.stopPropagation(); setDragOverL3(null); }}
+                                onDrop={e => {
+                                  e.preventDefault(); e.stopPropagation();
+                                  const from = dragL3Key.current;
+                                  dragL3Key.current = null; setDragOverL3(null);
+                                  if (!from || from === l3key) return;
+                                  const [rootId, parentId, childId] = from.split('::');
+                                  if (rootId !== String(item.id) || parentId !== String(sub.id)) return;
+                                  const children = [...(sub.children || [])];
+                                  const fromIndex = children.findIndex((c: any) => String(c.id) === childId);
+                                  const targetIndex = children.findIndex((c: any) => String(c.id) === String(sub3.id));
+                                  if (fromIndex < 0 || targetIndex < 0) return;
+                                  const [moved] = children.splice(fromIndex, 1);
+                                  children.splice(targetIndex, 0, moved);
+                                  handleSaveNav(navTree.map(t => t.id !== item.id ? t : { ...t, children: t.children.map((c: any) => c.id === sub.id ? { ...c, children } : c) }));
+                                }}
+                                onDragEnd={e => { e.stopPropagation(); dragL3Key.current = null; setDragOverL3(null); }}
+                                className={`ml-6 flex items-center justify-between p-2 rounded-lg border border-sky-200 bg-sky-50 shadow-xs ${dragOverL3 === l3key ? 'ring-2 ring-sky-400' : ''}`}>
+
                                 <div className="flex items-center gap-2">
                                   <span className="text-sky-400 font-bold text-xs">↳↳ ⋮⋮</span>
                                   <span className="font-bold text-xs text-sky-900">{sub3.label}</span>
@@ -1508,8 +1539,8 @@ export default function AdminSettingsPage() {
                                     <Trash2 className="w-3 h-3" />
                                   </button>
                                 </div>
-                              </div>
-                            ))}
+                              </div>;
+                            })}
                           </div>
                         );
                       })}
@@ -1617,7 +1648,7 @@ export default function AdminSettingsPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {(footerData.socialLinks || []).map((item: any, sIdx: number) => (
-                    <div key={sIdx} className="bg-white p-3 rounded-xl border border-slate-200 flex flex-col gap-2.5">
+                    <div {...footerDragHandlers('socialLinks', sIdx)} title="Drag row to reorder" key={sIdx} className="bg-white p-3 rounded-xl border border-slate-200 flex flex-col gap-2.5">
                       <div className="flex justify-between items-center">
                         <span className="text-[10px] font-bold text-slate-500 uppercase">Icon #{sIdx + 1}: {item.name}</span>
                         <button
@@ -1728,7 +1759,7 @@ export default function AdminSettingsPage() {
 
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
                   {(footerData.trustBadges || []).map((badge: any, bIdx: number) => (
-                    <div key={bIdx} className="bg-white p-3 rounded-xl border border-slate-200 flex flex-col gap-2 items-center text-center">
+                    <div {...footerDragHandlers('trustBadges', bIdx)} title="Drag row to reorder" key={bIdx} className="bg-white p-3 rounded-xl border border-slate-200 flex flex-col gap-2 items-center text-center">
                       <div className="h-12 w-full bg-slate-100 rounded-lg p-1 flex items-center justify-center border border-slate-200">
                         {badge.icon ? (
                           <img src={badge.icon} alt={badge.name} className="max-h-full max-w-full object-contain" />
@@ -1817,7 +1848,7 @@ export default function AdminSettingsPage() {
                       const isLast = lIdx === (footerData.servicesLinks || []).length - 1;
 
                       return (
-                        <div key={lIdx} className="flex gap-1.5 items-center">
+                        <div {...footerDragHandlers('servicesLinks', lIdx)} title="Drag row to reorder" key={lIdx} className="flex gap-1.5 items-center">
                           <div className="flex items-center gap-0.5 shrink-0">
                             <button
                               type="button"
@@ -1921,7 +1952,7 @@ export default function AdminSettingsPage() {
                       const isLast = lIdx === (footerData.sitemapLinks || []).length - 1;
 
                       return (
-                        <div key={lIdx} className="flex gap-1.5 items-center">
+                        <div {...footerDragHandlers('sitemapLinks', lIdx)} title="Drag row to reorder" key={lIdx} className="flex gap-1.5 items-center">
                           <div className="flex items-center gap-0.5 shrink-0">
                             <button
                               type="button"
@@ -2028,7 +2059,7 @@ export default function AdminSettingsPage() {
                     const isLast = cIdx === (footerData.supportItems || []).length - 1;
 
                     return (
-                      <div key={cIdx} className="bg-white p-2.5 rounded-xl border border-slate-200 flex flex-col md:flex-row gap-3 items-center justify-between">
+                      <div {...footerDragHandlers('supportItems', cIdx)} title="Drag row to reorder" key={cIdx} className="bg-white p-2.5 rounded-xl border border-slate-200 flex flex-col md:flex-row gap-3 items-center justify-between">
                         <div className="flex items-center gap-1 shrink-0">
                           <button
                             type="button"
@@ -3884,6 +3915,26 @@ export default function AdminSettingsPage() {
                       onChange={(val) => setLoginAuthData({ ...loginAuthData, maintenanceMode: val })}
                     />
                   </div>
+                  <div className="mt-4 rounded-2xl border border-amber-200 bg-white p-4 space-y-3">
+                    <label htmlFor="bht-maintenance-scope" className="block text-xs font-bold text-slate-800">Maintenance coverage</label>
+                    <select id="bht-maintenance-scope" value={loginAuthData.maintenanceScope === 'selected_pages' ? 'selected_pages' : 'entire_site'} onChange={e => setLoginAuthData({ ...loginAuthData, maintenanceScope: e.target.value })} className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs text-slate-800">
+                      <option value="entire_site">Entire public website</option>
+                      <option value="selected_pages">Only selected public pages</option>
+                    </select>
+                    {loginAuthData.maintenanceScope === 'selected_pages' && (
+                      <div className="grid max-h-56 grid-cols-1 gap-2 overflow-y-auto rounded-xl border border-slate-200 p-3 sm:grid-cols-2" aria-label="Select pages under maintenance">
+                        {pagesList.filter((page: any) => typeof page.slug === 'string' && page.slug.startsWith('/') && page.status === 'published').map((page: any) => {
+                          const chosen = Array.isArray(loginAuthData.maintenancePaths) ? loginAuthData.maintenancePaths : [];
+                          return <label key={String(page.id)} className="flex items-center gap-2 text-xs text-slate-700">
+                            <input type="checkbox" checked={chosen.includes(page.slug)} onChange={e => setLoginAuthData({ ...loginAuthData, maintenancePaths: e.target.checked ? [...chosen, page.slug] : chosen.filter((v: string) => v !== page.slug) })} />
+                            <span>{page.title || page.slug} <span className="text-slate-500">({page.slug})</span></span>
+                          </label>;
+                        })}
+                        {!pagesList.length && <p className="text-xs text-amber-800">No CMS pages loaded. Refresh the settings page and try again.</p>}
+                      </div>
+                    )}
+                    <p className="text-[11px] text-slate-500">Admin and login routes always remain accessible. Changes take effect after saving; public-facing visual styling is unchanged.</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -4476,111 +4527,112 @@ export default function AdminSettingsPage() {
                       </div>
                     </div>
 
-                    {/* ── 1. TOP SECTION: One independent email configuration per form ── */}
+                    {/* ── Grouped per-form email routing ── */}
                     {(() => {
-                      const FORM_META: Record<string, { title: string; icon: string }> = {
-                        baanHoldingHajjForm: { title: 'BAAN Holding Hajj Interest Form', icon: '🕋' },
-                        quoteForm: { title: 'Homepage Hero Banner — Get a Free Quote Form', icon: '🏠' },
-                        packageDetailForm: { title: 'Umrah Package Booking Form (Detail Page & Popup Modal)', icon: '📊' },
-                        hajjPackageDetailForm: { title: 'Hajj Package Booking Form (Detail Page & Popup Modal)', icon: '🕋' },
-                        hajjCustomizeForm: { title: 'Hajj Page — Customize Your Hajj Package Form', icon: '✨' },
-                        contact: { title: 'Contact Page — Enquiry Form', icon: '💬' },
-                        packageInquiry: { title: 'Pilgrimage Package — Custom Inquiry Form', icon: '🕋' },
-                        visaConsultation: { title: 'Visa Services — Consultation Form', icon: '📜' },
-                        umrahVisaOrder: { title: 'Umrah Visa Order Form', icon: '🕋' },
-                        flightInquiry: { title: 'Flights Page — Booking Inquiry Form', icon: '✈️' },
-                        dropUsMessage: { title: 'General — Drop Us A Message Form', icon: '📬' },
-                        blogSidebarForm: { title: 'Blog Detail Page — Sidebar Booking Form', icon: '📝' },
-                      };
                       const allFormKeys = Object.keys(formsData);
-                      const rules = emailConfigs.formRoutingRules || [];
+                      const rules = Array.isArray(emailConfigs.formRoutingRules) ? emailConfigs.formRoutingRules : [];
+                      const assigned = new Set(rules.flatMap(rule => Array.isArray(rule.forms) ? rule.forms : []));
+                      const remaining = allFormKeys.filter(key => !assigned.has(key));
+                      const formLabel = (key: string) => formsData[key]?.title || key;
 
-                      const getRuleForForm = (formKey: string, sourceRules = rules) => {
-                        const matched = sourceRules.find((rule) => Array.isArray(rule.forms) && rule.forms.includes(formKey));
-                        return {
-                          sendTo: matched?.sendTo || formsData[formKey]?.recipientEmail || emailConfigs.sendToEmail || '',
-                          cc: matched?.cc || '',
-                          bcc: matched?.bcc || '',
-                        };
+                      const updateRule = (id: string, field: 'sendTo' | 'cc' | 'bcc', value: string) => {
+                        setEmailConfigs(prev => ({ ...prev, formRoutingRules: (prev.formRoutingRules || []).map(rule => rule.id === id ? { ...rule, [field]: value } : rule) }));
                       };
-
-                      const updateFormRouting = (formKey: string, field: 'sendTo' | 'cc' | 'bcc', value: string) => {
-                        setEmailConfigs((prev) => {
-                          const previousRules = prev.formRoutingRules || [];
-                          const formKeys = Object.keys(formsData);
-                          const getCurrent = (key: string) => {
-                            const matched = previousRules.find((rule) => Array.isArray(rule.forms) && rule.forms.includes(key));
-                            return {
-                              sendTo: matched?.sendTo || formsData[key]?.recipientEmail || prev.sendToEmail || '',
-                              cc: matched?.cc || '',
-                              bcc: matched?.bcc || '',
-                            };
-                          };
-                          const nextRules = formKeys.map((key) => {
-                            const current = getCurrent(key);
-                            return {
-                              id: `form_${key}`,
-                              forms: [key],
-                              sendTo: key === formKey && field === 'sendTo' ? value : current.sendTo,
-                              cc: key === formKey && field === 'cc' ? value : current.cc,
-                              bcc: key === formKey && field === 'bcc' ? value : current.bcc,
-                            };
-                          });
-                          return { ...prev, formRoutingRules: nextRules };
+                      const assignForm = (id: string, formKey: string) => {
+                        if (!formKey || !allFormKeys.includes(formKey)) return;
+                        setEmailConfigs(prev => {
+                          const existing = prev.formRoutingRules || [];
+                          if (existing.some(rule => rule.forms.includes(formKey))) return prev;
+                          return { ...prev, formRoutingRules: existing.map(rule => rule.id === id ? { ...rule, forms: [...rule.forms, formKey] } : rule) };
                         });
                       };
+                      const unassignForm = (id: string, formKey: string) => {
+                        setEmailConfigs(prev => ({ ...prev, formRoutingRules: (prev.formRoutingRules || []).map(rule => rule.id === id ? { ...rule, forms: rule.forms.filter(key => key !== formKey) } : rule) }));
+                      };
+                      const addRule = () => setEmailConfigs(prev => ({
+                        ...prev,
+                        formRoutingRules: [...(prev.formRoutingRules || []), {
+                          id: `route_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+                          forms: [], sendTo: '', cc: '', bcc: '',
+                        }],
+                      }));
+                      const removeRule = (id: string) => setEmailConfigs(prev => ({ ...prev, formRoutingRules: (prev.formRoutingRules || []).filter(rule => rule.id !== id) }));
 
                       return (
                         <div className="flex flex-col gap-4">
-                          <div>
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className="text-base">✉️</span>
-                              <h5 className="text-xs font-black uppercase tracking-wider text-slate-900 m-0">SEPARATE EMAIL CONFIG FOR EVERY FORM</h5>
-                              <span className="text-[10px] font-extrabold bg-violet-100 text-violet-700 border border-violet-200 px-2 py-0.5 rounded-full">To → CC → BCC de-duplication</span>
+                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                            <div>
+                              <div className="flex flex-wrap items-center gap-2 mb-1">
+                                <h5 className="text-xs font-black uppercase tracking-wider text-slate-900 m-0">PER-FORM SEND TO EMAIL ROUTING</h5>
+                                <span className="text-[10px] font-extrabold rounded-full px-2 py-0.5 border border-primary/20 bg-primary/5 text-primary">TO · CC · BCC supported</span>
+                              </div>
+                              <p className="text-xs text-slate-500 m-0 leading-relaxed max-w-3xl">
+                                Assign one or more forms to each rule. Enter recipients independently for TO, CC and BCC, separated by commas or semicolons. Empty fields are saved as empty: no address is added automatically. Duplicate recipients are removed in TO, then CC, then BCC order.
+                              </p>
                             </div>
-                            <p className="text-xs text-slate-500 m-0 leading-relaxed">
-                              Each form has its own To, CC and BCC recipients. Enter multiple addresses separated by commas. If the same address appears more than once, it is kept only once with priority <strong>To, then CC, then BCC</strong>. A form submission sends one admin email containing all final recipients.
-                            </p>
+                            <button type="button" onClick={addRule} className="bg-primary text-white rounded-xl px-4 py-2.5 text-xs font-bold shadow-xs cursor-pointer border-none whitespace-nowrap hover:opacity-90">
+                              + Add Routing Rule
+                            </button>
                           </div>
 
-                          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                            {allFormKeys.map((formKey) => {
-                              const meta = FORM_META[formKey] || { title: formsData[formKey]?.title || formKey, icon: '📝' };
-                              const config = getRuleForForm(formKey);
-                              const disabled = formsData[formKey]?.enabled === false;
-                              return (
-                                <div key={formKey} className={`rounded-2xl border p-4 shadow-xs ${disabled ? 'border-slate-200 bg-slate-50/80' : 'border-slate-200 bg-white'}`}>
-                                  <div className="mb-3 flex items-start justify-between gap-3">
-                                    <div className="flex items-start gap-2.5">
-                                      <span className="text-lg">{meta.icon}</span>
-                                      <div>
-                                        <div className="text-xs font-extrabold text-slate-900">{meta.title}</div>
-                                        <div className="mt-0.5 font-mono text-[9px] text-slate-400">{formKey}</div>
-                                      </div>
+                          {rules.length === 0 && (
+                            <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-5 py-6 text-center">
+                              <p className="text-sm font-bold text-slate-800 m-0">No email routing rules configured</p>
+                              <p className="text-xs text-slate-500 mt-1 mb-0">Use Add Routing Rule to assign forms and recipients. No fallback recipient will be used.</p>
+                            </div>
+                          )}
+
+                          <div className="flex flex-col gap-3">
+                            {rules.map((rule, index) => (
+                              <div key={rule.id} className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4 md:p-5 shadow-xs flex flex-col gap-4">
+                                <div className="flex justify-between items-start gap-3">
+                                  <div>
+                                    <div className="flex flex-wrap items-center gap-2">
+                                      <h6 className="font-extrabold text-xs uppercase tracking-wide text-slate-900 m-0">Send to email address</h6>
+                                      <span className="text-[10px] font-semibold rounded-full border border-primary/20 bg-primary/5 text-primary px-2 py-0.5">{rule.forms.length} selected</span>
+                                      <span className="text-[10px] text-slate-400">Rule {index + 1}</span>
                                     </div>
-                                    <span className={`rounded-full border px-2 py-0.5 text-[9px] font-extrabold ${disabled ? 'border-amber-200 bg-amber-50 text-amber-700' : 'border-emerald-200 bg-emerald-50 text-emerald-700'}`}>
-                                      {disabled ? 'Disabled' : 'Active'}
-                                    </span>
+                                    <p className="text-[11px] text-slate-500 mt-1 mb-0">Selected forms share this rule. Remove a form to assign it elsewhere.</p>
                                   </div>
-
-                                  <div className="grid grid-cols-1 gap-3">
-                                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600">
-                                      To
-                                      <input type="text" value={config.sendTo} onChange={(e) => updateFormRouting(formKey, 'sendTo', e.target.value)} placeholder="test2@test.com, test@test.com" className="mt-1 w-full rounded-xl border border-emerald-200 bg-emerald-50/30 px-3 py-2 font-mono text-xs normal-case tracking-normal text-slate-800 outline-none focus:border-primary" />
-                                    </label>
-                                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600">
-                                      CC
-                                      <input type="text" value={config.cc} onChange={(e) => updateFormRouting(formKey, 'cc', e.target.value)} placeholder="test3@test.com" className="mt-1 w-full rounded-xl border border-violet-200 bg-violet-50/30 px-3 py-2 font-mono text-xs normal-case tracking-normal text-slate-800 outline-none focus:border-violet-400" />
-                                    </label>
-                                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600">
-                                      BCC
-                                      <input type="text" value={config.bcc} onChange={(e) => updateFormRouting(formKey, 'bcc', e.target.value)} placeholder="test4@test.com" className="mt-1 w-full rounded-xl border border-sky-200 bg-sky-50/30 px-3 py-2 font-mono text-xs normal-case tracking-normal text-slate-800 outline-none focus:border-sky-400" />
-                                    </label>
-                                  </div>
+                                  <button type="button" title="Remove this routing rule" aria-label={`Remove routing rule ${index + 1}`} onClick={() => removeRule(rule.id)} className="shrink-0 border border-red-200 text-red-600 bg-white rounded-full w-7 h-7 cursor-pointer flex items-center justify-center hover:bg-red-50">×</button>
                                 </div>
-                              );
-                            })}
+
+                                <div className="flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 bg-white p-2.5 min-h-11">
+                                  {rule.forms.map(formKey => (
+                                    <span key={formKey} className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg border border-slate-200 bg-slate-50 text-[11px] font-semibold text-slate-700">
+                                      {formLabel(formKey)}
+                                      <button type="button" title={`Remove ${formLabel(formKey)} from this rule`} aria-label={`Remove ${formLabel(formKey)}`} onClick={() => unassignForm(rule.id, formKey)} className="border-none bg-transparent cursor-pointer text-red-600 font-bold px-0.5">×</button>
+                                    </span>
+                                  ))}
+                                  {remaining.length > 0 && (
+                                    <select aria-label={`Add a form to routing rule ${index + 1}`} value="" onChange={event => assignForm(rule.id, event.target.value)} className="bg-white border border-dashed border-slate-300 text-xs text-slate-600 rounded-lg px-2 py-1.5 cursor-pointer max-w-full">
+                                      <option value="">+ Add form...</option>
+                                      {remaining.map(key => <option key={key} value={key}>{formLabel(key)}</option>)}
+                                    </select>
+                                  )}
+                                  {!rule.forms.length && remaining.length === 0 && <span className="text-[11px] text-slate-400">Remove an existing form assignment first</span>}
+                                </div>
+
+                                <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+                                  {(['sendTo', 'cc', 'bcc'] as const).map(field => {
+                                    const kind = field === 'sendTo' ? 'TO' : field.toUpperCase();
+                                    const hint = field === 'sendTo' ? 'Primary recipients' : field === 'cc' ? 'Carbon copy (optional)' : 'Blind carbon copy (optional)';
+                                    return (
+                                      <label key={field} className="flex flex-col gap-1.5 rounded-xl p-3 border border-slate-200 bg-white min-w-0">
+                                        <span className="font-extrabold text-[10px] uppercase tracking-wider text-slate-900">{kind} <span className="font-normal text-slate-500 normal-case tracking-normal">{hint}</span></span>
+                                        <input type="text" autoComplete="off" value={rule[field] || ''} onChange={event => updateRule(rule.id, field, event.target.value)} placeholder="Leave empty to omit" className="w-full box-border rounded-lg px-3 py-2 bg-white border border-slate-200 text-xs font-mono text-slate-900 outline-none focus:border-primary" />
+                                        <span className="text-[10px] text-slate-400">Multiple addresses: comma or semicolon separated</span>
+                                      </label>
+                                    );
+                                  })}
+                                </div>
+                                {!rule.sendTo.trim() && !rule.cc.trim() && !rule.bcc.trim() && (
+                                  <p className="text-[11px] font-medium text-amber-700 m-0">No email recipients entered. These forms will not send an admin notification until an address is configured.</p>
+                                )}
+                              </div>
+                            ))}
                           </div>
+                          {remaining.length > 0 && <p className="text-xs text-slate-500 mb-0">{remaining.length} form(s) are not assigned to any email routing rule and will not receive an admin notification.</p>}
                         </div>
                       );
                     })()}
@@ -4595,19 +4647,21 @@ export default function AdminSettingsPage() {
                           </label>
                           <span className="text-[10px] font-bold bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">Smart Tags Enabled</span>
                         </div>
-                        <p className="text-[11px] text-slate-500 m-0">Use [subject] or [name] as dynamic smart tags in subject.</p>
+                        <p className="text-[11px] text-slate-500 m-0">Use [form_name] for the submitted form, and [name] for the submitter. If omitted, the form name is added automatically. Example: [form_name] | New Enquiry.</p>
                         <input
                           type="text"
                           value={emailConfigs.emailSubjectLine}
                           onChange={(e) => setEmailConfigs({ ...emailConfigs, emailSubjectLine: e.target.value })}
                           className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 font-bold text-slate-800 shadow-2xs mt-1"
                         />
+                        <div className="text-[11px] bg-primary text-white rounded-xl px-3 py-2 mt-2" role="status">Subject preview: {resolveSubmissionSubject(emailConfigs.emailSubjectLine, 'Get a Free Quote Form', { name: 'Customer' })}</div>
+
                       </div>
 
                       {/* From Name */}
                       <div className="flex flex-col gap-1.5 bg-slate-50/70 p-4 rounded-2xl border border-slate-200/60 hover:border-slate-300 transition-colors">
                         <label className="font-extrabold text-xs text-slate-900 uppercase tracking-wide">FROM NAME</label>
-                        <p className="text-[11px] text-slate-500 m-0">Display sender name shown to email recipients.</p>
+                        <p className="text-[11px] text-slate-500 m-0">Sender display name. MAIL_FROM_NAME in .env takes priority when set.</p>
                         <input
                           type="text"
                           value={emailConfigs.fromName}
@@ -4619,7 +4673,7 @@ export default function AdminSettingsPage() {
                       {/* From Email */}
                       <div className="flex flex-col gap-1.5 bg-slate-50/70 p-4 rounded-2xl border border-slate-200/60 hover:border-slate-300 transition-colors">
                         <label className="font-extrabold text-xs text-slate-900 uppercase tracking-wide">FROM EMAIL</label>
-                        <p className="text-[11px] text-slate-500 m-0">Must match authenticated sender address.</p>
+                        <p className="text-[11px] text-slate-500 m-0">Authenticated sender is selected on the server. MAIL_FROM_EMAIL in .env overrides this field; any alias must be approved by your SMTP provider.</p>
                         <input
                           type="email"
                           value={emailConfigs.fromEmail}
@@ -4631,7 +4685,7 @@ export default function AdminSettingsPage() {
                       {/* Reply-To Email */}
                       <div className="flex flex-col gap-1.5 bg-slate-50/70 p-4 rounded-2xl border border-slate-200/60 hover:border-slate-300 transition-colors md:col-span-2">
                         <label className="font-extrabold text-xs text-slate-900 uppercase tracking-wide">REPLY-TO EMAIL ADDRESS</label>
-                        <p className="text-[11px] text-slate-500 m-0">When admin clicks Reply in their inbox, email goes here. Leave blank to use submitter&apos;s email address.</p>
+                        <p className="text-[11px] text-slate-500 m-0">MAIL_REPLY_TO in .env takes priority. Leave blank to use the submitter email as Reply-To for admin messages.</p>
                         <input
                           type="email"
                           value={emailConfigs.replyTo}
@@ -4643,66 +4697,68 @@ export default function AdminSettingsPage() {
                   </div>
 
                   {/* ── SMTP Environment Connection (.env Configured) Card ── */}
-                  <div className="p-6 lg:p-7 rounded-3xl bg-gradient-to-r from-[#071814] via-[#0E2C24] to-primary text-white border border-[#DB9E30]/30 shadow-xl relative overflow-hidden">
+                  <div className="p-6 lg:p-7 rounded-3xl bg-gradient-to-r from-[#020e43] via-[#102e74] to-[#020e43] text-white border border-[#b50007]/40 shadow-xl relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-red opacity-10 rounded-full blur-3xl pointer-events-none" />
 
                     <div className="relative z-10 flex flex-col gap-5">
-                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-emerald-500/20 pb-4">
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-white/20 pb-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-2xl bg-red/20 border border-[#DB9E30]/40 flex items-center justify-center text-xl shadow-xs">
+                          <div className="w-10 h-10 rounded-2xl bg-red/20 border border-[#b50007]/40 flex items-center justify-center text-xl shadow-xs">
                             ⚡
                           </div>
                           <div>
                             <h4 className="text-base font-extrabold text-white uppercase tracking-wider m-0 flex items-center gap-2">
                               SMTP MAIL SERVER CONNECTION (.env CONFIGURED)
                             </h4>
-                            <p className="text-xs text-emerald-100/70 mt-0.5 mb-0">Real-time email dispatch engine powered securely via server environment variables.</p>
+                            <p className="text-xs text-white/70 mt-0.5 mb-0">Real-time email dispatch engine powered securely via server environment variables.</p>
                           </div>
                         </div>
 
-                        <span className="text-xs font-extrabold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 flex items-center gap-1.5 shadow-2xs">
-                          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" /> ● Active via .env File
+                        <span className="text-xs font-extrabold px-3 py-1 rounded-full bg-primary/20 text-white border border-white/25 flex items-center gap-1.5 shadow-2xs">
+                          <span className="w-2 h-2 rounded-full bg-white" /> {mailRuntimeStatus?.configured ? "Configured (delivery not tested)" : mailRuntimeStatus ? "Configuration incomplete" : "Checking configuration"}
                         </span>
                       </div>
 
+                      {mailRuntimeStatus && !mailRuntimeStatus.configured && <p role="alert" className="text-xs text-amber-200 m-0">Not available or invalid in this running Node.js process: {mailRuntimeStatus.issues.join(', ')}. Set the variables in the deployed application environment (not just in your local .env), then restart or redeploy. The email password is never displayed.</p>}
+                      <p className="text-[11px] text-white/70 m-0">Last checked: {mailRuntimeStatus?.checkedAt ? new Date(mailRuntimeStatus.checkedAt).toLocaleTimeString() : '—'} · Configuration checks do not test SMTP authentication or deliverability.</p>
                       {/* Active .env Configuration Parameters Grid */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-1">
-                        <div className="p-3.5 rounded-2xl bg-[#051410]/70 border border-emerald-500/20 backdrop-blur-md">
+                        <div className="p-3.5 rounded-2xl bg-[#07173c]/70 border border-white/20 backdrop-blur-md">
                           <span className="text-[10px] font-extrabold text-red uppercase tracking-widest block mb-1">
                             SMTP SERVER HOST
                           </span>
                           <span className="text-xs font-mono font-bold text-white block truncate">
-                            smtp.hostinger.com
+                            {mailRuntimeStatus?.host || "Not configured"}
                           </span>
                           <span className="text-[10px] text-ink-lt mt-0.5 block">Configured in process.env.SMTP_HOST</span>
                         </div>
 
-                        <div className="p-3.5 rounded-2xl bg-[#051410]/70 border border-emerald-500/20 backdrop-blur-md">
+                        <div className="p-3.5 rounded-2xl bg-[#07173c]/70 border border-white/20 backdrop-blur-md">
                           <span className="text-[10px] font-extrabold text-red uppercase tracking-widest block mb-1">
                             PORT &amp; ENCRYPTION
                           </span>
-                          <span className="text-xs font-mono font-bold text-emerald-300 block">
-                            Port 465 (SSL/TLS)
+                          <span className="text-xs font-mono font-bold text-white block">
+                            {mailRuntimeStatus?.port ? `${mailRuntimeStatus.port} (${mailRuntimeStatus.encryption})` : "Not configured"}
                           </span>
                           <span className="text-[10px] text-ink-lt mt-0.5 block">Configured in process.env.SMTP_PORT</span>
                         </div>
 
-                        <div className="p-3.5 rounded-2xl bg-[#051410]/70 border border-emerald-500/20 backdrop-blur-md">
+                        <div className="p-3.5 rounded-2xl bg-[#07173c]/70 border border-white/20 backdrop-blur-md">
                           <span className="text-[10px] font-extrabold text-red uppercase tracking-widest block mb-1">
                             AUTHENTICATED ACCOUNT
                           </span>
                           <span className="text-xs font-mono font-bold text-white block truncate">
-                            no-reply@digitalkonnecter.com
+                            {mailRuntimeStatus?.user || "Not configured"}
                           </span>
                           <span className="text-[10px] text-ink-lt mt-0.5 block">Configured in process.env.SMTP_USER</span>
                         </div>
 
-                        <div className="p-3.5 rounded-2xl bg-[#051410]/70 border border-emerald-500/20 backdrop-blur-md">
+                        <div className="p-3.5 rounded-2xl bg-[#07173c]/70 border border-white/20 backdrop-blur-md">
                           <span className="text-[10px] font-extrabold text-red uppercase tracking-widest block mb-1">
                             SECURITY MODE
                           </span>
-                          <span className="text-xs font-mono font-bold text-emerald-300 block">
-                            🔒 Environment Protected
+                          <span className="text-xs font-mono font-bold text-white block">
+                            {mailRuntimeStatus?.passwordConfigured ? "🔒 Password present" : "Password not configured"}
                           </span>
                           <span className="text-[10px] text-ink-lt mt-0.5 block">Password secured in .env</span>
                         </div>
@@ -4773,7 +4829,7 @@ export default function AdminSettingsPage() {
                         ✉️ EMAIL TEMPLATE CONFIGURATION
                       </h3>
                       <p className="text-xs text-slate-500 mt-0.5 mb-0">
-                        Select and preview responsive HTML notification templates for each of British Hajj Travel&apos;s 11 configured form subjects.
+                        Edit one responsive email template shared across every form. The form name and submitted fields are inserted automatically.
                       </p>
                     </div>
 
@@ -4781,9 +4837,7 @@ export default function AdminSettingsPage() {
                       <button
                         type="button"
                         onClick={() => {
-                          const html = DEFAULT_EMAIL_TEMPLATES[selectedTemplateSubject];
-                          setEmailTemplateHtml(html);
-                          setEmailTemplates((prev) => ({ ...prev, [selectedTemplateSubject]: html }));
+                          setEmailTemplateHtml(getEditableEmailTemplateHtml());
                         }}
                         className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl border border-slate-200 transition-colors cursor-pointer flex items-center gap-1.5"
                       >
@@ -4802,51 +4856,22 @@ export default function AdminSettingsPage() {
                     </div>
                   </div>
 
-                  {/* ── All configured form subject template switchers ── */}
-                  <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-2xs flex flex-col gap-2.5">
-                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">
-                      SELECT FORM SUBJECT TEMPLATE
-                    </span>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-2">
-                      {CANONICAL_FORM_SUBJECTS.map((subject) => {
-                        const isSelected = selectedTemplateSubject === subject;
-                        const iconMap: Record<CanonicalFormSubject, string> = {
-                          'Get a Free Quote Form': '🏠',
-                          'Umrah Package Booking Form': '📊',
-                          'Hajj Package Booking Form': '🕋',
-                          'Hajj Customize Form': '🕋',
-                          'Contact Inquiry Form': '💬',
-                          'Package Inquiry Form': '📦',
-                          'Visa Consultation Form': '🛂',
-                          'Umrah Visa Order Form': '🛂',
-                          'Flights Booking Inquiry Form': '✈️',
-                          'Drop Us A Message Form': '📬',
-                          'Blog Detail Page': '📝',
-                        };
-
-                        return (
-                          <button
-                            key={subject}
-                            type="button"
-                            onClick={() => {
-                              const nextTemplates = { ...emailTemplates, [selectedTemplateSubject]: emailTemplateHtml };
-                              setEmailTemplates(nextTemplates);
-                              setSelectedTemplateSubject(subject);
-                              setEmailTemplateHtml(nextTemplates[subject] || DEFAULT_EMAIL_TEMPLATES[subject]);
-                            }}
-                            className={`p-3 rounded-2xl text-left border transition-all cursor-pointer flex flex-col gap-1.5 ${isSelected
-                              ? 'bg-primary text-white border-primary shadow-md ring-2 ring-primary/30'
-                              : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
-                              }`}
-                          >
-                            <span className="text-base">{iconMap[subject]}</span>
-                            <span className="text-xs font-extrabold leading-tight">
-                              {subject}
-                            </span>
-                          </button>
-                        );
-                      })}
+                  {/* One editable template; this selector only demonstrates different sample submissions. */}
+                  <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-700">ONE MASTER EMAIL TEMPLATE</span>
+                      <p className="text-xs text-slate-500 mt-1 mb-0">Applied automatically to every enquiry and booking form. Preview selection does not create separate templates.</p>
                     </div>
+                    <label className="flex items-center gap-2 text-xs font-semibold text-slate-700">
+                      Preview sample form
+                      <select
+                        value={previewForm}
+                        onChange={(event) => setPreviewForm(event.target.value as CanonicalFormSubject)}
+                        className="bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-slate-800 max-w-[260px]"
+                      >
+                        {CANONICAL_FORM_SUBJECTS.map((name) => <option key={name} value={name}>{name}</option>)}
+                      </select>
+                    </label>
                   </div>
 
                   {/* Live Code Editor & Real-Time Preview Panels */}
@@ -4857,7 +4882,7 @@ export default function AdminSettingsPage() {
                         <span className="flex items-center gap-2">
                           <span>&lt;/&gt; HTML EDITOR</span>
                           <span className="text-[10px] font-mono text-red bg-red/10 px-2 py-0.5 rounded-full border border-red/30">
-                            {selectedTemplateSubject}
+                            Master Template
                           </span>
                         </span>
                         <span className="text-[10px] text-emerald-400">Live Code Mode</span>
@@ -4868,7 +4893,7 @@ export default function AdminSettingsPage() {
                       <textarea
                         rows={18}
                         value={emailTemplateHtml}
-                        onChange={(e) => { const value = e.target.value; setEmailTemplateHtml(value); setEmailTemplates((prev) => ({ ...prev, [selectedTemplateSubject]: value })); }}
+                        onChange={(e) => setEmailTemplateHtml(e.target.value)}
                         className="w-full bg-transparent font-sans text-xs !text-white outline-none resize-y leading-relaxed border-none focus:ring-0"
                       />
                     </div>
@@ -4881,12 +4906,13 @@ export default function AdminSettingsPage() {
                           REAL-TIME EMAIL TEMPLATE PREVIEW
                         </span>
                         <span className="text-[11px] font-extrabold text-primary">
-                          Subject: {selectedTemplateSubject}
+                          Preview: {previewForm}
                         </span>
                       </div>
                       <div className="bg-slate-100 p-4 rounded-2xl border border-slate-200 min-h-[420px] overflow-auto">
                         <iframe
-                          srcDoc={emailTemplateHtml}
+                          srcDoc={renderSharedEmailTemplateHtml(emailTemplateHtml, previewForm, FORM_SAMPLE_DATA[previewForm], false) || '<p style="font:14px Arial;padding:24px">Include {{FORM_NAME}} and {{SUBMISSION_ROWS}} to enable live preview.</p>'}
+                          sandbox=""
                           title="Email Template Preview"
                           className="w-full h-[400px] border-none rounded-xl bg-white shadow-sm"
                         />

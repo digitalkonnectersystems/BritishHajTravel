@@ -8,9 +8,8 @@ export const MAX_OPTIMIZED_BYTES = 100 * 1024 - 1;
 export const MEDIA_FOLDERS = new Set(['badges','banners','blogs','branding','brochures','destinations','flights','hotels','logos','packages','sections','social','umrah','uploads']);
 const EXTENSIONS = new Set(['.jpg','.jpeg','.png','.webp','.gif','.ico','.avif','.pdf','.mp4','.mov','.webm','.svg']);
 export function getMediaRoot() {
-  const env = process.env.MEDIA_STORAGE_ROOT;
-  if (env && !path.isAbsolute(env)) throw new Error('MEDIA_STORAGE_ROOT must be absolute');
-  return env ? path.resolve(env) : path.join(process.cwd(), 'public', 'images_BHT');
+  const env = process.env.MEDIA_STORAGE_ROOT?.trim();
+  return env ? path.resolve(process.cwd(), env) : path.join(process.cwd(), 'public', 'images_BHT');
 }
 export function getMediaDirectories() {
   const root = getMediaRoot();

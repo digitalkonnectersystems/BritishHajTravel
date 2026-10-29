@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation';
 import { getPageBySlug } from "@/actions/pageActions";
 import Link from "next/link";
 import PageBanner from "@/components/PageBanner";
@@ -81,6 +82,7 @@ function ProcessStepsSection({ data }: { data?: any }) {
 
 export default async function SaudiVisaPage() {
   const pageData = await getPageBySlug("/saudi-visa");
+  if (pageData?.status === 'draft') notFound();
   const heroSettings = pageData?.seoSettings
     ? (typeof pageData.seoSettings === 'string' ? JSON.parse(pageData.seoSettings) : pageData.seoSettings)?.saudiVisaHero
     : null;

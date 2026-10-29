@@ -6,6 +6,7 @@ import { TicketPercent, Calendar } from "lucide-react";
 import { submitPackageBookingEnquiryAction } from "@/actions/enquiryActions";
 import { getPackagesByType } from "@/actions/packageActions";
 import SubmissionSuccessModal from "@/components/SubmissionSuccessModal";
+import { FORM_SUCCESS_MESSAGE } from "@/lib/formSuccess";
 
 const MONTH_NAMES = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -225,7 +226,7 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
       setSelectedPackageType("");
       setSelectedDate("");
 
-      setModalMsg(res.message || "Your inquiry has been submitted.");
+      setModalMsg(`${FORM_SUCCESS_MESSAGE}${res.emailWarning ? ` ${res.emailWarning}` : ""}`);
       setModalRef(res.bookingNumber || "");
       setModalOpen(true);
     } else {

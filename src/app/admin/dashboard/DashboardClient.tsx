@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { getDashboardRealtimeAction, getDashboardRecentEnquiriesAction } from '@/actions/dashboardRealtimeActions';
+import { getRecentActivities } from '@/actions/activityActions';
 import Link from 'next/link';
 import DashboardSeoCenterSection from '@/components/admin/DashboardSeoCenterSection';
 import RealtimeAnalytics from '@/components/admin/RealtimeAnalytics';
@@ -110,25 +111,38 @@ export default function DashboardClient({
 }: DashboardClientProps) {
   const [timeRange, setTimeRange] = useState<'Today' | '7 Days' | '30 Days'>('Today');
   const [filterMenuOpen, setFilterMenuOpen] = useState(false);
-  const router = useRouter();
-
-  // Keep dashboards reasonably current without rendering the entire admin
-  // server component tree on every background tab every 15 seconds.
-  useEffect(() => {
-    const refreshIfVisible = () => {
-      if (document.visibilityState === 'visible') router.refresh();
-    };
-    const intervalId = window.setInterval(refreshIfVisible, 120000);
-    document.addEventListener('visibilitychange', refreshIfVisible);
-    return () => {
-      window.clearInterval(intervalId);
-      document.removeEventListener('visibilitychange', refreshIfVisible);
-    };
-  }, [router]);
-
-  // Every chart derives from the same database snapshot as the live KPI row.
   const [liveSnapshot, setLiveSnapshot] = useState<AnalyticsSnapshot | null>(initialRealtime);
+  const [recentEnquiries, setRecentEnquiries] = useState(initialEnquiries);
+  const [recentActivities, setRecentActivities] = useState(initialActivities);
   useEffect(() => setLiveSnapshot(initialRealtime), [initialRealtime]);
+  useEffect(() => setRecentEnquiries(initialEnquiries), [initialEnquiries]);
+  useEffect(() => setRecentActivities(initialActivities), [initialActivities]);
+
+  // Update the KPI/chart snapshot and recent activity without navigating or reloading.
+  useEffect(() => {
+    let active = true;
+    let inFlight = false;
+    const sync = async () => {
+      if (!active || inFlight || document.visibilityState !== 'visible') return;
+      inFlight = true;
+      try {
+        const canReadEnquiries = ['super_admin', 'admin', 'enquiry_manager'].includes(session?.role);
+        const [snapshot, enquiries, activities] = await Promise.all([
+          getDashboardRealtimeAction(),
+          canReadEnquiries ? getDashboardRecentEnquiriesAction() : Promise.resolve([]),
+          getRecentActivities(10),
+        ]);
+        if (!active) return;
+        setLiveSnapshot(snapshot);
+        setRecentEnquiries(enquiries);
+        setRecentActivities(activities);
+      } catch (error) { console.error('Dashboard live update failed', error); }
+      finally { inFlight = false; }
+    };
+    const intervalId = window.setInterval(() => void sync(), 30000);
+    document.addEventListener('visibilitychange', sync);
+    return () => { active = false; window.clearInterval(intervalId); document.removeEventListener('visibilitychange', sync); };
+  }, [session?.role]);
   const counts = liveSnapshot?.counts;
   const enquiryTypes = liveSnapshot?.enquiryTypes || {};
   const umrahCount = counts?.umrah ?? initialPackages.filter(p => p.type === 'umrah').length;
@@ -224,7 +238,7 @@ export default function DashboardClient({
           <DistributionWaveCard
             title="Forms Enquiries by Type"
             subtitle="Current breakdown by enquiry type in the unified CRM table"
-            totalCount={counts?.enquiries ?? initialEnquiries.length}
+            totalCount={counts?.enquiries ?? recentEnquiries.length}
             totalLabel="Total"
             badgeText="Queries"
             badgeBg="bg-blue-50 text-blue-700 border border-blue-200"
@@ -294,7 +308,7 @@ export default function DashboardClient({
               </Link>
             </div>
 
-            {initialEnquiries.length === 0 ? (
+            {recentEnquiries.length === 0 ? (
               <div className="py-8 text-center text-slate-500 text-xs">No recent enquiry rows available. Check migration status if the KPI total is non-zero.</div>
             ) : (
               <div className="overflow-x-auto">
@@ -309,7 +323,7 @@ export default function DashboardClient({
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-50">
-                    {initialEnquiries.slice(0, 5).map((e) => (
+                    {recentEnquiries.slice(0, 5).map((e) => (
                       <tr key={e.id} className="hover:bg-slate-50/60 transition-colors">
                         <td className="py-3 font-mono font-bold text-amber-600 text-[11px]">
                           {e.enquiryNumber}
@@ -388,12 +402,12 @@ export default function DashboardClient({
 
             {/* Activity List */}
             <div className="flex flex-col gap-3 max-h-[300px] overflow-y-auto pr-1">
-              {initialActivities.length === 0 ? (
+              {recentActivities.length === 0 ? (
                 <div className="p-6 text-center text-xs text-slate-400 bg-white/70 rounded-2xl border border-slate-200/60">
                   No activity log entries yet. Administrative actions will appear here in real-time.
                 </div>
               ) : (
-                initialActivities.slice(0, 6).map((act) => {
+                recentActivities.slice(0, 6).map((act) => {
                   const cfg = TYPE_CONFIG[act.type] || TYPE_CONFIG.pages;
                   return (
                     <div key={act.id} className="flex items-start gap-2.5 p-2.5 rounded-xl bg-white/90 border border-slate-200/60 shadow-2xs">

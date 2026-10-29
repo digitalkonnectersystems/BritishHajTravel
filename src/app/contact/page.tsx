@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation';
 import ContactPageClient from "./ContactPageClient";
 import { getPageBySlug, getFormsSettings } from "@/actions/pageActions";
 import type { Metadata } from "next";
@@ -13,6 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ContactPage() {
   const pageData = await getPageBySlug('/contact');
+  if (pageData?.status === 'draft') notFound();
   const formsConfig = await getFormsSettings();
   const contactFormConfig = formsConfig?.contact || null;
 
