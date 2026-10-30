@@ -1,4 +1,5 @@
 "use client";
+import { filterSectionPackages } from "@/lib/sectionPackageSelection";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -7,6 +8,7 @@ import PackageBookingModal from "@/components/PackageBookingModal";
 import PackageDetailModal from "@/components/PackageDetailModal";
 import { isTbcPrice } from "@/lib/priceDisplay";
 import HajjLandscapeCard from "@/components/HajjLandscapeCard";
+import { isPackageCardVisible, isAccommodationVisible } from "@/lib/packageCardVisibility";
 export default function HajjPackagesSection({
   data,
   initialPackages,
@@ -18,16 +20,18 @@ export default function HajjPackagesSection({
 }) {
   const pathname = usePathname();
   const eyebrow = data?.eyebrow || "LUXURY HAJJ PACKAGES";
-  const title = data?.title || "Hajj Packages 2027";
+  const title = data?.title || "Hajj Packages";
   const description =
     data?.description ||
     data?.subtext ||
-    "Luxury Hajj 2027 Packages with 5-Star Hotels, VIP Services & Complete Spiritual Guidance.";
+    "";
   const isHajjListingPage =
     pathname === "/hajj-packages" ||
+    pathname === "/nusuk-hajj-packages" ||
     pathname === "/hajj" ||
     pathname?.startsWith("/hajj") ||
     pageData?.slug === "/hajj-packages" ||
+    pageData?.slug === "/nusuk-hajj-packages" ||
     pageData?.slug === "hajj-packages";
   const isHomepage =
     pathname === "/" ||
@@ -39,6 +43,7 @@ export default function HajjPackagesSection({
     pageData?.slug === "home" ||
     (!isHajjListingPage && (!pathname || pathname === "/"));
   const [pkgs, setPkgs] = useState<any[]>(initialPackages || []);
+  const visiblePkgs = filterSectionPackages(pkgs, data, "hajj");
   const [loading, setLoading] = useState(!initialPackages);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [selectedPkgForBooking, setSelectedPkgForBooking] = useState<any>(null);
@@ -46,6 +51,12 @@ export default function HajjPackagesSection({
   const [selectedPkgForDetail, setSelectedPkgForDetail] = useState<any>(null);
   useEffect(() => {
     const packageIds = data?.packageIds || [];
+    if (isHajjListingPage) {
+      if (initialPackages) { setPkgs(initialPackages); setLoading(false); return; }
+      setLoading(true);
+      getPackagesByType("hajj").then(setPkgs).catch(() => setPkgs([])).finally(() => setLoading(false));
+      return;
+    }
     if (data?.isDestinationSection && initialPackages) {
       setPkgs(initialPackages);
       setLoading(false);
@@ -69,7 +80,7 @@ export default function HajjPackagesSection({
         .catch(() => setPkgs([]))
         .finally(() => setLoading(false));
     }
-  }, [data?.packageIds, initialPackages]);
+  }, [data?.packageIds, initialPackages, isHajjListingPage]);
   // One-card-at-a-time horizontal carousel. All cards retain their React state
   // when they move, including the independent hotel navigation inside each card.
   const sliderRef = useRef<HTMLDivElement>(null);
@@ -89,15 +100,15 @@ export default function HajjPackagesSection({
     const canGoNext = slider.scrollLeft < maxScroll - 2;
     setSliderControls((previous) =>
       previous.hasOverflow === hasOverflow &&
-      previous.canGoPrevious === canGoPrevious &&
-      previous.canGoNext === canGoNext
+        previous.canGoPrevious === canGoPrevious &&
+        previous.canGoNext === canGoNext
         ? previous
         : { hasOverflow, canGoPrevious, canGoNext }
     );
   }, []);
 
   useEffect(() => {
-    if (loading || pkgs.length === 0) return;
+    if (!isHomepage || loading || visiblePkgs.length === 0) return;
     const slider = sliderRef.current;
     if (!slider) return;
 
@@ -116,7 +127,7 @@ export default function HajjPackagesSection({
 
     window.addEventListener("resize", updateSliderControls);
     return () => window.removeEventListener("resize", updateSliderControls);
-  }, [loading, pkgs, updateSliderControls]);
+  }, [loading, visiblePkgs.length, isHomepage, updateSliderControls]);
 
   const slideOnePackage = (direction: -1 | 1) => {
     const slider = sliderRef.current;
@@ -148,7 +159,7 @@ export default function HajjPackagesSection({
     <section className={sectionClass}>
       <div className="max-w-[1400px] mx-auto px-5">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-12 gap-6 text-center md:text-left">
+        <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-6 gap-6 text-center md:text-left">
           <div className="flex flex-col items-center md:items-start">
             <h3 className="eyebrow">{eyebrow}</h3>
             <h2 className="section-heading text-primary">{title}</h2>
@@ -178,196 +189,200 @@ export default function HajjPackagesSection({
           </div>
         )}
         {/* No packages configured */}
-        {!loading && pkgs.length === 0 && (
+        {!loading && visiblePkgs.length === 0 && (
           <p className="text-center text-primary">
             No Hajj packages added to this section yet.
           </p>
         )}
         {/* Four visible on desktop, sliding exactly one package per click. */}
-        {!loading && pkgs.length > 0 && (
+        {!loading && visiblePkgs.length > 0 && (
           <div className="relative">
             <div
-              ref={sliderRef}
-              role="region"
-              aria-roledescription="carousel"
+              ref={isHomepage ? sliderRef : undefined}
+              role={isHomepage ? "region" : undefined}
+              aria-roledescription={isHomepage ? "carousel" : undefined}
               aria-label="Hajj packages"
               tabIndex={0}
-              onScroll={updateSliderControls}
-              className="flex items-stretch gap-5 overflow-x-auto overscroll-x-contain snap-x snap-mandatory xl:gap-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              onScroll={isHomepage ? updateSliderControls : undefined}
+              className={isHomepage ? "flex items-stretch gap-5 overflow-x-auto overscroll-x-contain snap-x snap-mandatory xl:gap-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" : "grid grid-cols-1 items-stretch gap-5 md:grid-cols-2 xl:grid-cols-4"}
             >
-              {pkgs.map((pkg: any, idx: number) => {
-              let cd = pkg.cardData || {};
-              if (typeof cd === 'string') {
-                try {
-                  cd = JSON.parse(cd);
-                } catch (e) {
-                  cd = {};
+              {visiblePkgs.map((pkg: any, idx: number) => {
+                let cd = pkg.cardData || {};
+                if (typeof cd === 'string') {
+                  try {
+                    cd = JSON.parse(cd);
+                  } catch (e) {
+                    cd = {};
+                  }
                 }
-              }
-              let detailData = pkg.detailPageData || {};
-              if (typeof detailData === "string") {
-                try {
-                  detailData = JSON.parse(detailData);
-                } catch {
-                  detailData = {};
+                let detailData = pkg.detailPageData || {};
+                if (typeof detailData === "string") {
+                  try {
+                    detailData = JSON.parse(detailData);
+                  } catch {
+                    detailData = {};
+                  }
                 }
-              }
-              const heroImage =
-                cd.bannerImage ||
-                pkg.image ||
-                pkg.featuredImage ||
-                pkg.heroImage ||
-                "/uploads/sections/hajj_1.jpg";
-              const cleanText = (value: unknown) => String(value ?? "").trim();
-              const titleCandidate = String(
-                pkg.title || pkg.packageTitle || cd.packageTitle || ""
-              ).trim();
-              const packageTitle = data?.isDestinationSection && titleCandidate.length < 2
-                ? cleanText(pkg.destinationTitle)
-                : titleCandidate || cleanText(pkg.destinationTitle);
-              const badgeTag = cleanText(cd.badgeTag || pkg.badgeTag || data?.badgeTag || pkg.destinationTitle);
-              const duration = cleanText(cd.duration || pkg.badgeDuration || (pkg.durationDays ? `${pkg.durationDays} Days` : ""));
-              const flightRoute = cleanText(cd.flightRoute || pkg.flightRoute);
-              const operatorName = cleanText(cd.operatorName || pkg.operatorName);
-              const operatorRating = cleanText(cd.operatorRating || pkg.operatorRating);
-              const priceSubtext = cleanText(cd.priceSubtext || pkg.priceSubtext);
-              const packageCode = cleanText(
-                cd.packageCode || pkg.packageCode || detailData.packageCode
-              );
-              const quadPrice = Array.isArray(cd.packagePrices) ? cd.packagePrices.find((item: any) => /quad/i.test(item.packageType || item.type || "")) : null;
-              const price = isTbcPrice(pkg.startingPrice, quadPrice?.priceStatus)
-                ? "TBC"
-                : pkg.startingPrice
-                ? Number(pkg.startingPrice).toLocaleString("en-CA", {
-                  minimumFractionDigits: 0,
-                  maximumFractionDigits: 0,
-                })
-                : cleanText(pkg.price || cd.price);
-              const makkahHotel = cd.makkahHotel || pkg.makkahHotel;
-              const madinahHotel = cd.madinahHotel || pkg.madinahHotel;
-              const aziziyaHotel = cd.aziziyaHotel || pkg.aziziyaHotel;
-              const minaHotel = cd.minaHotel || pkg.minaHotel;
-              const isDurEnabled = (h: any) => {
-                if (!h) return false;
-                if (h.durationEnabled === false || h.enabled === false) return false;
-                return true;
-              };
-              const isBadgeEnabled = (h: any) => {
-                if (!h) return false;
-                if (h.badgeEnabled === false) return false;
-                return true;
-              };
-              const defaultAccommodations = [
-                {
-                  city: makkahHotel?.label || 'MAKKAH',
-                  subtitle: makkahHotel?.name || '',
-                  location: makkahHotel?.location || '',
-                  badge: makkahHotel?.badge || '',
-                  badgeIcon: makkahHotel?.badgeIcon || '',
-                  badgeEnabled: isBadgeEnabled(makkahHotel),
-                  nights: makkahHotel?.nights || '',
-                  image: makkahHotel?.image || '',
-                  durationEnabled: isDurEnabled(makkahHotel),
-                },
-                {
-                  city: madinahHotel?.label || 'MADINA',
-                  subtitle: madinahHotel?.name || '',
-                  location: madinahHotel?.location || '',
-                  badge: madinahHotel?.badge || '',
-                  badgeIcon: madinahHotel?.badgeIcon || '',
-                  badgeEnabled: isBadgeEnabled(madinahHotel),
-                  nights: madinahHotel?.nights || '',
-                  image: madinahHotel?.image || '',
-                  durationEnabled: isDurEnabled(madinahHotel),
-                },
-                {
-                  city: aziziyaHotel?.label || 'AZIZIYA',
-                  subtitle: aziziyaHotel?.name || '',
-                  location: aziziyaHotel?.location || '',
-                  badge: aziziyaHotel?.badge || '',
-                  badgeIcon: aziziyaHotel?.badgeIcon || '',
-                  badgeEnabled: isBadgeEnabled(aziziyaHotel),
-                  nights: aziziyaHotel?.nights || '',
-                  image: aziziyaHotel?.image || '',
-                  durationEnabled: isDurEnabled(aziziyaHotel),
-                },
-                {
-                  city: minaHotel?.label || 'MINA',
-                  subtitle: minaHotel?.name || '',
-                  location: minaHotel?.location || '',
-                  badge: minaHotel?.badge || '',
-                  badgeIcon: minaHotel?.badgeIcon || '',
-                  badgeEnabled: isBadgeEnabled(minaHotel),
-                  nights: minaHotel?.nights || '',
-                  image: minaHotel?.image || '',
-                  durationEnabled: isDurEnabled(minaHotel),
-                }
-              ].filter((acc) => {
-                // If fields are empty, do not display accommodation on frontend
-                return Boolean(acc.subtitle || acc.location || acc.image || (acc.durationEnabled && acc.nights) || (acc.badgeEnabled && acc.badge));
-              });
-              const inclusionsList = (Array.isArray(cd.inclusions)
-                ? cd.inclusions
-                : Array.isArray(pkg.inclusions) ? pkg.inclusions
-                : [
-                  { icon: 'Plane', text: 'Return\nAir Tickets' },
-                  { icon: 'FileCheck', text: 'Hajj Visa\nProcessing' },
-                  { icon: 'Bed', text: 'Comfortable\nAccommodation' },
-                  { icon: 'Utensils', text: 'All Meals\nIncluded' },
-                  { icon: 'Bus', text: 'Transport in\nSaudi Arabia' },
-                  { icon: 'MessageCircle', text: 'Guidance &\nSupport' },
-                ]).filter((inc: any) => cleanText(typeof inc === "string" ? inc : inc?.text));
-              const eligibilityList = (Array.isArray(cd.eligibility)
-                ? cd.eligibility
-                : Array.isArray(pkg.eligibility) ? pkg.eligibility
-                : [
-                  'British & U.S. citizens with Pakistani passports.',
-                  'Pakistani passport holders with British PR or American Green Card.',
-                  'All foreign passport holders with Pakistan passport.',
-                  'Side trip to Pakistan or any other destination available with an additional cost.',
-                ]).map(cleanText).filter(Boolean);
-              return (
-                <div
-                  key={pkg.id ?? `hajj-${idx}`}
-                  role="group"
-                  aria-roledescription="slide"
-                  aria-label={`Package ${idx + 1} of ${pkgs.length}`}
-                  className="w-full min-w-0 shrink-0 snap-start md:w-[calc(50%-0.625rem)] xl:w-[calc(25%-0.75rem)]"
-                >
-                  <HajjLandscapeCard
-                  heroImage={heroImage}
-                  packageTitle={packageTitle}
-                  badgeTag={data?.isDestinationSection ? "" : badgeTag}
-                  duration={duration}
-                  flightRoute={flightRoute}
-                  packageCode={packageCode}
-                  accommodations={defaultAccommodations}
-                  inclusions={inclusionsList}
-                  eligibility={eligibilityList}
-                  operatorName={operatorName}
-                  operatorRating={operatorRating}
-                  priceSubtext={priceSubtext}
-                  price={price}
-                  bookLabel={data?.isDestinationSection ? (cd.btnLabel || "Book Now") : (data?.buttonLabel || "BOOK NOW")}
-                  onViewDetail={() => {
-                    if (data?.isDestinationSection) {
-                      if (pkg.destinationSlug) window.location.href = `/destinations/${pkg.destinationSlug}`;
-                    } else if (pkg.slug) {
-                      window.location.href = `/${pkg.slug}`;
-                    } else if (pkg.btnLink) {
-                      window.location.href = pkg.btnLink;
-                    }
-                  }}
-                  onBook={() => {
-                    setSelectedPkgForBooking(pkg);
-                    setBookingModalOpen(true);
-                  }}
-                  />
-                </div>
-              );
+                const heroImage =
+                  cd.bannerImage ||
+                  pkg.image ||
+                  pkg.featuredImage ||
+                  pkg.heroImage ||
+                  "/uploads/sections/hajj_1.jpg";
+                const cleanText = (value: unknown) => String(value ?? "").trim();
+                const titleCandidate = String(
+                  pkg.title || pkg.packageTitle || cd.packageTitle || ""
+                ).trim();
+                const packageTitle = data?.isDestinationSection && titleCandidate.length < 2
+                  ? cleanText(pkg.destinationTitle)
+                  : titleCandidate || cleanText(pkg.destinationTitle);
+                const badgeTag = cleanText(cd.badgeTag || pkg.badgeTag || data?.badgeTag || pkg.destinationTitle);
+                const duration = cleanText(cd.duration || pkg.badgeDuration || (pkg.durationDays ? `${pkg.durationDays} Days` : ""));
+                const flightRoute = cleanText(cd.flightRoute || pkg.flightRoute);
+                const operatorName = cleanText(cd.operatorName || pkg.operatorName);
+                const operatorRating = cleanText(cd.operatorRating || pkg.operatorRating);
+                const priceSubtext = cleanText(cd.priceSubtext || pkg.priceSubtext);
+                const packageCode = cleanText(
+                  cd.packageCode || pkg.packageCode || detailData.packageCode
+                );
+                const quadPrice = Array.isArray(cd.packagePrices) ? cd.packagePrices.find((item: any) => /quad/i.test(item.packageType || item.type || "")) : null;
+                const price = isTbcPrice(pkg.startingPrice, quadPrice?.priceStatus)
+                  ? "TBC"
+                  : pkg.startingPrice
+                    ? Number(pkg.startingPrice).toLocaleString("en-CA", {
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 0,
+                    })
+                    : cleanText(pkg.price || cd.price);
+                const makkahHotel = cd.makkahHotel || pkg.makkahHotel;
+                const madinahHotel = cd.madinahHotel || pkg.madinahHotel;
+                const aziziyaHotel = cd.aziziyaHotel || pkg.aziziyaHotel;
+                const minaHotel = cd.minaHotel || pkg.minaHotel;
+                const isDurEnabled = (h: any) => {
+                  if (!h) return false;
+                  if (h.durationEnabled === false || h.enabled === false) return false;
+                  return true;
+                };
+                const isBadgeEnabled = (h: any) => {
+                  if (!h) return false;
+                  if (h.badgeEnabled === false) return false;
+                  return true;
+                };
+                const defaultAccommodations = [
+                  {
+                    isVisible: makkahHotel?.isVisible,
+                    city: makkahHotel?.label || 'MAKKAH',
+                    subtitle: makkahHotel?.name || '',
+                    location: makkahHotel?.location || '',
+                    badge: makkahHotel?.badge || '',
+                    badgeIcon: makkahHotel?.badgeIcon || '',
+                    badgeEnabled: isBadgeEnabled(makkahHotel),
+                    nights: makkahHotel?.nights || '',
+                    image: makkahHotel?.image || '',
+                    durationEnabled: isDurEnabled(makkahHotel),
+                  },
+                  {
+                    isVisible: madinahHotel?.isVisible,
+                    city: madinahHotel?.label || 'MADINA',
+                    subtitle: madinahHotel?.name || '',
+                    location: madinahHotel?.location || '',
+                    badge: madinahHotel?.badge || '',
+                    badgeIcon: madinahHotel?.badgeIcon || '',
+                    badgeEnabled: isBadgeEnabled(madinahHotel),
+                    nights: madinahHotel?.nights || '',
+                    image: madinahHotel?.image || '',
+                    durationEnabled: isDurEnabled(madinahHotel),
+                  },
+                  {
+                    isVisible: aziziyaHotel?.isVisible,
+                    city: aziziyaHotel?.label || 'AZIZIYA',
+                    subtitle: aziziyaHotel?.name || '',
+                    location: aziziyaHotel?.location || '',
+                    badge: aziziyaHotel?.badge || '',
+                    badgeIcon: aziziyaHotel?.badgeIcon || '',
+                    badgeEnabled: isBadgeEnabled(aziziyaHotel),
+                    nights: aziziyaHotel?.nights || '',
+                    image: aziziyaHotel?.image || '',
+                    durationEnabled: isDurEnabled(aziziyaHotel),
+                  },
+                  {
+                    isVisible: minaHotel?.isVisible,
+                    city: minaHotel?.label || 'MINA',
+                    subtitle: minaHotel?.name || '',
+                    location: minaHotel?.location || '',
+                    badge: minaHotel?.badge || '',
+                    badgeIcon: minaHotel?.badgeIcon || '',
+                    badgeEnabled: isBadgeEnabled(minaHotel),
+                    nights: minaHotel?.nights || '',
+                    image: minaHotel?.image || '',
+                    durationEnabled: isDurEnabled(minaHotel),
+                  }
+                ].filter((acc) => {
+                  // If fields are empty, do not display accommodation on frontend
+                  return isAccommodationVisible(acc) && Boolean(acc.subtitle || acc.location || acc.image || (acc.durationEnabled && acc.nights) || (acc.badgeEnabled && acc.badge));
+                });
+                const inclusionsList = (Array.isArray(cd.inclusions)
+                  ? cd.inclusions
+                  : Array.isArray(pkg.inclusions) ? pkg.inclusions
+                    : [
+                      { icon: 'Plane', text: 'Return\nAir Tickets' },
+                      { icon: 'FileCheck', text: 'Hajj Visa\nProcessing' },
+                      { icon: 'Bed', text: 'Comfortable\nAccommodation' },
+                      { icon: 'Utensils', text: 'All Meals\nIncluded' },
+                      { icon: 'Bus', text: 'Transport in\nSaudi Arabia' },
+                      { icon: 'MessageCircle', text: 'Guidance &\nSupport' },
+                    ]).filter((inc: any) => cleanText(typeof inc === "string" ? inc : inc?.text));
+                const eligibilityList = (Array.isArray(cd.eligibility)
+                  ? cd.eligibility
+                  : Array.isArray(pkg.eligibility) ? pkg.eligibility
+                    : [
+                      'British & U.S. citizens with Pakistani passports.',
+                      'Pakistani passport holders with British PR or American Green Card.',
+                      'All foreign passport holders with Pakistan passport.',
+                      'Side trip to Pakistan or any other destination available with an additional cost.',
+                    ]).map(cleanText).filter(Boolean);
+                return (
+                  <div
+                    key={pkg.id ?? `hajj-${idx}`}
+                    role="group"
+                    aria-roledescription="slide"
+                    aria-label={`Package ${idx + 1} of ${visiblePkgs.length}`}
+                    className={isHomepage ? "w-full min-w-0 shrink-0 snap-start md:w-[calc(50%-0.625rem)] xl:w-[calc(25%-0.75rem)]" : "min-w-0"}
+                  >
+                    <HajjLandscapeCard
+                      heroImage={heroImage}
+                      packageTitle={packageTitle}
+                      badgeTag={data?.isDestinationSection ? "" : badgeTag}
+                      duration={duration}
+                      flightRoute={flightRoute}
+                      packageCode={packageCode}
+                      accommodations={defaultAccommodations}
+                      inclusions={inclusionsList}
+                      eligibility={eligibilityList}
+                      operatorName={operatorName}
+                      operatorRating={operatorRating}
+                      priceSubtext={priceSubtext}
+                      price={price}
+                      bookLabel={data?.isDestinationSection ? (cd.btnLabel || "Book Now") : (data?.buttonLabel || "BOOK NOW")}
+                      onViewDetail={() => {
+                        if (data?.isDestinationSection) {
+                          if (pkg.destinationSlug) window.location.href = `/destinations/${pkg.destinationSlug}`;
+                        } else if (pkg.slug) {
+                          window.location.href = `/${pkg.slug}`;
+                        } else if (pkg.btnLink) {
+                          window.location.href = pkg.btnLink;
+                        }
+                      }}
+                      onBook={() => {
+                        setSelectedPkgForBooking(pkg);
+                        setBookingModalOpen(true);
+                      }}
+                    />
+                  </div>
+                );
               })}
             </div>
-            {sliderControls.hasOverflow && (
+            {isHomepage && sliderControls.hasOverflow && (
               <>
                 <button
                   type="button"

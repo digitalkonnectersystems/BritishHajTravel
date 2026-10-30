@@ -130,6 +130,11 @@ export default function DetailPageDataFields({
         {/* Makkah Hotel */}
         <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200 space-y-4">
           <h4 className="text-sm font-extrabold text-slate-900 uppercase tracking-wide">Makkah Hotel</h4>
+          <button type="button" aria-pressed={(d.makkahHotel as any)?.isVisible !== false}
+            onClick={() => updateHotel('makkahHotel', 'isVisible' as any, (d.makkahHotel as any)?.isVisible === false)}
+            className="mb-3 rounded-full border border-primary bg-white px-3 py-1 text-xs font-bold text-primary">
+            {(d.makkahHotel as any)?.isVisible !== false ? 'Hide whole hotel card' : 'Show whole hotel card'}
+          </button>
           <div>
             <label className="text-[10px] font-bold text-ink-lt mb-1 block">HOTEL NAME</label>
             <input type="text" value={d.makkahHotel?.name || ''} onChange={e => updateHotel('makkahHotel', 'name', e.target.value)} className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs" />
@@ -206,6 +211,11 @@ export default function DetailPageDataFields({
         {/* Madinah Hotel */}
         <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200 space-y-4">
           <h4 className="text-sm font-extrabold text-slate-900 uppercase tracking-wide">Madinah Hotel</h4>
+          <button type="button" aria-pressed={(d.madinahHotel as any)?.isVisible !== false}
+            onClick={() => updateHotel('madinahHotel', 'isVisible' as any, (d.madinahHotel as any)?.isVisible === false)}
+            className="mb-3 rounded-full border border-primary bg-white px-3 py-1 text-xs font-bold text-primary">
+            {(d.madinahHotel as any)?.isVisible !== false ? 'Hide whole hotel card' : 'Show whole hotel card'}
+          </button>
           <div>
             <label className="text-[10px] font-bold text-ink-lt mb-1 block">HOTEL NAME</label>
             <input type="text" value={d.madinahHotel?.name || ''} onChange={e => updateHotel('madinahHotel', 'name', e.target.value)} className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs" />
@@ -282,6 +292,11 @@ export default function DetailPageDataFields({
         {/* Aziziya Hotel */}
         <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200 space-y-4">
           <h4 className="text-sm font-extrabold text-slate-900 uppercase tracking-wide">Aziziya Hotel</h4>
+          <button type="button" aria-pressed={(d.aziziyaHotel as any)?.isVisible !== false}
+            onClick={() => updateHotel('aziziyaHotel', 'isVisible' as any, (d.aziziyaHotel as any)?.isVisible === false)}
+            className="mb-3 rounded-full border border-primary bg-white px-3 py-1 text-xs font-bold text-primary">
+            {(d.aziziyaHotel as any)?.isVisible !== false ? 'Hide whole hotel card' : 'Show whole hotel card'}
+          </button>
           <div>
             <label className="text-[10px] font-bold text-ink-lt mb-1 block">HOTEL NAME</label>
             <input type="text" value={d.aziziyaHotel?.name || ''} onChange={e => updateHotel('aziziyaHotel', 'name', e.target.value)} placeholder="e.g. HOTEL NEAR" className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs" />
@@ -358,6 +373,11 @@ export default function DetailPageDataFields({
         {/* Mina Maktab / Camp */}
         <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200 space-y-4">
           <h4 className="text-sm font-extrabold text-slate-900 uppercase tracking-wide">Mina Maktab / Camp</h4>
+          <button type="button" aria-pressed={(d.minaHotel as any)?.isVisible !== false}
+            onClick={() => updateHotel('minaHotel', 'isVisible' as any, (d.minaHotel as any)?.isVisible === false)}
+            className="mb-3 rounded-full border border-primary bg-white px-3 py-1 text-xs font-bold text-primary">
+            {(d.minaHotel as any)?.isVisible !== false ? 'Hide whole hotel card' : 'Show whole hotel card'}
+          </button>
           <div>
             <label className="text-[10px] font-bold text-ink-lt mb-1 block">CAMP / HOTEL NAME</label>
             <input type="text" value={d.minaHotel?.name || ''} onChange={e => updateHotel('minaHotel', 'name', e.target.value)} placeholder="e.g. MAKTAB – A" className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs" />

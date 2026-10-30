@@ -6,6 +6,7 @@ import { X, Calendar, User, Check, Star, MapPin, Utensils, Plane, AlertCircle, C
 import DynamicIcon from "./ui/DynamicIcon";
 import { getDurationUnit } from "@/lib/packageHelpers";
 import { isTbcPrice } from "@/lib/priceDisplay";
+import { isAccommodationVisible } from "@/lib/packageCardVisibility";
 
 export interface PackageDetailData {
   id?: string;
@@ -151,7 +152,7 @@ export default function PackageDetailModal({ isOpen, onClose, pkg }: PackageDeta
   const bannerPrice = minFormattedPrice;
   const priceSubtext = `PER PERSON - ${minPriceItem.packageType.toUpperCase()}`;
   const exclusiveBadge = detailData.exclusiveBadge || cardData.exclusiveBadge || pkg.exclusiveBadge || "STARTING FROM";
-  const currencyCode = "£";
+  const currencyCode = detailData.currencyCode || pkg.currencyCode || "£";
 
   // Selected package type price for booking calculation
   const selectedPriceItem = packagePrices.find((p) => p.packageType === effectivePackageType);
@@ -201,10 +202,10 @@ export default function PackageDetailModal({ isOpen, onClose, pkg }: PackageDeta
   const isAziziyaDurationVisible = (aziziyaHotel?.durationEnabled ?? aziziyaHotel?.enabled) !== false && Boolean(aziziyaNights);
   const isMinaDurationVisible = (minaHotel?.durationEnabled ?? minaHotel?.enabled) !== false && Boolean(minaNights);
 
-  const isMakkahVisible = Boolean(makkahHotel?.name || makkahHotel?.image || makkahHotel?.location || makkahHotel?.badge || (isMakkahDurationVisible && makkahNights));
-  const isMadinahVisible = Boolean(madinahHotel?.name || madinahHotel?.image || madinahHotel?.location || madinahHotel?.badge || (isMadinahDurationVisible && madinahNights));
-  const isAziziyaVisible = Boolean(aziziyaHotel?.name || aziziyaHotel?.image || aziziyaHotel?.location || aziziyaHotel?.badge || (isAziziyaDurationVisible && aziziyaNights));
-  const isMinaVisible = Boolean(minaHotel?.name || minaHotel?.image || minaHotel?.location || minaHotel?.badge || (isMinaDurationVisible && minaNights));
+  const isMakkahVisible = isAccommodationVisible(makkahHotel) && Boolean(makkahHotel?.name || makkahHotel?.image || makkahHotel?.location || makkahHotel?.badge || (isMakkahDurationVisible && makkahNights));
+  const isMadinahVisible = isAccommodationVisible(madinahHotel) && Boolean(madinahHotel?.name || madinahHotel?.image || madinahHotel?.location || madinahHotel?.badge || (isMadinahDurationVisible && madinahNights));
+  const isAziziyaVisible = isAccommodationVisible(aziziyaHotel) && Boolean(aziziyaHotel?.name || aziziyaHotel?.image || aziziyaHotel?.location || aziziyaHotel?.badge || (isAziziyaDurationVisible && aziziyaNights));
+  const isMinaVisible = isAccommodationVisible(minaHotel) && Boolean(minaHotel?.name || minaHotel?.image || minaHotel?.location || minaHotel?.badge || (isMinaDurationVisible && minaNights));
 
   const overviewText = detailData.overview || pkg.overview || `DURING STAY AT MADINAH - Hotel close to Haram (Breakfast & Dinner)
 01 Dhul-Hajjah Check in at Madinah hotel and spend time in Prophet's Mosque

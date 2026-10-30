@@ -46,50 +46,6 @@ export type AvailableFlight = {
   return?: FlightDirection;
 };
 
-const defaultFlights: AvailableFlight[] = [
-  {
-    code: "PIA",
-    name: "Pakistan International Airlines",
-    operatedBy: "Operated By PIA",
-    originCode: "LHR",
-    originCity: "London",
-    destCode: "JED",
-    destCity: "Jeddah",
-    time: "14:20",
-    price: "£ 1,250.00",
-    badgeText: "1A/E",
-    seatsValue: "Confirmed (HK20)",
-    outbound: {
-      date: "2026-08-01",
-      dateEnd: "2026-08-02",
-      first: { code: "MAN", city: "Manchester", time: "2:30 PM", flightNumber: "MS 782", className: "1A/E" },
-      via: { code: "CAI", city: "Cairo", arrivalTime: "9:40 PM", departureTime: "12:30 AM", flightNumber: "MS 782", className: "1A/E" },
-      second: { code: "JED", city: "Jeddah", time: "2:40 AM", flightNumber: "MS 663", className: "1A/E" },
-      layoverText: "Layover in Cairo",
-      layoverDuration: "5h 00m",
-    },
-    return: {
-      date: "2026-08-14",
-      first: { code: "MED", city: "Madinah", time: "5:20 AM", flightNumber: "MS 694", className: "1A/E" },
-      via: { code: "CAI", city: "Cairo", arrivalTime: "7:15 AM", departureTime: "10:05 AM", flightNumber: "MS 694", className: "1A/E" },
-      second: { code: "MAN", city: "Manchester", time: "1:30 PM", flightNumber: "MS 781", className: "1A/E" },
-      layoverText: "Layover in Cairo",
-      layoverDuration: "2h 50m",
-    },
-  },
-  {
-    code: "SA",
-    name: "Saudia Airlines",
-    operatedBy: "Operated By Saudia",
-    originCode: "LHR",
-    originCity: "London",
-    destCode: "MED",
-    destCity: "Madinah",
-    time: "18:45",
-    price: "£ 1,380.00",
-  },
-];
-
 function directionFromLegacy(flight: AvailableFlight, direction: "outbound" | "return"): FlightDirection {
   const isReturn = direction === "return";
   return {
@@ -212,21 +168,22 @@ function DirectionBlock({ label, direction, fallbackFirst, fallbackSecond }: {
 }
 
 export default function AvailableFlightsSection({ data, bookingTarget }: { data?: any; bookingTarget?: string }) {
-  const items = Array.isArray(data?.items) && data.items.length > 0 ? data.items : defaultFlights;
+  const items: AvailableFlight[] = Array.isArray(data?.items) ? data.items.filter((item: AvailableFlight) => Boolean(item && (item.name || item.code))) : [];
+  if (items.length === 0) return null;
   return (
     <section className="overflow-hidden bg-[#f2f8ff] py-8 sm:py-10 md:py-16">
       <div className="mx-auto w-full max-w-5xl px-3 sm:px-4">
         <div className="section-head center mb-6 text-center sm:mb-8">
-          <span className="eyebrow mx-auto block">{data?.eyebrow || "AVAILABLE FLIGHTS"}</span>
+          <span className="eyebrow mx-auto block">{data?.eyebrow || ""}</span>
           <h2 className="section-heading font-serif tracking-tight text-primary">
-            {data?.title || "BEST FARES, LIMITED AVAILABILITY FROM LONDON"}
+            {data?.title || ""}
           </h2>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:gap-5 xl:grid-cols-2">
           {items.map((flight: AvailableFlight, index: number) => {
             const outbound = getDirection(flight, "outbound");
             const returning = getDirection(flight, "return");
-            const bookingUrl = flight.bookingUrl || bookingTarget || `https://wa.me/19056248344?text=${encodeURIComponent(`Hi, I'm interested in booking this flight (${flight.name || flight.code || "flight"})`)}`;
+            const bookingUrl = flight.bookingUrl || bookingTarget || "";
             return (
               <article key={`${flight.code || "flight"}-${index}`} className="min-w-0 rounded-lg border border-slate-200 bg-white p-3 shadow-sm transition-shadow hover:shadow-md sm:p-5 md:p-6">
                 <div className="mb-3 flex items-start justify-between gap-2 border-b border-slate-200 pb-3 sm:mb-4 sm:gap-3 sm:pb-4">
@@ -243,27 +200,29 @@ export default function AvailableFlightsSection({ data, bookingTarget }: { data?
                       <p className="text-[11px] text-slate-500">{flight.operatedBy || ""}</p>
                     </div>
                   </div>
-                  <span className="shrink-0 rounded border border-red px-1.5 py-1 text-[10px] font-bold text-red sm:px-2 sm:text-xs">{flight.badgeText || "1A/E"}</span>
+                  <span className="shrink-0 rounded border border-red px-1.5 py-1 text-[10px] font-bold text-red sm:px-2 sm:text-xs">{flight.badgeText || ""}</span>
                 </div>
                 <div className="space-y-3 sm:space-y-4">
-                  <DirectionBlock label="Outbound" direction={outbound} fallbackFirst={flight.originCode || "LHR"} fallbackSecond={flight.destCode || "JED"} />
+                  <DirectionBlock label="Outbound" direction={outbound} fallbackFirst={flight.originCode || ""} fallbackSecond={flight.destCode || ""} />
                   <div className="border-t border-dashed border-slate-200 pt-2 sm:pt-3">
-                    <DirectionBlock label="Return" direction={returning} fallbackFirst={flight.destCode || "JED"} fallbackSecond={flight.originCode || "LHR"} />
+                    <DirectionBlock label="Return" direction={returning} fallbackFirst={flight.destCode || ""} fallbackSecond={flight.originCode || ""} />
                   </div>
                 </div>
                 <div className="mt-3 flex flex-col items-start gap-3 border-t border-slate-200 pt-3 sm:mt-4 sm:flex-row sm:items-center sm:justify-between">
                   <p className="flex min-w-0 items-center gap-2 text-[10px] text-slate-600 sm:text-[11px]">
                     <span className="text-base text-[#10254a]" aria-hidden="true">♿</span>
-                    <span><strong className="font-semibold">Available Seats:</strong> {flight.seatsValue || flight.seatsText?.replace(/^available seats:\s*/i, "") || "Confirmed"}</span>
+                    <span><strong className="font-semibold">Available Seats:</strong> {flight.seatsValue || flight.seatsText?.replace(/^available seats:\s*/i, "") || ""}</span>
                   </p>
                   <div className="text-right">
-                    <div className="text-xl font-bold text-[#10254a] sm:text-2xl">{flight.price || "£ 1,250.00"}</div>
-                    <div className="text-[10px] italic text-slate-500">{flight.priceSubtext || "per person, round trip"}</div>
+                    <div className="text-xl font-bold text-[#10254a] sm:text-2xl">{flight.price || ""}</div>
+                    <div className="text-[10px] italic text-slate-500">{flight.priceSubtext || ""}</div>
                   </div>
                 </div>
-                <a href={bookingUrl} target={bookingTarget ? undefined : "_blank"} rel="noopener noreferrer" className="mt-3 block w-full rounded bg-red py-2.5 text-center text-[11px] font-bold uppercase tracking-wider text-white transition-colors hover:bg-red-lt sm:mt-4 sm:text-xs">
-                  {flight.bookingLabel || "Select this route"} →
-                </a>
+                {bookingUrl ? (
+                  <a href={bookingUrl} target={bookingTarget ? undefined : "_blank"} rel="noopener noreferrer" className="mt-3 block w-full rounded bg-red py-2.5 text-center text-[11px] font-bold uppercase tracking-wider text-white transition-colors hover:bg-red-lt sm:mt-4 sm:text-xs">
+                    {flight.bookingLabel || "Select this route"} →
+                  </a>
+                ) : null}
               </article>
             );
           })}

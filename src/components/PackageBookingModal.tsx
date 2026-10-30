@@ -725,7 +725,7 @@ export default function PackageBookingModal({
                */
               onClose();
             }}
-            className="bg-[#004B39] hover:bg-[#003c2e] text-white font-bold py-3 px-8 rounded-xl w-full transition-colors cursor-pointer"
+            className="bg-primary hover:bg-primary-lt text-white font-bold py-3 px-8 rounded-xl w-full transition-colors cursor-pointer"
           >
             Done
           </button>

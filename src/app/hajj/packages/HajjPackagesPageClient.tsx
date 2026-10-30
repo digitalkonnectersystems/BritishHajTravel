@@ -2,139 +2,12 @@
 
 import HajjLandscapeCard from "@/components/HajjLandscapeCard";
 import HajjPackagePager from "@/components/HajjPackagePager";
+import { isAccommodationVisible, isPackageCardVisible } from "@/lib/packageCardVisibility";
 import { isTbcPrice } from "@/lib/priceDisplay";
 import PageBanner from "@/components/PageBanner";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import PageSectionsRenderer from "@/components/PageSectionsRenderer";
 import DynamicIcon from "@/components/ui/DynamicIcon";
-
-const hajjCardsData = [
-  {
-    id: "economy-hajj-2027",
-    title: "Economy Hajj Package 2027",
-    duration: "14Days",
-    heroImage:
-      "/uploads/sections/hajj_1.jpg",
-    price: "£ 12,995",
-    makkahHotel: {
-      name: "5 Star Hotel in Makkah",
-      location: "Near to Haram",
-      image:
-        "https://cf.bstatic.com/xdata/images/hotel/max1024x768/865309229.jpg?k=13b36d624d683462058664c3aa31641cbb4c53cf07ca581f02f127e198029575&o=",
-      badge: "Breakfast",
-      badgeIcon: "Utensils",
-      nights: "6 Nights",
-    },
-    madinahHotel: {
-      name: "5 Star Hotel in Madinah",
-      location: "Near to Masjid Nabawi",
-      image:
-        "https://cf.bstatic.com/xdata/images/hotel/max1024x768/523311776.jpg?k=2d6dfd51cd0bb767e33d6cc5dc4d3f8d76da0c17140158b7b43366dc7cf66a36&o=",
-      badge: "Breakfast",
-      badgeIcon: "Utensils",
-      nights: "6 Nights",
-    },
-    aziziyaHotel: {
-      name: "Aziziya Hotel",
-      location: "Near Jamarat",
-      image: "/images_BHT/packages/aziziya-hotel-makkah-1788162953272.jpg",
-      badge: "Full Board",
-      badgeIcon: "ClipboardCheck",
-      nights: "3 Nights",
-    },
-    minaHotel: {
-      name: "Mina Camp",
-      location: "Maktab - A Category",
-      image: "/images_BHT/packages/mina-maktab-a-bht-1788162957394.png",
-      badge: "Full Board",
-      badgeIcon: "ClipboardCheck",
-      nights: "3 Nights",
-    },
-  },
-  {
-    id: "deluxe-hajj-2027",
-    title: "Deluxe Hajj 2027",
-    duration: "15 Days",
-    heroImage:
-      "/uploads/sections/hajj_1.jpg",
-    price: "£ 17,995",
-    makkahHotel: {
-      name: "5 Star Hotel Fairmont Makkah",
-      location: "Near to Haram",
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5-XnMVZK4gPR2fok2UHalB4MgmobfdO0bUKh_VXGHMGYe_A7NQaaZ748&s=10",
-      badge: "Buffet Included",
-      badgeIcon: "Utensils",
-      nights: "8 Nights",
-    },
-    madinahHotel: {
-      name: "5 Star Hotel Dar Al Eman Madinah",
-      location: "Near to Masjid Nabawi",
-      image:
-        "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=300&q=80",
-      badge: "Buffet Included",
-      badgeIcon: "Utensils",
-      nights: "7 Nights",
-    },
-    aziziyaHotel: {
-      name: "Aziziya Hotel",
-      location: "Near Jamarat",
-      image: "/images_BHT/packages/aziziya-hotel-makkah-1788162953272.jpg",
-      badge: "Full Board",
-      badgeIcon: "ClipboardCheck",
-      nights: "3 Nights",
-    },
-    minaHotel: {
-      name: "Mina Camp",
-      location: "Maktab - A Category",
-      image: "/images_BHT/packages/mina-maktab-a-bht-1788162957394.png",
-      badge: "Full Board",
-      badgeIcon: "ClipboardCheck",
-      nights: "3 Nights",
-    },
-  },
-  {
-    id: "express-custom-hajj-2027",
-    title: "Express Custom Hajj 2027",
-    duration: "10 Days",
-    heroImage:
-      "https://images.unsplash.com/photos/kaaba-mecca-IAwnp88Fz8Y",
-    price: "£ 14,995",
-    makkahHotel: {
-      name: "Hyatt Regency Makkah",
-      location: "Jabal Omar (Short Walk)",
-      image:
-        "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=300&q=80",
-      badge: "Breakfast",
-      nights: "5 Nights",
-    },
-    madinahHotel: {
-      name: "Pullman Zamzam Madinah",
-      location: "Walking Distance",
-      image:
-        "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=300&q=80",
-      badge: "Breakfast",
-      badgeIcon: "Utensils",
-      nights: "5 Nights",
-    },
-    aziziyaHotel: {
-      name: "Aziziya Hotel",
-      location: "Near Jamarat",
-      image: "/images_BHT/packages/aziziya-hotel-makkah-1788162953272.jpg",
-      badge: "Full Board",
-      badgeIcon: "ClipboardCheck",
-      nights: "3 Nights",
-    },
-    minaHotel: {
-      name: "Mina Camp",
-      location: "Maktab - A Category",
-      image: "/images_BHT/packages/mina-maktab-a-bht-1788162957394.png",
-      badge: "Full Board",
-      badgeIcon: "ClipboardCheck",
-      nights: "3 Nights",
-    },
-  },
-];
 
 export default function HajjPackagesPageClient({ initialPageData, packages = [] }: { initialPageData?: any, packages?: any[] }) {
   const pageData = initialPageData || null;
@@ -155,54 +28,35 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
         position={pageData?.bannerPosition}
         size={pageData?.bannerSize}
         heroSettings={pageData?.seoSettings}
-        fallbackBgImage="/images_BHT/packages/hajj-2026-4-1789469937874.webp"
-        localOnly
       />
 
-      {/* ================= 4 FLOATING ACCREDITATION BADGES ================= */}
-      <div className="badges-overlap-container">
-        <div className="badge-grid">
-          <div className="badge-card">
-            <div className="badge-icon-wrap">
-              <i className="fa-solid fa-shield-halved"></i>
-            </div>
-            <span>ATOL PROTECTED</span>
-          </div>
-
-          <div className="badge-card">
-            <div className="badge-icon-wrap">
-              <i className="fa-solid fa-mosque"></i>
-            </div>
-            <span>SAUDI MINISTRY APPROVED</span>
-          </div>
-
-          <div className="badge-card">
-            <div className="badge-icon-wrap">
-              <i className="fa-solid fa-plane-departure"></i>
-            </div>
-            <span>IATA ACCREDITED</span>
-          </div>
-
-          <div className="badge-card">
-            <div className="badge-icon-wrap">
-              <i className="fa-solid fa-stamp"></i>
-            </div>
-            <span>ABTA BONDED</span>
-          </div>
-        </div>
-      </div>
+      {(() => {
+        const section = (() => {
+          try {
+            const rows = typeof pageData?.sections === 'string' ? JSON.parse(pageData.sections) : pageData?.sections;
+            return Array.isArray(rows) ? rows.find((row: any) => ['Accreditations Bar','Badges Cards'].includes(row?.type)) : null;
+          } catch { return null; }
+        })();
+        const badges = Array.isArray(section?.data?.items) ? section.data.items.filter((row: any) => row?.title) : [];
+        return badges.length ? <div className="badges-overlap-container"><div className="badge-grid">
+          {badges.map((row: any, i: number) => <div className="badge-card" key={i}>
+            <div className="badge-icon-wrap"><DynamicIcon name={row.icon || 'Shield'} className="h-5 w-5" /></div>
+            <span>{row.title}</span>
+          </div>)}
+        </div></div> : null;
+      })()}
 
       {/* ================= FULL-WIDTH HAJJ LANDSCAPE PACKAGES ================= */}
       <section className="packages-grid-container mx-auto max-w-[1400px] px-4 py-12 sm:px-6">
         <HajjPackagePager
           items={(() => {
-            if (packages.length > 0) return packages;
+            if (packages.length > 0) return packages.filter(isPackageCardVisible);
             try {
               const parsed = typeof pageData?.sections === "string" ? JSON.parse(pageData.sections) : pageData?.sections;
               const section = Array.isArray(parsed) && parsed.find((s: any) => s.type === "Hajj Packages Grid" || s.type === "Hajj Cards");
-              if (Array.isArray(section?.data?.items) && section.data.items.length > 0) return section.data.items;
+              if (Array.isArray(section?.data?.items) && section.data.items.length > 0) return section.data.items.filter(isPackageCardVisible);
             } catch { /* Keep existing page fallback. */ }
-            return hajjCardsData;
+            return []; // Do not create fabricated public package offers if the database is empty.
           })()}
           renderCard={(card: any, idx: number) => {
               const cd = typeof card.cardData === "string" ? (() => { try { return JSON.parse(card.cardData); } catch { return {}; } })() : (card.cardData || {});
@@ -242,6 +96,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
 
               const defaultAccommodations = [
                 {
+                  isVisible: makkahHotel?.isVisible,
                   city: makkahHotel?.label || 'MAKKAH',
                   subtitle: makkahHotel?.name || '',
                   location: makkahHotel?.location || '',
@@ -253,6 +108,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
                   durationEnabled: isDurEnabled(makkahHotel),
                 },
                 {
+                  isVisible: madinahHotel?.isVisible,
                   city: madinahHotel?.label || 'MADINA',
                   subtitle: madinahHotel?.name || '',
                   location: madinahHotel?.location || '',
@@ -264,6 +120,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
                   durationEnabled: isDurEnabled(madinahHotel),
                 },
                 {
+                  isVisible: aziziyaHotel?.isVisible,
                   city: aziziyaHotel?.label || 'AZIZIYA',
                   subtitle: aziziyaHotel?.name || '',
                   location: aziziyaHotel?.location || '',
@@ -275,6 +132,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
                   durationEnabled: isDurEnabled(aziziyaHotel),
                 },
                 {
+                  isVisible: minaHotel?.isVisible,
                   city: minaHotel?.label || 'MINA',
                   subtitle: minaHotel?.name || '',
                   location: minaHotel?.location || '',
@@ -287,20 +145,11 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
                 }
               ].filter((acc) => {
                 // If fields are empty, do not display accommodation on frontend
-                return Boolean(acc.subtitle || acc.location || acc.image || (acc.durationEnabled && acc.nights) || (acc.badgeEnabled && acc.badge));
+                return isAccommodationVisible(acc) && Boolean(acc.subtitle || acc.location || acc.image || (acc.durationEnabled && acc.nights) || (acc.badgeEnabled && acc.badge));
               });
 
               const inclusionsList = Array.isArray(cd.inclusions) ? cd.inclusions
-                : Array.isArray(card.inclusions) && card.inclusions.length > 0
-                ? card.inclusions
-                : [
-                  { icon: 'Plane', text: 'Return\nAir Tickets' },
-                  { icon: 'FileCheck', text: 'Hajj Visa\nProcessing' },
-                  { icon: 'Bed', text: 'Comfortable\nAccommodation' },
-                  { icon: 'Utensils', text: 'All Meals\nIncluded' },
-                  { icon: 'Bus', text: 'Transport in\nSaudi Arabia' },
-                  { icon: 'MessageCircle', text: 'Guidance &\nSupport' },
-                ];
+                : Array.isArray(card.inclusions) ? card.inclusions : [];
 
               const eligibilityList = Array.isArray(cd.eligibility) ? cd.eligibility
                 : Array.isArray(card.eligibility) && card.eligibility.length > 0
@@ -341,21 +190,10 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
 
       {/* ================= HAJJ SERVICES GRID ================= */}
       {(() => {
-        // Defaults matching the screenshot layout
-        const DEFAULT_SERVICES = [
-          { icon: 'Users', title: 'Pre-Hajj Meet up', description: 'Get to know each other and held a meeting with all Hajjis' },
-          { icon: 'Handshake', title: 'Meet & Assist', description: 'A dedicated team to assist and guide' },
-          { icon: 'Utensils', title: 'Buffet Meals', description: 'Segregated full board buffet food' },
-          { icon: 'IdCard', title: 'Visa Acquisition', description: 'We facilitate with visa documentation and services' },
-          { icon: 'Bus', title: 'Luxury Transportation', description: 'We offer luxury busses and private vehicle' },
-          { icon: 'Building2', title: '5 Star Accommodation', description: 'Get a comfort living 5 star hotel facility' },
-          { icon: 'BedDouble', title: 'Sofa Mattress in Mina', description: 'Premium quality sofas and mattress' },
-          { icon: 'BookOpen', title: 'Guide & Scholar', description: '3 to 4 training sessions with renowned scholars' },
-        ];
-        let eyebrow = 'WHAT IS INCLUDED';
-        let heading = 'Hajj 2027 Services';
-        let subtitle = 'From Departure to Return, We Take Care of Every Detail of Your Hajj.';
-        let services = DEFAULT_SERVICES;
+        let eyebrow = '';
+        let heading = '';
+        let subtitle = '';
+        let services: any[] = [];
         try {
           if (pageData?.sections) {
             const parsed = typeof pageData.sections === 'string' ? JSON.parse(pageData.sections) : pageData.sections;
@@ -370,7 +208,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
             }
           }
         } catch (e) { }
-        return (
+        return services.length > 0 ? (
           <section className="py-16 bg-white">
             <div className="max-w-5xl mx-auto px-4">
               <div className="text-center mb-10">
@@ -398,7 +236,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
               </div>
             </div>
           </section>
-        );
+        ) : null;
       })()}
 
       {/* ================= DYNAMIC SECTIONS (Text Block, etc.) ================= */}
@@ -470,77 +308,23 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
         }
       })()}
 
-      {/* ================= GOOGLE REVIEWS / TESTIMONIALS ================= */}
       {(() => {
-        let eyebrow = 'HAPPY PILGRIMS';
-        let heading = 'What our clients say';
-        let reviewCount = '942';
-        let reviewLink = 'https://maps.app.goo.gl/1BRUoBxtt4wWw58t6';
-        let ctaLabel = 'Write A Review';
+        // Render only reviews entered through the CMS. No example testimonials.
+        let reviewSection: any = null;
         try {
-          if (pageData?.sections) {
-            const parsed =
-              typeof pageData.sections === 'string'
-                ? JSON.parse(pageData.sections)
-                : pageData.sections;
-            const sec =
-              Array.isArray(parsed) &&
-              parsed.find((s: any) => s.type === 'Google Reviews / Testimonials');
-            if (sec?.data) {
-              eyebrow = sec.data.eyebrow || eyebrow;
-              heading = sec.data.title || heading;
-              reviewCount = sec.data.reviewCount || reviewCount;
-              reviewLink = sec.data.reviewLink || reviewLink;
-              ctaLabel = sec.data.ctaLabel || ctaLabel;
-            }
-          }
-        } catch (e) { }
-        return (
-          <section className="bg-primary text-white py-6 overflow-hidden">
-            <div className="max-w-7xl mx-auto">
-              <div className="text-center mb-12">
-                <div className="text-xs font-extrabold uppercase tracking-widest text-red mb-2">
-                  {eyebrow}
-                </div>
-                <h2 className="text-3xl md:text-4xl font-serif text-white">{heading}</h2>
-              </div>
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                <div className="lg:col-span-4 flex flex-col items-center lg:items-start text-center lg:text-left space-y-3">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src="/img/round-logo.png"
-                      className="w-12 h-12 rounded-full border border-white/20 object-cover"
-                      alt="British Hajj Travel logo"
-                    />
-                    <div className="text-sm font-bold text-white">
-                      British Hajj Travel LTD - Mississauga
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1 text-amber-400 text-lg">
-                    <i className="fa-solid fa-star"></i>
-                    <i className="fa-solid fa-star"></i>
-                    <i className="fa-solid fa-star"></i>
-                    <i className="fa-solid fa-star"></i>
-                    <i className="fa-solid fa-star"></i>
-                  </div>
-                  <div className="text-xs font-medium text-slate-200">Google reviews</div>
-                  <a
-                    href={reviewLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block border border-white/40 text-white font-bold text-xs px-5 py-2.5 rounded-full hover:bg-white/10 transition-colors"
-                  >
-                    {ctaLabel}
-                  </a>
-                </div>
-                <div className="lg:col-span-8 relative">
-                  <TestimonialsCarousel />
-                </div>
-              </div>
-            </div>
-          </section>
-        );
+          const sections = typeof pageData?.sections === 'string' ? JSON.parse(pageData.sections) : pageData?.sections;
+          reviewSection = Array.isArray(sections) ? sections.find((sec: any) => sec.type === 'Google Reviews / Testimonials') : null;
+        } catch { /* Missing or invalid data is not a reason to publish sample reviews. */ }
+        const reviews = Array.isArray(reviewSection?.data?.items) ? reviewSection.data.items : [];
+        if (!reviews.length) return null;
+        return <section className="bg-primary text-white py-6 overflow-hidden">
+          <div className="max-w-7xl mx-auto">
+            {reviewSection?.data?.title && <h2 className="text-3xl md:text-4xl font-serif text-white text-center mb-12">{reviewSection.data.title}</h2>}
+            <TestimonialsCarousel reviews={reviews} />
+          </div>
+        </section>;
       })()}
+
       {(() => {
         try {
           const handledTypes = ['Packages Grid', 'Hajj Packages', 'Text Block (Rich Text)', 'Google Reviews / Testimonials'];

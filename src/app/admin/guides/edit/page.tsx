@@ -229,7 +229,7 @@ function GuideEditorContent() {
                                 <input value={item.question || ''} onChange={(event) => {
                                   const items = [...section.data.items]; items[itemIndex] = { ...items[itemIndex], question: event.target.value }; updateSection(index, { data: { ...section.data, items } });
                                 }} placeholder="Question" className="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-bold" />
-                                <button type="button" onClick={() => updateSection(index, { data: { ...section.data, items: section.data.items.filter((_: any, currentIndex: number) => currentIndex !== itemIndex) } })} className="rounded-lg bg-red-50 px-2 py-2 text-[10px] font-bold text-red-600">Remove</button>
+                                <button type="button" onClick={() => updateSection(index, { data: { ...section.data, items: section.data.items.filter((_: any, currentIndex: number) => currentIndex !== itemIndex) } })} aria-label="Remove FAQ" title="Remove FAQ" className="rounded-lg bg-red-50 p-2 text-red-600"><Trash2 className="h-4 w-4" /></button>
                               </div>
                               <div className="grid gap-2">
                                 {(item.answerBlocks || []).map((block: any, blockIndex: number) => (
@@ -254,7 +254,7 @@ function GuideEditorContent() {
                                     )}
                                     <button type="button" onClick={() => {
                                       const items = [...section.data.items]; const answerBlocks = (items[itemIndex].answerBlocks || []).filter((_: any, currentIndex: number) => currentIndex !== blockIndex); items[itemIndex] = { ...items[itemIndex], answerBlocks }; updateSection(index, { data: { ...section.data, items } });
-                                    }} className="mt-2 text-[10px] font-bold text-red-600">Remove media/text block</button>
+                                    }} aria-label="Remove media or text block" title="Remove media or text block" className="mt-2 rounded-lg bg-red-50 p-2 text-red-600"><Trash2 className="h-4 w-4" /></button>
                                   </div>
                                 ))}
                                 <div className="flex flex-wrap gap-2">

@@ -32,7 +32,7 @@ export default function DestinationsPageSection({
   return (
     <section className="pt-12 pb-16 bg-blue-lt">
       <div className="max-w-[1400px] mx-auto px-5">
-        <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-12 gap-6 text-center md:text-left">
+        <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-6 gap-6 text-center md:text-left">
           <div className="flex flex-col items-center md:items-start">
             <h3 className="eyebrow">DESTINATION PACKAGES</h3>
             <h2 className="section-heading text-primary">{title}</h2>
@@ -59,7 +59,7 @@ export default function DestinationsPageSection({
         )}
 
         {!loading && packages.length === 0 && (
-            <p className="text-center text-primary">No packages have been added to this destination yet.</p>
+          <p className="text-center text-primary">No packages have been added to this destination yet.</p>
         )}
 
         {!loading && packages.length > 0 && (

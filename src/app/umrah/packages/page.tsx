@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { getPageBySlug } from "@/actions/pageActions";
-import { getAllPackages } from "@/actions/packageActions";
+import { getPackagesByType } from "@/actions/packageActions";
+import { isPackageCardVisible } from "@/lib/packageCardVisibility";
 import UmrahPackagesPageClient from "./UmrahPackagesPageClient";
 import { buildPageMetadata } from "@/lib/seoMetadata";
 import type { Metadata } from "next";
@@ -13,8 +14,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function UmrahPackagesPage() {
   const pageData = await getPageBySlug("/umrah-packages").catch(() => null);
-  const packages = await getAllPackages().catch(() => []);
-  const umrahPackages = packages.filter((p: any) => p.type === 'umrah' && p.status === 'available');
+  if (pageData?.status === 'draft') notFound();
+  const packages = await getPackagesByType("umrah").catch(() => []);
+  const umrahPackages = packages.filter((p: any) => p.type === 'umrah' && p.status === 'available' && isPackageCardVisible(p));
 
   return <UmrahPackagesPageClient initialPageData={pageData} packages={umrahPackages} />;
 }

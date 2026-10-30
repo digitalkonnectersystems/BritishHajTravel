@@ -37,12 +37,12 @@ export default function Footer({ initialFooterData = {} }: { initialFooterData?:
                     />
                   )
                 ) : (
-                  <span className="font-serif font-bold text-xl text-white">British Hajj Travel</span>
+                  <span className="font-serif font-bold text-xl text-white">{footerData.siteName || ""}</span>
                 )}
               </Link>
             </div>
             <p className="max-w-[310px] sm:max-w-none lg:max-w-[310px] font-light leading-[1.7]">
-              {footerData.tagline || 'A licensed British agency dedicated to Hajj & Umrah travel — trusted, certified, and built for pilgrims.'}
+              {footerData.tagline || ''}
             </p>
 
             {/* Social Links */}
@@ -99,7 +99,7 @@ export default function Footer({ initialFooterData = {} }: { initialFooterData?:
 
           {/* ── Column 2: Services ── */}
           <div className="col-span-1 md:col-span-1 lg:col-span-1">
-            <h5 className="text-[15px] tracking-[0.16em] uppercase text-white mb-[18px] font-semibold">{footerData.servicesTitle || 'SERVICES'}</h5>
+            <h5 className="text-[15px] tracking-[0.16em] uppercase text-white mb-[18px] font-semibold">{footerData.servicesTitle || ''}</h5>
             <ul className="list-none p-0 m-0 space-y-2.5">
               {(footerData.servicesLinks || []).map((link: any, sIdx: number) => (
                 <li key={sIdx} className="font-light">
@@ -111,7 +111,7 @@ export default function Footer({ initialFooterData = {} }: { initialFooterData?:
 
           {/* ── Column 3: Sitemap ── */}
           <div className="col-span-1 md:col-span-1 lg:col-span-1">
-            <h5 className="text-[15px] tracking-[0.16em] uppercase text-white mb-[18px] font-semibold">{footerData.sitemapTitle || 'SITEMAP'}</h5>
+            <h5 className="text-[15px] tracking-[0.16em] uppercase text-white mb-[18px] font-semibold">{footerData.sitemapTitle || ''}</h5>
             <ul className="list-none p-0 m-0  space-y-2.5">
               {(footerData.sitemapLinks || []).map((link: any, mIdx: number) => (
                 <li key={mIdx} className="font-light ">
@@ -123,7 +123,7 @@ export default function Footer({ initialFooterData = {} }: { initialFooterData?:
 
           {/* ── Column 4: Customer Support ── */}
           <div className="col-span-2 md:col-span-1 lg:col-span-1">
-            <h5 className="text-[15px] tracking-[0.16em] uppercase text-white mb-[18px] font-semibold">{footerData.supportTitle || '24/7 CUSTOMER SUPPORT'}</h5>
+            <h5 className="text-[15px] tracking-[0.16em] uppercase text-white mb-[18px] font-semibold">{footerData.supportTitle || ''}</h5>
             <ul className="list-none p-0 m-0 space-y-2.5">
               {(footerData.supportItems || []).map((item: any, cIdx: number) => {
                 const phoneDisplay = item.phone || item.text || '';
@@ -166,9 +166,9 @@ export default function Footer({ initialFooterData = {} }: { initialFooterData?:
         </div>
 
         <div className="mt-[20px] md:mt-[60px] pt-[24px] border-t border-white/20 flex flex-wrap justify-center md:justify-between gap-[12px] text-[12px] md:text-[14px] font-light text-[#bccfc6]">
-          <span>{footerData.copyrightText || `© ${new Date().getFullYear()} British Hajj Travel LTD. All Rights Reserved.`}</span>
+          <span>{footerData.copyrightText || ""}</span>
           <span>
-            {footerData.developerText || 'Design & Developed by'}
+            {footerData.developerText || ''}
             {footerData.developerUrl && (
               <> <a href={footerData.developerUrl} target="_blank" rel="noopener noreferrer">DKS</a></>
             )}

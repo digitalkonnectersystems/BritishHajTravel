@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { getPageBySlug } from "@/actions/pageActions";
-import { getAllPackages } from "@/actions/packageActions";
+import { getPackagesByType } from "@/actions/packageActions";
+import { isPackageCardVisible } from "@/lib/packageCardVisibility";
 import HajjPackagesPageClient from "./HajjPackagesPageClient";
 import { buildPageMetadata } from "@/lib/seoMetadata";
 import type { Metadata } from "next";
@@ -13,8 +14,8 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HajjPackagesPage() {
   const pageData = await getPageBySlug("/hajj-packages").catch(() => null);
   if (pageData?.status === 'draft') notFound();
-  const packages = await getAllPackages().catch(() => []);
-  const hajjPackages = packages.filter((p: any) => p.type === 'hajj' && p.status === 'available');
+  const packages = await getPackagesByType("hajj").catch(() => []);
+  const hajjPackages = packages.filter((p: any) => p.type === 'hajj' && p.status === 'available' && isPackageCardVisible(p));
 
   return <HajjPackagesPageClient initialPageData={pageData} packages={hajjPackages} />;
 }

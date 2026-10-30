@@ -257,3 +257,15 @@ export async function updateDestinationOrderAction(orderedIds: number[]) {
     return { success: false, error: 'Failed to update destination order.' };
   }
 }
+/** Read sold-out destination cards from the existing JSON package_data field. */
+export async function getSoldOutDestinationPackages() {
+  const items = await getDestinations(false);
+  return items.flatMap((destination: any) => {
+    const pkg = destination.packageData || destination.packagesData?.[0];
+    if (!pkg || pkg.status !== 'sold_out') return [];
+    return [{ ...pkg, id: `destination:${destination.id}`, title: pkg.title || destination.title,
+      type: 'destinations', status: 'sold_out', slug: destination.slug,
+      currency: pkg.currency || '£', featuredImage: pkg.featuredImage || pkg.cardData?.bannerImage || '',
+    }];
+  });
+}

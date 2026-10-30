@@ -401,9 +401,10 @@ Side trips to Pakistan or any other destination available with an additional cos
                       <button
                         type="button"
                         onClick={() => removeFaq(fIdx)}
+                        title="Remove FAQ" aria-label="Remove FAQ"
                         className="text-red-500 hover:text-red-700 text-xs font-bold flex items-center gap-1 cursor-pointer"
                       >
-                        <Trash2 className="w-3.5 h-3.5" /> Remove
+                        <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
 

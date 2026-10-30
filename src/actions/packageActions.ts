@@ -8,6 +8,7 @@ import { eq, desc, and, ne } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { logAdminActivityAction } from '@/actions/activityActions';
 import { parseLegacyTravelMonth } from '@/lib/packageHelpers';
+import { isPackageCardVisible } from '@/lib/packageCardVisibility';
 
 function parseJsonField(val: any, fallback: any = {}) {
   if (!val) return fallback;
@@ -88,7 +89,7 @@ export async function getPackagesByType(type: 'umrah' | 'hajj'): Promise<any[]> 
       .where(and(eq(packages.type, type), ne(packages.status, 'draft'), ne(packages.status, 'sold_out')));
     
     const orderIds = await getStoredPackageOrderIds();
-    return sortPackagesByOrderedList(rows || [], orderIds);
+    return sortPackagesByOrderedList(rows || [], orderIds).filter(isPackageCardVisible);
   } catch (err) {
     console.error('getPackagesByType DB error:', err);
     return [];
@@ -96,6 +97,8 @@ export async function getPackagesByType(type: 'umrah' | 'hajj'): Promise<any[]> 
 }
 
 export async function getAllPackages() {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
     const list = await db.select().from(packages);
     const orderIds = await getStoredPackageOrderIds();
@@ -103,6 +106,36 @@ export async function getAllPackages() {
   } catch (err) {
     console.error('getAllPackages DB error:', err);
     throw new Error('Failed to fetch packages from database');
+  }
+}
+
+export async function getPublicPackageOptions(): Promise<Array<{ id: number; name: string; type: 'umrah' | 'hajj' }>> {
+  try {
+    const rows = await db
+      .select({
+        id: packages.id,
+        name: packages.title,
+        type: packages.type,
+        cardData: packages.cardData,
+        createdAt: packages.createdAt,
+      })
+      .from(packages)
+      .where(eq(packages.status, 'available'));
+    const visibleRows = rows.filter(isPackageCardVisible);
+    const orderIds = await getStoredPackageOrderIds();
+    const orderMap = new Map(orderIds.map((id, index) => [id, index]));
+
+    return visibleRows
+      .sort((a, b) => {
+        const orderA = orderMap.get(a.id) ?? Number.MAX_SAFE_INTEGER;
+        const orderB = orderMap.get(b.id) ?? Number.MAX_SAFE_INTEGER;
+        if (orderA !== orderB) return orderA - orderB;
+        return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+      })
+      .map(({ id, name, type }) => ({ id, name, type: type as 'umrah' | 'hajj' }));
+  } catch (err) {
+    console.error('getPublicPackageOptions DB error:', err);
+    throw new Error('Failed to fetch public package options');
   }
 }
 
@@ -114,7 +147,7 @@ export async function getSoldOutPackages() {
       .where(eq(packages.status, 'sold_out'));
     
     const orderIds = await getStoredPackageOrderIds();
-    return sortPackagesByOrderedList(rows || [], orderIds);
+    return sortPackagesByOrderedList(rows || [], orderIds).filter(isPackageCardVisible);
   } catch (err) {
     console.error('getSoldOutPackages DB error:', err);
     return [];
@@ -157,13 +190,26 @@ export async function updatePackageOrderAction(orderedIds: number[]) {
   }
 }
 
+/** Admin editor lookup: never apply public visibility or availability filters.
+ * Draft, hidden, and sold-out packages must remain editable. */
+export async function getPackageForAdmin(id: number) {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+  if (!Number.isSafeInteger(id) || id < 1) return null;
+
+  const [row] = await db.select().from(packages).where(eq(packages.id, id)).limit(1);
+  if (!row) return null;
+
+  const prices = await db.select().from(packagePrices).where(eq(packagePrices.packageId, id));
+  return { ...normalizePackageRow(row), prices };
+}
+
 /** Fetch packages by an ordered array of IDs (preserves the given order). */
 export async function getPackagesByIds(ids: number[]): Promise<any[]> {
   if (!ids || ids.length === 0) return [];
   try {
     const { inArray } = await import('drizzle-orm');
     const rows = await db.select().from(packages).where(inArray(packages.id, ids));
-    const normalizedRows = rows.map(normalizePackageRow);
+    const normalizedRows = rows.map(normalizePackageRow).filter((p) => p.status !== 'draft' && p.status !== 'sold_out' && isPackageCardVisible(p));
     // Preserve the caller-specified order
     const map = new Map(normalizedRows.map((r) => [r.id, r]));
     return ids.map((id) => map.get(id)).filter(Boolean) as any[];
@@ -179,6 +225,7 @@ export async function getPackageBySlug(slug: string) {
     if (!pkgList.length) return null;
 
     const pkg = normalizePackageRow(pkgList[0]);
+    if (pkg.status === 'draft') return null;
     const prices = await db.select().from(packagePrices).where(eq(packagePrices.packageId, pkg.id));
     const hotels = await db.select().from(packageHotels).where(eq(packageHotels.packageId, pkg.id));
 

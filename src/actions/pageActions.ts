@@ -10,7 +10,6 @@ import { getEditableEmailTemplateHtml, getSharedEmailTemplateHtml, hasRequiredEm
 import { logAdminActivityAction } from '@/actions/activityActions';
 import { dedupeRecipientChannels, hasInvalidEmailRecipient, normalizeEmailRecipients } from '@/lib/emailRecipients';
 import { normalizeFormRoutingRules } from '@/lib/formEmailRules';
-import { mergeFormEmailTemplates, validateFormEmailTemplates } from '@/lib/formEmailTemplates';
 
 // Cached reads go stale after this long (seconds) and refetch in the background.
 // Saves from the admin also bust these instantly via updateTag(), so content
@@ -29,19 +28,9 @@ function safeJsonParse<T>(jsonStr: any, fallback: T): T {
   }
 }
 
-/** URLs of unpublished CMS pages. Used to suppress public links, not to authorize admin edits. */
-export async function getHiddenSitePagePaths(): Promise<string[]> {
-  try {
-    const pages = await db.select({ slug: sitePages.slug })
-      .from(sitePages).where(eq(sitePages.status, 'draft'));
-    return pages.map(page => page.slug);
-  } catch (error) {
-    console.error('[pages] Unable to retrieve hidden page paths', error);
-    return [];
-  }
-}
-
 export async function getPagesList() {
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
+
   try {
     let pages = await db.select().from(sitePages).where(isNull(sitePages.guideCategory));
 
@@ -155,9 +144,24 @@ export async function getPageById(id: number) {
 
 async function fetchPageBySlugFromDb(slug: string) {
   const pages = await db
-    .select()
+    .select({
+      id: sitePages.id,
+      title: sitePages.title,
+      slug: sitePages.slug,
+      status: sitePages.status,
+      bannerBgImage: sitePages.bannerBgImage,
+      bannerPosition: sitePages.bannerPosition,
+      bannerSize: sitePages.bannerSize,
+      bannerTitle: sitePages.bannerTitle,
+      bannerDescription: sitePages.bannerDescription,
+      sections: sitePages.sections,
+      richText: sitePages.richText,
+      metaTitle: sitePages.metaTitle,
+      metaDescription: sitePages.metaDescription,
+      seoSettings: sitePages.seoSettings,
+    })
     .from(sitePages)
-    .where(eq(sitePages.slug, slug))
+    .where(and(eq(sitePages.slug, slug), eq(sitePages.status, 'published')))
     .limit(1);
 
   if (pages && pages.length > 0) {
@@ -442,13 +446,10 @@ export async function getDefaultNavItems() {
 async function fetchNavItemsFromDb() {
   const res = await db.select().from(siteSettings).where(eq(siteSettings.key, 'nav_items')).limit(1);
   if (res && res.length > 0) {
-    const navItems = safeJsonParse(res[0].value, await getDefaultNavItems());
-    if (Array.isArray(navItems) && !navItems.some((item: any) => item?.label?.toLowerCase() === 'hotels')) {
-      navItems.push({ id: 'hotels-directory', label: 'Hotels', url: '/hotels', level: 1, children: [] });
-    }
-    return navItems;
+    const navItems = safeJsonParse(res[0].value, []);
+    return Array.isArray(navItems) ? navItems : [];
   }
-  return await getDefaultNavItems();
+  return [];
 }
 
 export async function getNavItems() {
@@ -462,7 +463,7 @@ export async function getNavItems() {
   } catch (err) {
     console.error('getNavItems DB query failed:', err);
   }
-  return getDefaultNavItems();
+  return [];
 }
 
 // The site layout invokes this on every visitor request.  It must stay read-only
@@ -528,7 +529,7 @@ function validateNavigationTree(items: unknown): string | null {
 export async function saveNavItemsAction(navItems: any[]) {
   await requireAdmin(['admin']);
   const error = validateNavigationTree(navItems);
-  if (error) return {success:false,error};
+  if (error) return { success: false, error };
   try {
     const existing = await db.select().from(siteSettings).where(eq(siteSettings.key, 'nav_items')).limit(1);
     if (existing && existing.length > 0) {
@@ -605,9 +606,9 @@ let footerMemoryCache: any = null;
 async function fetchFooterDataFromDb() {
   const res = await db.select().from(siteSettings).where(eq(siteSettings.key, 'footer_settings')).limit(1);
   if (res && res.length > 0) {
-    return safeJsonParse(res[0].value, footerMemoryCache || await getDefaultFooterData());
+    return safeJsonParse(res[0].value, footerMemoryCache || {});
   }
-  return footerMemoryCache || await getDefaultFooterData();
+  return footerMemoryCache || {};
 }
 
 export async function getFooterData() {
@@ -621,7 +622,7 @@ export async function getFooterData() {
   } catch (err) {
     console.error('getFooterData DB query failed:', err);
   }
-  return footerMemoryCache || getDefaultFooterData();
+  return footerMemoryCache || {};
 }
 
 export async function saveFooterSettingsAction(footerData: any) {
@@ -865,7 +866,7 @@ export async function getSiteIdentity() {
   } catch (err) {
     console.warn('getSiteIdentity DB query failed, using defaults or cache:', err);
   }
-  if (!identityData) identityData = siteIdentityMemoryCache || await getDefaultSiteIdentity();
+  if (!identityData) identityData = siteIdentityMemoryCache || {};
 
   if (identityData) {
     if (identityData.favicon) {
@@ -1241,10 +1242,10 @@ export async function saveDisclaimerSettingsAction(data: DisclaimerSettings) {
   await requireAdmin(['admin']);
 
   if (typeof data?.enabled !== 'boolean' || typeof data?.image !== 'string' || (data.enabled && !data.image.trim()) || data.image.length > 2048 ||
-      (data.image.trim() && !data.image.startsWith('/') && !/^https:\/\/[^\s]+$/i.test(data.image))) {
-    return {success:false,error:'Supply a valid HTTPS or site-relative image URL when enabling the disclaimer.'};
+    (data.image.trim() && !data.image.startsWith('/') && !/^https:\/\/[^\s]+$/i.test(data.image))) {
+    return { success: false, error: 'Supply a valid HTTPS or site-relative image URL when enabling the disclaimer.' };
   }
-  const safeData = {enabled:data.enabled,image:data.image.trim(),altText:typeof data.altText === 'string' ? data.altText.slice(0,300) : 'Disclaimer Popup Image'};
+  const safeData = { enabled: data.enabled, image: data.image.trim(), altText: typeof data.altText === 'string' ? data.altText.slice(0, 300) : 'Disclaimer Popup Image' };
   try {
     const existing = await db.select().from(siteSettings).where(eq(siteSettings.key, 'disclaimer_settings')).limit(1);
     if (existing && existing.length > 0) {
@@ -1253,7 +1254,7 @@ export async function saveDisclaimerSettingsAction(data: DisclaimerSettings) {
       await db.insert(siteSettings).values({ key: 'disclaimer_settings', value: JSON.stringify(safeData) });
     }
     disclaimerMemoryCache = safeData;
-    await logAdminActivityAction({type:'settings',action:'Updated Disclaimer Popup',details:safeData.enabled ? 'Disclaimer popup enabled' : 'Disclaimer popup disabled'});
+    await logAdminActivityAction({ type: 'settings', action: 'Updated Disclaimer Popup', details: safeData.enabled ? 'Disclaimer popup enabled' : 'Disclaimer popup disabled' });
     revalidatePath('/', 'layout');
     return { success: true };
   } catch (err: any) {
@@ -1503,7 +1504,7 @@ async function readFullFormsSettings() {
         // Deep merge saved DB settings with comprehensive defaults so newly added forms/fields are never lost
         const mergedFormsData = { ...DEFAULT_FORMS_DATA, ...(parsed.formsData || (parsed.quoteForm ? parsed : {})) };
         const mergedFormFieldsState = { ...DEFAULT_FORM_FIELDS_STATE, ...(parsed.formFieldsState || {}) };
-        
+
         // Ensure every form in formsData has non-empty field state if available in default
         Object.keys(DEFAULT_FORM_FIELDS_STATE).forEach((k) => {
           if (!mergedFormFieldsState[k] || mergedFormFieldsState[k].length === 0) {
@@ -1517,12 +1518,12 @@ async function readFullFormsSettings() {
         const hasSavedRules = Array.isArray(savedConfig.formRoutingRules);
         const legacyRules = !hasSavedRules
           ? Object.keys({ ...(savedConfig.formRoutes || {}), ...(savedConfig.formCcRoutes || {}), ...(savedConfig.formBccRoutes || {}) })
-              .map((form) => ({
-                id: `form_${form}`, forms: [form],
-                sendTo: savedConfig.formRoutes?.[form] || '',
-                cc: savedConfig.formCcRoutes?.[form] || '',
-                bcc: savedConfig.formBccRoutes?.[form] || '',
-              }))
+            .map((form) => ({
+              id: `form_${form}`, forms: [form],
+              sendTo: savedConfig.formRoutes?.[form] || '',
+              cc: savedConfig.formCcRoutes?.[form] || '',
+              bcc: savedConfig.formBccRoutes?.[form] || '',
+            }))
           : [];
         const normalizedRules = normalizeFormRoutingRules(hasSavedRules ? savedConfig.formRoutingRules : legacyRules);
 
@@ -1537,7 +1538,6 @@ async function readFullFormsSettings() {
           formFieldsState: mergedFormFieldsState,
           emailConfigs: mergedEmailConfigs,
           emailTemplateHtml: getSharedEmailTemplateHtml(parsed.emailTemplateHtml),
-          formEmailTemplates: mergeFormEmailTemplates(parsed.formEmailTemplates, normalizedRules, mergedEmailConfigs.replyTo),
         };
 
         formsSettingsMemoryCache = result;
@@ -1553,7 +1553,6 @@ async function readFullFormsSettings() {
     formFieldsState: DEFAULT_FORM_FIELDS_STATE,
     emailConfigs: DEFAULT_EMAIL_CONFIGS,
     emailTemplateHtml: getEditableEmailTemplateHtml(),
-    formEmailTemplates: mergeFormEmailTemplates(undefined),
   };
 
   return formsSettingsMemoryCache || defaultResult;
@@ -1642,12 +1641,12 @@ export async function saveFormsSettingsAction(settingsData: any) {
     usedRuleIds.add(id);
     const forms: string[] = Array.isArray(rule.forms)
       ? Array.from(
-          new Set<string>(
-            rule.forms
-              .filter((form: unknown): form is string => typeof form === 'string' && form.trim().length > 0)
-              .map((form: string) => form.trim())
-          )
+        new Set<string>(
+          rule.forms
+            .filter((form: unknown): form is string => typeof form === 'string' && form.trim().length > 0)
+            .map((form: string) => form.trim())
         )
+      )
       : [];
 
     for (const form of forms) {
@@ -1679,9 +1678,6 @@ export async function saveFormsSettingsAction(settingsData: any) {
 
   emailConfigs.formRoutingRules = normalizedRules;
   nextSettings.emailConfigs = emailConfigs;
-  nextSettings.formEmailTemplates = mergeFormEmailTemplates(nextSettings.formEmailTemplates, normalizedRules, emailConfigs.replyTo);
-  const templateError = validateFormEmailTemplates(nextSettings.formEmailTemplates);
-  if (templateError) return { success: false, error: templateError };
 
   try {
     const existing = await db.select().from(siteSettings).where(eq(siteSettings.key, 'forms_settings')).limit(1);
@@ -1705,14 +1701,14 @@ export async function saveFormsSettingsAction(settingsData: any) {
     await logAdminActivityAction({
       type: 'settings',
       action: 'Updated Form Settings',
-      details: 'CRM enquiry settings and per-form admin/customer email templates saved',
+      details: 'CRM enquiry, per-form email routing and one shared email template saved',
       previousEntry: previousSettings ? {
         emailConfigs: auditSafeEmailConfigs(previousSettings.emailConfigs),
         sharedEmailTemplateConfigured: hasRequiredEmailTemplateTokens(previousSettings.emailTemplateHtml),
       } : null,
       newEntry: {
         emailConfigs: auditSafeEmailConfigs(nextSettings.emailConfigs),
-        formEmailTemplateCount: Object.keys(nextSettings.formEmailTemplates).length,
+        sharedEmailTemplateConfigured: true,
       },
     });
 
@@ -1741,7 +1737,10 @@ export async function getPackageDetailsAction(packageSlug: string) {
     const cleanSlug = packageSlug.toLowerCase().trim();
     const getCachedPackageDetails = unstable_cache(
       async () => {
-        const pages = await getPagesList();
+        const pages = await db
+          .select({ sections: sitePages.sections })
+          .from(sitePages)
+          .where(and(eq(sitePages.status, 'published'), isNull(sitePages.guideCategory)));
         for (const page of pages) {
           if (page.sections) {
             let parsedSections: any[] = [];

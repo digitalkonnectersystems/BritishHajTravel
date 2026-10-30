@@ -3,22 +3,12 @@
 import DynamicIcon from "@/components/ui/DynamicIcon";
 
 export default function TravelServicesSection({ data }: { data: any }) {
-  const eyebrow = data?.eyebrow || "SERVICES WE OFFER";
-  const title = data?.title || "Select your preferred travel<br />service";
+  const eyebrow = data?.eyebrow || "";
+  const title = data?.title || "";
   const subtitle = data?.subtitle || "";
 
-  const defaultServices = [
-    { title: 'Umrah Packages', desc: 'Flexible departures with flights, stays & guidance included.', icon: 'Star' },
-    { title: 'Hajj Packages', desc: 'Fully accredited pilgrimage packages, curated end to end.', icon: 'Briefcase' },
-    { title: 'Airline Tickets', desc: 'Best-fare flights sourced from every route into Jeddah.', icon: 'ArrowLeftRight' },
-    { title: 'Saudi Visa Services', desc: 'Full visa processing, handled and confirmed before departure.', icon: 'CreditCard' },
-    { title: 'Hotel Booking', desc: '5-star stays within walking distance of the Haram.', icon: 'Home' },
-    { title: 'Global Flight Reservations', desc: 'Worldwide reliable flight bookings for any itinerary.', icon: 'Globe' },
-    { title: 'Travel Documentation', desc: 'Guidance on every document your journey requires.', icon: 'FileText' },
-    { title: 'Group & Private Tours', desc: 'Private, guided, and fully customizable itineraries.', icon: 'User' },
-  ];
-
-  const services = data?.items?.length ? data.items : defaultServices;
+  const services = Array.isArray(data?.items) ? data.items.filter((item: any) => item?.title) : [];
+  if (!services.length) return null;
 
   return (
     <section className="py-8 md:py-10 bg-primary">

@@ -54,7 +54,7 @@ Disallow: /api/
     });
   } catch (error) {
     console.error('Error generating robots.txt:', error);
-    return new NextResponse('User-agent: *\nAllow: /\n', {
+    return new NextResponse('User-agent: *\nDisallow: /\n', {
       status: 200,
       headers: { 'Content-Type': 'text/plain' },
     });

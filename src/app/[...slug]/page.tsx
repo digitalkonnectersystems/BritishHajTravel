@@ -1,3 +1,4 @@
+import { getSoldOutDestinationPackages } from '@/actions/destinationActions';
 import { notFound, redirect, permanentRedirect } from "next/navigation";
 import { lookupRedirect, recordNotFound } from "@/actions/redirectActions";
 import type { Metadata } from "next";
@@ -120,7 +121,7 @@ export default async function DynamicPage({
   const [umrahPackages, hajjPackages, soldOutPackages] = await Promise.all([
     needsUmrah ? getPackagesByType("umrah") : Promise.resolve([]),
     needsHajj ? getPackagesByType("hajj") : Promise.resolve([]),
-    hasSoldOut ? getSoldOutPackages() : Promise.resolve([]),
+    hasSoldOut ? Promise.all([getSoldOutPackages(), getSoldOutDestinationPackages()]).then(([p, d]) => [...p, ...d]) : Promise.resolve([]),
   ]);
 
   const isFlightBooking = slug.join("/") === "airline-tickets-booking";
@@ -128,15 +129,24 @@ export default async function DynamicPage({
   const pageSeo = parseSeoSettings(page.seoData || page.seoSettings);
   let pageJsonLd = '';
   if (pageSeo.jsonLdPayload) {
-    pageJsonLd = typeof pageSeo.jsonLdPayload === 'string'
-      ? pageSeo.jsonLdPayload
-      : JSON.stringify(pageSeo.jsonLdPayload);
+    try {
+      const raw = typeof pageSeo.jsonLdPayload === 'string'
+        ? pageSeo.jsonLdPayload
+        : JSON.stringify(pageSeo.jsonLdPayload);
+      const withoutScriptWrapper = raw.trim().replace(/^<script\b[^>]*>/i, '').replace(/<\/script>\s*$/i, '').trim();
+      const parsed = JSON.parse(withoutScriptWrapper);
+      if (parsed && typeof parsed === 'object') {
+        pageJsonLd = JSON.stringify(parsed).replace(/</g, '\\u003c');
+      }
+    } catch {
+      // Invalid JSON-LD must not render as a script or break the page.
+    }
   }
 
   return (
     <main className={`${isFlightBooking ? "bg-blue-lt" : "bg-white"} min-h-screen`}>
       {pageJsonLd && (
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: pageJsonLd.replace(/</g, '\\u003c') }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: pageJsonLd }} />
       )}
       <PageBanner
         title={isGalleryPage ? page.title : (page.bannerTitle || page.title)}
@@ -145,8 +155,6 @@ export default async function DynamicPage({
         position={page.bannerPosition || undefined}
         size={page.bannerSize || undefined}
         heroSettings={page.seoSettings}
-        fallbackBgImage={slugPath === "/hajj-packages" ? "/images_BHT/packages/hajj-2026-4-1789469937874.webp" : undefined}
-        localOnly={slugPath === "/hajj-packages"}
       />
 
       {sections.length > 0 ? (

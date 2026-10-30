@@ -42,6 +42,7 @@ interface AdminLayoutProps {
   // Deprecated: some older admin pages pass a hard-coded display role.
   // The authenticated server session is always used instead.
   user?: { name: string; role: string; email?: string; loginTime?: number } | null;
+  activeNavHref?: string;
 }
 
 const navItems = [
@@ -142,11 +143,12 @@ const navItems = [
   },
 ];
 
-export default function AdminLayout({ children }: AdminLayoutProps) {
+export default function AdminLayout({ children, activeNavHref }: AdminLayoutProps) {
   // Only use the verified server session provided by /admin/layout.tsx.
   // Ignoring the legacy `user` prop fixes the 'Super Admin' vs 'super_admin' mismatch.
   const user = useAdminSession();
   const pathname = usePathname();
+  const activePathname = activeNavHref || pathname;
   // Authentication is supplied by the /admin server layout, not hard-coded page props.
   const currentUser = user;
   const [identity, setIdentity] = useState<any>(null);
@@ -205,7 +207,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   // Active page title indicator
   const currentPageItem = navItems.find(
-    (item) => pathname === item.href || pathname.startsWith(item.href + '/')
+    (item) => activePathname === item.href || activePathname.startsWith(item.href + '/')
   );
   const pageTitle = currentPageItem ? currentPageItem.label : 'Admin Portal';
 
@@ -241,7 +243,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             return item.href === '/admin/dashboard' || item.href === '/admin/activity' || currentUser.role === 'content_editor';
           }).map((item) => {
             const isActive =
-              pathname === item.href || pathname.startsWith(item.href + '/');
+              activePathname === item.href || activePathname.startsWith(item.href + '/');
             return (
               <Link
                 key={item.href}

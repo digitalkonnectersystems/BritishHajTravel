@@ -293,7 +293,7 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
                 </div>
                 <p className="mt-1 mb-0 text-xs text-slate-500">{selectedEnquiry.enquiryNumber} · {selectedEnquiry.sourceForm || 'Form source not recorded'}</p>
               </div>
-              <button type="button" onClick={() => setSelectedEnquiry(null)} className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 hover:bg-slate-100 cursor-pointer" title="Close">
+              <button type="button" onClick={() => setSelectedEnquiry(null)} className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 text-white bg-red-600 hover:bg-red-700 cursor-pointer" title="Close">
                 <X className="h-4 w-4" />
               </button>
             </div>

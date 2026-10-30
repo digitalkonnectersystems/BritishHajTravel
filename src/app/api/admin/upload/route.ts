@@ -8,6 +8,7 @@ import { db } from '@/db';
 import { mediaFiles } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { getMediaRoot, hashBuffer, optimizeImage } from '@/lib/mediaStorage';
+import { validateSafeSvg } from '@/lib/safeSvg';
 
 // Strict allow-list of recognized media subfolders matching public/images_BHT
 const ALLOWED_SUBFOLDERS = new Set([
@@ -89,11 +90,6 @@ export async function POST(req: NextRequest) {
     const imageDocumentExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg', '.pdf', '.ico', '.avif'];
     const videoExtensions = ['.mp4', '.webm', '.mov'];
     const cleanExt = originalExt.toLowerCase();
-    // SVG is active XML and may contain scripts. Keep existing trusted SVG assets,
-    // but do not allow new untrusted SVG files to be uploaded to our origin.
-    if (cleanExt === '.svg') {
-      return NextResponse.json({ success: false, error: 'SVG uploads are disabled for security; upload PNG or WebP instead.' }, { status: 400 });
-    }
     const isVideo = videoExtensions.includes(cleanExt);
     const allowedExtensions = [...imageDocumentExtensions, ...videoExtensions];
 
@@ -115,6 +111,19 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Validate SVG BEFORE sending bytes to any storage provider.
+    // Use the checked file for remote/Blob uploads as well as local storage.
+    let safeFile: File = file;
+    let checkedSvgBuffer: Buffer | null = null;
+    if (cleanExt === '.svg') {
+      try {
+        checkedSvgBuffer = validateSafeSvg(Buffer.from(await file.arrayBuffer()));
+        safeFile = new File([new Uint8Array(checkedSvgBuffer)], file.name, { type: 'image/svg+xml' });
+      } catch (error) {
+        return NextResponse.json({ success: false, error: error instanceof Error ? error.message : 'Unsafe SVG file' }, { status: 400 });
+      }
+    }
+
     const cleanBaseName = path
       .basename(file.name, originalExt)
       .toLowerCase()
@@ -134,7 +143,7 @@ export async function POST(req: NextRequest) {
       }
       try {
         const externalForm = new FormData();
-        externalForm.append('file', file, uniqueFilename);
+        externalForm.append('file', safeFile, uniqueFilename);
         externalForm.append('subfolder', subfolder);
         const result = await fetch(endpoint, {
           method: 'POST',
@@ -147,6 +156,7 @@ export async function POST(req: NextRequest) {
         if (!result.ok || !response?.success || typeof response.url !== 'string' || !response.url.startsWith('https://')) {
           throw new Error('The remote media server did not accept this file');
         }
+        await db.insert(mediaFiles).values({name:uniqueFilename,relativePath:response.url,contentHash:hashBuffer(Buffer.from(await safeFile.arrayBuffer())),mimeType:cleanExt==='.svg'?'image/svg+xml':safeFile.type||'application/octet-stream',sizeBytes:safeFile.size,storage:'remote'}).onDuplicateKeyUpdate({set:{sizeBytes:safeFile.size,status:'active',updatedAt:new Date()}});
         await logAdminActivityAction({type:'media',action:'Uploaded Media File',details:`Uploaded ${uniqueFilename} to remote storage`});
         return NextResponse.json({ success: true, url: response.url, relativePath: response.relativePath || null });
       } catch (error) {
@@ -159,11 +169,12 @@ export async function POST(req: NextRequest) {
     if (provider === 'blob' && process.env.BLOB_READ_WRITE_TOKEN) {
       try {
         const blobPath = `images_BHT/${subfolder}/${uniqueFilename}`;
-        const blob = await put(blobPath, file, {
+        const blob = await put(blobPath, safeFile, {
           access: 'public',
           addRandomSuffix: false,
         });
 
+        await db.insert(mediaFiles).values({name:uniqueFilename,relativePath:blob.url,contentHash:hashBuffer(Buffer.from(await safeFile.arrayBuffer())),mimeType:cleanExt==='.svg'?'image/svg+xml':safeFile.type||'application/octet-stream',sizeBytes:safeFile.size,storage:'blob'}).onDuplicateKeyUpdate({set:{sizeBytes:safeFile.size,status:'active',updatedAt:new Date()}});
         await logAdminActivityAction({type:'media',action:'Uploaded Media File',details:`Uploaded ${uniqueFilename} to blob storage`});
         return NextResponse.json({
           success: true,
@@ -181,14 +192,14 @@ export async function POST(req: NextRequest) {
 
     // Explicit local provider: writes never silently fall back from Blob or remote.
     try {
-      const sourceBuffer = Buffer.from(await file.arrayBuffer());
+      const sourceBuffer = checkedSvgBuffer ?? Buffer.from(await file.arrayBuffer());
       const rawHash = hashBuffer(sourceBuffer);
       const rawMatches = await db.select().from(mediaFiles).where(and(eq(mediaFiles.contentHash,rawHash),eq(mediaFiles.status,'active'))).limit(10);
       for (const match of rawMatches) {
         if (match.storage === 'local' || match.storage === 'public') {
           const root = match.storage === 'local' ? getMediaRoot() : path.join(process.cwd(),'public','images_BHT');
           const exists = await fs.stat(path.join(root,match.relativePath)).then(stat=>stat.isFile()).catch(()=>false);
-          if (exists) return NextResponse.json({success:true,url:`/images_BHT/${match.relativePath}`,relativePath:`images_BHT/${match.relativePath}`,reused:true,sizeBytes:match.sizeBytes});
+          if (exists) return NextResponse.json({success:true,url:cleanExt==='.svg'?`/media/${match.relativePath}`:`/images_BHT/${match.relativePath}`,relativePath:`images_BHT/${match.relativePath}`,reused:true,sizeBytes:match.sizeBytes});
         }
       }
       const transformed = await optimizeImage(sourceBuffer, cleanExt);
@@ -200,7 +211,7 @@ export async function POST(req: NextRequest) {
       for (const match of matches) {
         if (match.storage === 'local' || match.storage === 'public') {
           const exists = await fs.stat(path.join(match.storage==='local'?getMediaRoot():path.join(process.cwd(),'public','images_BHT'),match.relativePath)).then(s=>s.isFile()).catch(()=>false);
-          if (exists) return NextResponse.json({success:true,url:`/images_BHT/${match.relativePath}`,relativePath:`images_BHT/${match.relativePath}`,reused:true,sizeBytes:match.sizeBytes});
+          if (exists) return NextResponse.json({success:true,url:cleanExt==='.svg'?`/media/${match.relativePath}`:`/images_BHT/${match.relativePath}`,relativePath:`images_BHT/${match.relativePath}`,reused:true,sizeBytes:match.sizeBytes});
         }
       }
       const storageRoot = getMediaRoot();
@@ -211,14 +222,14 @@ export async function POST(req: NextRequest) {
       await fs.writeFile(targetFilePath, buffer, {flag:'wx'});
       const relative = `${subfolder}/${finalFilename}`;
       try {
-        await db.insert(mediaFiles).values({name:finalFilename, relativePath:relative,contentHash:sha,sizeBytes:buffer.length,mimeType:transformed.extension==='.webp'?'image/webp':file.type||'application/octet-stream', storage:'local'});
+        await db.insert(mediaFiles).values({name:finalFilename, relativePath:relative,contentHash:sha,sizeBytes:buffer.length,mimeType:transformed.extension==='.webp'?'image/webp':cleanExt==='.svg'?'image/svg+xml':file.type||'application/octet-stream', storage:'local'});
       } catch (databaseError) {
         await fs.unlink(targetFilePath).catch(()=>{});
         throw databaseError;
       }
 
       // Media route supports a persistent shared storage root across deployments.
-      const publicUrl = `/images_BHT/${subfolder}/${finalFilename}`;
+      const publicUrl = cleanExt === '.svg' ? `/media/${subfolder}/${finalFilename}` : `/images_BHT/${subfolder}/${finalFilename}`;
       const relativePath = `images_BHT/${subfolder}/${finalFilename}`;
 
       await logAdminActivityAction({type:'media',action:'Uploaded Media File',details:`Uploaded ${finalFilename} to persistent storage`});

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useId, useRef } from "react";
 import { CheckCircle2, AlertTriangle, XCircle, Info, X } from "lucide-react";
 
 export interface GlassNotificationProps {
@@ -20,6 +20,25 @@ export default function GlassNotificationModal({
   message,
   confirmText = "Got it",
 }: GlassNotificationProps) {
+  const titleId = useId();
+  const messageId = useId();
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const confirmButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    closeButtonRef.current?.focus();
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      previousFocus?.focus();
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const getTheme = () => {
@@ -33,7 +52,7 @@ export default function GlassNotificationModal({
           icon: <CheckCircle2 className="w-8 h-8 text-emerald-400 animate-pulse" />,
           badgeText: "SUCCESS",
           buttonBg: "bg-emerald-500 hover:bg-emerald-400 text-slate-950",
-          titleColor: "text-emerald-600",
+          titleColor: "text-emerald-300",
         };
       case "warning":
         return {
@@ -74,9 +93,38 @@ export default function GlassNotificationModal({
   const theme = getTheme();
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md animate-in fade-in duration-200">
+    <div
+      className="fixed inset-0 z-[9999] flex items-center justify-center overflow-y-auto p-4 bg-slate-950/70 backdrop-blur-md animate-in fade-in duration-200"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+      onKeyDown={(event) => {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          onClose();
+          return;
+        }
+
+        if (event.key !== "Tab") return;
+        const firstButton = closeButtonRef.current;
+        const lastButton = confirmButtonRef.current;
+
+        if (event.shiftKey && document.activeElement === firstButton) {
+          event.preventDefault();
+          lastButton?.focus();
+        } else if (!event.shiftKey && document.activeElement === lastButton) {
+          event.preventDefault();
+          firstButton?.focus();
+        }
+      }}
+    >
       {/* 3D Centric Glass Card */}
       <div
+        role={type === "error" || type === "warning" ? "alertdialog" : "dialog"}
+        aria-modal="true"
+        aria-labelledby={titleId}
+        aria-describedby={messageId}
+        tabIndex={-1}
         className={`relative w-full max-w-md bg-gradient-to-b ${theme.bgGradient} ${theme.border} ${theme.glow} border rounded-3xl p-7 shadow-2xl backdrop-blur-2xl text-white transform transition-all scale-100 flex flex-col items-center text-center overflow-hidden`}
       >
         {/* Decorative background glow orb */}
@@ -85,7 +133,10 @@ export default function GlassNotificationModal({
 
         {/* Close Button */}
         <button
+          ref={closeButtonRef}
+          type="button"
           onClick={onClose}
+          aria-label="Close notification"
           className="absolute top-4 right-4 text-white p-2 rounded-full bg-red-600 hover:bg-red-700 transition-colors cursor-pointer border-none"
         >
           <X className="w-4 h-4" />
@@ -104,17 +155,19 @@ export default function GlassNotificationModal({
         </span>
 
         {/* Title */}
-        <h3 className={`text-xl font-bold font-serif ${theme.titleColor} mb-2`}>
+        <h3 id={titleId} className={`text-xl font-bold font-serif ${theme.titleColor} mb-2`}>
           {title}
         </h3>
 
         {/* Message */}
-        <p className="text-xs text-white/80 leading-relaxed mb-6 font-light max-w-sm">
+        <p id={messageId} className="text-xs text-white/80 leading-relaxed mb-6 font-light max-w-sm">
           {message}
         </p>
 
         {/* Button */}
         <button
+          ref={confirmButtonRef}
+          type="button"
           onClick={onClose}
           className={`w-full py-3 px-6 rounded-2xl text-xs font-black uppercase tracking-wider ${theme.buttonBg} transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-md cursor-pointer border-none`}
         >

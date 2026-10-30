@@ -29,12 +29,12 @@ export default async function HajjPackagesPage() {
     liveCards = hajjPackages.map((pkg: any) => {
       const cd = pkg.cardData || {};
       return {
-        badgeDuration: cd.duration || `${pkg.durationDays || 14} Days`,
+        badgeDuration: cd.duration || (pkg.durationDays ? `${pkg.durationDays} Days` : ""),
         title: pkg.title,
         heroImage:
           cd.bannerImage ||
           pkg.featuredImage ||
-          "/uploads/sections/hajj_1.jpg",
+          "",
         makkahHotel: cd.makkahHotel || null,
         madinahHotel: cd.madinahHotel || null,
         price: pkg.startingPrice
@@ -66,14 +66,12 @@ export default async function HajjPackagesPage() {
     <main>
       <style dangerouslySetInnerHTML={{ __html: 'body { background-color: #fffff !important; }' }} />
       <PageBanner
-        title={pageData?.bannerTitle || "Luxury <span>Hajj Packages 2027</span>"}
-        description={pageData?.bannerDescription || "Luxury Hajj 2027 Packages with 5-Star Hotels, VIP Services & Complete Spiritual Guidance."}
+        title={pageData?.bannerTitle || pageData?.title || ""}
+        description={pageData?.bannerDescription || ""}
         bgImage={pageData?.bannerBgImage}
         position={pageData?.bannerPosition}
         size={pageData?.bannerSize}
         heroSettings={pageData?.seoSettings}
-        fallbackBgImage="/images_BHT/packages/hajj-2026-4-1789469937874.webp"
-        localOnly
       />
 
       {pageSections.length > 0 ? (

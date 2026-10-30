@@ -16,21 +16,33 @@ type SeatCard = {
   bookingUrl?: string;
 };
 
-const defaultCards: SeatCard[] = [
-  { logo: "/img/air/wizz.png", airline: "Wizz Air", flightLabel: "Flight 1", departure: "18 Dec 2025", returnDate: "02 Jan 2026", route: "LGW - JED", seats: "40 Seats Available", baggage: "32 KG Baggage", price: "£TBC / Person" },
-  { logo: "/img/air/wizz.png", airline: "Wizz Air", flightLabel: "Flight 2", departure: "20 Dec 2025", returnDate: "03 Jan 2026", route: "LGW - JED", seats: "85 Seats Available", baggage: "32 KG Baggage", price: "£TBC / Person" },
-  { logo: "/img/air/wizz.png", airline: "Wizz Air", flightLabel: "Flight 3", departure: "22 Dec 2025", returnDate: "06 Jan 2026", route: "LGW - JED", seats: "45 Seats Available", baggage: "32 KG Baggage", price: "£TBC / Person" },
-];
+type AvailableSeatsData = {
+  eyebrow?: string;
+  title?: string;
+  subtitle?: string;
+  items?: unknown[];
+};
 
-export default function AvailableSeatsSection({ data }: { data?: any }) {
-  const cards: SeatCard[] = Array.isArray(data?.items) && data.items.length ? data.items : defaultCards;
+function isSeatCard(value: unknown): value is SeatCard {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  return ['logo', 'airline', 'flightLabel', 'departure', 'returnDate', 'route', 'seats', 'baggage', 'price', 'bookingLabel', 'bookingUrl']
+    .every((key) => {
+      const field = (value as Record<string, unknown>)[key];
+      return field === undefined || typeof field === 'string';
+    });
+}
+
+export default function AvailableSeatsSection({ data }: { data?: AvailableSeatsData }) {
+  const cards = Array.isArray(data?.items) ? data.items.filter(isSeatCard) : [];
+  if (cards.length === 0) return null;
+
   return (
     <section className="relative overflow-hidden bg-[#f1f9ff] px-4 py-8 md:py-10">
       <div className="mx-auto max-w-7xl">
         <div className="section-head center text-center mb-8">
-          <span className="eyebrow mx-auto block">{data?.eyebrow || "AVAILABLE SEATS"}</span>
-          <h2 className="section-heading font-serif text-primary">{data?.title || "UMRAH ALLOCATION SEATS 2025 - 2026"}</h2>
-          <p className="mt-2 text-sm text-slate-600">{data?.subtitle || "On First come first serve basis HURRY as LIMITED STOCK"}</p>
+          {data?.eyebrow ? <span className="eyebrow mx-auto block">{data.eyebrow}</span> : null}
+          {data?.title ? <h2 className="section-heading font-serif text-primary">{data.title}</h2> : null}
+          {data?.subtitle ? <p className="mt-2 text-sm text-slate-600">{data.subtitle}</p> : null}
         </div>
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
           {cards.map((card, index) => (

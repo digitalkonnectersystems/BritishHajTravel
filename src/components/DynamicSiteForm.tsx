@@ -11,7 +11,7 @@ import {
   submitVisaEnquiryAction,
 } from "@/actions/enquiryActions";
 import { getFormsSettings } from "@/actions/pageActions";
-import { getAllPackages } from "@/actions/packageActions";
+import { getPublicPackageOptions } from "@/actions/packageActions";
 import { CheckCircle, AlertTriangle } from "lucide-react";
 import GlassNotificationModal from "@/components/ui/GlassNotificationModal";
 
@@ -87,7 +87,7 @@ export default function DynamicSiteForm({
     setMounted(true);
     const fetchPkgs = async () => {
       try {
-        const pkgs = await getAllPackages();
+        const pkgs = await getPublicPackageOptions();
         setAllPackages(pkgs || []);
       } catch (err) {
         console.error("Failed to fetch packages", err);
@@ -236,7 +236,6 @@ export default function DynamicSiteForm({
           phone,
           travelersCount: parseNumberSafe(quantity, 1),
           nationality: getVal(["nationality"], "British"),
-          travelDate,
           message: [message, travelDate ? `Travel date: ${travelDate}` : ""].filter(Boolean).join("\n"),
           sourceFormName: formKey === 'umrahVisaOrder' ? 'Umrah Visa Order Form' : 'Visa Consultation Form',
         });

@@ -1,5 +1,5 @@
 import { db } from '@/db';
-import { sitePages, packages, blogPosts, visaServices, sitemapConfigs, sitemapLogs } from '@/db/schema';
+import { sitePages, packages, blogPosts, visaServices, destinations, visaProcessing, sitemapConfigs, sitemapLogs } from '@/db/schema';
 import { eq, or, and, isNotNull } from 'drizzle-orm';
 
 interface SitemapItem {
@@ -114,7 +114,7 @@ export async function gatherAllSitemapItems(baseUrl: string): Promise<SitemapIte
         const rawUrl = seo.canonicalUrl || seo.customUrl;
         let url: string;
         if (rawUrl && (rawUrl.startsWith('http://') || rawUrl.startsWith('https://'))) {
-          url = rawUrl;
+          url = `${baseUrl.replace(/\/+$/, '')}${new URL(rawUrl).pathname}`;
         } else if (rawUrl && rawUrl.startsWith('/')) {
           url = `${baseUrl.replace(/\/+$/, '')}${rawUrl}`;
         } else {
@@ -151,7 +151,7 @@ export async function gatherAllSitemapItems(baseUrl: string): Promise<SitemapIte
         const rawPkgUrl = seo.canonicalUrl || seo.customUrl;
         let url: string;
         if (rawPkgUrl && (rawPkgUrl.startsWith('http://') || rawPkgUrl.startsWith('https://'))) {
-          url = rawPkgUrl;
+          url = `${baseUrl.replace(/\/+$/, '')}${new URL(rawPkgUrl).pathname}`;
         } else if (rawPkgUrl && rawPkgUrl.startsWith('/')) {
           url = `${baseUrl.replace(/\/+$/, '')}${rawPkgUrl}`;
         } else {
@@ -184,7 +184,7 @@ export async function gatherAllSitemapItems(baseUrl: string): Promise<SitemapIte
         const rawUrl = seo.canonicalUrl || seo.customUrl;
         let url: string;
         if (rawUrl && (rawUrl.startsWith('http://') || rawUrl.startsWith('https://'))) {
-          url = rawUrl;
+          url = `${baseUrl.replace(/\/+$/, '')}${new URL(rawUrl).pathname}`;
         } else if (rawUrl && rawUrl.startsWith('/')) {
           url = `${baseUrl.replace(/\/+$/, '')}${rawUrl}`;
         } else {
@@ -235,5 +235,61 @@ export async function gatherAllSitemapItems(baseUrl: string): Promise<SitemapIte
     }
   }
 
-  return items;
+  // 5. Published destinations. Sold-out offers remain accessible by direct URL only.
+  const destinationConfig = getConfig('destinations');
+  if (destinationConfig.includeInSitemap !== false) {
+    try {
+      const rows = await db.select().from(destinations).where(eq(destinations.status, 'published'));
+      for (const item of rows) {
+        const seo = parseSeoSettings(item.seoSettings);
+        const destinationOffer = item.packageData as any;
+        if (seo.noIndex === true || seo.includeInSitemap === false || destinationOffer?.status === 'sold_out') continue;
+        const path = `/destinations/${String(item.slug || '').replace(/^\/+/, '')}`;
+        if (!item.slug) continue;
+        items.push({
+          loc: `${baseUrl.replace(/\/+$/, '')}${path}`,
+          lastmod: item.updatedAt ? new Date(item.updatedAt).toISOString().split('T')[0] : undefined,
+          changefreq: destinationConfig.changeFrequency || 'monthly',
+          priority: destinationConfig.priority || '0.7',
+          images: destinationConfig.includeImages !== false && destinationOffer?.cardData?.bannerImage ? [destinationOffer.cardData.bannerImage] : [],
+        });
+      }
+    } catch (e) {
+      console.warn('Sitemap destinations fetch skipped:', e);
+    }
+  }
+
+  // 6. Published visa processing pages, each under its own CMS slug.
+  const visaPageConfig = getConfig('visaProcessing');
+  if (visaPageConfig.includeInSitemap !== false) {
+    try {
+      const rows = await db.select().from(visaProcessing).where(eq(visaProcessing.status, 'published'));
+      for (const item of rows) {
+        const seo = parseSeoSettings(item.seoSettings);
+        if (!item.slug || seo.noIndex === true || seo.includeInSitemap === false) continue;
+        const slug = String(item.slug).replace(/^\/+/, '');
+        const path = slug.startsWith('visa-processing/') ? `/${slug}` : `/visa-processing/${slug}`;
+        items.push({
+          loc: `${baseUrl.replace(/\/+$/, '')}${path}`,
+          lastmod: item.updatedAt ? new Date(item.updatedAt).toISOString().split('T')[0] : undefined,
+          changefreq: visaPageConfig.changeFrequency || 'monthly',
+          priority: visaPageConfig.priority || '0.7',
+          images: visaPageConfig.includeImages !== false && item.bannerBgImage ? [item.bannerBgImage] : [],
+        });
+      }
+    } catch (e) {
+      console.warn('Sitemap visaProcessing fetch skipped:', e);
+    }
+  }
+
+  // A single canonical path must appear only once, even if multiple data sources include it.
+  const unique = new Map<string, SitemapItem>();
+  for (const item of items) {
+    const url = new URL(item.loc, baseUrl);
+    const normalizedPath = url.pathname === '/' ? '/' : url.pathname.replace(/\/+$/, '');
+    const key = normalizedPath.toLowerCase();
+    const loc = `${baseUrl.replace(/\/+$/, '')}${normalizedPath === '/' ? '/' : normalizedPath}`;
+    if (!unique.has(key)) unique.set(key, { ...item, loc });
+  }
+  return [...unique.values()];
 }

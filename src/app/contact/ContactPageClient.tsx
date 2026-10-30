@@ -206,7 +206,6 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
         phone: contactForm.phone,
         website: contactForm.website,
         message: contactForm.message,
-        sourceFormName: 'Contact Form',
       });
 
       if (resData.success) {

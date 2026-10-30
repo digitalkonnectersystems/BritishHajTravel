@@ -53,7 +53,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const releaseFile = path.join(process.cwd(), 'public', 'images_BHT', filePath);
     if (releaseFile !== candidatePath1 && fsSync.existsSync(releaseFile)) {
       const fileBuffer = await fs.readFile(releaseFile);
-      return new NextResponse(new Uint8Array(fileBuffer), { headers: { 'Content-Type': contentType, 'Cache-Control': 'public, max-age=3600' } });
+      return new NextResponse(new Uint8Array(fileBuffer), { headers: { 'X-Content-Type-Options': 'nosniff', 'Content-Security-Policy': "default-src 'none'; sandbox", 'Content-Type': contentType, 'Cache-Control': 'public, max-age=3600' } });
     }
 
     // 4. Check in public/media/

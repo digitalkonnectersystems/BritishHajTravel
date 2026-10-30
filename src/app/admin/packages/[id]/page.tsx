@@ -1,24 +1,26 @@
 import { getCurrentSession } from '@/lib/auth';
-import { redirect } from 'next/navigation';
+import { redirect, notFound } from 'next/navigation';
 import AdminLayout from '@/components/admin/AdminLayout';
-import { getPackagesByIds } from '@/actions/packageActions';
+import { getPackageForAdmin } from '@/actions/packageActions';
 import EditPackageClient from './EditPackageClient';
 
 export default async function EditPackagePage({ params }: { params: Promise<{ id: string }> }) {
   const session = await getCurrentSession();
   if (!session) redirect('/letstravel');
+  if (!['super_admin', 'admin', 'content_editor', 'seo_manager'].includes(session.role)) {
+    redirect('/admin/dashboard');
+  }
 
-  const paramsObj = await params;
-  const pkgId = parseInt(paramsObj.id);
-  if (isNaN(pkgId)) redirect('/admin/hajj-packages');
+  const { id } = await params;
+  if (!/^[1-9]\d*$/.test(id)) notFound();
+  const pkgId = Number(id);
+  if (!Number.isSafeInteger(pkgId)) notFound();
 
-  const packages = await getPackagesByIds([pkgId]);
-  const pkg = packages[0];
-  
-  if (!pkg) redirect('/admin/hajj-packages');
+  const pkg = await getPackageForAdmin(pkgId);
+  if (!pkg) notFound();
 
   return (
-    <AdminLayout user={session}>
+    <AdminLayout user={session} activeNavHref={pkg.type === 'hajj' ? '/admin/hajj-packages' : '/admin/umrah-packages'}>
       <EditPackageClient packageData={pkg} />
     </AdminLayout>
   );

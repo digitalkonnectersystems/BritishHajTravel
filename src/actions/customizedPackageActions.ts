@@ -9,7 +9,6 @@ import { desc, eq, isNull, and, inArray } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { writeBackendLog } from '@/lib/backendLogger';
 import { recordPublicEnquiry } from '@/lib/publicEnquiryAudit';
-import { dispatchFormEmails } from '@/lib/emailService';
 
 export type CustomizedEnquiryInput = {
   category: 'hajj' | 'umrah'; fullName: string; email: string; phone: string;
@@ -77,29 +76,10 @@ export async function submitCustomizedPackageAction(raw: CustomizedEnquiryInput)
       });
     });
     await recordPublicEnquiry('Customized Package',enquiryNumber);
-    // Keep the database submission even if the SMTP provider is unavailable.
-    const formName = raw.category === 'hajj' ? 'Customized Hajj Package Form' : 'Customized Umrah Package Form';
-    const emailResult = await dispatchFormEmails(formName, {
-      enquiryNumber, category: raw.category, fullName, email, phone: raw.phone,
-      departureAirport, departureDate: raw.departureDate || '', numberOfDays: raw.numberOfDays,
-      adults: raw.adults, children: raw.children, infants: raw.infants,
-      airlinePreference: bounded(raw.airlinePreference, 255),
-      makkahHotel: bounded(raw.makkahHotel, 255), madinahHotel: bounded(raw.madinahHotel, 255),
-      hotelStandard: bounded(raw.hotelStandard, 70), roomOccupancy: bounded(raw.roomOccupancy, 70),
-      transportation: bounded(raw.transportation, 120), budgetGbp: budget,
-      notes: bounded(raw.notes, 4000), services, requirements,
-    }, email, async audit => {
-      await db.update(enquiries).set({
-        sourceForm: formName,
-        emailTo: audit.to.join(', '), emailCc: audit.cc.join(', '), emailBcc: audit.bcc.join(', '),
-        emailSubject: audit.subject, emailHtml: audit.html,
-        emailDeliveryStatus: audit.status, updatedAt: new Date(),
-      }).where(eq(enquiries.enquiryNumber, enquiryNumber));
-    });
     revalidatePath('/admin/enquiries');
     revalidatePath('/admin/customized-enquiries');
     revalidatePath('/admin/dashboard');
-    return { success: true, enquiryNumber, emailWarning: emailResult.error };
+    return { success: true, enquiryNumber };
   } catch (err) {
     console.error('[Customized Enquiries] Save failed:', err);
     await writeBackendLog({severity:'error',category:'Database',message:'Customized enquiry insert failed',source:'customizedPackageActions'});

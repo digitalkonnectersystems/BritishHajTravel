@@ -160,6 +160,14 @@ function HajjCardFields({ pkgData, setPkgData }: { pkgData: any; setPkgData: (v:
       <h4 className="text-xs font-extrabold text-amber-900 uppercase tracking-wider border-b border-amber-200 pb-2 flex items-center gap-2">
         <BookOpen className="w-3.5 h-3.5" /> Dynamic Card Details
       </h4>
+      <div className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3">
+        <span className="text-xs font-bold text-primary">Show complete package card on frontend</span>
+        <button type="button" aria-pressed={cd.isVisible !== false}
+          onClick={() => updateCD('isVisible', cd.isVisible === false)}
+          className={`rounded-full border px-3 py-1.5 text-xs font-bold ${cd.isVisible !== false ? 'border-primary bg-blue-50 text-primary' : 'border-slate-300 bg-slate-100 text-slate-600'}`}>
+          {cd.isVisible !== false ? 'Visible' : 'Hidden'}
+        </button>
+      </div>
 
       {/* Banner + Badge row */}
       <div className="flex flex-col md:flex-row gap-4">
@@ -226,6 +234,11 @@ function HajjCardFields({ pkgData, setPkgData }: { pkgData: any; setPkgData: (v:
               <h5 className="text-[10px] font-extrabold text-slate-700 mb-3 flex items-center gap-1.5">
                 <Hotel className="w-3 h-3 text-amber-600" /> {h.label}
               </h5>
+              <button type="button" aria-pressed={hotelObj.isVisible !== false}
+                onClick={() => updateHotel(h.key, 'isVisible', hotelObj.isVisible === false)}
+                className={`mb-3 rounded-full border px-3 py-1.5 text-[10px] font-bold ${hotelObj.isVisible !== false ? 'border-primary bg-blue-50 text-primary' : 'border-slate-300 bg-slate-100 text-slate-600'}`}>
+                {hotelObj.isVisible !== false ? 'Hide whole hotel card' : 'Show whole hotel card'}
+              </button>
               <div className="space-y-2.5">
                 <ImageUploadWidget value={hotelObj.image || ''} onChange={(url) => updateHotel(h.key, 'image', url)} subfolder="packages" />
                 <div>
@@ -414,6 +427,14 @@ function UmrahCardFields({ pkgData, setPkgData }: { pkgData: any; setPkgData: (v
       <h4 className="text-xs font-extrabold text-emerald-900 uppercase tracking-wider border-b border-emerald-200 pb-2 flex items-center gap-2">
         <Plane className="w-3.5 h-3.5" /> Dynamic Card Details
       </h4>
+      <div className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3">
+        <span className="text-xs font-bold text-primary">Show complete package card on frontend</span>
+        <button type="button" aria-pressed={cd.isVisible !== false}
+          onClick={() => updateCD('isVisible', cd.isVisible === false)}
+          className={`rounded-full border px-3 py-1.5 text-xs font-bold ${cd.isVisible !== false ? 'border-primary bg-blue-50 text-primary' : 'border-slate-300 bg-slate-100 text-slate-600'}`}>
+          {cd.isVisible !== false ? 'Visible' : 'Hidden'}
+        </button>
+      </div>
 
       {/* Banner image + links */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -447,6 +468,11 @@ function UmrahCardFields({ pkgData, setPkgData }: { pkgData: any; setPkgData: (v
           <h5 className="text-[10px] font-extrabold text-slate-700 mb-3 flex items-center gap-1.5">
             <Hotel className="w-3 h-3 text-amber-600" /> Makkah Hotel
           </h5>
+          <button type="button" aria-pressed={cd.makkahHotel?.isVisible !== false}
+            onClick={() => updateMak('isVisible', cd.makkahHotel?.isVisible === false)}
+            className={`mb-3 rounded-full border px-3 py-1.5 text-[10px] font-bold ${cd.makkahHotel?.isVisible !== false ? 'border-primary bg-blue-50 text-primary' : 'border-slate-300 bg-slate-100 text-slate-600'}`}>
+            {cd.makkahHotel?.isVisible !== false ? 'Hide whole hotel card' : 'Show whole hotel card'}
+          </button>
           <div className="space-y-2.5">
             <ImageUploadWidget value={cd.makkahHotel?.image || ''} onChange={(url) => updateMak('image', url)} subfolder="packages" />
             <div>
@@ -488,6 +514,11 @@ function UmrahCardFields({ pkgData, setPkgData }: { pkgData: any; setPkgData: (v
           <h5 className="text-[10px] font-extrabold text-slate-700 mb-3 flex items-center gap-1.5">
             <Hotel className="w-3 h-3 text-primary" /> Madinah Hotel
           </h5>
+          <button type="button" aria-pressed={cd.madinahHotel?.isVisible !== false}
+            onClick={() => updateMad('isVisible', cd.madinahHotel?.isVisible === false)}
+            className={`mb-3 rounded-full border px-3 py-1.5 text-[10px] font-bold ${cd.madinahHotel?.isVisible !== false ? 'border-primary bg-blue-50 text-primary' : 'border-slate-300 bg-slate-100 text-slate-600'}`}>
+            {cd.madinahHotel?.isVisible !== false ? 'Hide whole hotel card' : 'Show whole hotel card'}
+          </button>
           <div className="space-y-2.5">
             <ImageUploadWidget value={cd.madinahHotel?.image || ''} onChange={(url) => updateMad('image', url)} subfolder="packages" />
             <div>

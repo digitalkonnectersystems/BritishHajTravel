@@ -7,7 +7,6 @@ import { Fragment, useState, useEffect, useRef, Suspense } from 'react';
 import Link from 'next/link';
 
 import { useSearchParams } from 'next/navigation';
-
 import AdminLayout from '@/components/admin/AdminLayout';
 
 import { Field, FieldLabel } from '@/components/ui/field';
@@ -18,6 +17,7 @@ import { getPageById, getGuidesList, savePageAction, type GuideCategory } from '
 import { getVisaProcessingById, saveVisaProcessingAction } from '@/actions/visaProcessingActions';
 
 import { getAllPackages } from '@/actions/packageActions';
+import { getDestinations } from '@/actions/destinationActions';
 
 import { getPackageCategories } from '@/actions/packageCategoryActions';
 
@@ -80,9 +80,14 @@ function getYouTubeVideoId(value: string): string | null {
 
 /** Filter packages for the Packages Selector dropdown based on the chosen category. */
 
-function filterPackagesForCategory(secType: string, selectedCategory: string, packages: any[]): any[] {
+function sectionPackageType(secType: string, pageSlug: string): 'hajj' | 'umrah' {
+  if (secType === 'Hajj Packages' || secType === 'Upcoming Hajj Packages') return 'hajj';
+  if (secType === 'Umrah Packages' || secType === 'Umrah Packages Grid' || secType === 'Upcoming Umrah Packages') return 'umrah';
+  return /hajj/i.test(pageSlug) ? 'hajj' : 'umrah';
+}
 
-  const isHajjSection = secType === 'Hajj Packages' || secType === 'Upcoming Hajj Packages';
+function filterPackagesForCategory(secType: string, selectedCategory: string, packages: any[], pageSlug = ''): any[] {
+  const isHajjSection = sectionPackageType(secType, pageSlug) === 'hajj';
 
   return (packages || []).filter((p) => {
 
@@ -336,11 +341,11 @@ const SECTION_CATALOG: SectionCategory[] = [
 
     items: [
 
-        { type: 'FAQ', description: 'Responsive accordion FAQ block with editable questions and answers.', pages: ['Any Page'] },
+      { type: 'FAQ', description: 'Responsive accordion FAQ block with editable questions and answers.', pages: ['Any Page'] },
 
-        { type: 'Guide', description: 'Responsive step-by-step guide cards with selectable SVG icons and Learn More links.', pages: ['Any Page', 'Homepage'] },
+      { type: 'Guide', description: 'Responsive step-by-step guide cards with selectable SVG icons and Learn More links.', pages: ['Any Page', 'Homepage'] },
 
-        { type: 'Services Grid', description: 'Icon + heading + description service tiles in a responsive grid.', pages: ['About', 'Any Page'] },
+      { type: 'Services Grid', description: 'Icon + heading + description service tiles in a responsive grid.', pages: ['About', 'Any Page'] },
 
       { type: 'Image+Text', description: 'Split image-and-text block with eyebrow, heading, body, and optional CTA.', pages: ['Any Page'] },
 
@@ -598,6 +603,7 @@ function PageBuilderContent() {
 
 
   const [allPackages, setAllPackages] = useState<any[]>([]);
+  const [soldOutDestinations, setSoldOutDestinations] = useState<any[]>([]);
 
   const [packageCategories, setPackageCategories] = useState<any[]>([]);
 
@@ -612,6 +618,7 @@ function PageBuilderContent() {
   useEffect(() => {
 
     getAllPackages().then(setAllPackages).catch(console.error);
+    getDestinations(true).then(setSoldOutDestinations).catch(console.error);
 
     Promise.all([getPackageCategories('umrah'), getPackageCategories('hajj')])
 
@@ -829,14 +836,14 @@ function PageBuilderContent() {
 
             try {
 
-                const parsed = typeof p.seoSettings === 'string' ? JSON.parse(p.seoSettings) : p.seoSettings;
-                setSeoSettings(parsed);
-                const savedHero = parsed?.innerHero || parsed?.saudiVisaHero;
-                if (savedHero?.showSupport !== undefined) setShowInnerHeroSupport(savedHero.showSupport !== false);
-                if (savedHero?.eyebrow !== undefined) setSaudiVisaEyebrow(savedHero.eyebrow);
-                if (Array.isArray(savedHero?.features) && savedHero.features.length > 0) {
-                  setSaudiVisaFeatures(savedHero.features.slice(0, 3));
-                }
+              const parsed = typeof p.seoSettings === 'string' ? JSON.parse(p.seoSettings) : p.seoSettings;
+              setSeoSettings(parsed);
+              const savedHero = parsed?.innerHero || parsed?.saudiVisaHero;
+              if (savedHero?.showSupport !== undefined) setShowInnerHeroSupport(savedHero.showSupport !== false);
+              if (savedHero?.eyebrow !== undefined) setSaudiVisaEyebrow(savedHero.eyebrow);
+              if (Array.isArray(savedHero?.features) && savedHero.features.length > 0) {
+                setSaudiVisaFeatures(savedHero.features.slice(0, 3));
+              }
 
             } catch (e) { }
 
@@ -854,7 +861,7 @@ function PageBuilderContent() {
 
                 const loadedSections = [...parsed];
                 const isSaudiVisaPage = p.slug === '/saudi-visa' || pageId === 5 || processingMode;
-                  if (isSaudiVisaPage) {
+                if (isSaudiVisaPage) {
                   const combinedSection = loadedSections.find((section: any) => section.type === 'Umrah Visa Application');
                   if (combinedSection) {
                     const combinedIndex = loadedSections.indexOf(combinedSection);
@@ -1341,49 +1348,10 @@ function PageBuilderContent() {
       };
 
     } else if (type === 'Sold Out Packages') {
-
       defaultData = {
-
-        eyebrow: 'Luxury Hajj Packages',
-
-        title: 'Packages Officially<br />Sold Out',
-
-        description: 'Departures from £ 2,595 per person. Availability and accommodations are confirmed with every booking – contact us before reserving.',
-
-        items: [
-
-          {
-
-            title: 'Hajj Package',
-
-            month: 'May · 2026',
-
-            price: '$18,995',
-
-            heroImage: 'https://images.unsplash.com/photo-1553755088-ef1973c7b4a1?auto=format&fit=crop&w=700&q=80',
-
-            includes: [
-
-              { text: 'Return Flights from London', icon: 'PlaneTakeoff', iconColor: 'text-ink-soft' },
-
-              { text: 'Luxury Ground Transportation', icon: 'Bus', iconColor: 'text-ink-soft' },
-
-              { text: 'Free Ihram Kit', icon: 'Shirt', iconColor: 'text-ink-soft' },
-
-              { text: 'Registration & Visa Assistance', icon: 'FileText', iconColor: 'text-ink-soft' },
-
-              { text: 'Imam Lead Guide & Seminar', icon: 'BookOpen', iconColor: 'text-ink-soft' },
-
-              { text: '5 Star Hotels Makkah & Madinah', icon: 'Building2', iconColor: 'text-ink-soft' },
-
-            ]
-
-          }
-
-        ]
-
+        eyebrow: 'SOLD OUT PACKAGES', title: 'Packages Officially<br />Sold Out',
+        description: '', packageType: 'all', packageIds: [],
       };
-
     } else if (type === 'Travel Services') {
 
       defaultData = {
@@ -2117,7 +2085,7 @@ function PageBuilderContent() {
 
             heroEyebrow,
 
-            title: bannerTitle || title || 'Your journey to <span>Makkah & Madinah</span>, guided with care.',
+            title: bannerTitle || title || '',
 
             description: bannerDescription || "British Hajj Travel plans Hajj and Umrah journeys from UK down to the smallest detail...",
 
@@ -2433,11 +2401,11 @@ function PageBuilderContent() {
 
                 onClick={() => setBannerBgImage('')}
 
-                className="bg-red-50 text-red-500 hover:bg-red-100 border border-red-200 px-3 py-1 rounded-full text-xs font-bold cursor-pointer transition-colors flex items-center gap-1"
+                title="Remove banner image" aria-label="Remove banner image" className="bg-red-50 text-red-500 hover:bg-red-100 border border-red-200 p-2 rounded-full cursor-pointer transition-colors inline-flex items-center justify-center"
 
               >
 
-                ⊗ Remove Image
+                <Trash2 className="h-4 w-4" />
 
               </button>
 
@@ -2583,7 +2551,7 @@ function PageBuilderContent() {
 
             {/* Right 7-Col Real-Time Live 640px Hero Preview Box (Matching Frontend Layout 100%) */}
 
-            <div className="lg:col-span-7 relative rounded-3xl overflow-hidden shadow-xl border border-slate-900/20 p-6 md:p-8 flex flex-col justify-between text-white min-h-[320px]">
+            <div className="lg:col-span-7 relative rounded-3xl overflow-hidden shadow-xl border border-slate-900/20 p-6 md:p-8 flex flex-col justify-between text-white aspect-[3/1] min-h-[320px]">
 
               <div
 
@@ -2593,9 +2561,9 @@ function PageBuilderContent() {
 
                   if (el) {
 
-                    const bgUrl = (bannerBgImage || '/img/hero.png').replace(/"/g, "'");
+                    const bgUrl = (bannerBgImage || '').replace(/"/g, "'");
 
-                    el.style.backgroundImage = `linear-gradient(100deg, rgba(10, 20, 18, .92) 0%, rgba(10, 20, 18, .72) 38%, rgba(10, 20, 18, .15) 68%), url("${bgUrl}")`;
+                    el.style.backgroundImage = `linear-gradient(100deg, rgba(10, 20, 18, .92) 0%, rgba(10, 20, 18, .72) 38%, rgba(10, 20, 18, .15) 68%)${bgUrl ? `, url("${bgUrl}")` : ""}`;
 
                     el.style.backgroundPosition = bannerPosition || 'center center';
 
@@ -2661,7 +2629,7 @@ function PageBuilderContent() {
 
                 <div className="text-[11px] font-extrabold uppercase tracking-widest text-white">
 
-                  {heroEyebrow || 'Est. in UK 2001 · Licensed Pilgrimage Operator'}
+                  {heroEyebrow || ''}
 
                 </div>
 
@@ -2669,13 +2637,13 @@ function PageBuilderContent() {
 
                   className="text-xl md:text-3xl font-serif text-white m-0 font-normal tracking-tight leading-tight [&>span]:text-red [&>em]:text-red [&>em]:not-italic"
 
-                  dangerouslySetInnerHTML={{ __html: bannerTitle || title || 'Your journey to <span>Makkah & Madinah</span>, guided with care.' }}
+                  dangerouslySetInnerHTML={{ __html: bannerTitle || title || '' }}
 
                 />
 
                 <p className="text-xs text-white/80 leading-relaxed font-light">
 
-                  {bannerDescription || "British Hajj Travel plans Hajj and Umrah journeys from UK down to the smallest detail — flights, five-star stays walking distance from the Haram, visas, and guides..."}
+                  {bannerDescription || ""}
 
                 </p>
 
@@ -3935,11 +3903,11 @@ function PageBuilderContent() {
 
                 onClick={() => setBannerBgImage('')}
 
-                className="bg-red-50 text-red-500 hover:bg-red-100 border border-red-200 px-3 py-1 rounded-full text-xs font-bold cursor-pointer transition-colors flex items-center gap-1"
+                title="Remove banner image" aria-label="Remove banner image" className="bg-red-50 text-red-500 hover:bg-red-100 border border-red-200 p-2 rounded-full cursor-pointer transition-colors inline-flex items-center justify-center"
 
               >
 
-                ⊗ Remove Image
+                <Trash2 className="h-4 w-4" />
 
               </button>
 
@@ -4013,7 +3981,7 @@ function PageBuilderContent() {
 
             {/* Right Side Compact Real-Time Live Preview Card */}
 
-            <div className="relative rounded-2xl overflow-hidden shadow-md flex flex-col items-start justify-start text-left text-white p-5 md:p-6 min-h-[320px] border border-slate-900/10">
+            <div className="relative rounded-2xl overflow-hidden shadow-md flex flex-col items-start justify-start text-left text-white p-5 md:p-6 aspect-[1400/590] min-h-[220px] border border-slate-900/10">
 
               <div
 
@@ -4023,21 +3991,12 @@ function PageBuilderContent() {
 
                   if (el) {
 
-                    const isHajjPage = slug === '/hajj-packages' || slug === '/hajj/packages';
-                    const bgUrl = bannerBgImage && (!isHajjPage || bannerBgImage.startsWith('/images_BHT/') || bannerBgImage.startsWith('/img/'))
-
-                      ? bannerBgImage.replace(/"/g, "'")
-
-                      : isHajjPage
-                        ? '/images_BHT/packages/hajj-2026-4-1789469937874.webp'
-                        : '/images_BHT/banners/hero-banner-1789561198745.webp';
-
-                    el.style.backgroundImage = `linear-gradient(90deg, rgba(3, 19, 65, 0.98) 0%, rgba(3, 19, 65, 0.88) 42%, rgba(3, 19, 65, 0.2) 100%), url("${bgUrl}")`;
-
-                    el.style.backgroundPosition = 'right center';
-
+                    const bgUrl = bannerBgImage || '';
+                    el.style.backgroundImage = bgUrl
+                      ? `linear-gradient(90deg, rgba(3, 19, 65, 0.98) 0%, rgba(3, 19, 65, 0.9) 38%, rgba(3, 19, 65, 0.22) 78%, rgba(3, 19, 65, 0.1) 100%), url("${bgUrl.replace(/"/g, "'")}")`
+                      : 'linear-gradient(90deg, rgba(3, 19, 65, 0.98), rgba(3, 19, 65, 0.1))';
+                    el.style.backgroundPosition = bannerPosition || 'center center';
                     el.style.backgroundSize = bannerSize || 'cover';
-
                     el.style.backgroundRepeat = 'no-repeat';
 
                   }
@@ -4049,14 +4008,14 @@ function PageBuilderContent() {
               <div className="relative z-10 w-full max-w-[640px]">
                 <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-[#173b8e] px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide text-white shadow-lg">
                   <span className="text-[11px]">✈</span>
-                  {slug === '/saudi-visa' ? (saudiVisaEyebrow || 'Saudi Visa Services') : (title || 'British Hajj Travel')}
+                  {slug === '/saudi-visa' ? (saudiVisaEyebrow || '') : (title || '')}
                 </div>
                 <h1
                   className="text-xl md:text-3xl font-serif text-white m-0 font-normal tracking-tight leading-tight [&>span]:text-red [&>em]:text-red [&>em]:not-italic"
-                    dangerouslySetInnerHTML={{ __html: bannerTitle || title || 'Page Title' }}
+                  dangerouslySetInnerHTML={{ __html: bannerTitle || title || 'Page Title' }}
                 />
                 <p className="text-[10px] md:text-xs text-white/85 leading-relaxed font-light mt-2 max-w-[520px]">
-                  {bannerDescription || 'Page header description'}
+                  {bannerDescription || ''}
                 </p>
                 {showInnerHeroSupport && <div className="mt-4 flex items-center gap-3 max-w-[560px]">
                   {saudiVisaFeatures.map((feature, index) => (
@@ -5172,7 +5131,8 @@ function PageBuilderContent() {
 
                                     <div className="text-xs font-bold text-slate-800">Testimonial Cards</div>
 
-                                    <div className="text-[11px] text-white">Review cards are managed in the TestimonialsCarousel component and display automatically.</div>
+                                    <div className="text-[11px] text-slate-600">Only admin-entered, verified reviews are published. Add a list of review objects with name, review, date, rating and avatarImg.</div>
+                                    <textarea key={sec.id} rows={6} className="mt-2 w-full border rounded-lg p-2 text-xs font-mono" defaultValue={JSON.stringify(sec.data?.reviews || [], null, 2)} onBlur={(e) => { try { const parsed = JSON.parse(e.target.value); if (Array.isArray(parsed)) updateSectionData(sec.id, 'reviews', parsed); else alert('Reviews must be a JSON array.'); } catch { alert('Invalid JSON reviews. Correct it before saving.'); } }} />
 
                                   </div>
 
@@ -5380,9 +5340,9 @@ function PageBuilderContent() {
 
                                       <div className="flex flex-col gap-0.5 shrink-0">
 
-                                        <button type="button" disabled={isFirst} onClick={() => { if (isFirst) return; const currentItems = [...allItems]; [currentItems[sIdx - 1], currentItems[sIdx]] = [currentItems[sIdx], currentItems[sIdx - 1]]; updateSectionData(sec.id, 'items', currentItems); }} className={`p-1 rounded border border-slate-200 ${isFirst ? 'opacity-30 cursor-not-allowed bg-slate-50 text-slate-400' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer'}`} title="Move Up"><MoveUp className="w-3 h-3" /></button>
+                                        <button type="button" disabled={isFirst} onClick={() => { if (isFirst) return; const currentItems = [...allItems];[currentItems[sIdx - 1], currentItems[sIdx]] = [currentItems[sIdx], currentItems[sIdx - 1]]; updateSectionData(sec.id, 'items', currentItems); }} className={`p-1 rounded border border-slate-200 ${isFirst ? 'opacity-30 cursor-not-allowed bg-slate-50 text-slate-400' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer'}`} title="Move Up"><MoveUp className="w-3 h-3" /></button>
 
-                                        <button type="button" disabled={isLast} onClick={() => { if (isLast) return; const currentItems = [...allItems]; [currentItems[sIdx + 1], currentItems[sIdx]] = [currentItems[sIdx], currentItems[sIdx + 1]]; updateSectionData(sec.id, 'items', currentItems); }} className={`p-1 rounded border border-slate-200 ${isLast ? 'opacity-30 cursor-not-allowed bg-slate-50 text-slate-400' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer'}`} title="Move Down"><MoveDown className="w-3 h-3" /></button>
+                                        <button type="button" disabled={isLast} onClick={() => { if (isLast) return; const currentItems = [...allItems];[currentItems[sIdx + 1], currentItems[sIdx]] = [currentItems[sIdx], currentItems[sIdx + 1]]; updateSectionData(sec.id, 'items', currentItems); }} className={`p-1 rounded border border-slate-200 ${isLast ? 'opacity-30 cursor-not-allowed bg-slate-50 text-slate-400' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer'}`} title="Move Down"><MoveDown className="w-3 h-3" /></button>
 
                                       </div>
 
@@ -6065,7 +6025,7 @@ function PageBuilderContent() {
 
                                     {sec.data?.videoUrl ? (
 
-                                      <button onClick={() => { updateSectionData(sec.id, 'videoUrl', ''); updateSectionData(sec.id, 'videoPoster', ''); }} className="text-[11px] font-bold text-red-500 hover:bg-red-50 border border-red-200 rounded-md px-2 py-1 cursor-pointer">✕ Remove Video</button>
+                                      <button onClick={() => { updateSectionData(sec.id, 'videoUrl', ''); updateSectionData(sec.id, 'videoPoster', ''); }} type="button" title="Remove video" aria-label="Remove video" className="text-red-500 hover:bg-red-50 border border-red-200 rounded-md p-2 cursor-pointer"><Trash2 className="h-4 w-4" /></button>
 
                                     ) : null}
 
@@ -6455,7 +6415,7 @@ function PageBuilderContent() {
 
                                   <span className="text-xs font-extrabold text-primary uppercase">
 
-                                    {(sec.type === 'Hajj Packages' || sec.type === 'Upcoming Hajj Packages') ? '🕌 Hajj' : '🕋 Umrah'} Packages Selector
+                                    {sectionPackageType(sec.type, slug) === 'hajj' ? '🕌 Hajj' : '🕋 Umrah'} Packages Selector
 
                                   </span>
 
@@ -6479,9 +6439,9 @@ function PageBuilderContent() {
 
                                     className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs outline-none focus:border-primary bg-slate-50"
 
-                                    value={selectedCategoryBySection[sec.id] || ''}
+                                    value={(selectedCategoryBySection[sec.id] ?? String(sec.data?.categoryId ?? ''))}
 
-                                    onChange={(e) => setSelectedCategoryBySection((prev) => ({ ...prev, [sec.id]: e.target.value }))}
+                                    onChange={(e) => { setSelectedCategoryBySection((prev) => ({ ...prev, [sec.id]: e.target.value })); updateSectionData(sec.id, 'categoryId', e.target.value); }}
 
                                   >
 
@@ -6493,13 +6453,13 @@ function PageBuilderContent() {
 
                                     {packageCategories
 
-                                      .filter(c => c.type === ((sec.type === 'Hajj Packages' || sec.type === 'Upcoming Hajj Packages') ? 'hajj' : 'umrah'))
+                                      .filter(c => c.type === sectionPackageType(sec.type, slug))
 
                                       .map(c => (
 
                                         <option key={c.id} value={String(c.id)}>
 
-                                          {c.name} ({c.packageCount} {c.packageCount === 1 ? 'package' : 'packages'})
+                                          {c.name} ({allPackages.filter(p => p.type === sectionPackageType(sec.type, slug) && Number(p.categoryId) === c.id).length} {allPackages.filter(p => p.type === sectionPackageType(sec.type, slug) && Number(p.categoryId) === c.id).length === 1 ? 'package' : 'packages'})
 
                                         </option>
 
@@ -6515,7 +6475,7 @@ function PageBuilderContent() {
 
                                     className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs outline-none focus:border-primary bg-slate-50"
 
-                                    disabled={!selectedCategoryBySection[sec.id]}
+                                    disabled={!(selectedCategoryBySection[sec.id] ?? String(sec.data?.categoryId ?? ''))}
 
                                     onChange={(e) => {
 
@@ -6523,7 +6483,7 @@ function PageBuilderContent() {
 
                                       const currentIds = sec.data?.packageIds || [];
 
-                                      const available = filterPackagesForCategory(sec.type, selectedCategoryBySection[sec.id] || '', allPackages).filter(p => !currentIds.includes(p.id));
+                                      const available = filterPackagesForCategory(sec.type, (selectedCategoryBySection[sec.id] ?? String(sec.data?.categoryId ?? '')), allPackages, slug).filter(p => !currentIds.includes(p.id));
 
                                       if (e.target.value === '__add_all__') {
 
@@ -6553,17 +6513,17 @@ function PageBuilderContent() {
 
                                     <option value="">+ Select a package to add</option>
 
-                                    {selectedCategoryBySection[sec.id] ? (
+                                    {(selectedCategoryBySection[sec.id] ?? String(sec.data?.categoryId ?? '')) ? (
 
                                       <option value="__add_all__">
 
-                                        + Add all {filterPackagesForCategory(sec.type, selectedCategoryBySection[sec.id], allPackages).filter(p => !(sec.data?.packageIds || []).includes(p.id)).length} packages from this category
+                                        + Add all {filterPackagesForCategory(sec.type, (selectedCategoryBySection[sec.id] ?? String(sec.data?.categoryId ?? '')), allPackages, slug).filter(p => !(sec.data?.packageIds || []).includes(p.id)).length} packages from this category
 
                                       </option>
 
                                     ) : null}
 
-                                    {filterPackagesForCategory(sec.type, selectedCategoryBySection[sec.id] || '', allPackages)
+                                    {filterPackagesForCategory(sec.type, (selectedCategoryBySection[sec.id] ?? String(sec.data?.categoryId ?? '')), allPackages, slug)
 
                                       .filter(p => !(sec.data?.packageIds || []).includes(p.id))
 
@@ -6714,16 +6674,46 @@ function PageBuilderContent() {
                             )}
 
                             {sec.type === 'Sold Out Packages' && (
-                              <div className="mt-1 rounded-xl border border-red-200 bg-red-50 p-4">
-                                <div className="flex items-start gap-3">
-                                  <span className="text-lg">🛑</span>
-                                  <div>
-                                    <div className="text-xs font-extrabold uppercase tracking-wider text-red-800">Automatic Sold-Out Packages</div>
-                                    <p className="mt-1 mb-0 text-[11px] leading-relaxed text-red-700">
-                                      No manual package selection is required. This section automatically shows every package whose package status is <strong>Sold Out</strong>. Change the package status from the Packages admin page to add or remove it here.
-                                    </p>
-                                  </div>
-                                </div>
+                              <div className="mt-1 rounded-xl border border-red-200 bg-red-50 p-4 flex flex-col gap-3">
+                                <div className="text-xs font-extrabold text-red-800 uppercase">Sold Out Packages: Two-Stage Filter</div>
+                                <label className="text-xs text-slate-700 font-bold">1. Choose sold-out package type</label>
+                                <select className="border border-red-200 bg-white rounded-lg p-2 text-xs" value={sec.data?.packageType || 'all'}
+                                  onChange={(e) => {
+                                    updateSectionData(sec.id, 'packageType', e.target.value);
+                                    updateSectionData(sec.id, 'packageIds', []);
+                                  }}>
+                                  <option value="all">All sold-out packages</option>
+                                  <option value="hajj">Hajj sold-out packages</option>
+                                  <option value="umrah">Umrah sold-out packages</option>
+                                  <option value="destinations">Destinations sold-out packages</option>
+                                </select>
+                                <label className="text-xs text-slate-700 font-bold">2. Choose packages from the selected type</label>
+                                <select className="border border-red-200 bg-white rounded-lg p-2 text-xs"
+                                  value=""
+                                  onChange={(e) => {
+                                    const id = e.target.value;
+                                    if (!id) return;
+                                    const selected = (sec.data?.packageIds || []).map(String);
+                                    if (!selected.includes(id)) updateSectionData(sec.id, 'packageIds', [...selected, id]);
+                                  }}>
+                                  <option value="">+ Select a package to display</option>
+                                  {(sec.data?.packageType === 'destinations'
+                                    ? soldOutDestinations.filter(d => (d.packageData || d.packagesData?.[0])?.status === 'sold_out').map(d => ({ id: `destination:${d.id}`, title: d.title }))
+                                    : allPackages.filter(p => p.status === 'sold_out' && (sec.data?.packageType === 'all' || !sec.data?.packageType || p.type === sec.data?.packageType))
+                                  ).filter(p => !(sec.data?.packageIds || []).map(String).includes(String(p.id)))
+                                    .map(p => <option key={p.id} value={String(p.id)}>{p.title}</option>)}
+                                </select>
+                                <p className="text-[11px] text-slate-700 m-0">With no package selected, all sold-out packages in the chosen type appear automatically. Selecting packages creates a curated list.</p>
+                                {(sec.data?.packageIds || []).map((id: string | number) => {
+                                  const pkg = String(id).startsWith('destination:')
+                                    ? soldOutDestinations.find(d => `destination:${d.id}` === String(id))
+                                    : allPackages.find(p => String(p.id) === String(id));
+                                  if (!pkg) return null;
+                                  return <div key={String(id)} className="flex items-center justify-between rounded-lg border border-red-100 bg-white px-3 py-2 text-xs">
+                                    <span className="font-semibold">{pkg.title}</span>
+                                    <button type="button" className="rounded-lg bg-red-50 p-2 text-red-600" aria-label="Remove selected package" title="Remove selected package" onClick={() => updateSectionData(sec.id, 'packageIds', (sec.data?.packageIds || []).filter((value: string | number) => String(value) !== String(id)))}><Trash2 className="h-4 w-4" /></button>
+                                  </div>;
+                                })}
                               </div>
                             )}
 
@@ -7085,7 +7075,7 @@ function PageBuilderContent() {
 
                                       >
 
-                                        <Trash2 className="w-3 h-3" /> Remove
+                                        <Trash2 className="h-4 w-4" />
 
                                       </button>
 
@@ -7823,11 +7813,11 @@ function PageBuilderContent() {
 
                                         <div className="mt-2 flex justify-between gap-1">
 
-                                          <button type="button" disabled={imageIndex === 0} onClick={() => { const updated = [...items]; [updated[imageIndex - 1], updated[imageIndex]] = [updated[imageIndex], updated[imageIndex - 1]]; updateSectionData(sec.id, 'images', updated); }} className="rounded bg-slate-200 px-2 py-1 text-xs disabled:opacity-40">Move left</button>
+                                          <button type="button" disabled={imageIndex === 0} onClick={() => { const updated = [...items];[updated[imageIndex - 1], updated[imageIndex]] = [updated[imageIndex], updated[imageIndex - 1]]; updateSectionData(sec.id, 'images', updated); }} className="rounded bg-slate-200 px-2 py-1 text-xs disabled:opacity-40">Move left</button>
 
-                                          <button type="button" disabled={imageIndex === items.length - 1} onClick={() => { const updated = [...items]; [updated[imageIndex], updated[imageIndex + 1]] = [updated[imageIndex + 1], updated[imageIndex]]; updateSectionData(sec.id, 'images', updated); }} className="rounded bg-slate-200 px-2 py-1 text-xs disabled:opacity-40">Move right</button>
+                                          <button type="button" disabled={imageIndex === items.length - 1} onClick={() => { const updated = [...items];[updated[imageIndex], updated[imageIndex + 1]] = [updated[imageIndex + 1], updated[imageIndex]]; updateSectionData(sec.id, 'images', updated); }} className="rounded bg-slate-200 px-2 py-1 text-xs disabled:opacity-40">Move right</button>
 
-                                          <button type="button" onClick={() => updateSectionData(sec.id, 'images', items.filter((_: any, index: number) => index !== imageIndex))} className="rounded bg-red-100 px-2 py-1 text-xs font-bold text-red-700">Remove</button>
+                                          <button type="button" onClick={() => updateSectionData(sec.id, 'images', items.filter((_: any, index: number) => index !== imageIndex))} title="Remove item" aria-label="Remove item" className="rounded bg-red-100 p-2 text-red-700"><Trash2 className="h-4 w-4" /></button>
 
                                         </div>
 
@@ -7859,7 +7849,7 @@ function PageBuilderContent() {
 
                                       <input value={typeof video === 'string' ? '' : video?.title || ''} onChange={(event) => updateSectionData(sec.id, 'videos', (Array.isArray(sec.data?.videos) ? sec.data.videos : []).map((entry: any, index: number) => index === videoIndex ? { ...(typeof entry === 'string' ? { url: entry } : entry), title: event.target.value } : entry))} placeholder="Video title (optional)" className="rounded border border-slate-300 px-2 py-1.5 text-xs text-slate-900" />
 
-                                      <button type="button" onClick={() => updateSectionData(sec.id, 'videos', (Array.isArray(sec.data?.videos) ? sec.data.videos : []).filter((_: any, index: number) => index !== videoIndex))} className="rounded bg-red-100 px-2 py-1 text-xs font-bold text-red-700">Remove</button>
+                                      <button type="button" onClick={() => updateSectionData(sec.id, 'videos', (Array.isArray(sec.data?.videos) ? sec.data.videos : []).filter((_: any, index: number) => index !== videoIndex))} title="Remove item" aria-label="Remove item" className="rounded bg-red-100 p-2 text-red-700"><Trash2 className="h-4 w-4" /></button>
 
                                     </div>
 
@@ -7881,19 +7871,7 @@ function PageBuilderContent() {
 
                                   <span className="text-[11px] font-extrabold uppercase text-primary">FAQ ACCORDION ITEMS</span>
 
-                                  <button
 
-                                    type="button"
-
-                                    onClick={() => updateSectionData(sec.id, 'items', [...(Array.isArray(sec.data?.items) ? sec.data.items : []), { question: 'New frequently asked question', answer: 'Add the answer for this question.' }])}
-
-                                    className="rounded-md bg-primary px-2.5 py-1 text-[11px] font-bold text-white"
-
-                                  >
-
-                                    + Add Question
-
-                                  </button>
 
                                 </div>
 
@@ -7915,7 +7893,7 @@ function PageBuilderContent() {
 
                                       >
 
-                                        Remove
+                                        <Trash2 className="w-3.5 h-3.5" />
 
                                       </button>
 
@@ -7952,6 +7930,16 @@ function PageBuilderContent() {
                                   </div>
 
                                 ))}
+
+                                <div className="flex justify-end pt-1">
+                                  <button
+                                    type="button"
+                                    onClick={() => updateSectionData(sec.id, 'items', [...(Array.isArray(sec.data?.items) ? sec.data.items : []), { question: 'New frequently asked question', answer: 'Add the answer for this question.' }])}
+                                    className="rounded-md bg-primary px-3 py-1.5 text-[11px] font-bold text-white shadow-xs transition hover:opacity-90"
+                                  >
+                                    + Add Question
+                                  </button>
+                                </div>
 
                               </div>
 
@@ -9340,86 +9328,86 @@ function PageBuilderContent() {
                                         </div>
                                       </div>
                                       <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-                                      {[
-                                        { label: 'OUT DATE FROM', path: 'outbound.date', placeholder: '', inputType: 'date' },
-                                        { label: 'OUT DATE TO', path: 'outbound.dateEnd', placeholder: '', inputType: 'date' },
-                                        { label: 'OUT 1 CLASS', path: 'outbound.first.className', placeholder: '1A/E' },
-                                        { label: 'OUT 1 CODE', path: 'outbound.first.code', placeholder: 'LHR' },
-                                        { label: 'OUT 1 CITY', path: 'outbound.first.city', placeholder: 'London' },
-                                        { label: 'OUT 1 TIME', path: 'outbound.first.time', placeholder: '', inputType: 'time' },
-                                        { label: 'OUT 1 FLIGHT', path: 'outbound.first.flightNumber', placeholder: 'PK 782' },
-                                        { label: 'OUT VIA CODE', path: 'outbound.via.code', placeholder: 'CAI' },
-                                        { label: 'OUT VIA CITY', path: 'outbound.via.city', placeholder: 'Cairo' },
-                                        { label: 'OUT VIA ARRIVAL', path: 'outbound.via.arrivalTime', placeholder: '', inputType: 'time' },
-                                        { label: 'OUT VIA DEPART', path: 'outbound.via.departureTime', placeholder: '', inputType: 'time' },
-                                        { label: 'OUT 2 FLIGHT', path: 'outbound.via.flightNumber', placeholder: 'MS 782' },
-                                        { label: 'OUT 2 CLASS', path: 'outbound.via.className', placeholder: '1A/E' },
-                                        { label: 'OUT FINAL CODE', path: 'outbound.second.code', placeholder: 'JED' },
-                                        { label: 'OUT FINAL CITY', path: 'outbound.second.city', placeholder: 'Jeddah' },
-                                        { label: 'OUT FINAL TIME', path: 'outbound.second.time', placeholder: '', inputType: 'time' },
-                                        { label: 'OUT FINAL FLIGHT', path: 'outbound.second.flightNumber', placeholder: 'MS 663' },
-                                        { label: 'OUT FINAL CLASS', path: 'outbound.second.className', placeholder: '1A/E' },
-                                        { label: 'OUT LAYOVER', path: 'outbound.layoverText', placeholder: 'Layover in Cairo' },
-                                        { label: 'OUT DURATION', path: 'outbound.layoverDuration', placeholder: '5h 00m' },
-                                        { label: 'RET DATE', path: 'return.date', placeholder: '', inputType: 'date' },
-                                        { label: 'RET 1 CLASS', path: 'return.first.className', placeholder: '1A/E' },
-                                        { label: 'RET 1 CODE', path: 'return.first.code', placeholder: 'MED' },
-                                        { label: 'RET 1 CITY', path: 'return.first.city', placeholder: 'Madinah' },
-                                        { label: 'RET 1 TIME', path: 'return.first.time', placeholder: '', inputType: 'time' },
-                                        { label: 'RET 1 FLIGHT', path: 'return.first.flightNumber', placeholder: 'MS 694' },
-                                        { label: 'RET VIA CODE', path: 'return.via.code', placeholder: 'CAI' },
-                                        { label: 'RET VIA CITY', path: 'return.via.city', placeholder: 'Cairo' },
-                                        { label: 'RET VIA ARRIVAL', path: 'return.via.arrivalTime', placeholder: '', inputType: 'time' },
-                                        { label: 'RET VIA DEPART', path: 'return.via.departureTime', placeholder: '', inputType: 'time' },
-                                        { label: 'RET 2 FLIGHT', path: 'return.via.flightNumber', placeholder: 'MS 694' },
-                                        { label: 'RET 2 CLASS', path: 'return.via.className', placeholder: '1A/E' },
-                                        { label: 'RET FINAL CODE', path: 'return.second.code', placeholder: 'MAN' },
-                                        { label: 'RET FINAL CITY', path: 'return.second.city', placeholder: 'Manchester' },
-                                        { label: 'RET FINAL TIME', path: 'return.second.time', placeholder: '', inputType: 'time' },
-                                        { label: 'RET FINAL FLIGHT', path: 'return.second.flightNumber', placeholder: 'MS 781' },
-                                        { label: 'RET FINAL CLASS', path: 'return.second.className', placeholder: '1A/E' },
-                                        { label: 'RET LAYOVER', path: 'return.layoverText', placeholder: 'Layover in Cairo' },
-                                        { label: 'RET DURATION', path: 'return.layoverDuration', placeholder: '2h 50m' },
-                                        { label: 'AVAILABLE SEATS', path: 'seatsValue', placeholder: 'Confirmed (HK20)' },
-                                        { label: 'PRICE NOTE', path: 'priceSubtext', placeholder: 'per person, round trip' },
-                                        { label: 'BUTTON TEXT', path: 'bookingLabel', placeholder: 'Select this route' },
-                                      ].map((field, fieldIndex) => (
-                                        <Fragment key={field.path}>
-                                          {fieldIndex === 0 && (
-                                            <div className="col-span-2 border-b border-blue-200 pb-1 text-[10px] font-extrabold uppercase tracking-wider text-primary md:col-span-4">
-                                              Outbound journey
-                                            </div>
-                                          )}
-                                          {field.path === 'return.date' && (
-                                            <div className="col-span-2 mt-2 border-b border-blue-200 pb-1 text-[10px] font-extrabold uppercase tracking-wider text-primary md:col-span-4">
-                                              Return journey
-                                            </div>
-                                          )}
-                                          <label className="text-[10px] font-bold text-slate-600">
-                                            {field.label}
-                                            {field.inputType === 'time' ? (
-                                              <select
-                                                value={toTimeInputValue(getFlightField(fl, field.path))}
-                                                onChange={(e) => updateFlightField(sec.id, fIdx, field.path, e.target.value)}
-                                                className="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-[11px] font-normal text-slate-800 outline-none focus:border-primary"
-                                              >
-                                                <option value="">Select time</option>
-                                                {timeOptions.map((option) => (
-                                                  <option key={option.value} value={option.value}>{option.label}</option>
-                                                ))}
-                                              </select>
-                                            ) : (
-                                              <input
-                                                type={field.inputType === 'date' ? 'date' : 'text'}
-                                                value={field.inputType === 'date' ? toDateInputValue(getFlightField(fl, field.path)) : getFlightField(fl, field.path)}
-                                                onChange={(e) => updateFlightField(sec.id, fIdx, field.path, e.target.value)}
-                                                placeholder={field.placeholder}
-                                                className="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-[11px] font-normal text-slate-800 outline-none focus:border-primary"
-                                              />
+                                        {[
+                                          { label: 'OUT DATE FROM', path: 'outbound.date', placeholder: '', inputType: 'date' },
+                                          { label: 'OUT DATE TO', path: 'outbound.dateEnd', placeholder: '', inputType: 'date' },
+                                          { label: 'OUT 1 CLASS', path: 'outbound.first.className', placeholder: '1A/E' },
+                                          { label: 'OUT 1 CODE', path: 'outbound.first.code', placeholder: 'LHR' },
+                                          { label: 'OUT 1 CITY', path: 'outbound.first.city', placeholder: 'London' },
+                                          { label: 'OUT 1 TIME', path: 'outbound.first.time', placeholder: '', inputType: 'time' },
+                                          { label: 'OUT 1 FLIGHT', path: 'outbound.first.flightNumber', placeholder: 'PK 782' },
+                                          { label: 'OUT VIA CODE', path: 'outbound.via.code', placeholder: 'CAI' },
+                                          { label: 'OUT VIA CITY', path: 'outbound.via.city', placeholder: 'Cairo' },
+                                          { label: 'OUT VIA ARRIVAL', path: 'outbound.via.arrivalTime', placeholder: '', inputType: 'time' },
+                                          { label: 'OUT VIA DEPART', path: 'outbound.via.departureTime', placeholder: '', inputType: 'time' },
+                                          { label: 'OUT 2 FLIGHT', path: 'outbound.via.flightNumber', placeholder: 'MS 782' },
+                                          { label: 'OUT 2 CLASS', path: 'outbound.via.className', placeholder: '1A/E' },
+                                          { label: 'OUT FINAL CODE', path: 'outbound.second.code', placeholder: 'JED' },
+                                          { label: 'OUT FINAL CITY', path: 'outbound.second.city', placeholder: 'Jeddah' },
+                                          { label: 'OUT FINAL TIME', path: 'outbound.second.time', placeholder: '', inputType: 'time' },
+                                          { label: 'OUT FINAL FLIGHT', path: 'outbound.second.flightNumber', placeholder: 'MS 663' },
+                                          { label: 'OUT FINAL CLASS', path: 'outbound.second.className', placeholder: '1A/E' },
+                                          { label: 'OUT LAYOVER', path: 'outbound.layoverText', placeholder: 'Layover in Cairo' },
+                                          { label: 'OUT DURATION', path: 'outbound.layoverDuration', placeholder: '5h 00m' },
+                                          { label: 'RET DATE', path: 'return.date', placeholder: '', inputType: 'date' },
+                                          { label: 'RET 1 CLASS', path: 'return.first.className', placeholder: '1A/E' },
+                                          { label: 'RET 1 CODE', path: 'return.first.code', placeholder: 'MED' },
+                                          { label: 'RET 1 CITY', path: 'return.first.city', placeholder: 'Madinah' },
+                                          { label: 'RET 1 TIME', path: 'return.first.time', placeholder: '', inputType: 'time' },
+                                          { label: 'RET 1 FLIGHT', path: 'return.first.flightNumber', placeholder: 'MS 694' },
+                                          { label: 'RET VIA CODE', path: 'return.via.code', placeholder: 'CAI' },
+                                          { label: 'RET VIA CITY', path: 'return.via.city', placeholder: 'Cairo' },
+                                          { label: 'RET VIA ARRIVAL', path: 'return.via.arrivalTime', placeholder: '', inputType: 'time' },
+                                          { label: 'RET VIA DEPART', path: 'return.via.departureTime', placeholder: '', inputType: 'time' },
+                                          { label: 'RET 2 FLIGHT', path: 'return.via.flightNumber', placeholder: 'MS 694' },
+                                          { label: 'RET 2 CLASS', path: 'return.via.className', placeholder: '1A/E' },
+                                          { label: 'RET FINAL CODE', path: 'return.second.code', placeholder: 'MAN' },
+                                          { label: 'RET FINAL CITY', path: 'return.second.city', placeholder: 'Manchester' },
+                                          { label: 'RET FINAL TIME', path: 'return.second.time', placeholder: '', inputType: 'time' },
+                                          { label: 'RET FINAL FLIGHT', path: 'return.second.flightNumber', placeholder: 'MS 781' },
+                                          { label: 'RET FINAL CLASS', path: 'return.second.className', placeholder: '1A/E' },
+                                          { label: 'RET LAYOVER', path: 'return.layoverText', placeholder: 'Layover in Cairo' },
+                                          { label: 'RET DURATION', path: 'return.layoverDuration', placeholder: '2h 50m' },
+                                          { label: 'AVAILABLE SEATS', path: 'seatsValue', placeholder: 'Confirmed (HK20)' },
+                                          { label: 'PRICE NOTE', path: 'priceSubtext', placeholder: 'per person, round trip' },
+                                          { label: 'BUTTON TEXT', path: 'bookingLabel', placeholder: 'Select this route' },
+                                        ].map((field, fieldIndex) => (
+                                          <Fragment key={field.path}>
+                                            {fieldIndex === 0 && (
+                                              <div className="col-span-2 border-b border-blue-200 pb-1 text-[10px] font-extrabold uppercase tracking-wider text-primary md:col-span-4">
+                                                Outbound journey
+                                              </div>
                                             )}
-                                          </label>
-                                        </Fragment>
-                                      ))}
+                                            {field.path === 'return.date' && (
+                                              <div className="col-span-2 mt-2 border-b border-blue-200 pb-1 text-[10px] font-extrabold uppercase tracking-wider text-primary md:col-span-4">
+                                                Return journey
+                                              </div>
+                                            )}
+                                            <label className="text-[10px] font-bold text-slate-600">
+                                              {field.label}
+                                              {field.inputType === 'time' ? (
+                                                <select
+                                                  value={toTimeInputValue(getFlightField(fl, field.path))}
+                                                  onChange={(e) => updateFlightField(sec.id, fIdx, field.path, e.target.value)}
+                                                  className="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-[11px] font-normal text-slate-800 outline-none focus:border-primary"
+                                                >
+                                                  <option value="">Select time</option>
+                                                  {timeOptions.map((option) => (
+                                                    <option key={option.value} value={option.value}>{option.label}</option>
+                                                  ))}
+                                                </select>
+                                              ) : (
+                                                <input
+                                                  type={field.inputType === 'date' ? 'date' : 'text'}
+                                                  value={field.inputType === 'date' ? toDateInputValue(getFlightField(fl, field.path)) : getFlightField(fl, field.path)}
+                                                  onChange={(e) => updateFlightField(sec.id, fIdx, field.path, e.target.value)}
+                                                  placeholder={field.placeholder}
+                                                  className="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-[11px] font-normal text-slate-800 outline-none focus:border-primary"
+                                                />
+                                              )}
+                                            </label>
+                                          </Fragment>
+                                        ))}
                                       </div>
                                     </div>
 
@@ -12331,7 +12319,7 @@ function PageBuilderContent() {
 
                                       >
 
-                                        <Trash2 className="w-3 h-3" /> Remove
+                                        <Trash2 className="h-4 w-4" />
 
                                       </button>
 

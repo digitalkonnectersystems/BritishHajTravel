@@ -45,7 +45,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
   const heroBackgroundImage = typeof whoWeAreSection?.data?.backgroundImage === "string"
     && whoWeAreSection.data.backgroundImage.trim()
     ? whoWeAreSection.data.backgroundImage.trim()
-    : "/images_BHT/sections/who-we-are-bgwebp-1789556234030.png";
+    : "";
 
   return (
     <div className="w-full">
@@ -137,105 +137,6 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
 
         if (sec.type === "Available Flights Grid" || sec.type === "Flights Cards") {
           return <AvailableFlightsSection key={idx} data={sec.data || {}} bookingTarget={pageData?.slug === "/cheap-flights-air-tickets" || pageData?.slug === "cheap-flights-air-tickets" ? "/contact" : undefined} />;
-          const flights = (sec.data?.items && Array.isArray(sec.data.items) && sec.data.items.length > 0)
-            ? sec.data.items
-            : [
-              { code: "PIA", name: "Pakistan International Airlines", operatedBy: "Operated By PIA", originCode: "LHR", originCity: "London", destCode: "JED", destCity: "Jeddah", time: "14:20", price: "£ 1,250.00" },
-              { code: "SA", name: "Saudia Airlines", operatedBy: "Operated By Saudia", originCode: "LHR", originCity: "London", destCode: "MED", destCity: "Madinah", time: "18:45", price: "£ 1,380.00" }
-            ];
-
-          return (
-            <section key={idx} className="py-8 md:py-10 bg-blue-lt">
-              <div className="max-w-5xl mx-auto px-4">
-                <div className="flex flex-col items-center text-center mb-8">
-                  <span className="eyebrow mx-auto block">
-                    {sec.data?.eyebrow || "AVAILABLE FLIGHTS"}
-                  </span>
-                  <h2 className="section-heading text-primary font-serif tracking-tight">
-                    {sec.data?.title || ""}
-                  </h2>
-                </div>
-                <div className="space-y-6">
-                  {(sec.data?.items || [
-                    { code: "PIA", name: "Pakistan International Airlines", operatedBy: "Operated By PIA", originCode: "LHR", originCity: "London", destCode: "JED", destCity: "Jeddah", time: "14:20", price: "£ 1,250.00" },
-                    { code: "SA", name: "Saudia Airlines", operatedBy: "Operated By Saudia", originCode: "LHR", originCity: "London", destCode: "MED", destCity: "Madinah", time: "18:45", price: "£ 1,380.00" }
-                  ]).map((flight: any, fIdx: number) => (
-                    <div
-                      key={fIdx}
-                      className="bg-white shadow-lg rounded-2xl border border-gray-200/60 p-6 md:p-8 hover:shadow-md transition-shadow duration-200"
-                    >
-                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6">
-                        {/* Left: Airline Info */}
-                        <div className="flex items-center gap-4 min-w-[280px]">
-                          {flight.logo ? (
-                            <div className="w-[54px] h-[44px] relative rounded overflow-hidden shadow-sm shrink-0">
-                              <Image src={flight.logo} alt={flight.name || "Airline Logo"} fill className="object-cover" unoptimized />
-                            </div>
-                          ) : (
-                            <div className="bg-red text-white font-bold px-3 py-2 rounded text-base tracking-wide flex items-center justify-center min-w-[54px] h-[44px]">
-                              {flight.code || "PIA"}
-                            </div>
-                          )}
-                          <div>
-                            <h4 className="font-bold text-gray-900 text-lg">{flight.name}</h4>
-                            <p className="text-xs text-gray-500 font-medium mt-0.5">{flight.operatedBy || "Operated By PIA"}</p>
-                          </div>
-                        </div>
-
-                        {/* Middle: Route & Times */}
-                        <div className="flex flex-1 items-center justify-between max-w-md mx-auto w-full px-2">
-                          <div className="text-center md:text-left">
-                            <span className="block text-2xl font-bold text-gray-900">{flight.originCode || "LHR"}</span>
-                            <span className="text-xs text-gray-400 font-medium">{flight.originCity || "London"}</span>
-                          </div>
-
-                          <div className="flex-1 flex items-center justify-center px-4 relative">
-                            <div className="w-full border-t border-dashed border-gray-300 absolute"></div>
-                            <div className="bg-gray-100 px-2 z-10 rounded-full py-1">
-                              <i className="fa-solid fa-plane text-red text-sm rotate-320"></i>
-                            </div>
-                          </div>
-
-                          <div className="text-center md:text-left">
-                            <span className="block text-2xl font-bold text-gray-900">{flight.destCode || "JED"}</span>
-                            <span className="text-xs text-gray-400 font-medium">{flight.destCity || "Jeddah"}</span>
-                          </div>
-
-                          <div className="h-8 border-l border-gray-300 mx-6 hidden md:block"></div>
-
-                          <div className="text-center ml-2 md:ml-0 md:text-left">
-                            <span className="block text-[16px] md:text-xl font-bold text-gray-900">{flight.time || "14:20"}</span>
-                            <span className="text-xs text-gray-400 font-medium uppercase">{flight.timeOriginCode || flight.originCode || "LHR"}</span>
-                          </div>
-                        </div>
-
-                        {/* Right: Pricing & CTA */}
-                        <div className="text-right flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-4 border-t md:border-0 pt-4 md:pt-0 border-gray-200">
-                          <div>
-                            <span className="text-xs font-semibold text-gray-500 block md:hidden">Price</span>
-                            <span suppressHydrationWarning className="whitespace-nowrap text-[16px] md:whitespace-normal md:text-2xl font-bold text-gray-900">{flight.price || "£ 1,250.00"}</span>
-                          </div>
-                          <a
-                            href={flight.bookingUrl || `https://wa.me/19056248344?text=Hi,%20I'm%20interested%20in%20booking%20this%20flight%20(${encodeURIComponent(flight.name || "PIA")})`}
-                            target={pageData?.slug === "/cheap-flights-air-tickets" || pageData?.slug === "cheap-flights-air-tickets" ? undefined : "_blank"}
-                            rel="noopener noreferrer"
-                            suppressHydrationWarning
-                            className="bg-red text-white hover:bg-red-lt border hover:border-red  hover:text-white font-bold py-3 px-6 md:px-8 rounded-md tracking-wide shadow-sm transition-all duration-150 cursor-pointer text-sm w-full md:w-auto inline-block text-center"
-                          >
-                            Booking
-                          </a>
-                        </div>
-                      </div>
-
-                      <div className="border-t border-dashed border-gray-300/80 pt-4 text-right">
-                        <span className="text-xs font-medium text-gray-500">{flight.priceSubtext || "Price Per Person (Incl. Taxes & Fees)"}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
-          );
         }
         if (sec.type === "Available Seats") {
           return <AvailableSeatsSection key={idx} data={sec.data || {}} />;
@@ -398,7 +299,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                           </g>
                         </svg>
                       </div>
-                      <span className="review-count">{sec.data?.reviewCount || "942"} Google reviews</span>
+                      {sec.data?.reviewCount != null && <span className="review-count">{sec.data.reviewCount} Google reviews</span>}
                       {sec.data?.reviewLink && (
                         <a
                           href={sec.data.reviewLink}
@@ -413,7 +314,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                   </div>
 
                   <div className="lg:w-3/4 w-full min-w-0">
-                    <GoogleReviewsSlider />
+                    <GoogleReviewsSlider reviews={Array.isArray(sec.data?.reviews) ? sec.data.reviews : []} />
                   </div>
                 </div>
               </div>
@@ -428,19 +329,6 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
             alt: l.alt || "",
           }));
 
-          if (logos.length === 0 && sec.type === "Airlines") {
-            logos = [
-              { src: '/img/a-1.png', alt: 'Saudi Airlines' },
-              { src: '/img/a-2.png', alt: 'Emirates' },
-              { src: '/img/a-3.png', alt: 'Qatar Airways' },
-              { src: '/img/a-4.png', alt: 'Turkish Airlines' },
-              { src: '/img/a-5.png', alt: 'Etihad Airways' },
-              { src: '/img/a-6.png', alt: 'EgyptAir' },
-              { src: '/img/a-7.png', alt: 'Royal Jordanian' },
-              { src: '/img/a-8.png', alt: 'Gulf Air' },
-              { src: '/img/a-9.png', alt: 'Air UK' },
-            ];
-          }
           const carouselType = sec.type === "Hotels" ? "hotel" : "airline";
           return (
             <section key={idx} className="py-12 bg-blue-lt">
@@ -487,20 +375,6 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
             src: l.src || "",
             alt: l.alt || "",
           }));
-
-          if (airlineLogos.length === 0) {
-            airlineLogos = [
-              { src: '/img/a-1.png', alt: 'Saudi Airlines' },
-              { src: '/img/a-2.png', alt: 'Emirates' },
-              { src: '/img/a-3.png', alt: 'Qatar Airways' },
-              { src: '/img/a-4.png', alt: 'Turkish Airlines' },
-              { src: '/img/a-5.png', alt: 'Etihad Airways' },
-              { src: '/img/a-6.png', alt: 'EgyptAir' },
-              { src: '/img/a-7.png', alt: 'Royal Jordanian' },
-              { src: '/img/a-8.png', alt: 'Gulf Air' },
-              { src: '/img/a-9.png', alt: 'Air UK' },
-            ];
-          }
 
           return (
             <section key={idx} className="py-12 bg-blue-lt">
@@ -596,17 +470,6 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
             alt: l.alt || "",
           }));
 
-          if (logos.length === 0) {
-            logos = [
-              { src: '/img/orgs/acta.jpg', alt: 'ACTA' },
-              { src: '/img/orgs/tico.png', alt: 'TICO' },
-              { src: '/img/orgs/IATA-Logo.png', alt: 'IATA' },
-              { src: '/img/orgs/sata.png', alt: 'SATA' },
-              { src: '/img/orgs/hajj.png', alt: 'Ministry of Hajj' },
-              { src: '/img/orgs/atac.png', alt: 'ATAC' },
-              { src: '/img/orgs/asta.png', alt: 'ASTA' },
-            ];
-          }
           return (
             <section key={idx} className="py-12 bg-white">
               <div className="w-full mx-auto px-0">
@@ -694,82 +557,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
   );
 }
 
-function GoogleReviewsSlider() {
-  const reviews = [
-    {
-      id: 1,
-      name: "Tiha",
-      avatarImg: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&w=120&h=120&q=80",
-      rating: 5,
-      date: "3 months ago",
-      review: "I am grateful Elhamdullilahi for this wonderful opportunity to preform Umrah on March 2026 with British Hajj Travel, also with huge support from our Imam. Everything was organized with great care, respect, and utmost professionalism from our initial flight departure up to our blessed return home to UK.",
-    },
-    {
-      id: 2,
-      name: "Nimrah Suhaib",
-      avatarImg: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80",
-      rating: 5,
-      date: "3 months ago",
-      review: "We're so glad we booked our Umrah trip from British Hajj Travel. Mr. Jamil Latif provided exceptional service, prompt responses, and great hotel options near Haram. He went above and beyond to make sure our family had everything sorted from visa approvals to 24/7 on-ground assistance.",
-    },
-    {
-      id: 3,
-      name: "Dina",
-      avatarImg: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&h=120&q=80",
-      rating: 5,
-      date: "3 months ago",
-      review: "Assalamu alaikum ❤️ I would like to sincerely thank British Hajj Travel for organizing such a smooth and blessed pilgrimage for my entire family. Our hotel rooms in Makkah and Madinah were spotless and right opposite the Haram gate, which made our daily prayers very convenient.",
-    },
-    {
-      id: 4,
-      name: "Tariq Mahmood",
-      avatarImg: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80",
-      rating: 5,
-      date: "2 weeks ago",
-      review: "Alhamdulillah! Booked our 15-day Deluxe Umrah package with British Hajj Travel UK. Everything from the 5-star hotel near Haram to the luxury private transport was top-notch. Highly recommended for families looking for a stress-free experience!",
-    },
-    {
-      id: 5,
-      name: "Fatima Al-Zahra",
-      avatarImg: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&h=120&q=80",
-      rating: 5,
-      date: "a month ago",
-      review: "The staff at British Hajj Travel Mississauga went above and beyond for our Saudi tourist visas and flight booking. Brother Imran answered all our late night questions patiently. May Allah bless your team for making our journey seamless.",
-    },
-    {
-      id: 6,
-      name: "Mohammad S. Khan",
-      avatarImg: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&h=120&q=80",
-      rating: 5,
-      date: "3 weeks ago",
-      review: "Excellent service from start to finish! Our hotels in Makkah (Fairmont) and Madinah (Dar Al Taqwa) were literally steps away from the Haram courtyard. The historical Ziyarat tours were also very well guided with knowledgeable scholars.",
-    },
-    {
-      id: 7,
-      name: "Farhan Qureshi",
-      avatarImg: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=120&h=120&q=80",
-      rating: 5,
-      date: "1 month ago",
-      review: "Transparent pricing with no hidden charges. Visa processing was done within 24 hours. The entire British Hajj Travel team in Mississauga is trustworthy and professional. 5 stars all the way for their honesty and dedication!",
-    },
-    {
-      id: 8,
-      name: "Zainab Rehman",
-      avatarImg: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=120&h=120&q=80",
-      rating: 5,
-      date: "2 months ago",
-      review: "Best travel agency in Ontario for Hajj and Umrah. They kept us updated on flight schedules and provided proper training and guidance booklets before our departure. 10/10 service from their courteous representatives.",
-    },
-    {
-      id: 9,
-      name: "Bilal Ahmad",
-      avatarImg: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=120&h=120&q=80",
-      rating: 5,
-      date: "2 months ago",
-      review: "I have booked my Umrah with British Hajj Travel twice now. Both times the hotel vouchers, flights, and ground transportation were ready ahead of time. Reliable, honest, and caring team that treats you like family.",
-    },
-  ];
-
+function GoogleReviewsSlider({ reviews }: { reviews: any[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [expandedReviewId, setExpandedReviewId] = useState<number | null>(null);
@@ -786,7 +574,7 @@ function GoogleReviewsSlider() {
 
   // Auto-scroll 1 by 1 card every 5000ms (5 seconds)
   useEffect(() => {
-    if (isPaused || expandedReviewId !== null) return;
+    if (isPaused || expandedReviewId !== null || reviews.length === 0) return;
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % reviews.length);
     }, 5000);
@@ -801,6 +589,7 @@ function GoogleReviewsSlider() {
     setCurrentIndex((prev) => (prev - 1 + reviews.length) % reviews.length);
   };
 
+  if (!reviews.length) return <p className="text-sm text-white/80">No approved reviews configured.</p>;
   return (
     <div
       className="relative w-full px-4 md:px-6"

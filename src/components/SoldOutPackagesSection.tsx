@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import * as LucideIcons from "lucide-react";
 import DynamicIcon from "@/components/ui/DynamicIcon";
 import { getSoldOutPackages } from "@/actions/packageActions";
+import { getSoldOutDestinationPackages } from "@/actions/destinationActions";
+import SoldOutBadge from "@/components/SoldOutBadge";
 
 export default function SoldOutPackagesSection({ data, initialPackages }: { data: any; initialPackages?: any[] }) {
   const eyebrow = data?.eyebrow || "";
@@ -11,27 +13,33 @@ export default function SoldOutPackagesSection({ data, initialPackages }: { data
   const description = data?.description || "";
 
   // Sold-out membership is driven only by the package status in the database.
-  // Legacy section.packageIds are intentionally ignored so admins never need to
-  // maintain a second manual list.
+  // Section packageIds optionally narrow the current sold-out type selection.
+  const filterType = String(data?.packageType || 'all');
+  const selectedIds = Array.isArray(data?.packageIds) ? data.packageIds.map(String) : [];
+  const eligible = (rows: any[]) => (rows || []).filter((pkg: any) =>
+    pkg?.status === 'sold_out' &&
+    (filterType === 'all' || pkg.type === filterType) &&
+    (!selectedIds.length || selectedIds.includes(String(pkg.id)))
+  );
   const hasServerPackages = Array.isArray(initialPackages);
   const [pkgs, setPkgs] = useState<any[]>(() =>
-    (initialPackages || []).filter((pkg: any) => pkg?.status === 'sold_out')
+    eligible(initialPackages || [])
   );
   const [loading, setLoading] = useState(!hasServerPackages);
 
   useEffect(() => {
     if (hasServerPackages) {
-      setPkgs((initialPackages || []).filter((pkg: any) => pkg?.status === 'sold_out'));
+      setPkgs(eligible(initialPackages || []));
       setLoading(false);
       return;
     }
 
     setLoading(true);
-    getSoldOutPackages()
-      .then((rows) => setPkgs((rows || []).filter((pkg: any) => pkg?.status === 'sold_out')))
+    Promise.all([getSoldOutPackages(), getSoldOutDestinationPackages()])
+      .then(([packages, destinations]) => setPkgs(eligible([...packages, ...destinations])))
       .catch(() => setPkgs([]))
       .finally(() => setLoading(false));
-  }, [hasServerPackages, initialPackages]);
+  }, [hasServerPackages, initialPackages, filterType, data?.packageIds]);
 
   if (!loading && pkgs.length === 0) return null;
 
@@ -39,7 +47,7 @@ export default function SoldOutPackagesSection({ data, initialPackages }: { data
     <section className="py-8 md:py-10 bg-primary">
       <div className="max-w-[1400px] mx-auto px-5">
         {/* Header (Two Columns) */}
-        <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-12 gap-6 text-center md:text-left">
+        <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-6 gap-6 text-center md:text-left">
           <div className="flex flex-col items-center md:items-start">
             <h3 className="eyebrow">{eyebrow}</h3>
             <h2
@@ -91,15 +99,15 @@ export default function SoldOutPackagesSection({ data, initialPackages }: { data
               const heroImage =
                 cd.bannerImage ||
                 pkg.featuredImage ||
-                "https://images.unsplash.com/photo-1553755088-ef1973c7b4a1?auto=format&fit=crop&w=700&q=80";
-              const typeName = pkg.type === "hajj" ? "HAJJ" : "UMRAH";
+                '';
+              const typeName = pkg.type === "hajj" ? "HAJJ" : pkg.type === "umrah" ? "UMRAH" : "DESTINATION";
 
               // We could use `pkg.month` or `cd.duration` here, let's show the package type and duration
-              const monthLabel = `${typeName} \u00B7 ${cd.duration || pkg.durationDays + ' Days'}`;
+              const monthLabel = `${typeName}${cd.duration || pkg.durationDays ? ` \u00B7 ${cd.duration || `${pkg.durationDays} Days`}` : ''}`;
 
-              const price = pkg.startingPrice
-                ? `£ ${Number(pkg.startingPrice).toLocaleString("en-CA")}`
-                : "£ 0";
+              const price = Number(pkg.startingPrice) > 0
+                ? `${pkg.currency || '£'} ${Number(pkg.startingPrice).toLocaleString('en-GB')}`
+                : 'Price on request';
               const rawPriceSubtext = cd.priceSubtext?.trim();
               const priceUnit = (!rawPriceSubtext || /occupancy|package|£\s*\/\s*quad/i.test(rawPriceSubtext))
                 ? "/ Person"
@@ -121,11 +129,7 @@ export default function SoldOutPackagesSection({ data, initialPackages }: { data
               // Use custom includes from cardData if available, otherwise fallback to defaults based on Hajj/Umrah
               const includes = Array.isArray(cd.includes) && cd.includes.length > 0
                 ? cd.includes
-                : [
-                  { text: 'Return Flights from London', icon: 'Plane' },
-                  { text: 'Luxury Ground Transportation', icon: 'Bus' },
-                  { text: '5 Star Hotels Makkah & Madinah', icon: 'Building' }
-                ];
+                : [];
 
               return (
                 <article
@@ -133,17 +137,13 @@ export default function SoldOutPackagesSection({ data, initialPackages }: { data
                   className="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 flex flex-col group transition-shadow hover:shadow-md relative"
                 >
                   {/* SOLD OUT BADGE OVERLAY */}
-                  <div className="absolute top-4 right-4 z-10 bg-red-600 text-white px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-md flex items-center gap-1">
-                    <LucideIcons.Ban className="w-3.5 h-3.5" /> SOLD OUT
-                  </div>
+                  <div className="absolute top-4 right-4 z-10 bg-red-600 text-white px-3 py-1 rounded-full text-[10px] font-black uppercase">SOLD OUT</div>
 
                   {heroImage && (
                     <div className="relative h-[220px] w-full overflow-hidden shrink-0">
-                      <img
-                        src={heroImage}
-                        alt={pkg.title || "Sold Out Package"}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                      />
+                      <img src={heroImage} alt={pkg.title || "Sold Out Package"} className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black/55" />
+                      <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none"><SoldOutBadge imageOnly /></div>
                     </div>
                   )}
 

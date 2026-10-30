@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
       db.select({value:count()}).from(mediaFiles).where(eq(mediaFiles.status,'active')),
       db.select({value:count()}).from(mediaFiles).where(eq(mediaFiles.status,'trash')),
     ]);
-    return NextResponse.json({success:true,items:rows.map(({contentHash,...row}) => ({...row,url:`/images_BHT/${row.relativePath}`})),total:totals[0]?.value||0,active:activeCounts[0]?.value||0,trash:trashCounts[0]?.value||0,page,limit});
+    return NextResponse.json({success:true,items:rows.map(({contentHash,...row}) => ({...row,url:(row.storage==='remote'||row.storage==='blob')&&/^https:\/\//.test(row.relativePath)?row.relativePath:mimeOf(row.relativePath)==='image/svg+xml'?`/media/${row.relativePath}`:`/images_BHT/${row.relativePath}`})),total:totals[0]?.value||0,active:activeCounts[0]?.value||0,trash:trashCounts[0]?.value||0,page,limit});
   } catch(error) { return jsonError(error); }
 }
 

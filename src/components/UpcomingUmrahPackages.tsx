@@ -1,4 +1,5 @@
 "use client";
+import { filterSectionPackages } from "@/lib/sectionPackageSelection";
  
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
@@ -6,6 +7,7 @@ import * as LucideIcons from "lucide-react";
 import DynamicIcon from "@/components/ui/DynamicIcon";
 import { formatTravelMonth } from "@/lib/packageHelpers";
 import { getPackagesByType, getPackagesByIds } from "@/actions/packageActions";
+import { isPackageCardVisible } from "@/lib/packageCardVisibility";
 import PackageBookingModal from "@/components/PackageBookingModal";
 export default function UpcomingUmrahPackages({
   data,
@@ -26,7 +28,7 @@ export default function UpcomingUmrahPackages({
   const description =
     data?.description ||
     data?.subtext ||
-    "Departures from £ 2,595 per person. Availability and accommodations are confirmed with every booking — contact us before reserving.";
+    "";
  
   const isUmrahListingPage =
     pathname === "/umrah-packages" ||
@@ -53,8 +55,7 @@ export default function UpcomingUmrahPackages({
   useEffect(() => {
     const packageIds = data?.packageIds || [];
  
-    // The main Umrah listing page must always show every non-draft, non-sold-out
-    // Umrah package from the database. Ignore CMS-selected packageIds here.
+    // Load the full type data, then apply the admin-selected category and IDs.
     if (isUmrahListingPage) {
       if (initialPackages) {
         setPkgs(initialPackages);
@@ -92,8 +93,9 @@ export default function UpcomingUmrahPackages({
     }
   }, [data?.packageIds, initialPackages, pathname, isUmrahListingPage]);
  
-  // Homepage should only show the first 4 Umrah packages.
-  const displayedPkgs = isHomepage ? pkgs.slice(0, 4) : pkgs;
+  // Use only packages selected through the page section and matching category.
+  const visiblePkgs = filterSectionPackages(pkgs, data, "umrah");
+  const displayedPkgs = isHomepage ? visiblePkgs.slice(0, 4) : visiblePkgs;
   const sectionBgClass = isUmrahListingPage ? "bg-blue-lt" : isHomepage ? "bg-white" : (pathname === "/" ? "bg-white" : "bg-blue-lt");
  
   return (
@@ -135,14 +137,14 @@ export default function UpcomingUmrahPackages({
         )}
  
         {/* No packages */}
-        {!loading && pkgs.length === 0 && (
+        {!loading && visiblePkgs.length === 0 && (
           <p className="text-center text-ink-lt py-12">
             No Umrah packages added to this section yet.
           </p>
         )}
  
         {/* Packages Grid */}
-        {!loading && pkgs.length > 0 && (
+        {!loading && visiblePkgs.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 items-stretch md:pt-5">
             {displayedPkgs.map((pkg: any, idx: number) => {
               let cd = pkg.cardData || {};

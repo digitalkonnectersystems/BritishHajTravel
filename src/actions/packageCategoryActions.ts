@@ -56,7 +56,7 @@ export async function getPackageCategories(type: 'umrah' | 'hajj' = 'umrah'): Pr
         description: packageCategories.description,
         displayOrder: packageCategories.displayOrder,
         isPublished: packageCategories.isPublished,
-        packageCount: sql<number>`(SELECT COUNT(*) FROM ${packages} WHERE ${packages.categoryId} = ${packageCategories.id})`,
+        packageCount: sql<number>`(SELECT COUNT(*) FROM ${packages} WHERE ${packages.categoryId} = ${packageCategories.id} AND ${packages.type} = ${packageCategories.type})`,
       })
       .from(packageCategories)
       .where(eq(packageCategories.type, type))

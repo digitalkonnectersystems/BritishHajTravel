@@ -16,10 +16,10 @@ import {
   getNavItems,
   getGalleryNavItems,
   getFooterData,
-  getHiddenSitePagePaths,
   getSeoIntelligenceSettings,
 } from "@/actions/pageActions";
 import { getHotelDirectory } from "@/actions/hotelActions";
+import { getHiddenSitePagePaths } from "@/lib/sitePageVisibility";
 import { db } from "@/db";
 import { visaProcessing } from "@/db/schema";
 import { isHiddenInternalLink, removeHiddenNavigation } from "@/lib/publicPageVisibility";
@@ -66,7 +66,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     title: identity?.siteName || "British Hajj Travel UK",
-    description: identity?.tagline || "Licensed Hajj & Umrah pilgrimage operator in UK offering 5-star packages, visa consultation, and direct flights.",
+    description: identity?.tagline || "",
     icons: {
       icon: faviconUrl,
       shortcut: faviconUrl,

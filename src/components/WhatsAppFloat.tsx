@@ -5,19 +5,19 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { getSiteIdentity } from "@/actions/pageActions";
 
-const DEFAULT_URL = "https://wa.me/19056248344?text=Hi,%20I'm%20interested%20in%20your%20services!";
+
 const DEFAULT_LABEL = "Chat on WhatsApp";
 
 export default function WhatsAppFloat({ initialIdentity }: { initialIdentity?: any }) {
   const pathname = usePathname();
-  const [href, setHref] = useState(initialIdentity?.whatsappFloatUrl || DEFAULT_URL);
+  const [href, setHref] = useState(initialIdentity?.whatsappFloatUrl || "");
   const [label, setLabel] = useState(initialIdentity?.whatsappFloatLabel || DEFAULT_LABEL);
 
   useEffect(() => {
     // Respond to live identity updates dispatched from the admin panel.
     const onUpdate = () => {
       getSiteIdentity().then((data) => {
-        if (data?.whatsappFloatUrl) setHref(data.whatsappFloatUrl);
+        setHref(data?.whatsappFloatUrl || "");
         if (data?.whatsappFloatLabel) setLabel(data.whatsappFloatLabel);
       });
     };
@@ -26,6 +26,7 @@ export default function WhatsAppFloat({ initialIdentity }: { initialIdentity?: a
   }, []);
 
   if (
+    !href ||
     pathname?.startsWith("/admin") ||
     pathname === "/letstravel" ||
     pathname?.startsWith("/letstravel/") ||

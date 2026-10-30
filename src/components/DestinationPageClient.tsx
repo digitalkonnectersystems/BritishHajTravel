@@ -9,5 +9,5 @@ export default function DestinationPageClient({ destination, pageData }: { desti
     detailPageData: {},
   };
 
-  return <PackageDetailPageClient isDestination initialSlug={destination.slug} initialPackage={{ ...packageData, title: packageData.title || destination.title, destination: destination.title }} />;
+  return <PackageDetailPageClient initialSlug={destination.slug} initialPackage={{ ...packageData, status: packageData.status || 'available', title: packageData.title || destination.title, destination: destination.title }} />;
 }

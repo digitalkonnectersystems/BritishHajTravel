@@ -135,16 +135,6 @@ function KaabaJourneyIllustration({
   );
 }
 
-const defaultVisaCards = [
-  { country: "Pakistan", passportLabel: "Passport Holders", price: "From £165", slug: "pakistani-passport" },
-  { country: "India", passportLabel: "Passport Holders", price: "From £155", slug: "indian-passport" },
-  { country: "Bangladesh", passportLabel: "Passport Holders", price: "From £155", slug: "bangladeshi-passport" },
-  { country: "Afghanistan", passportLabel: "Passport Holders", price: "From £170", slug: "afghan-passport" },
-  { country: "British", passportLabel: "Passport Holders", price: "From £139", slug: "british-passport" },
-  { country: "Saudi ETA", passportLabel: "Quick Processing", price: "From £49", slug: "eta-saudi-visa" },
-  { country: "More", passportLabel: "Visa Options", price: "View All", slug: "saudi-visa" },
-];
-
 function HeroSidePanel({
   theme = "blue",
   eyebrow,
@@ -167,8 +157,8 @@ function HeroSidePanel({
   image?: string;
   caption?: string;
   chips?: string[];
-  buttonLabel: string;
-  buttonLink: string;
+  buttonLabel?: string;
+  buttonLink?: string;
   route?: { from: string; to: string };
   className?: string;
 }) {
@@ -218,12 +208,14 @@ function HeroSidePanel({
               <span className="mx-3 flex-1 border-t border-dashed border-white/40" />
               <span>{route.to}</span>
             </div>
-            <Link
-              href={buttonLink}
-              className="inline-flex min-h-[58px] w-full items-center justify-center rounded-full bg-white px-6 text-center text-[15px] font-extrabold uppercase tracking-[0.12em] text-red transition hover:translate-y-[-1px] hover:shadow-lg"
-            >
-              {buttonLabel} <MoveRight className="ml-2 h-5 w-5" />
-            </Link>
+            {buttonLink && buttonLabel ? (
+              <Link
+                href={buttonLink}
+                className="inline-flex min-h-[58px] w-full items-center justify-center rounded-full bg-white px-6 text-center text-[15px] font-extrabold uppercase tracking-[0.12em] text-red transition hover:translate-y-[-1px] hover:shadow-lg"
+              >
+                {buttonLabel} <MoveRight className="ml-2 h-5 w-5" />
+              </Link>
+            ) : null}
           </div>
         ) : (
           <>
@@ -237,12 +229,14 @@ function HeroSidePanel({
               </div>
             ) : null}
 
-            <Link
-              href={buttonLink}
-              className="mt-5 inline-flex min-h-[58px] w-full items-center justify-center rounded-full bg-white px-6 text-center text-[15px] font-extrabold uppercase tracking-[0.12em] text-primary transition hover:translate-y-[-1px] hover:shadow-lg"
-            >
-              {buttonLabel} <MoveRight className="ml-2 h-5 w-5" />
-            </Link>
+            {buttonLink && buttonLabel ? (
+              <Link
+                href={buttonLink}
+                className="mt-5 inline-flex min-h-[58px] w-full items-center justify-center rounded-full bg-white px-6 text-center text-[15px] font-extrabold uppercase tracking-[0.12em] text-primary transition hover:translate-y-[-1px] hover:shadow-lg"
+              >
+                {buttonLabel} <MoveRight className="ml-2 h-5 w-5" />
+              </Link>
+            ) : null}
           </>
         )}
       </div>
@@ -252,51 +246,46 @@ function HeroSidePanel({
 
 export default function HomepageHeroBanner({ data, pageData, backgroundImage, publishedVisaCards = [], publishedSitePaths = [] }: { data: any; pageData?: any; backgroundImage?: string; publishedVisaCards?: PublicVisaPage[]; publishedSitePaths?: string[] }) {
   const heroData = {
-    heroEyebrow: data?.heroEyebrow || "EST IN UK 2001 · LICENSED PILGRIMAGE OPERATOR",
-    title: pageData?.bannerTitle || data?.title || "Trusted UK Hajj & Umrah<br/>Travel Agency in the UK",
-    description:
-      pageData?.bannerDescription ||
-      data?.description ||
-      "Since 2001, British Haj Travel Ltd UK has helped pilgrims across the UK plan their sacred journeys with confidence. With over 20 years of experience, we offer trusted Hajj and Umrah packages, prioritising comfort, reliable service, and peace of mind throughout your spiritual journey.",
-    primaryBtnLabel: data?.primaryBtnLabel || "Register For Hajj 2027",
-    primaryBtnLink: data?.primaryBtnLink || "/hajj-packages",
-    secondaryBtnLabel: data?.secondaryBtnLabel || "Umrah Enquiry 2026-27",
-    secondaryBtnLink: data?.secondaryBtnLink || "/umrah-packages",
+    heroEyebrow: data?.heroEyebrow || "",
+    title: pageData?.bannerTitle || data?.title || "",
+    description: pageData?.bannerDescription || data?.description || "",
+    primaryBtnLabel: data?.primaryBtnLabel || "",
+    primaryBtnLink: data?.primaryBtnLink || "",
+    secondaryBtnLabel: data?.secondaryBtnLabel || "",
+    secondaryBtnLink: data?.secondaryBtnLink || "",
     bgImage: String(backgroundImage || pageData?.bannerBgImage || data?.bannerBgImage || data?.bgImage || "").split(String.fromCharCode(92)).join("/"),
     position: "left center",
     size: pageData?.bannerSize || data?.bannerSize || "cover",
-    visaTitle: data?.visaTitle || "Umrah Visa",
-    visaSubtitle: data?.visaSubtitle || "Fast & Hassle-Free Visa Processing",
-    visaDocumentsLabel: data?.visaDocumentsLabel || "Required Documents",
-    visaDocumentsLink: data?.visaDocumentsLink || "/saudi-visa",
-    visaCards: Array.isArray(data?.visaCards) && data.visaCards.length > 0 ? data.visaCards : defaultVisaCards,
-    journeyTextTop: data?.journeyTextTop || "YOUR JOURNEY",
-    journeyTextBottom: data?.journeyTextBottom || "BEGINS HERE",
+    visaTitle: data?.visaTitle || "",
+    visaSubtitle: data?.visaSubtitle || "",
+    visaDocumentsLabel: data?.visaDocumentsLabel || "",
+    visaDocumentsLink: data?.visaDocumentsLink || "",
+    visaCards: Array.isArray(data?.visaCards) ? data.visaCards : [],
+    journeyTextTop: data?.journeyTextTop || "",
+    journeyTextBottom: data?.journeyTextBottom || "",
     journeyIllustrationUrl: data?.journeyIllustrationUrl || "",
-    hotelEyebrow: data?.hotelEyebrow ?? "HOTEL BOOKING",
-    hotelTitle: data?.hotelTitle ?? "Hotels in Makkah &",
-    hotelHighlight: data?.hotelHighlight ?? "Madinah",
-    hotelDescription: data?.hotelDescription ?? "Rooms close to the Haram, at prices booked direct.",
-    hotelImage: data?.hotelImage == null || /^\/images_BHT\/hotels\/makkah-clock-tower-sunset\.(jpg|png)$/.test(data.hotelImage) || data.hotelImage === "/images_BHT/uploads/A-beautiful-view-of-Makkah-Clock-Royal-Hotel-from-Al-Haram-Mosque-1.jpg"
-      ? "/images_BHT/hotels/makkah-clock-tower-low-angle.png"
-      : data.hotelImage,
-    hotelVisible: data?.hotelVisible !== false,
-    hotelCaption: data?.hotelCaption ?? "Makkah Royal Clock Tower",
+    hotelEyebrow: data?.hotelEyebrow || "",
+    hotelTitle: data?.hotelTitle || "",
+    hotelHighlight: data?.hotelHighlight || "",
+    hotelDescription: data?.hotelDescription || "",
+    hotelImage: data?.hotelImage || "",
+    hotelVisible: data?.hotelVisible !== false && Boolean(data?.hotelTitle || data?.hotelDescription || data?.hotelImage),
+    hotelCaption: data?.hotelCaption || "",
     hotelTags:
-      Array.isArray(data?.hotelTags) ? data.hotelTags.filter((tag: unknown): tag is string => typeof tag === "string" && tag.trim().length > 0) : ["Haram view", "3★ - 5★", "Family rooms"],
-    hotelButtonLabel: data?.hotelButtonLabel ?? "Book a Hotel",
-    hotelButtonLink: data?.hotelButtonLink ?? "/hotels",
-    flightsEyebrow: data?.flightsEyebrow ?? "FLIGHTS",
-    flightsTitle: data?.flightsTitle ?? "Cheap Flights to Jeddah & Madinah",
-    flightsDescription: data?.flightsDescription ?? "Direct and connecting fares from London, Manchester & Birmingham.",
-    flightsImage: data?.flightsImage ?? "/images_BHT/flights/british-airways-sunset.jpg",
-    flightsVisible: data?.flightsVisible !== false,
-    flightsCaption: data?.flightsCaption ?? "Aircraft / runway at sunset (no people)",
-    flightsRouteFrom: data?.flightsRouteFrom ?? "LHR",
-    flightsRouteTo: data?.flightsRouteTo ?? "JED",
-    flightsButtonLabel: data?.flightsButtonLabel ?? "Search Flights",
-    flightsButtonLink: data?.flightsButtonLink ?? "/flights",
-    quoteTitle: data?.quoteTitle || "Get a free Quote",
+      Array.isArray(data?.hotelTags) ? data.hotelTags.filter((tag: unknown): tag is string => typeof tag === "string" && tag.trim().length > 0) : [],
+    hotelButtonLabel: data?.hotelButtonLabel || "",
+    hotelButtonLink: data?.hotelButtonLink || "",
+    flightsEyebrow: data?.flightsEyebrow || "",
+    flightsTitle: data?.flightsTitle || "",
+    flightsDescription: data?.flightsDescription || "",
+    flightsImage: data?.flightsImage || "",
+    flightsVisible: data?.flightsVisible !== false && Boolean(data?.flightsTitle || data?.flightsDescription || data?.flightsImage),
+    flightsCaption: data?.flightsCaption || "",
+    flightsRouteFrom: data?.flightsRouteFrom || "",
+    flightsRouteTo: data?.flightsRouteTo || "",
+    flightsButtonLabel: data?.flightsButtonLabel || "",
+    flightsButtonLink: data?.flightsButtonLink || "",
+    quoteTitle: data?.quoteTitle || "",
   };
 
   const visibleVisaCards = resolveVisibleVisaCards<any>(heroData.visaCards, publishedVisaCards, publishedSitePaths);
@@ -416,24 +405,30 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                 <div className="relative z-10 grid h-full grid-cols-1 items-center gap-8 px-5 py-8 sm:px-8 md:px-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,400px)] lg:gap-8 lg:px-8 2xl:grid-cols-[minmax(0,1fr)_minmax(0,440px)] 2xl:gap-10 2xl:px-10 2xl:py-12">
                   <div className="flex min-w-0 flex-col justify-center">
                     <div className="hero">
-                      <div className="mb-5 text-[13px] font-extrabold uppercase tracking-[0.18em] text-ink">{heroData.heroEyebrow}</div>
-                      <h1 className="font-serif text-[clamp(1.25rem,2.2vw,2.125rem)] leading-[0.98]" dangerouslySetInnerHTML={{ __html: heroData.title }} />
-                      <p className="mt-5 max-w-[36rem] text-[16px] leading-7 text-[#294970] sm:mt-6 lg:text-[17px] lg:leading-8">{heroData.description}</p>
+                      {heroData.heroEyebrow ? <div className="mb-5 text-[13px] font-extrabold uppercase tracking-[0.18em] text-ink">{heroData.heroEyebrow}</div> : null}
+                      {heroData.title ? <h1 className="font-serif text-[clamp(1.25rem,2.2vw,2.125rem)] leading-[0.98]" dangerouslySetInnerHTML={{ __html: heroData.title }} /> : null}
+                      {heroData.description ? <p className="mt-5 max-w-[36rem] text-[16px] leading-7 text-[#294970] sm:mt-6 lg:text-[17px] lg:leading-8">{heroData.description}</p> : null}
 
-                      <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:gap-4">
-                        <Link
-                          href={heroData.primaryBtnLink}
-                          className="inline-flex min-h-[56px] max-w-full items-center justify-center rounded-full bg-red px-6 text-center text-[15px] font-extrabold uppercase tracking-[0.1em] text-white transition hover:translate-y-[-1px] hover:bg-red/90 hover:shadow-lg sm:px-7"
-                        >
-                          {heroData.primaryBtnLabel}
-                        </Link>
-                        <Link
-                          href={heroData.secondaryBtnLink}
-                          className="inline-flex min-h-[56px] max-w-full items-center justify-center rounded-full bg-white px-6 text-center text-[15px] font-extrabold uppercase tracking-[0.1em] text-primary transition hover:translate-y-[-1px] hover:bg-slate-100 hover:shadow-lg sm:px-7"
-                        >
-                          {heroData.secondaryBtnLabel}
-                        </Link>
-                      </div>
+                      {heroData.primaryBtnLink && heroData.primaryBtnLabel || heroData.secondaryBtnLink && heroData.secondaryBtnLabel ? (
+                        <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:gap-4">
+                          {heroData.primaryBtnLink && heroData.primaryBtnLabel ? (
+                            <Link
+                              href={heroData.primaryBtnLink}
+                              className="inline-flex min-h-[56px] max-w-full items-center justify-center rounded-full bg-red px-6 text-center text-[15px] font-extrabold uppercase tracking-[0.1em] text-white transition hover:translate-y-[-1px] hover:bg-red/90 hover:shadow-lg sm:px-7"
+                            >
+                              {heroData.primaryBtnLabel}
+                            </Link>
+                          ) : null}
+                          {heroData.secondaryBtnLink && heroData.secondaryBtnLabel ? (
+                            <Link
+                              href={heroData.secondaryBtnLink}
+                              className="inline-flex min-h-[56px] max-w-full items-center justify-center rounded-full bg-white px-6 text-center text-[15px] font-extrabold uppercase tracking-[0.1em] text-primary transition hover:translate-y-[-1px] hover:bg-slate-100 hover:shadow-lg sm:px-7"
+                            >
+                              {heroData.secondaryBtnLabel}
+                            </Link>
+                          ) : null}
+                        </div>
+                      ) : null}
                     </div>
                   </div>
 
@@ -559,7 +554,9 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                   caption={heroData.flightsCaption}
                   buttonLabel={heroData.flightsButtonLabel}
                   buttonLink={heroData.flightsButtonLink}
-                  route={{ from: heroData.flightsRouteFrom, to: heroData.flightsRouteTo }}
+                  route={heroData.flightsRouteFrom && heroData.flightsRouteTo
+                    ? { from: heroData.flightsRouteFrom, to: heroData.flightsRouteTo }
+                    : undefined}
                   className="order-3 sm:order-3 2xl:order-3"
                 />
               ) : null}
@@ -599,13 +596,13 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
               </div>
             </div>
 
-            <div className="flex snap-x snap-mandatory gap-2.5 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden min-[1140px]:grid min-[1140px]:grid-cols-7 min-[1140px]:overflow-visible min-[1140px]:pb-0 xl:grid xl:grid-cols-7 xl:overflow-visible xl:pb-0 lg:gap-3">
+            <div className="flex snap-x snap-mandatory gap-2.5 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden min-[1140px]:flex-wrap min-[1140px]:justify-center min-[1140px]:overflow-visible min-[1140px]:pb-0 xl:flex-wrap xl:justify-center lg:gap-3">
               {visibleVisaCards.map(({ card: visa, href: cardHref }, index: number) => {
                 return (
                   <Link
                     key={`${visa.slug || visa.country}-${index}`}
                     href={cardHref}
-                    className="group flex min-w-[170px] flex-1 snap-start flex-col justify-between rounded-2xl border border-slate-100/90 bg-white p-3 shadow-[0_4px_16px_rgba(15,23,42,0.04)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(15,23,42,0.12)] sm:min-w-[185px] min-[1140px]:min-w-0 xl:min-w-0 xl:p-3.5"
+                    className="group flex min-w-[170px] flex-1 snap-start flex-col justify-between rounded-2xl border border-slate-100/90 bg-white p-3 shadow-[0_4px_16px_rgba(15,23,42,0.04)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(15,23,42,0.12)] sm:min-w-[185px] min-[1140px]:min-w-0 min-[1140px]:basis-[calc((100%_-_4.5rem)/7)] min-[1140px]:flex-none xl:min-w-0 xl:p-3.5"
                   >
                     <div className="flex items-center gap-2.5">
                       <div className="flex h-6 w-9 shrink-0 items-center justify-center overflow-hidden rounded-[5px] border border-slate-200/80 bg-slate-50 shadow-xs">

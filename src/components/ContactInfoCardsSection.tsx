@@ -17,11 +17,11 @@ export default function ContactInfoCardsSection({ data }: { data?: any }) {
               <span className="text-[10px] font-extrabold text-primary uppercase tracking-wide mb-1">HEAD OFFICE</span>
               <a
                 className="text-xs font-medium leading-relaxed text-slate-600 hover:text-emerald-800 transition no-underline"
-                href="https://maps.app.goo.gl/1BRUoBxtt4wWw58t6"
+                href={data?.headOfficeMapUrl || data?.headMapLink || undefined}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {data?.headAddress || "1325 Eglinton Ave E Suite Number 218, Mississauga, ON L4W 4L9, UK"}
+                {data?.headAddress || ""}
               </a>
             </div>
 
@@ -30,11 +30,11 @@ export default function ContactInfoCardsSection({ data }: { data?: any }) {
               <span className="text-[10px] font-extrabold text-primary uppercase tracking-wide mb-1">BRANCH OFFICE</span>
               <a
                 className="text-xs font-medium leading-relaxed text-slate-600 hover:text-emerald-800 transition no-underline"
-                href="https://maps.app.goo.gl/U6B4fci2Jas4sh6S6"
+                href={data?.branchOfficeMapUrl || data?.branchMapLink || undefined}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {data?.branchAddress || "22 Ontario St S, Milton, ON L9T 2M6, UK"}
+                {data?.branchAddress || ""}
               </a>
             </div>
           </div>
@@ -51,13 +51,11 @@ export default function ContactInfoCardsSection({ data }: { data?: any }) {
             </h3>
             <div className="flex flex-col gap-1.5 border-t border-slate-100 pt-4 w-full">
               {(() => {
-                const supportList: any[] = (data?.supportItems && Array.isArray(data.supportItems) && data.supportItems.length > 0)
+                const supportList: any[] = Array.isArray(data?.supportItems)
                   ? data.supportItems
-                  : [
-                    { phone: data?.phone1 || '+44 795 7197 390', label: '', text: data?.phone1 || '+44 795 7197 390', url: `tel:${(data?.phone1 || '+44 795 7197 390').replace(/\s+/g, '')}`, openInNewTab: false },
-                    { phone: data?.phone2 || '+44 177 2252 996', label: '', text: data?.phone2 || '+44 177 2252 996', url: `tel:${(data?.phone2 || '+44 177 2252 996').replace(/\s+/g, '')}`, openInNewTab: false },
-                    { phone: data?.phone3 || '+44 177 2252 996', label: '', text: data?.phone3 || '+44 177 2252 996', url: `tel:${(data?.phone3 || '+44 177 2252 996').replace(/\s+/g, '')}`, openInNewTab: false },
-                  ];
+                  : [data?.phone1, data?.phone2, data?.phone3]
+                      .filter((value: unknown): value is string => typeof value === 'string' && Boolean(value.trim()))
+                      .map((phone: string) => ({ phone, text: phone, url: `tel:${phone.replace(/\s+/g, '')}` }));
 
                 return supportList
                   .filter((item: any) => item && (item.phone || item.text || item.url))
@@ -97,25 +95,23 @@ export default function ContactInfoCardsSection({ data }: { data?: any }) {
             <h3 className="text-xs font-extrabold uppercase tracking-widest text-primary mb-2">
               {data?.card3Title || "EMAIL US"}
             </h3>
-            <a href={`mailto:${data?.email || "saudivisa@britishhajjtravel.com"}`} className="text-sm text-slate-700 hover:text-emerald-800 transition break-all font-semibold no-underline">
-              {data?.email || "saudivisa@britishhajjtravel.com"}
-            </a>
+            {data?.email ? <a href={`mailto:${data.email}`} className="text-sm text-slate-700 hover:text-emerald-800 transition break-all font-semibold no-underline">
+              {data.email}
+            </a> : null}
           </div>
 
           <div className="w-full border-t border-slate-100 pt-3 flex flex-col items-center">
             <h4 className="text-[10px] font-extrabold uppercase tracking-widest text-primary mb-2.5">FOLLOW US</h4>
             <div className="flex flex-wrap items-center justify-center gap-2">
               {(() => {
-                const socialList: any[] = (data?.socialLinks && Array.isArray(data.socialLinks) && data.socialLinks.length > 0)
+                const socialList: any[] = Array.isArray(data?.socialLinks)
                   ? data.socialLinks
                   : [
-                    { name: 'Facebook', url: data?.facebookUrl || 'https://www.facebook.com/britishhajjtravel', icon: '/img/fb.svg', openInNewTab: true },
-                    { name: 'Instagram', url: data?.instagramUrl || 'https://www.instagram.com/britishhajjtravel/', icon: '/img/insta.svg', openInNewTab: true },
-                    { name: 'LinkedIn', url: data?.linkedinUrl || 'https://ca.linkedin.com/company/britishhajjtravel', icon: '/img/in.svg', openInNewTab: true },
-                    { name: 'TikTok', url: data?.tiktokUrl || 'https://www.tiktok.com/@britishhajjtravel', icon: '/img/tik.svg', openInNewTab: true },
-                    { name: 'Twitter X', url: data?.twitterUrl || 'https://twitter.com/britishhajjtravel', icon: '/img/x.svg', openInNewTab: true },
-                    { name: 'Pinterest', url: data?.pinterestUrl || 'https://pinterest.com/britishhajjtravel', icon: '/img/pinterest.svg', openInNewTab: true },
-                  ];
+                    ['facebookUrl', 'Facebook'], ['instagramUrl', 'Instagram'],
+                    ['linkedinUrl', 'LinkedIn'], ['tiktokUrl', 'TikTok'],
+                    ['twitterUrl', 'X'], ['pinterestUrl', 'Pinterest'],
+                  ].filter(([field]) => Boolean(data?.[field]))
+                   .map(([field, name]) => ({ name, url: data[field], openInNewTab: true }));
 
                 return socialList
                   .filter((item: any) => item && (item.url || item.icon))

@@ -35,11 +35,11 @@ async function readBaanContent(): Promise<ReadResult> {
       .limit(1);
   } catch (error) {
     logBaanDatabaseError('read site_settings.baan_holding_page', error);
-    return { content: defaultBaanContent, databaseAvailable: false };
+    return { content: { ...defaultBaanContent, isVisible: false }, databaseAvailable: false };
   }
 
   // No saved custom settings is normal. The default BAAN page remains usable.
-  if (!record[0]?.value) return { content: defaultBaanContent, databaseAvailable: true };
+  if (!record[0]?.value) return { content: { ...defaultBaanContent, isVisible: false }, databaseAvailable: true };
 
   try {
     const parsed: unknown = JSON.parse(record[0].value);
@@ -53,7 +53,7 @@ async function readBaanContent(): Promise<ReadResult> {
   } catch (error) {
     // A malformed setting must not be silently overwritten by the editor.
     console.error('[BAAN] Invalid JSON in site_settings.baan_holding_page', error);
-    return { content: defaultBaanContent, databaseAvailable: false };
+    return { content: { ...defaultBaanContent, isVisible: false }, databaseAvailable: false };
   }
 }
 

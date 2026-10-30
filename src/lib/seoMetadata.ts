@@ -4,7 +4,7 @@ import { getBlogFeaturedImage } from '@/lib/blogImages';
 
 export type SeoEntityType = 'page' | 'package' | 'blog' | 'visa' | 'destination';
 
-const DEFAULT_ORIGIN = 'https://britishhajjtravel.com';
+const DEFAULT_ORIGIN = 'https://britishhajtravel.com';
 const BRAND = 'British Hajj Travel UK';
 const DEFAULT_OG_IMAGE = `${DEFAULT_ORIGIN}/img/logo.png`;
 
@@ -30,6 +30,19 @@ export function normalizeRoutePath(pathname: string): string {
   path = path.replace(/\/{2,}/g, '/');
   if (path !== '/') path = path.replace(/\/+$/, '');
   return path || '/';
+}
+
+export function toCanonicalUrl(value: unknown, fallbackPath = '/'): string {
+  const raw = String(value || '').trim();
+  let path = fallbackPath;
+  if (raw) {
+    try { path = new URL(raw, DEFAULT_ORIGIN).pathname; }
+    catch { path = fallbackPath; }
+  }
+  // Only this verified UK domain is an acceptable canonical target.
+  const canonicalOrigin = DEFAULT_ORIGIN;
+  const normalized = normalizeRoutePath(path);
+  return `${canonicalOrigin}${normalized === '/' ? '/' : normalized}`;
 }
 
 export function toAbsoluteUrl(value: unknown, fallbackPath = '/'): string {
@@ -150,7 +163,7 @@ function metadataFromParts({
 export function buildPageMetadata(page: any, routePath?: string): Metadata {
   const seo = parseSeoSettings(page?.seoData ?? page?.seoSettings);
   const path = normalizeRoutePath(routePath || page?.slug || '/');
-  const canonical = toAbsoluteUrl(seo.canonicalUrl, path);
+  const canonical = toCanonicalUrl(seo.canonicalUrl, path);
   const title = buildTitle(page?.title || 'Home', page?.metaTitle || seo.metaTitle);
   const description = buildDescription(
     page?.metaDescription || seo.metaDescription,
@@ -183,11 +196,11 @@ export function buildPackageMetadata(pkg: any, slug?: string): Metadata {
   return metadataFromParts({
     title,
     description,
-    canonical: toAbsoluteUrl(seo.canonicalUrl, path),
+    canonical: toCanonicalUrl(seo.canonicalUrl, path),
     image: seo.ogImageUrl || pkg?.featuredImage,
     imageAlt: seo.ogCardAlt || seo.heroAlt || pkg?.title,
     keywords: seo.metaKeywords || seo.keywords,
-    noIndex: seo.noIndex || pkg?.status === 'draft',
+    noIndex: seo.noIndex || pkg?.status === 'draft' || pkg?.status === 'sold_out',
     noFollow: seo.noFollow,
   });
 }
@@ -212,7 +225,7 @@ export function buildBlogMetadata(blog: any, slug?: string): Metadata {
   return metadataFromParts({
     title,
     description,
-    canonical: toAbsoluteUrl(canonicalSource, path),
+    canonical: toCanonicalUrl(canonicalSource, path),
     image: seo.ogImageUrl || getBlogFeaturedImage(blog?.featuredImage),
     imageAlt: seo.ogCardAlt || seo.heroAlt || blog?.title,
     keywords: seo.metaKeywords || seo.keywords,
@@ -234,7 +247,7 @@ export function buildVisaMetadata(visa: any, routePath?: string): Metadata {
   return metadataFromParts({
     title,
     description,
-    canonical: toAbsoluteUrl(seo.canonicalUrl, path),
+    canonical: toCanonicalUrl(seo.canonicalUrl, path),
     image: seo.ogImageUrl || visa?.imageUrl,
     imageAlt: seo.ogCardAlt || seo.heroAlt || visa?.title,
     keywords: seo.metaKeywords || seo.keywords,

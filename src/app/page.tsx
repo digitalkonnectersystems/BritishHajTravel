@@ -1,3 +1,4 @@
+import { getSoldOutDestinationPackages } from '@/actions/destinationActions';
 import type { Metadata } from "next";
 import PageSectionsRenderer from "@/components/PageSectionsRenderer";
 import { getPageBySlug } from "@/actions/pageActions";
@@ -33,7 +34,7 @@ export default async function Home() {
   }
 
   const hasSoldOut = dynamicSections.some((sec: any) => sec?.type === "Sold Out Packages");
-  const soldOutPackages = hasSoldOut ? await getSoldOutPackages() : [];
+  const soldOutPackages = hasSoldOut ? [...await getSoldOutPackages(), ...await getSoldOutDestinationPackages()] : [];
 
   return (
     <main>

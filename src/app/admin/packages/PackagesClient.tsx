@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import ImageUploadWidget from '@/components/admin/ImageUploadWidget';
+import { getGlobalSoldOutBadgeAction, saveGlobalSoldOutBadgeAction } from '@/actions/soldOutSettingsActions';
 import { createPackage, updatePackageAction, deletePackage, updatePackageStatus } from '@/actions/packageActions';
 import ConfirmModal, { ConfirmModalConfig } from '@/components/ui/ConfirmModal';
 import { Trash2, Edit2, Plus, Sparkles, Sliders, X } from 'lucide-react';
@@ -16,6 +18,8 @@ interface PackagesClientProps {
 export default function PackagesClient({ initialPackages }: PackagesClientProps) {
   const [packagesList, setPackagesList] = useState<any[]>(initialPackages);
   const [saveMsg, setSaveMsg] = useState('');
+  const [soldOutBadge, setSoldOutBadge] = useState('');
+  useEffect(() => { getGlobalSoldOutBadgeAction().then(setSoldOutBadge); }, []);
   const [isCreating, setIsCreating] = useState(false);
   const [selectedSeoPkg, setSelectedSeoPkg] = useState<any | null>(null);
   const [confirmConfig, setConfirmConfig] = useState<ConfirmModalConfig | null>(null);
@@ -182,6 +186,17 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
 
   return (
     <div className="flex flex-col gap-6">
+      <div className="rounded-xl border border-red-200 bg-red-50 p-4 flex flex-col md:flex-row gap-4 items-start md:items-center">
+        <div className="flex-1"><h2 className="text-sm font-extrabold text-red-800">Global Sold Out Badge</h2>
+          <p className="text-xs text-slate-700">Upload once. This image is reused on all sold-out Hajj, Umrah and destination cards and detail pages. No individual uploads required.</p>
+        </div>
+        <div className="w-full max-w-64"><ImageUploadWidget value={soldOutBadge} onChange={setSoldOutBadge} subfolder="packages" /></div>
+        <button type="button" className="bg-red px-4 py-2 text-xs font-bold text-white rounded-lg" onClick={async () => {
+          const result = await saveGlobalSoldOutBadgeAction(soldOutBadge);
+          setSaveMsg(result.success ? 'Global badge saved.' : (result.error || 'Unable to save badge.'));
+          if (result.success) window.location.reload();
+        }}>Save shared badge</button>
+      </div>
       {/* Header Bar */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200/60 pb-4">
         <div>

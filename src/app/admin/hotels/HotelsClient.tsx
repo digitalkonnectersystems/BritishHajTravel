@@ -17,7 +17,7 @@ import {
   updateHotelOrderAction,
   type HotelInput,
 } from '@/actions/hotelActions';
-import { Copy, Eye, EyeOff } from 'lucide-react';
+import { Copy, Eye, EyeOff, Pencil, Trash2 } from 'lucide-react';
 
 const emptyHotel: HotelInput = {
   categoryId: 0,
@@ -192,8 +192,8 @@ export default function HotelsClient() {
                   <span className="mr-2 cursor-grab select-none text-slate-400" title="Drag to reorder">⋮⋮</span>
                   <a href={`/hotels/#${category.slug}`} target="_blank" className="text-sm font-bold text-primary">{category.name}</a>
                   <div className="ml-auto flex gap-2 text-[11px] font-bold">
-                    <button type="button" onClick={() => { setEditingCategoryId(category.id); setCategoryName(category.name); }} className="text-blue-600">Edit</button>
-                    <button type="button" onClick={() => removeCategory(category.id)} className="text-red-600">Delete</button>
+                    <button type="button" onClick={() => { setEditingCategoryId(category.id); setCategoryName(category.name); }} title="Edit category" aria-label="Edit category" className="rounded-lg bg-blue-50 p-2 text-blue-700"><Pencil className="h-4 w-4" /></button>
+                    <button type="button" onClick={() => removeCategory(category.id)} title="Delete category" aria-label="Delete category" className="rounded-lg bg-red-50 p-2 text-red-600"><Trash2 className="h-4 w-4" /></button>
                   </div>
                 </div>
               ))}
@@ -243,8 +243,8 @@ export default function HotelsClient() {
                   <div className="flex justify-self-end gap-2">
                     <button type="button" onClick={() => toggleHotelPublication(hotel)} aria-label={hotel.isPublished ? 'Hide hotel from public website' : 'Show hotel on public website'} title={hotel.isPublished ? 'Hide hotel from public website' : 'Show hotel on public website'} className="rounded-lg bg-slate-100 p-2 text-slate-600">{hotel.isPublished ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}</button>
                     <button type="button" onClick={() => duplicateHotel(hotel)} aria-label="Duplicate hotel" title="Duplicate hotel" className="rounded-lg bg-violet-50 p-2 text-violet-700"><Copy className="h-4 w-4" /></button>
-                    <button type="button" onClick={() => editHotel(hotel)} className="rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700">Edit</button>
-                    <button type="button" onClick={() => removeHotel(hotel.id)} className="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-bold text-red-600">Delete</button>
+                    <button type="button" onClick={() => editHotel(hotel)} title="Edit hotel" aria-label="Edit hotel" className="rounded-lg bg-blue-50 p-2 text-blue-700"><Pencil className="h-4 w-4" /></button>
+                    <button type="button" onClick={() => removeHotel(hotel.id)} title="Delete hotel" aria-label="Delete hotel" className="rounded-lg bg-red-50 p-2 text-red-600"><Trash2 className="h-4 w-4" /></button>
                   </div>
                 </div>
               ))}

@@ -191,7 +191,7 @@ export default function UmrahPackagesPageClient({ initialPageData, packages = []
       <section className="packages-grid-container pt-16 bg-white">
         <div className="max-w-[1400px] mx-auto px-5">
           {/* Header */}
-          <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-12 gap-6 text-center md:text-left">
+          <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-6 gap-6 text-center md:text-left">
             <div className="flex flex-col items-center md:items-start">
               <h3 className="eyebrow">{eyebrow}</h3>
               <h2 className="" dangerouslySetInnerHTML={{ __html: title }} />

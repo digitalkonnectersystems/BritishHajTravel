@@ -35,6 +35,14 @@ interface ContactSectionData {
   branchOfficeNewTab?: boolean;
 }
 
+type ContactNumber = { number: string; label?: string; openInNewTab?: boolean };
+
+type OptionalContactNumber = { number?: string; label?: string; openInNewTab?: boolean };
+
+function hasContactNumber(item: OptionalContactNumber | null | undefined): item is ContactNumber {
+  return typeof item?.number === 'string' && item.number.trim().length > 0;
+}
+
 export default function ContactFormSection({ data }: { data: ContactSectionData }) {
   const [form, setForm] = useState({
     fullName: "",
@@ -76,7 +84,6 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
         phone: form.phone,
         packageType: form.packageType,
         message: form.message,
-        sourceFormName: 'Get In Touch Form',
       });
 
       if (res.success) {
@@ -95,19 +102,17 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
   };
 
   // Resolve Landlines list (repeater or legacy fallback)
-  const resolvedLandlines: Array<{ number: string; label?: string; openInNewTab?: boolean }> = (data?.landlines && Array.isArray(data.landlines) && data.landlines.length > 0)
-    ? data.landlines.filter(l => l && l.number?.trim()).map(l => ({ number: l.number!.trim(), label: l.label, openInNewTab: l.openInNewTab }))
+  const resolvedLandlines: Array<{ number: string; label?: string; openInNewTab?: boolean }> = Array.isArray(data?.landlines)
+    ? data.landlines.filter(hasContactNumber)
     : [
-      ...(data?.tollFree ? [{ number: data.tollFree, label: 'Toll Free / Main', openInNewTab: data.tollFreeNewTab ?? true }] : [{ number: "+44 177 2252 996", openInNewTab: true }]),
-      ...(data?.localNum1 ? [{ number: data.localNum1, label: 'Local Line 2', openInNewTab: data.localNum1NewTab ?? true }] : [{ number: "+44 177 2252 996", openInNewTab: true }]),
+      ...(data?.tollFree ? [{ number: data.tollFree, label: 'Toll Free / Main' }] : []),
+      ...(data?.localNum1 ? [{ number: data.localNum1, label: 'Local Line 2' }] : []),
     ];
-
-  // Resolve WhatsApp list (repeater or legacy fallback)
-  const resolvedWhatsApp: Array<{ number: string; label?: string; openInNewTab?: boolean }> = (data?.whatsappList && Array.isArray(data.whatsappList) && data.whatsappList.length > 0)
-    ? data.whatsappList.filter(w => w && w.number?.trim()).map(w => ({ number: w.number!.trim(), label: w.label, openInNewTab: w.openInNewTab }))
+  const resolvedWhatsApp: Array<{ number: string; label?: string; openInNewTab?: boolean }> = Array.isArray(data?.whatsappList)
+    ? data.whatsappList.filter(hasContactNumber)
     : [
-      ...(data?.waReservation ? [{ number: data.waReservation, label: data.waReservationLabel || "Reservation", openInNewTab: data.waReservationNewTab ?? true }] : [{ number: "+44 177 2252 996", label: "Reservation", openInNewTab: true }]),
-      ...(data?.waVisa ? [{ number: data.waVisa, label: data.waVisaLabel || "Saudi Visa", openInNewTab: data.waVisaNewTab ?? true }] : [{ number: "+44 795 7197 390", label: "Saudi Visa", openInNewTab: true }]),
+      ...(data?.waReservation ? [{ number: data.waReservation, label: data.waReservationLabel || 'Reservation' }] : []),
+      ...(data?.waVisa ? [{ number: data.waVisa, label: data.waVisaLabel || 'Saudi Visa' }] : []),
     ];
 
   return (
@@ -171,19 +176,19 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
               </div>
 
               {/* Email */}
-              <div>
+              {data.email ? <div>
                 <h4 className="">EMAIL</h4>
                 <div className="">
                   <a
-                    href={`mailto:${data.email || "[EMAIL_ADDRESS]"}`}
+                    href={`mailto:${data.email}`}
                     target={data.emailNewTab ?? true ? "_blank" : "_self"}
                     rel={data.emailNewTab ?? true ? "noopener noreferrer" : undefined}
                     className="hover:text-primary transition-colors"
                   >
-                    {data.email || "[EMAIL_ADDRESS]"}
+                    {data.email}
                   </a>
                 </div>
-              </div>
+              </div> : null}
 
               {/* Office Hours */}
               {/* <div>
@@ -193,24 +198,14 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                 </div>
               </div> */}
 
-              {/* Head Office */}
-              <div>
+              {data.headOffice ? <div>
                 <h4 className="">HEAD OFFICE</h4>
-                {(data.headOfficeMapUrl || "https://maps.app.goo.gl/1BRUoBxtt4wWw58t6") ? (
-                  <a
-                    href={data.headOfficeMapUrl || "https://maps.app.goo.gl/1BRUoBxtt4wWw58t6"}
-                    target={data.headOfficeNewTab ?? true ? "_blank" : "_self"}
-                    rel={data.headOfficeNewTab ?? true ? "noopener noreferrer" : undefined}
-                    className="leading-relaxed block hover:text-primary transition-colors no-underline text-inherit"
-                    dangerouslySetInnerHTML={{ __html: (data.headOffice || "1325 Eglinton Ave E Suite Number 218,\nMississauga, ON L4W 4L9, UK").replace(/\n/g, '<br />') }}
-                  />
+                {data.headOfficeMapUrl ? (
+                  <a href={data.headOfficeMapUrl} target={data.headOfficeNewTab ?? true ? '_blank' : '_self'} rel="noopener noreferrer" className="leading-relaxed block hover:text-primary transition-colors no-underline text-inherit">{data.headOffice}</a>
                 ) : (
-                  <div
-                    className="leading-relaxed"
-                    dangerouslySetInnerHTML={{ __html: (data.headOffice || "1325 Eglinton Ave E Suite Number 218,\nMississauga, ON L4W 4L9, UK").replace(/\n/g, '<br />') }}
-                  />
+                  <div className="leading-relaxed whitespace-pre-line">{data.headOffice}</div>
                 )}
-              </div>
+              </div> : null}
 
               {/* Branch Office */}
               {/* <div>

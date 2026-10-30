@@ -1,4 +1,5 @@
 "use client";
+import SoldOutBadge from '@/components/SoldOutBadge';
 import { normalizeUkPhoneInput } from '@/lib/ukPhone';
 
 import React, { useState, useEffect } from "react";
@@ -14,11 +15,9 @@ import { isTbcPrice } from "@/lib/priceDisplay";
 export default function PackageDetailPageClient({
   initialSlug,
   initialPackage,
-  isDestination = false,
 }: {
   initialSlug: string;
   initialPackage?: any;
-  isDestination?: boolean;
 }) {
   const rawSlug = initialSlug;
   const [pkg] = useState<any>(() => initialPackage || null);
@@ -42,6 +41,7 @@ export default function PackageDetailPageClient({
 
   const handleBookingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (pkg?.status === 'sold_out') { setBookingStatus('This package is sold out and cannot be booked.'); return; }
     const newErrors: { [key: string]: boolean } = {};
     if (!fullName.trim()) newErrors.fullName = true;
     if (!phone.trim()) newErrors.phone = true;
@@ -71,7 +71,7 @@ export default function PackageDetailPageClient({
         startDate: selectedDate,
         totalPrice: estimatedTotalFormatted ? `${currencyCode} ${estimatedTotalFormatted}` :
           (isTbcPrice(minPriceItem.price, minPriceItem.priceStatus) ? 'TBC' : String(pkg?.startingPrice ?? pkg?.price ?? "")),
-        sourceFormName: isDestination ? 'Destination Form' : (pkg?.type === 'hajj' ? 'Hajj Package Booking Form' : 'Umrah Package Booking Form'),
+        sourceFormName: pkg?.type === 'hajj' ? 'Hajj Package Booking Form' : 'Umrah Package Booking Form',
       });
 
       if (res.success) {
@@ -193,7 +193,7 @@ export default function PackageDetailPageClient({
   const bannerPrice = minFormattedPrice;
   const priceSubtext = `PER PERSON - ${minPriceItem.packageType.toUpperCase()}`;
   const exclusiveBadge = detailData.exclusiveBadge || cardData.exclusiveBadge || pkg.exclusiveBadge || "STARTING FROM";
-  const currencyCode = "£";
+  const currencyCode = pkg.currency || pkg.currencyCode || "£";
 
   // Default selected package type is the minimum priced package (or single price if only 1)
   useEffect(() => {
@@ -464,6 +464,11 @@ export default function PackageDetailPageClient({
 
   return (
     <div className="bg-[#faf7f2] min-h-screen text-slate-800">
+      {pkg?.status === 'sold_out' && (
+        <div className="bg-red-800 text-white flex flex-wrap items-center justify-center gap-5 p-4 text-center font-bold">
+          <SoldOutBadge /><span>This package is SOLD OUT and is no longer available for booking.</span>
+        </div>
+      )}
       {/* ================= FULL-WIDTH HEADER BANNER ================= */}
       <div className="w-full bg-primary text-white py-10 sm:py-14 shadow-lg border-b border-primary">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-10 relative">
@@ -507,7 +512,7 @@ export default function PackageDetailPageClient({
           <div className="lg:col-span-8 flex flex-col gap-10">
 
             {/* 1. Premium Accommodations */}
-            {(rawMakkahHotel.name || rawMakkahHotel.image || rawMadinahHotel.name || rawMadinahHotel.image) && (
+            {((rawMakkahHotel.isVisible !== false && (rawMakkahHotel.name || rawMakkahHotel.image)) || (rawMadinahHotel.isVisible !== false && (rawMadinahHotel.name || rawMadinahHotel.image))) && (
               <div>
                 <h3 className="text-xl sm:text-2xl font-bold font-serif text-slate-800 mb-5 flex items-center gap-2">
                   Premium Accommodations
@@ -515,7 +520,7 @@ export default function PackageDetailPageClient({
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   {/* Makkah Hotel Card */}
-                  {(rawMakkahHotel.name || rawMakkahHotel.image) && (
+                  {(rawMakkahHotel.isVisible !== false && (rawMakkahHotel.name || rawMakkahHotel.image)) && (
                     <div className="bg-white rounded-2xl overflow-hidden border border-blue-100 shadow-md flex flex-col">
                       <div className="relative h-48 w-full bg-slate-200">
                         {makkahImg ? (
@@ -569,7 +574,7 @@ export default function PackageDetailPageClient({
                   )}
 
                   {/* Madinah Hotel Card */}
-                  {(rawMadinahHotel.name || rawMadinahHotel.image) && (
+                  {(rawMadinahHotel.isVisible !== false && (rawMadinahHotel.name || rawMadinahHotel.image)) && (
                     <div className="bg-white rounded-2xl overflow-hidden border border-red-soft shadow-md flex flex-col">
                       <div className="relative h-48 w-full bg-slate-200">
                         {madinahImg ? (
@@ -1046,10 +1051,11 @@ export default function PackageDetailPageClient({
                 {/* Submit CTA Button */}
                 <button
                   type="submit"
-                  className="w-full bg-red text-white font-extrabold py-3.5 px-6 rounded-sm shadow-md hover:bg-red-lt hover:text-white active:scale-[0.99] transition-all duration-300 tracking-wider uppercase text-sm flex items-center justify-center cursor-pointer"
+                  disabled={pkg?.status === 'sold_out'}
+                  className="w-full disabled:opacity-50 disabled:cursor-not-allowed bg-red text-white font-extrabold py-3.5 px-6 rounded-sm shadow-md hover:bg-red-lt hover:text-white active:scale-[0.99] transition-all duration-300 tracking-wider uppercase text-sm flex items-center justify-center cursor-pointer"
                 >
                   <TicketPercent className="w-4 h-4 mr-2" />
-                  <span>Book {pkg.badgeTag || "Package"}</span>
+                  <span>{pkg?.status === 'sold_out' ? 'SOLD OUT' : `Book ${pkg.badgeTag || "Package"}`}</span>
                 </button>
 
                 <p className="text-[10px] text-slate-600 text-center leading-normal pt-1">

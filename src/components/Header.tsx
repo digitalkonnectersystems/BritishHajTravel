@@ -7,16 +7,7 @@ import { usePathname } from "next/navigation";
 import { normalizeFlightUrl } from "@/lib/flightUrl";
 import { Menu, X } from "lucide-react";
 
-const DEFAULT_NAV_ITEMS = [
-  { id: '1', label: 'Home', url: '/', level: 1, children: [] },
-  { id: '2', label: 'About', url: '/about', level: 1, children: [] },
-  { id: '3', label: 'Umrah Packages', url: '/umrah-packages', level: 1, children: [] },
-  { id: '4', label: 'Hajj Packages', url: '/hajj-packages', level: 1, children: [] },
-  { id: 'baan-holding-hajj', label: 'BAAN HOLDING HAJJ', url: '/baan-holding-hajj', level: 1, children: [] },
-  { id: '5', label: 'Saudi Visa', url: '/saudi-visa', level: 1, children: [] },
-  { id: '6', label: 'Flights', url: '/flights', level: 1, children: [] },
-  { id: '7', label: 'Contact', url: '/contact', level: 1, children: [] },
-];
+const DEFAULT_NAV_ITEMS: any[] = [];
 
 export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIdentity = null }: { initialNavItems?: any[]; initialIdentity?: any }) {
   const [menuActive, setMenuActive] = useState(false);
@@ -94,9 +85,9 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
     setOpenDropdown(null);
   };
 
-  const whatsappUrl = identityData?.whatsappHeaderUrl || "https://wa.me/19056248344?text=Hi,%20I'm%20interested%20in%20your%20services!";
-  const whatsappText = identityData?.whatsappHeaderText || "+44 177 2252 996";
-  const whatsappLabel = identityData?.whatsappHeaderLabel || "Book Hajj & Umrah";
+  const whatsappUrl = identityData?.whatsappHeaderUrl || "";
+  const whatsappText = identityData?.whatsappHeaderText || "";
+  const whatsappLabel = identityData?.whatsappHeaderLabel || "";
 
   return (
     <>
@@ -124,16 +115,9 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
                     unoptimized
                   />
                 )
-              ) : (
-                <Image
-                  src="/img/logo.png"
-                  alt="British Hajj Travel Logo"
-                  width={250}
-                  height={60}
-                  priority
-                  className="h-auto w-full"
-                />
-              )}
+              ) : identityData?.siteName ? (
+                <span className="font-semibold text-primary">{identityData.siteName}</span>
+              ) : null}
             </Link>
           </div>
 
@@ -165,16 +149,9 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
                     unoptimized
                   />
                 )
-              ) : (
-                <Image
-                  src="/img/logo.png"
-                  alt="British Hajj Travel Logo"
-                  width={250}
-                  height={60}
-                  priority
-                  className="h-auto w-full"
-                />
-              )}
+              ) : identityData?.siteName ? (
+                <span className="font-semibold text-primary">{identityData.siteName}</span>
+              ) : null}
             </Link>
           </div>
               <button
@@ -280,7 +257,7 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
               })}
             </div>
 
-            <div className="border-t border-gray-100 pt-4 xl:hidden">
+            {whatsappUrl ? <div className="border-t border-gray-100 pt-4 xl:hidden">
               <a
                 href={whatsappUrl}
                 target="_blank"
@@ -295,12 +272,12 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
                   <span className="block text-sm font-extrabold text-[#25D366]">{whatsappText}</span>
                 </span>
               </a>
-            </div>
+            </div> : null}
           </nav>
           
             <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             
-            <a
+            {whatsappUrl ? <a
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
@@ -314,8 +291,8 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
                 height={40}
                 className="transition-opacity group-hover:opacity-80"
               />
-            </a>
-            <div className="hidden flex-col text-left sm:flex gap-1">
+            </a> : null}
+            {whatsappText ? <div className="hidden flex-col text-left sm:flex gap-1">
               <span className="text-[9px] font-bold uppercase leading-tight tracking-wider text-gray-500 md:text-[10px]">
                 {whatsappLabel}
               </span>
@@ -325,7 +302,7 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
               >
                 {whatsappText}
               </a>
-            </div>
+            </div> : null}
             
             <button
               type="button"
