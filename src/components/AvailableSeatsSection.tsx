@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useCurrency } from "@/components/CurrencyProvider";
 
 type SeatCard = {
   logo?: string;
@@ -33,6 +34,7 @@ function isSeatCard(value: unknown): value is SeatCard {
 }
 
 export default function AvailableSeatsSection({ data }: { data?: AvailableSeatsData }) {
+  const currency = useCurrency();
   const cards = Array.isArray(data?.items) ? data.items.filter(isSeatCard) : [];
   if (cards.length === 0) return null;
 
@@ -60,7 +62,7 @@ export default function AvailableSeatsSection({ data }: { data?: AvailableSeatsD
                 <p>▣ <span className="ml-1">{card.baggage || "Baggage allowance"}</span></p>
               </div>
               <div className="mt-4 flex items-center justify-between gap-3">
-                <span className="rounded-lg bg-[#fff1f5] px-3 py-3 text-xs font-bold text-red">{card.price || "£TBC / Person"}</span>
+                <span className="rounded-lg bg-[#fff1f5] px-3 py-3 text-xs font-bold text-red">{card.price ? card.price.replace(/^(?:£|CAD|GBP|USD|EUR|\$)\s*/i, `${currency.symbol} `) : "TBC / Person"}</span>
                 <a href={card.bookingUrl || "/contact"} className="rounded-full border border-red px-4 py-2 text-xs font-bold text-red transition hover:bg-red hover:text-white">{card.bookingLabel || "Book Now"} →</a>
               </div>
             </article>

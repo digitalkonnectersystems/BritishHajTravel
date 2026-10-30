@@ -1,4 +1,5 @@
 import { getRelatedBlogs } from '@/actions/blogActions';
+import { getCurrencyConfiguration } from '@/lib/currencyService';
 import Link from 'next/link';
 import BlogSidebarBookingForm from '@/components/BlogSidebarBookingForm';
 import { getPackagesByType } from '@/actions/packageActions';
@@ -40,6 +41,7 @@ function toSafeISOString(value: any): string | undefined {
 export default async function BlogDetailPage({ blog, slug }: { blog: any; slug: string }) {
   if (!blog || !blog.isPublished) return null;
 
+  const currency = await getCurrencyConfiguration();
   const relatedBlogs = await getRelatedBlogs(slug, 6);
 
   const [umrahPackageRows, hajjPackageRows] = await Promise.all([
@@ -209,6 +211,7 @@ export default async function BlogDetailPage({ blog, slug }: { blog: any; slug: 
               {/* Umrah Packages */}
               <div className="mt-8">
                 <SidebarPackageSection
+                  currency={currency}
                   title="Umrah Packages"
                   packages={umrahPackages}
                   emptyText="No Umrah packages available."
@@ -218,6 +221,7 @@ export default async function BlogDetailPage({ blog, slug }: { blog: any; slug: 
               {/* Hajj Packages */}
               <div className="mt-8">
                 <SidebarPackageSection
+                  currency={currency}
                   title="Hajj Packages"
                   packages={hajjPackages}
                   emptyText="No Hajj packages available."
@@ -237,10 +241,12 @@ function SidebarPackageSection({
   title,
   packages,
   emptyText,
+  currency,
 }: {
   title: string;
   packages: any[];
   emptyText: string;
+  currency: { symbol: string; locale: string };
 }) {
   return (
     <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
@@ -274,7 +280,7 @@ function SidebarPackageSection({
               '/img/saudi-visa-1.webp';
 
             const price = pkg.startingPrice
-              ? Number(pkg.startingPrice).toLocaleString('en-CA', {
+              ? Number(pkg.startingPrice).toLocaleString(currency.locale, {
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 0,
               })
@@ -307,7 +313,7 @@ function SidebarPackageSection({
                         From
                       </span>
                       <div className="text-sm font-black text-primary">
-                        {price ? `£ ${price}` : 'Contact for price'}
+                        {price ? `${currency.symbol} ${price}` : 'Contact for price'}
                       </div>
                     </div>
                   </div>

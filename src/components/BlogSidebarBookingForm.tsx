@@ -7,6 +7,7 @@ import { submitPackageBookingEnquiryAction } from "@/actions/enquiryActions";
 import { getPackagesByType } from "@/actions/packageActions";
 import SubmissionSuccessModal from "@/components/SubmissionSuccessModal";
 import { FORM_SUCCESS_MESSAGE } from "@/lib/formSuccess";
+import { useCurrency } from '@/components/CurrencyProvider';
 
 const MONTH_NAMES = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -31,6 +32,7 @@ function formatTravelMonth(value?: string | null): string {
 }
 
 export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: string }) {
+  const currency = useCurrency();
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("+44");
   const [email, setEmail] = useState("");
@@ -191,7 +193,7 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
     setBookingStatus("Submitting your inquiry...");
 
     const selectedPriceItem = packagePrices.find((p) => p.packageType === effectivePackageType);
-    const formattedTotalPrice = selectedPriceItem ? `£ ${selectedPriceItem.price.toLocaleString("en-CA")}` : "";
+    const formattedTotalPrice = selectedPriceItem ? `${currency.symbol} ${selectedPriceItem.price.toLocaleString(currency.locale)}` : "";
 
     const basePackageName = selectedPackage?.title || `${packageType === "hajj" ? "Hajj" : "Umrah"} Package`;
     const travelMonthSuffix = packageType === "umrah" && selectedPackage?.month
@@ -521,7 +523,7 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
               >
                 {packagePrices.map((item, idx) => (
                   <option key={idx} value={item.packageType} className="bg-white text-ink">
-                    £ {item.price ? item.price.toLocaleString("en-CA") : ""} - {item.packageType}
+                    {currency.symbol} {item.price ? item.price.toLocaleString(currency.locale) : ""} - {item.packageType}
                   </option>
                 ))}
               </select>

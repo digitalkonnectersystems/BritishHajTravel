@@ -1,6 +1,7 @@
 'use server';
 
 import { requireAdmin } from '@/lib/requireAdmin';
+import { getFormsSettings } from '@/actions/pageActions';
 import { randomUUID } from 'node:crypto';
 import { writeBackendLog, databaseErrorCode } from '@/lib/backendLogger';
 import { recordPublicEnquiry } from '@/lib/publicEnquiryAudit';
@@ -51,6 +52,76 @@ async function dispatchAndStoreEnquiryEmail(
     undefined,
     (audit) => saveEnquiryEmailAudit(enquiryNumber, audit),
   );
+}
+
+/** Shared inline Hajj 2027 enquiry form used on five public Hajj pages. */
+export async function submitHajjRegistrationEnquiryAction(data: {
+  name: string;
+  email: string;
+  phone: string;
+  postcode: string;
+  airport: string;
+  packageTier: string;
+  passengers: number;
+  days: string;
+  room: string;
+  budget: string;
+  sourcePage: string;
+}) {
+  const allowedPages = new Set([
+    '/hajj-packages/', '/hajj-2027-registration/', '/yosr-al-mashaer-hajj-uk-guide/',
+    '/holiday-in-bakkah/', '/baan-holding-hajj/',
+  ]);
+  const clean = {
+    ...data,
+    name: String(data.name || '').trim(),
+    email: String(data.email || '').trim(),
+    phone: String(data.phone || '').trim(),
+    postcode: String(data.postcode || '').trim(),
+    airport: String(data.airport || '').trim(),
+    packageTier: String(data.packageTier || '').trim(),
+    days: String(data.days || '').trim(),
+    room: String(data.room || '').trim(),
+    budget: String(data.budget || '').trim(),
+  };
+  const sourcePage = '/' + String(data.sourcePage || '').split('/').filter(Boolean).join('/') + '/';
+  if (!allowedPages.has(sourcePage)) return { success: false, error: 'Invalid registration page.' };
+  if (!validName(clean.name) || !validEmail(clean.email) || !isValidUkPhone(clean.phone) ||
+      !clean.postcode || clean.postcode.length > 30 || !countOk(clean.passengers, 1) || clean.passengers > 100 ||
+      [clean.airport, clean.packageTier, clean.days, clean.room, clean.budget].some(v => !v || v.length > 120)) {
+    return { success: false, error: 'Please complete all fields with valid details. Phone must be +44 followed by 10 digits.' };
+  }
+  try {
+    const settings = await getFormsSettings();
+    if (settings.formsData?.hajjRegistrationForm?.enabled === false) {
+      return { success: false, error: 'This registration form is currently unavailable.' };
+    }
+    const enquiryNumber = enquiryReference('HJ');
+    const details = [
+      `Page: ${sourcePage}`, `Postcode: ${clean.postcode}`, `Airport: ${clean.airport}`,
+      `Hajj Package: ${clean.packageTier}`, `Passengers: ${clean.passengers}`,
+      `Number of Days: ${clean.days}`, `Room Size: ${clean.room}`, `Budget per person: ${clean.budget}`,
+    ].join('\n');
+    await db.insert(enquiries).values({
+      enquiryNumber, type: 'quote_request', fullName: clean.name, email: clean.email,
+      phone: clean.phone, preferredPackageType: clean.packageTier, adults: clean.passengers,
+      message: details, sourceForm: 'Hajj 2027 Registration Form', status: 'new',
+    });
+    await recordPublicEnquiry('Hajj 2027 Registration Form', enquiryNumber);
+    const emailResult = await dispatchAndStoreEnquiryEmail(enquiryNumber, 'Hajj 2027 Registration Form', {
+      enquiryNumber, fullName: clean.name, email: clean.email, phone: clean.phone,
+      postcode: clean.postcode, airport: clean.airport, packageTier: clean.packageTier,
+      passengers: clean.passengers, days: clean.days, room: clean.room, budget: clean.budget,
+      sourcePage,
+    });
+    revalidatePath('/admin/enquiries');
+    revalidatePath('/admin/dashboard');
+    return { success: true, enquiryNumber, emailWarning: emailResult.error };
+  } catch (error) {
+    console.error('Hajj 2027 registration enquiry failed:', error);
+    await recordSubmissionFailure('hajjRegistrationForm', error);
+    return { success: false, error: 'Unable to save your enquiry. Please try again.' };
+  }
 }
 
 export async function submitQuoteEnquiryAction(data: {
@@ -247,12 +318,15 @@ export async function submitContactEnquiryAction(data: {
   email: string;
   phone: string;
   website?: string;
+  subject?: string;
   packageType?: string;
   message: string;
   sourceFormName?: string;
 }) {
   try {
-    const { fullName, email, phone, website = '', packageType = '', message, sourceFormName } = data;
+    const { fullName, email, phone, website = '', subject = '', packageType = '', message, sourceFormName } = data;
+    const cleanSubject = String(subject).trim().slice(0, 240);
+    const savedMessage = cleanSubject ? `Subject: ${cleanSubject}\n\n${message}` : message;
 
     if (!validName(fullName) || !validEmail(email)) {
       return { success: false, error: 'Full Name and Email are required.' };
@@ -272,7 +346,7 @@ export async function submitContactEnquiryAction(data: {
       phone: phone || 'N/A',
       website,
       packageType,
-      message,
+      message: savedMessage,
       status: 'new',
     });
 
@@ -284,7 +358,7 @@ export async function submitContactEnquiryAction(data: {
       email,
       phone: phone || 'N/A',
       preferredPackageType: packageType || 'General Contact',
-      message,
+      message: savedMessage,
       status: 'new',
     });
     });
@@ -300,6 +374,7 @@ export async function submitContactEnquiryAction(data: {
       packageType,
       website,
       message,
+      subject: cleanSubject,
     });
 
     revalidatePath('/admin/enquiries');
@@ -325,6 +400,7 @@ export async function submitVisaEnquiryAction(data: {
   phone: string;
   travelersCount?: number;
   nationality?: string;
+  travelDate?: string;
   message?: string;
   sourceFormName?: string;
 }) {
@@ -337,6 +413,7 @@ export async function submitVisaEnquiryAction(data: {
       phone,
       travelersCount = 1,
       nationality = 'British',
+      travelDate = '',
       message = '',
       sourceFormName,
     } = data;
@@ -388,6 +465,7 @@ export async function submitVisaEnquiryAction(data: {
       phone,
       travelersCount,
       nationality,
+      travelDate,
       message,
     });
 

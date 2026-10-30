@@ -43,7 +43,7 @@ export default function PackageCustomizationCTA({ journey }: { journey: 'hajj' |
     setSending(true); setResult('');
     try {
       const response = await submitCustomizedPackageAction(form);
-      if (response.success) { setSaved(true); setResult(`${FORM_SUCCESS_MESSAGE} Reference: ${response.enquiryNumber}`); }
+      if (response.success) { setSaved(true); setResult(`${FORM_SUCCESS_MESSAGE} Reference: ${response.enquiryNumber}${response.emailWarning ? ` Email notice: ${response.emailWarning}` : ""}`); }
       else setResult(response.error || 'Enquiry could not be submitted.');
     } catch { setResult('Connection error. Please try again.'); }
     finally { setSending(false); }

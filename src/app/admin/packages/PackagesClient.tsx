@@ -1,4 +1,5 @@
 'use client';
+import { useCurrency } from '@/components/CurrencyProvider';
 
 import { useEffect, useState } from 'react';
 import ImageUploadWidget from '@/components/admin/ImageUploadWidget';
@@ -16,6 +17,7 @@ interface PackagesClientProps {
 }
 
 export default function PackagesClient({ initialPackages }: PackagesClientProps) {
+  const currencySettings = useCurrency();
   const [packagesList, setPackagesList] = useState<any[]>(initialPackages);
   const [saveMsg, setSaveMsg] = useState('');
   const [soldOutBadge, setSoldOutBadge] = useState('');
@@ -86,7 +88,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
       }
       const num = Number(row.price);
       if (row.priceStatus !== 'tbc' && (isNaN(num) || num <= 0)) {
-        alert(`Please enter a valid positive £ price for "${row.packageType}".`);
+        alert(`Please enter a valid positive ${currencySettings.symbol} price for "${row.packageType}".`);
         return;
       }
     }
@@ -287,15 +289,15 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
                 placeholder="Select Month & Year"
               />
             </div>
-            {/* Package Type & Price (£) */}
+            {/* Package Type & Price ({currencySettings.symbol}) */}
             <div className="md:col-span-3 space-y-3 p-4 border border-slate-200 bg-slate-50/70 rounded-2xl">
               <div className="flex items-center justify-between">
                 <div>
                   <label className="text-xs font-bold text-slate-800 block">
-                    Package Type & Price (£) *
+                    Package Type & Price ({currencySettings.symbol}) *
                   </label>
                   <span className="text-[10px] text-slate-500 font-medium">
-                    Configure multiple occupancy or package tiers with individual £ prices.
+                    Configure multiple occupancy or package tiers with individual {currencySettings.symbol} prices.
                   </span>
                 </div>
                 <button

@@ -6,8 +6,11 @@ import DynamicIcon from "@/components/ui/DynamicIcon";
 import { getSoldOutPackages } from "@/actions/packageActions";
 import { getSoldOutDestinationPackages } from "@/actions/destinationActions";
 import SoldOutBadge from "@/components/SoldOutBadge";
+import { useCurrency, usePriceFormatter } from '@/components/CurrencyProvider';
+
 
 export default function SoldOutPackagesSection({ data, initialPackages }: { data: any; initialPackages?: any[] }) {
+  const currencySettings = useCurrency();
   const eyebrow = data?.eyebrow || "";
   const title = data?.title || "Packages Officially<br />Sold Out";
   const description = data?.description || "";
@@ -106,7 +109,7 @@ export default function SoldOutPackagesSection({ data, initialPackages }: { data
               const monthLabel = `${typeName}${cd.duration || pkg.durationDays ? ` \u00B7 ${cd.duration || `${pkg.durationDays} Days`}` : ''}`;
 
               const price = Number(pkg.startingPrice) > 0
-                ? `${pkg.currency || '£'} ${Number(pkg.startingPrice).toLocaleString('en-GB')}`
+                ? `${currencySettings.symbol} ${Number(pkg.startingPrice).toLocaleString(currencySettings.locale)}`
                 : 'Price on request';
               const rawPriceSubtext = cd.priceSubtext?.trim();
               const priceUnit = (!rawPriceSubtext || /occupancy|package|£\s*\/\s*quad/i.test(rawPriceSubtext))

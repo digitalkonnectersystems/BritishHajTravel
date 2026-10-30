@@ -7,6 +7,7 @@ import { dedupeRecipientChannels } from './emailRecipients';
 import { recipientsForForm } from './formEmailRules';
 import { resolveSubmissionSubject } from './emailSubject';
 import { getSmtpRuntimeConfig } from './smtpRuntimeConfig';
+import type { FormEmailTemplatePair } from './formEmailTemplates';
 import { emailFormKey, mergeFormEmailTemplates, renderFormEmailBody, renderFormEmailSubject, renderEmailTokens, resolvedEmailRecipients } from './formEmailTemplates';
 
 export { getResponsiveEmailTemplateHtml, formatFieldLabel };
@@ -32,6 +33,7 @@ export async function dispatchFormEmails(
   submittedData: Record<string, any>,
   providedUserEmail?: string,
   onAuditSnapshot?: (audit: FormEmailAudit) => Promise<void> | void,
+  explicitTemplates?: FormEmailTemplatePair,
 ): Promise<{ adminSent: boolean; userSent: boolean; error?: string; audit?: FormEmailAudit }> {
   let lastAudit: FormEmailAudit | undefined;
 
@@ -74,7 +76,7 @@ export async function dispatchFormEmails(
         fromName = fromNameEnv || String(saved.fromName || '').trim() || 'British Hajj Travel UK';
         // From must be the mailbox or a verified sender alias. Environment values take precedence.
         const savedFrom = String(saved.fromEmail || '').trim();
-        fromEmail = fromEmailEnv || ((savedFrom.toLowerCase() === smtpUser.toLowerCase()) ? savedFrom : '') || smtpUser;
+        fromEmail = fromEmailEnv || (/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(savedFrom) ? savedFrom : '') || smtpUser || smtpConfig.senderEmail;
         replyTo = replyToEnv || String(saved.replyTo || '').trim();
         subjectPattern = String(saved.emailSubjectLine || '').trim() || '[form_name]';
 
@@ -138,7 +140,7 @@ export async function dispatchFormEmails(
     }
 
     const formKey = emailFormKey(formName);
-    const templatePair = formTemplates?.[formKey];
+    const templatePair = explicitTemplates || formTemplates?.[formKey];
     // For legacy forms, maintain existing routing and the former shared template.
     const adminTemplate = templatePair?.admin;
     const customerTemplate = templatePair?.customer;

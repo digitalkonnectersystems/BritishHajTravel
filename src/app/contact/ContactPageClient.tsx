@@ -165,7 +165,7 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
     name: "",
     email: "",
     phone: "+44",
-    website: "",
+    subject: "",
     message: "",
   });
   const [contactStatus, setContactStatus] = useState<string | null>(null);
@@ -204,8 +204,9 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
         fullName: contactForm.name,
         email: contactForm.email,
         phone: contactForm.phone,
-        website: contactForm.website,
+        subject: contactForm.subject,
         message: contactForm.message,
+        sourceFormName: 'Contact Form',
       });
 
       if (resData.success) {
@@ -218,7 +219,7 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
           name: "",
           email: "",
           phone: "+44",
-          website: "",
+          subject: "",
           message: "",
         });
       } else {
@@ -327,11 +328,11 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
 
               <div className="relative">
                 <input
-                  type="url"
-                  id="website"
+                  type="text"
+                  id="subject"
                   placeholder=" "
-                  value={contactForm.website}
-                  onChange={(e) => setContactForm({ ...contactForm, website: e.target.value })}
+                  value={contactForm.subject}
+                  onChange={(e) => setContactForm({ ...contactForm, subject: e.target.value })}
                   className={`peer w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium appearance-none bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat focus:border-red`}
                 />
                 <label
@@ -459,23 +460,27 @@ export default function ContactPageClient({ initialPageData, initialFormConfig }
   const hasForm = sections.some((s: any) => s.type === "Contact Form" || s.type === "Contact Form + Maps");
   const hasMaps = sections.some((s: any) => s.type === "Contact Maps" || s.type === "Google Maps" || s.type === "Contact Form + Maps");
   const formSec = sections.find((s: any) => s.type === "Contact Form" || s.type === "Contact Form + Maps");
+  const position = (types: string[], fallback: number) => {
+    const idx = sections.findIndex((section: any) => types.includes(section.type));
+    return idx >= 0 ? idx * 10 + 10 : fallback;
+  };
 
   return (
-    <main className="bg-blue-lt min-h-screen">
+    <main className="bg-blue-lt min-h-screen flex flex-col">
       {/* ================= DYNAMIC HERO BANNER ================= */}
-      <PageBanner
+      <div style={{ order: -100 }}><PageBanner
         title={pageData?.bannerTitle || pageData?.title || "We'd <span>Love</span> To Hear From You"}
         description={pageData?.bannerDescription || "Have a question or want to work together? Choose the most convenient way to reach us."}
         bgImage={pageData?.bannerBgImage}
         position={pageData?.bannerPosition}
         size={pageData?.bannerSize}
         heroSettings={pageData?.seoSettings}
-      />
+      /></div>
 
       {/* ================= ALWAYS RELIABLE SECTIONS ================= */}
-      <ContactInfoCardsSection data={sections.find(s => s.type === "Contact Info Cards" || s.type === "Contact Bar")?.data} />
+      <div style={{ order: position(['Contact Info Cards','Contact Bar'], 10) }}><ContactInfoCardsSection data={sections.find(s => s.type === "Contact Info Cards" || s.type === "Contact Bar")?.data} /></div>
 
-      <section className="max-w-7xl py-12 mx-auto px-5">
+      <section className="max-w-7xl w-full py-12 mx-auto px-5" style={{ order: position(['Contact Form','Contact Form + Maps','Contact Maps','Google Maps'], 20) }}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
           <ContactFormSection data={formSec?.data} initialFormConfig={initialFormConfig} />
           <ContactMapsSection data={sections.find((s: any) => s.type === "Contact Maps" || s.type === "Google Maps" || s.type === "Contact Form + Maps")?.data} />
@@ -486,7 +491,7 @@ export default function ContactPageClient({ initialPageData, initialFormConfig }
         const handledTypes = ["Contact Info Cards", "Contact Bar", "Contact Form", "Contact Maps", "Google Maps", "Contact Form + Maps"];
         const unhandled = sections.filter((s: any) => !handledTypes.includes(s.type));
         if (unhandled.length > 0) {
-          return <PageSectionsRenderer sections={unhandled} pageData={pageData} />;
+          return unhandled.map((section: any) => <div key={section.id} style={{ order: sections.indexOf(section) * 10 + 10 }}><PageSectionsRenderer sections={[section]} pageData={pageData} /></div>);
         }
         return null;
       })()}

@@ -66,7 +66,6 @@ export default function AirlinesPageClient({ initialPageData }: { initialPageDat
   const pageData = initialPageData || null;
   const sections = parseAirlineSections(pageData?.sections);
 
-  const unhandledSections = sections.filter((section) => !handledTypes.has(section.type));
 
   return (
     <main className="min-h-screen bg-blue-lt">
@@ -140,9 +139,8 @@ export default function AirlinesPageClient({ initialPageData }: { initialPageDat
               );
             }
 
-            return null;
+            return <PageSectionsRenderer key={index} sections={[section]} pageData={pageData} />;
           })}
-          {unhandledSections.length > 0 ? <PageSectionsRenderer sections={unhandledSections} pageData={pageData} /> : null}
         </>
       )}
     </main>

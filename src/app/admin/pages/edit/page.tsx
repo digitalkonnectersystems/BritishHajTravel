@@ -140,7 +140,6 @@ type SectionCategory = {
 
 
 const SECTION_CATALOG: SectionCategory[] = [
-
   {
 
     category: 'Homepage',
@@ -215,6 +214,12 @@ const SECTION_CATALOG: SectionCategory[] = [
 
       { type: 'Banner 4 Grids', description: 'Banner with 4 overlapping accreditation/feature cards.', pages: ['Hajj Packages', 'Umrah Packages'] },
 
+      { type: 'Package Detail Blocks', description: 'Display real package detail data: flights, hotels, occupancy prices and inclusions for a selected package.', pages: ['Hajj Packages', 'Umrah Packages', 'Any Page'] },
+      { type: 'Package Flight Details', description: 'Show the selected package flight route from its detail record.', pages: ['Hajj Packages', 'Umrah Packages', 'Any Page'] },
+      { type: 'Package Hotel Details', description: 'Show selected package accommodation details and images.', pages: ['Hajj Packages', 'Umrah Packages', 'Any Page'] },
+      { type: 'Package Occupancy Prices', description: 'Show live occupancy prices for the selected package.', pages: ['Hajj Packages', 'Umrah Packages', 'Any Page'] },
+      { type: 'Package Inclusions', description: 'Show what is included in the selected package.', pages: ['Hajj Packages', 'Umrah Packages', 'Any Page'] },
+      { type: 'Package Detail Gallery', description: 'Display images from the selected package detail gallery.', pages: ['Hajj Packages', 'Umrah Packages', 'Any Page'] },
       { type: 'Package Brochure', description: 'Display 1 or more promotional package brochure flyers/images with responsive grid and centered single view.', pages: ['Hajj Packages', 'Umrah Packages', 'Any Page'] },
 
       { type: 'Gallery', description: 'Responsive masonry gallery with image lightbox, navigation, and embedded videos.', pages: ['Gallery', 'Any Page'] },
@@ -882,7 +887,7 @@ function PageBuilderContent() {
                   }
                 }
 
-                setSections(loadedSections);
+                setSections(loadedSections.filter((section: any) => section.type !== 'Custom Layout Builder'));
 
                 const heroSec = parsed.find((s: any) => s.type === 'Homepage Hero Banner' || s.type === 'Hero Slider');
 
@@ -1331,7 +1336,17 @@ function PageBuilderContent() {
 
 
 
-    if (type === 'Umrah Packages') {
+    if (['Package Detail Blocks', 'Package Flight Details', 'Package Hotel Details', 'Package Occupancy Prices', 'Package Inclusions', 'Package Detail Gallery'].includes(type)) {
+      const all = type === 'Package Detail Blocks';
+      defaultData = { eyebrow: 'PACKAGE DETAILS', title: '', packageId: 0,
+        showFlight: all || type === 'Package Flight Details',
+        showHotels: all || type === 'Package Hotel Details',
+        showPrices: all || type === 'Package Occupancy Prices',
+        showInclusions: all || type === 'Package Inclusions',
+        showGallery: all || type === 'Package Detail Gallery',
+        showOverview: all,
+      };
+    } else if (type === 'Umrah Packages') {
 
       defaultData = {
 
@@ -4761,9 +4776,25 @@ function PageBuilderContent() {
 
                           <div className="pt-4 border-t border-slate-200 flex flex-col gap-3">
 
+                            {['Package Detail Blocks', 'Package Flight Details', 'Package Hotel Details', 'Package Occupancy Prices', 'Package Inclusions', 'Package Detail Gallery'].includes(sec.type) && (
+                              <div className="rounded-xl border p-4 bg-white space-y-3">
+                                <h4 className="text-sm font-bold text-primary">Package Detail Sections</h4>
+                                <p className="text-xs text-slate-500">Select one published package. Content, hotels, prices and inclusions are read directly from its detail-page records.</p>
+                                <label className="block text-xs font-semibold">Package
+                                  <select className="block w-full p-2 border rounded mt-1" value={sec.data?.packageId || 0} onChange={e => updateSectionData(sec.id, 'packageId', Number(e.target.value))}>
+                                    <option value={0}>Select a package</option>
+                                    {allPackages.filter(p => p.status !== 'draft' && p.status !== 'sold_out').map(p => <option key={p.id} value={p.id}>{p.type?.toUpperCase()} - {p.title}</option>)}
+                                  </select>
+                                </label>
+                                {(['showOverview', 'showFlight', 'showHotels', 'showPrices', 'showInclusions', 'showGallery'] as const).map(key => <label key={key} className="inline-flex items-center gap-2 mr-4 text-xs">
+                                  <input type="checkbox" checked={sec.data?.[key] !== false} onChange={e => updateSectionData(sec.id, key, e.target.checked)} /> {key.replace(/^show/, 'Show ')}
+                                </label>)}
+                              </div>
+                            )}
+
                             {/* Universal Section Header Block (Eyebrow, Heading, Description) - Hidden for Blog sections */}
 
-                            {sec.type !== 'Latest Blogs Grid' && sec.type !== 'Blog Posts Carousel' && sec.type !== 'Testimonials' && sec.type !== 'Hajj Services Grid' && sec.type !== 'Text Block (Rich Text)' && sec.type !== 'Packages Content (Rich Text)' && (
+                            {sec.type !== 'Latest Blogs Grid' && sec.type !== 'Blog Posts Carousel' && sec.type !== 'Testimonials' && sec.type !== 'Hajj Services Grid' && sec.type !== 'Text Block (Rich Text)' && sec.type !== 'Packages Content (Rich Text)' && !['Package Detail Blocks', 'Package Flight Details', 'Package Hotel Details', 'Package Occupancy Prices', 'Package Inclusions', 'Package Detail Gallery'].includes(sec.type) && (
 
                               <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 flex flex-col gap-2">
 

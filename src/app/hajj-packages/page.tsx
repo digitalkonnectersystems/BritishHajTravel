@@ -7,6 +7,7 @@ import PageSectionsRenderer from "@/components/PageSectionsRenderer";
 import HajjPackagesSection from "@/components/HajjPackagesSection";
 import PackageCustomizationCTA from "@/components/PackageCustomizationCTA";
 import PageBanner from "@/components/PageBanner";
+import HajjRegistrationForm from "@/components/HajjRegistrationForm";
 import type { Metadata } from "next";
 import { buildPageMetadata } from "@/lib/seoMetadata";
 
@@ -73,6 +74,8 @@ export default async function HajjPackagesPage() {
         size={pageData?.bannerSize}
         heroSettings={pageData?.seoSettings}
       />
+
+      <HajjRegistrationForm sourcePage="/hajj-packages/" />
 
       {pageSections.length > 0 ? (
         <PageSectionsRenderer sections={pageSections} pageData={pageData} initialPackageData={{ hajj: liveCards.length > 0 ? hajjPackages : undefined }} />

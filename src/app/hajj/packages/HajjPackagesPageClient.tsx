@@ -4,16 +4,25 @@ import HajjLandscapeCard from "@/components/HajjLandscapeCard";
 import HajjPackagePager from "@/components/HajjPackagePager";
 import { isAccommodationVisible, isPackageCardVisible } from "@/lib/packageCardVisibility";
 import { isTbcPrice } from "@/lib/priceDisplay";
+import { useCurrency } from "@/components/CurrencyProvider";
 import PageBanner from "@/components/PageBanner";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import PageSectionsRenderer from "@/components/PageSectionsRenderer";
 import DynamicIcon from "@/components/ui/DynamicIcon";
 
 export default function HajjPackagesPageClient({ initialPageData, packages = [] }: { initialPageData?: any, packages?: any[] }) {
+  const currencySettings = useCurrency();
   const pageData = initialPageData || null;
+  let orderedSections: any[] = [];
+  try { const raw = typeof pageData?.sections === 'string' ? JSON.parse(pageData.sections) : pageData?.sections; orderedSections = Array.isArray(raw) ? raw : []; } catch {}
+  const sectionOrder = (types: string[], fallback: number) => {
+    const i = orderedSections.findIndex((section: any) => types.includes(section.type));
+    return i >= 0 ? i * 10 + 10 : fallback;
+  };
   return (
-    <div className="hajj-page-wrapper" suppressHydrationWarning>
+    <div className="hajj-page-wrapper flex flex-col" suppressHydrationWarning>
       {/* ================= DYNAMIC HERO BANNER ================= */}
+      <div style={{ order: -100 }}>
       <PageBanner
         title={
           pageData?.bannerTitle ||
@@ -29,6 +38,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
         size={pageData?.bannerSize}
         heroSettings={pageData?.seoSettings}
       />
+      </div>
 
       {(() => {
         const section = (() => {
@@ -38,7 +48,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
           } catch { return null; }
         })();
         const badges = Array.isArray(section?.data?.items) ? section.data.items.filter((row: any) => row?.title) : [];
-        return badges.length ? <div className="badges-overlap-container"><div className="badge-grid">
+        return badges.length ? <div className="badges-overlap-container" style={{ order: sectionOrder(['Accreditations Bar','Badges Cards'], 0) }}><div className="badge-grid">
           {badges.map((row: any, i: number) => <div className="badge-card" key={i}>
             <div className="badge-icon-wrap"><DynamicIcon name={row.icon || 'Shield'} className="h-5 w-5" /></div>
             <span>{row.title}</span>
@@ -47,7 +57,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
       })()}
 
       {/* ================= FULL-WIDTH HAJJ LANDSCAPE PACKAGES ================= */}
-      <section className="packages-grid-container mx-auto max-w-[1400px] px-4 py-12 sm:px-6">
+      <section className="packages-grid-container mx-auto max-w-[1400px] px-4 py-12 sm:px-6" style={{ order: sectionOrder(['Packages Grid','Hajj Packages','Hajj Packages Grid'], 100), width: '100%' }}>
         <HajjPackagePager
           items={(() => {
             if (packages.length > 0) return packages.filter(isPackageCardVisible);
@@ -68,7 +78,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
               const title = card.title || cd.packageTitle || "Hajj Package 2027";
               const rawPrice = String(card.startingPrice ?? card.price ?? cd.price ?? "").trim();
               const quadPrice = Array.isArray(cd.packagePrices) ? cd.packagePrices.find((p: any) => /quad/i.test(p.packageType || p.type || "")) : null;
-              const price = isTbcPrice(rawPrice, quadPrice?.priceStatus) ? "TBC" : rawPrice ? (rawPrice.startsWith("£") ? rawPrice : `£ ${Number.isFinite(Number(rawPrice.replace(/[,£$]/g, ""))) ? Number(rawPrice.replace(/[,£$]/g, "")).toLocaleString("en-GB") : rawPrice}`) : "";
+              const price = isTbcPrice(rawPrice, quadPrice?.priceStatus) ? "TBC" : rawPrice ? `${currencySettings.symbol} ${Number.isFinite(Number(rawPrice.replace(/[,£$A-Z\s]/g, ""))) ? Number(rawPrice.replace(/[,£$A-Z\s]/g, "")).toLocaleString(currencySettings.locale) : rawPrice}` : "";
               const priceSubtext = cd.priceSubtext || card.priceSubtext || "";
               const operatorName = cd.operatorName || card.operatorName || "";
               const operatorRating = cd.operatorRating || card.operatorRating || "";
@@ -209,7 +219,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
           }
         } catch (e) { }
         return services.length > 0 ? (
-          <section className="py-16 bg-white">
+          <section className="py-16 bg-white" style={{ order: sectionOrder(['Hajj Services Grid'], 120) }}>
             <div className="max-w-5xl mx-auto px-4">
               <div className="text-center mb-10">
                 {eyebrow && (
@@ -281,6 +291,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
               return (
                 <section
                   key={`tb-${idx}`}
+                  style={{ order: parsed.findIndex((s: any) => s.id === sec.id) * 10 + 10 }}
                   className="py-8 md:py-10 bg-blue-lt px-4"
                 >
                   <div className="section-rich bg-white rounded-3xl p-4 md:p-8 max-w-[1360px] mx-auto w-full">
@@ -317,7 +328,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
         } catch { /* Missing or invalid data is not a reason to publish sample reviews. */ }
         const reviews = Array.isArray(reviewSection?.data?.items) ? reviewSection.data.items : [];
         if (!reviews.length) return null;
-        return <section className="bg-primary text-white py-6 overflow-hidden">
+        return <section className="bg-primary text-white py-6 overflow-hidden" style={{ order: sectionOrder(['Google Reviews / Testimonials'], 140) }}>
           <div className="max-w-7xl mx-auto">
             {reviewSection?.data?.title && <h2 className="text-3xl md:text-4xl font-serif text-white text-center mb-12">{reviewSection.data.title}</h2>}
             <TestimonialsCarousel reviews={reviews} />
@@ -331,7 +342,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
           const parsed = typeof pageData?.sections === 'string' ? JSON.parse(pageData.sections) : (pageData?.sections || []);
           const unhandled = parsed.filter((s: any) => !handledTypes.includes(s.type));
           if (unhandled.length > 0) {
-            return <PageSectionsRenderer sections={unhandled} pageData={pageData} />;
+            return <>{unhandled.map((sec: any) => <div key={sec.id} style={{ order: parsed.findIndex((s: any) => s.id === sec.id) * 10 + 10 }}><PageSectionsRenderer sections={[sec]} pageData={pageData} /></div>)}</>;
           }
         } catch (e) { }
         return null;

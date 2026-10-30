@@ -22,6 +22,7 @@ import Banner4GridsSection from '@/components/Banner4GridsSection';
 import PackageBrochuresSection from '@/components/PackageBrochuresSection';
 import GallerySection from '@/components/GallerySection';
 import DynamicSiteForm from '@/components/DynamicSiteForm';
+import PackageDetailBlocksSection from '@/components/PackageDetailBlocksSection';
 import UmrahVisaVisaApplicationSection, { RequirementsContentSection, UmrahVisaOrderFormSection } from '@/components/UmrahVisaApplicationSection';
 import UmrahVisaServicesOverviewSection from '@/components/UmrahVisaServicesOverviewSection';
 import UmrahVisaDocumentGuideSection from '@/components/UmrahVisaDocumentGuideSection';
@@ -52,6 +53,11 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
       {sections.map((sec: any, idx: number) => {
         if (!sec || !sec.type) return null;
         if (sec.hidden === true || sec.visible === false) return null;
+        // Legacy custom-builder data is intentionally not rendered after removal.
+        if (sec.type === 'Custom Layout Builder') return null;
+        if (['Package Detail Blocks', 'Package Flight Details', 'Package Hotel Details', 'Package Occupancy Prices', 'Package Inclusions', 'Package Detail Gallery'].includes(sec.type)) {
+          return <PackageDetailBlocksSection key={sec.id || idx} data={sec.data || {}} />;
+        }
         if (sec.type === 'Destinations Grid') {
           return <DestinationsGrid key={idx} destinations={initialDestinationData || []} title={sec.data?.title} />;
         }

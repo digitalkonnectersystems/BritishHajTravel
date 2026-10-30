@@ -1,4 +1,5 @@
 "use client";
+import { useCurrency } from "@/components/CurrencyProvider";
 import { filterSectionPackages } from "@/lib/sectionPackageSelection";
  
 import { useEffect, useState } from "react";
@@ -47,6 +48,7 @@ export default function UpcomingUmrahPackages({
     pageData?.slug === "home" ||
     (!isUmrahListingPage && (!pathname || pathname === "/"));
  
+  const currencySettings = useCurrency();
   const [pkgs, setPkgs] = useState<any[]>(initialPackages || []);
   const [loading, setLoading] = useState(!initialPackages);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
@@ -228,7 +230,7 @@ export default function UpcomingUmrahPackages({
                       className={`${isGold ? "text-white" : "text-red"
                         } font-black text-xl mb-6`}
                     >
-                      £ {price}{" "}
+                      {price === "TBC" ? "" : currencySettings.symbol} {price}{" "}
                       <span
                         className={`text-sm font-medium ${isGold ? "text-white/80" : "text-ink-soft"
                           }`}

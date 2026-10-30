@@ -7,6 +7,8 @@ import DynamicIcon from "./ui/DynamicIcon";
 import { getDurationUnit } from "@/lib/packageHelpers";
 import { isTbcPrice } from "@/lib/priceDisplay";
 import { isAccommodationVisible } from "@/lib/packageCardVisibility";
+import { useCurrency, usePriceFormatter } from '@/components/CurrencyProvider';
+
 
 export interface PackageDetailData {
   id?: string;
@@ -60,6 +62,7 @@ interface PackageDetailModalProps {
 }
 
 export default function PackageDetailModal({ isOpen, onClose, pkg }: PackageDetailModalProps) {
+  const currencySettings = useCurrency();
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedPackageType, setSelectedPackageType] = useState<string>("");
   const [openFaqIdx, setOpenFaqIdx] = useState<number | null>(0);
@@ -152,7 +155,7 @@ export default function PackageDetailModal({ isOpen, onClose, pkg }: PackageDeta
   const bannerPrice = minFormattedPrice;
   const priceSubtext = `PER PERSON - ${minPriceItem.packageType.toUpperCase()}`;
   const exclusiveBadge = detailData.exclusiveBadge || cardData.exclusiveBadge || pkg.exclusiveBadge || "STARTING FROM";
-  const currencyCode = detailData.currencyCode || pkg.currencyCode || "£";
+  const currencyCode = currencySettings.symbol;
 
   // Selected package type price for booking calculation
   const selectedPriceItem = packagePrices.find((p) => p.packageType === effectivePackageType);
@@ -248,7 +251,7 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
       answer: "Yes! Upgrades to Double or Triple occupancy are available upon request. Please select your occupancy preference or contact our support team during booking."
     },
     {
-      question: "Are flights included in the £ 12,995 price?",
+      question: "Are flights included in the package price?",
       answer: "Yes, round-trip flights from UK to Saudi Arabia are fully included in the package pricing."
     }
   ];
@@ -739,7 +742,7 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
                       >
                         {packagePrices.map((item, idx) => (
                           <option key={idx} value={item.packageType} className="bg-white text-slate-900">
-                            £ {item.price ? item.price.toLocaleString("en-CA") : ""} - {item.packageType}
+                            {currencyCode} {item.price ? item.price.toLocaleString("en-GB") : ""} - {item.packageType}
                           </option>
                         ))}
                       </select>

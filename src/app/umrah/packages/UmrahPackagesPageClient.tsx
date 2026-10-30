@@ -83,8 +83,10 @@ const umrahCardsData = [
 ];
 
 import PackageDetailModal, { PackageDetailData } from "@/components/PackageDetailModal";
+import { useCurrency } from "@/components/CurrencyProvider";
 
 export default function UmrahPackagesPageClient({ initialPageData, packages = [] }: { initialPageData?: any, packages?: any[] }) {
+  const currencySettings = useCurrency();
   const pageData = initialPageData || null;
   const [selectedDetailPkg, setSelectedDetailPkg] = useState<PackageDetailData | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -100,9 +102,15 @@ export default function UmrahPackagesPageClient({ initialPageData, packages = []
     }
   } catch (e) { }
 
+  const sectionOrder = (types: string[], fallback: number) => {
+    const index = parsedSections.findIndex((section: any) => types.includes(section.type));
+    return index >= 0 ? index * 10 + 10 : fallback;
+  };
+  const packagesPosition = sectionOrder(['Upcoming Umrah Packages', 'Umrah Packages Grid', 'Umrah Packages'], 110);
+  const bannerPosition = -100;
   const eyebrow = umrahHeadingData?.eyebrow || "EXCLUSIVE UPCOMING";
   const title = umrahHeadingData?.title || "Umrah Packages<br />from UNited Kingdom";
-  const description = umrahHeadingData?.description || umrahHeadingData?.subtext || "Departures from £ 2,595 per person. Availability and accommodations are confirmed with every booking — contact us before reserving.";
+  const description = umrahHeadingData?.description || umrahHeadingData?.subtext || "Departures from our current package prices per person. Availability and accommodations are confirmed with every booking — contact us before reserving.";
 
   const openDetailModal = (card: any) => {
     setSelectedDetailPkg({
@@ -115,13 +123,14 @@ export default function UmrahPackagesPageClient({ initialPageData, packages = []
   };
 
   return (
-    <div className="umrah-page-wrapper" suppressHydrationWarning>
+    <div className="umrah-page-wrapper flex flex-col" suppressHydrationWarning>
       <PackageDetailModal
         isOpen={isDetailOpen}
         onClose={() => setIsDetailOpen(false)}
         pkg={selectedDetailPkg}
       />
       {/* ================= DYNAMIC HERO BANNER ================= */}
+      <div style={{ order: bannerPosition }}>
       <PageBanner
         title={pageData?.bannerTitle || pageData?.title || "Umrah Packages from United Kingdom 2026 <br /><span>Travel with Confidence</span> by British Hajj Travel"}
         description={pageData?.bannerDescription || "Perform your sacred obligation of Umrah in 2026 with comfort, organization, and spiritual focus. British Hajj Travel proudly offers premium Umrah Packages from United Kingdom 2026, designed to provide British Muslims with a smooth and well-managed pilgrimage experience."}
@@ -130,9 +139,10 @@ export default function UmrahPackagesPageClient({ initialPageData, packages = []
         size={pageData?.bannerSize}
         heroSettings={pageData?.seoSettings}
       />
+      </div>
 
       {/* ================= 4 FLOATING ACCREDITATION BADGES ================= */}
-      <div className="badges-overlap-container">
+      <div className="badges-overlap-container" style={{ order: sectionOrder(['Accreditations Bar', 'Badges Cards'], 0) }}>
         <div className="badge-grid">
           <div className="badge-card">
             <div className="badge-icon-wrap">
@@ -165,7 +175,7 @@ export default function UmrahPackagesPageClient({ initialPageData, packages = []
       </div>
 
       {/* Preserve dedicated month pages as crawlable internal links, independent of the main package listings. */}
-      <section aria-labelledby="umrah-months-heading" className="bg-[#f3f6fc] py-12 px-5">
+      <section aria-labelledby="umrah-months-heading" className="bg-[#f3f6fc] py-12 px-5" style={{ order: packagesPosition - 1 }}>
         <div className="max-w-[1300px] mx-auto">
           <p className="text-[#b50007] uppercase text-xs font-extrabold tracking-widest">BROWSE BY DEPARTURE</p>
           <h2 id="umrah-months-heading" className="text-[#020e43] font-bold text-3xl mt-3 mb-2">Explore Umrah by Month</h2>
@@ -188,7 +198,7 @@ export default function UmrahPackagesPageClient({ initialPageData, packages = []
       </section>
 
       {/* ================= MAIN PACKAGES GRID ================= */}
-      <section className="packages-grid-container pt-16 bg-white">
+      <section className="packages-grid-container pt-16 bg-white" style={{ order: packagesPosition }}>
         <div className="max-w-[1400px] mx-auto px-5">
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-6 gap-6 text-center md:text-left">
@@ -210,7 +220,7 @@ export default function UmrahPackagesPageClient({ initialPageData, packages = []
               const heroImage = card.thumbnail || card.heroImage || "https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=1170&auto=format&fit=crop";
               const title = card.title || "Umrah Package 2026";
               const rawPrice = (card.startingPrice || card.price || "12,995").toString();
-              const price = rawPrice.startsWith("£") ? rawPrice : `£ ${rawPrice.replace("$", "").trim()}`;
+              const price = rawPrice.toLowerCase() === "tbc" ? "TBC" : `${currencySettings.symbol} ${rawPrice.replace(/^(?:£|CAD|GBP|USD|EUR|\$)\s*/i, "").trim()}`;
 
               const makkahHotel = card.detailPageData?.makkahHotel || card.makkahHotel || { name: "5 Star Hotel", location: "Near Haram", image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=300&q=80", badge: "Breakfast", nights: "5 Nights" };
               const madinahHotel = card.detailPageData?.madinahHotel || card.madinahHotel || { name: "5 Star Hotel", location: "Near Masjid", image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=300&q=80", badge: "Breakfast", nights: "5 Nights" };
@@ -337,7 +347,7 @@ export default function UmrahPackagesPageClient({ initialPageData, packages = []
                           </div>
                         </div>
                         <div>
-                          <div className="price-title">£ / QUAD OCCUPANCY</div>
+                          <div className="price-title">{currencySettings.symbol} / QUAD OCCUPANCY</div>
                           <div className="text-[24px] font-black text-primary text-right leading-none">{card.price}</div>
                         </div>
                       </div>
@@ -400,6 +410,7 @@ export default function UmrahPackagesPageClient({ initialPageData, packages = []
               return (
                 <section
                   key={`tb-${idx}`}
+                  style={{ order: parsed.findIndex((s: any) => s.id === sec.id) * 10 + 10 }}
                   className="pt-12 md:pt-16 bg-primary px-4"
                 >
                   <div className="section-rich bg-white rounded-3xl p-4 md:p-8 max-w-[1360px] mx-auto w-full">
@@ -433,7 +444,7 @@ export default function UmrahPackagesPageClient({ initialPageData, packages = []
           const parsed = typeof pageData?.sections === 'string' ? JSON.parse(pageData.sections) : (pageData?.sections || []);
           const unhandled = parsed.filter((s: any) => !handledTypes.includes(s.type));
           if (unhandled.length > 0) {
-            return <PageSectionsRenderer sections={unhandled} pageData={pageData} />;
+            return <>{unhandled.map((sec: any) => <div key={sec.id} style={{ order: parsed.findIndex((s: any) => s.id === sec.id) * 10 + 10 }}><PageSectionsRenderer sections={[sec]} pageData={pageData} /></div>)}</>;
           }
         } catch (e) { }
         return null;

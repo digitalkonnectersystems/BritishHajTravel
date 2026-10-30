@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { getGuidesList, getPageBySlug } from "@/actions/pageActions";
 import { getPackagesByType, getSoldOutPackages } from "@/actions/packageActions";
 import PageBanner from "@/components/PageBanner";
+import HajjRegistrationForm from "@/components/HajjRegistrationForm";
 import PageSectionsRenderer from "@/components/PageSectionsRenderer";
 import RelatedUmrahPackages from "@/components/seasonal/RelatedUmrahPackages";
 import { getPackageBySlug } from "@/actions/packageActions";
@@ -156,6 +157,17 @@ export default async function DynamicPage({
         size={page.bannerSize || undefined}
         heroSettings={page.seoSettings}
       />
+
+      {[
+        '/hajj-2027-registration',
+        '/yosr-al-mashaer-hajj-uk-guide',
+        '/holiday-in-bakkah',
+      ].includes(slugPath) && (
+        <HajjRegistrationForm
+          sourcePage={slugPath}
+          branded={slugPath !== '/hajj-2027-registration'}
+        />
+      )}
 
       {sections.length > 0 ? (
         <div className="w-full mx-auto">

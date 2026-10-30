@@ -11,14 +11,19 @@ import SubmissionSuccessModal from "@/components/SubmissionSuccessModal";
 import DynamicIcon from "@/components/ui/DynamicIcon";
 import { getDurationUnit } from "@/lib/packageHelpers";
 import { isTbcPrice } from "@/lib/priceDisplay";
+import { useCurrency, usePriceFormatter } from '@/components/CurrencyProvider';
+
 
 export default function PackageDetailPageClient({
   initialSlug,
   initialPackage,
+  isDestination = false,
 }: {
   initialSlug: string;
   initialPackage?: any;
+  isDestination?: boolean;
 }) {
+  const currencySettings = useCurrency();
   const rawSlug = initialSlug;
   const [pkg] = useState<any>(() => initialPackage || null);
   const [fullName, setFullName] = useState("");
@@ -71,7 +76,7 @@ export default function PackageDetailPageClient({
         startDate: selectedDate,
         totalPrice: estimatedTotalFormatted ? `${currencyCode} ${estimatedTotalFormatted}` :
           (isTbcPrice(minPriceItem.price, minPriceItem.priceStatus) ? 'TBC' : String(pkg?.startingPrice ?? pkg?.price ?? "")),
-        sourceFormName: pkg?.type === 'hajj' ? 'Hajj Package Booking Form' : 'Umrah Package Booking Form',
+        sourceFormName: isDestination ? 'Destination Form' : pkg?.type === 'hajj' ? 'Hajj Package Booking Form' : 'Umrah Package Booking Form',
       });
 
       if (res.success) {
@@ -193,7 +198,7 @@ export default function PackageDetailPageClient({
   const bannerPrice = minFormattedPrice;
   const priceSubtext = `PER PERSON - ${minPriceItem.packageType.toUpperCase()}`;
   const exclusiveBadge = detailData.exclusiveBadge || cardData.exclusiveBadge || pkg.exclusiveBadge || "STARTING FROM";
-  const currencyCode = pkg.currency || pkg.currencyCode || "£";
+  const currencyCode = currencySettings.symbol;
 
   // Default selected package type is the minimum priced package (or single price if only 1)
   useEffect(() => {

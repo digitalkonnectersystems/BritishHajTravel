@@ -1,4 +1,5 @@
 "use client";
+import { useCurrency } from '@/components/CurrencyProvider';
 
 import React, { useState, useEffect } from "react";
 import { X, Plus, Trash2, HelpCircle, Star, Check, AlertCircle, FileText, Globe, Tag, DollarSign, Clock } from "lucide-react";
@@ -16,6 +17,7 @@ export default function AdminPackageDetailModal({
   pkg,
   onSave,
 }: AdminPackageDetailModalProps) {
+  const currencySettings = useCurrency();
   const [activeTab, setActiveTab] = useState<"overview" | "highlights" | "notices" | "faqs">("overview");
 
   // Local form states
@@ -35,7 +37,7 @@ export default function AdminPackageDetailModal({
       setDeparture(pkg.departure || "UK");
       setDestination(pkg.destination || "SAUDIA");
       setExclusiveBadge(pkg.exclusiveBadge || "EXCLUSIVE PACKAGE");
-      setCurrencyCode(pkg.currencyCode || "£");
+      setCurrencyCode(pkg.currencyCode || currencySettings.symbol);
       setDurationText(pkg.durationText || `${pkg.duration || "14 DAYS"} / 13 NIGHTS`);
       setOverview(
         pkg.overview ||
@@ -223,7 +225,7 @@ Side trips to Pakistan or any other destination available with an additional cos
                       {exclusiveBadge || "EXCLUSIVE PACKAGE"}
                     </span>
                     <div className="text-xl font-black text-white font-serif mt-0.5">
-                      {currencyCode || "£"} {pkg.price || "12,995"}
+                      {currencyCode || currencySettings.symbol} {pkg.price || "12,995"}
                     </div>
                     <span className="text-[8px] font-semibold text-emerald-200 uppercase block mt-0.5">
                       {pkg.priceSubtext || "PER PERSON, QUAD OCCUPANCY"}

@@ -24,6 +24,8 @@ import { db } from "@/db";
 import { visaProcessing } from "@/db/schema";
 import { isHiddenInternalLink, removeHiddenNavigation } from "@/lib/publicPageVisibility";
 import "./globals.css";
+import { getCurrencyConfiguration } from "@/lib/currencyService";
+import { CurrencyProvider } from "@/components/CurrencyProvider";
 
 const marcellus = Marcellus({
   subsets: ["latin"],
@@ -84,7 +86,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [identity, loginAuth, navItems, galleryNavItems, footerData, seoSettings, hotelDirectory] = await Promise.all([
+  const [identity, loginAuth, navItems, galleryNavItems, footerData, seoSettings, hotelDirectory, currencySettings] = await Promise.all([
     getSiteIdentity(),
     getLoginAuthSettings(),
     getNavItems(),
@@ -92,6 +94,7 @@ export default async function RootLayout({
     getFooterData(),
     getSeoIntelligenceSettings(),
     getHotelDirectory().catch(() => []),
+    getCurrencyConfiguration(),
   ]);
   const [unpublishedSitePaths, visaRecords] = await Promise.all([
     getHiddenSitePagePaths(),
@@ -171,6 +174,7 @@ export default async function RootLayout({
 
       <body suppressHydrationWarning>
         <FaviconSync faviconUrl={faviconUrl} />
+        <CurrencyProvider initial={currencySettings}>
         <FrontendMaintenanceWrapper initialMaintenanceMode={initialMaintenanceMode} initialMaintenanceScope={initialMaintenanceScope} initialMaintenancePaths={initialMaintenancePaths}>
           <Header initialNavItems={liveNavItems} initialIdentity={identity} />
           {children}
@@ -180,6 +184,7 @@ export default async function RootLayout({
           <RevealOnScroll />
           <DisclaimerPopupModal />
         </FrontendMaintenanceWrapper>
+        </CurrencyProvider>
       </body>
     </html>
   );

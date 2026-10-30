@@ -8,20 +8,37 @@ export type FormEmailTemplates = Record<string, FormEmailTemplatePair>;
 
 // These keys are stable identifiers and must match the form's actual submission source.
 export const EMAIL_FORM_DEFINITIONS = [
+  { key: 'hajjRegistrationForm', name: 'Hajj 2027 Registration Form', fields: 'enquiryNumber fullName email phone postcode airport packageTier passengers days room budget sourcePage' },
+  { key: 'baanHoldingHajjForm', name: 'BAAN Holding Hajj Interest Form', fields: 'enquiryNumber fullName email phone postcode airport packageTier passengers days room budget' },
   { key: 'quoteForm', name: 'Get a Free Quote', fields: 'enquiryNumber fullName email phone packageType numberOfPilgrims message' },
   { key: 'packageDetailForm', name: 'Book Umrah Package', fields: 'bookingNumber packageName packageType fullName email phone adults children infants startDate totalPrice message' },
   { key: 'hajjPackageDetailForm', name: 'Book Hajj', fields: 'bookingNumber packageName packageType fullName email phone adults children infants startDate totalPrice message' },
-  { key: 'contact', name: 'Contact Form', fields: 'ticketNumber fullName email phone website packageType message' },
+  { key: 'contact', name: 'Contact Form', fields: 'ticketNumber fullName email phone subject website packageType message' },
   { key: 'destinationForm', name: 'Destination Form', fields: 'bookingNumber packageName packageType fullName email phone adults children infants startDate totalPrice message' },
   { key: 'dropUsMessage', name: 'Get In Touch Form', fields: 'ticketNumber fullName email phone packageType website message' },
   { key: 'umrahVisaOrder', name: 'Umrah Visa Order Form', fields: 'enquiryNumber fullName email phone visaTitle travelersCount nationality travelDate message' },
   { key: 'blogSidebarForm', name: 'Plan Your Journey Form', fields: 'bookingNumber packageName packageType fullName email phone adults children infants startDate totalPrice message' },
   { key: 'customizedHajjForm', name: 'Customized Hajj Package Form', fields: 'enquiryNumber fullName email phone category departureAirport departureDate numberOfDays adults children infants airlinePreference makkahHotel madinahHotel hotelStandard roomOccupancy transportation budgetGbp notes services requirements' },
   { key: 'customizedUmrahForm', name: 'Customized Umrah Package Form', fields: 'enquiryNumber fullName email phone category departureAirport departureDate numberOfDays adults children infants airlinePreference makkahHotel madinahHotel hotelStandard roomOccupancy transportation budgetGbp notes services requirements' },
+  { key: 'hajjCustomizeForm', name: 'Hajj Page Customize Form', fields: 'enquiryNumber fullName email phone packageType numberOfPilgrims message' },
+  { key: 'packageInquiry', name: 'Package Inquiry Form', fields: 'bookingNumber packageName packageType fullName email phone adults children infants startDate totalPrice message' },
+  { key: 'visaConsultation', name: 'Visa Consultation Form', fields: 'enquiryNumber fullName email phone visaTitle travelersCount nationality travelDate message' },
+  { key: 'flightInquiry', name: 'Flight Booking Form', fields: 'enquiryNumber fullName email phone originCity destinationCity departureDate returnDate tripType passengers flightClass message' },
 ] as const;
 
 // Additional existing forms remain supported without removing their working routes.
 const ALIASES: Record<string, string> = {
+  'Hajj 2027 Registration Form': 'hajjRegistrationForm',
+  'BAAN Holding Hajj Interest Form': 'baanHoldingHajjForm',
+  'Hajj Customize Form': 'hajjCustomizeForm',
+  'Hajj Page — Customize Your Hajj Package Form': 'hajjCustomizeForm',
+  'Package Inquiry Form': 'packageInquiry',
+  'Pilgrimage Package — Custom Inquiry Form': 'packageInquiry',
+  'Visa Consultation Form': 'visaConsultation',
+  'Visa Services — Consultation Form': 'visaConsultation',
+  'Flight Booking Form': 'flightInquiry',
+  'Flights Booking Inquiry Form': 'flightInquiry',
+  'Flights Page — Booking Inquiry Form': 'flightInquiry',
   'Get a Free Quote Form': 'quoteForm',
   'Homepage Hero Banner — Get a Free Quote Form': 'quoteForm',
   'Umrah Package Booking Form': 'packageDetailForm',
@@ -152,6 +169,12 @@ export function validateFormEmailTemplates(input: FormEmailTemplates): string | 
   return null;
 }
 export const FORM_EMAIL_SAMPLES: Record<string, Record<string, unknown>> = {
+  hajjRegistrationForm: { enquiryNumber: 'HJ-123', fullName: 'Ahmed Khan', email: 'ahmed@example.com', phone: '+447957197390', postcode: 'PR1 1AA', airport: 'London (LON)', packageTier: '5-Star', passengers: 2, days: '12 Days Packages', room: 'Double Room', budget: '5K - 7K', sourcePage: '/hajj-packages/' },
+  baanHoldingHajjForm: { enquiryNumber: 'BH-123', fullName: 'Ahmed Khan', email: 'ahmed@example.com', phone: '+447957197390', postcode: 'PR1 1AA', airport: 'London (LON)', packageTier: '5-Star', passengers: 2, days: '12 Days Packages', room: 'Double Room', budget: '5K - 7K' },
+  hajjCustomizeForm: { enquiryNumber: 'QT-122', fullName: 'Fatima', email: 'fatima@example.com', phone: '+447957197390', packageType: 'Hajj', numberOfPilgrims: 2 },
+  packageInquiry: { bookingNumber: 'BK-131', fullName: 'Ali', email: 'ali@example.com', phone: '+447957197390', packageName: 'Umrah 2027' },
+  visaConsultation: { enquiryNumber: 'VS-111', fullName: 'Zainab', email: 'zainab@example.com', phone: '+447957197390', travelersCount: 2 },
+  flightInquiry: { enquiryNumber: 'FL-111', fullName: 'Omar', email: 'omar@example.com', phone: '+447957197390', departureCity: 'London', destinationCity: 'Jeddah' },
   quoteForm: { enquiryNumber: 'QT-123', fullName: 'Ahmed Khan', email: 'ahmed@example.com', phone: '+441234567890', packageType: 'Umrah', numberOfPilgrims: 2, message: 'December departure' },
   packageDetailForm: { bookingNumber: 'BK-123', fullName: 'Fatima Ali', email: 'fatima@example.com', phone: '+441234567890', packageName: 'Umrah Package', adults: 2, startDate: '2027-01-15' },
   hajjPackageDetailForm: { bookingNumber: 'BK-124', fullName: 'Omar Ali', email: 'omar@example.com', phone: '+441234567890', packageName: 'Hajj Package', adults: 2 },

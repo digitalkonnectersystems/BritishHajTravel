@@ -39,7 +39,7 @@ async function readBaanContent(): Promise<ReadResult> {
   }
 
   // No saved custom settings is normal. The default BAAN page remains usable.
-  if (!record[0]?.value) return { content: { ...defaultBaanContent, isVisible: false }, databaseAvailable: true };
+  if (!record[0]?.value) return { content: { ...defaultBaanContent }, databaseAvailable: true };
 
   try {
     const parsed: unknown = JSON.parse(record[0].value);
@@ -57,9 +57,14 @@ async function readBaanContent(): Promise<ReadResult> {
   }
 }
 
-/** Public page can render its built-in content when the database is temporarily unavailable. */
+/** Return live content, but never disguise a database failure as an intentional 404. */
 export async function getBaanContent(): Promise<BaanContent> {
-  return (await readBaanContent()).content;
+  const result = await readBaanContent();
+  if (!result.databaseAvailable) {
+    // A transient database failure must not turn a valid public URL into a cached 404.
+    throw new Error('BAAN Holding Hajj settings are temporarily unavailable. Check the server logs.');
+  }
+  return result.content;
 }
 
 /** Prevent an administrator from unknowingly overwriting settings after a failed read. */

@@ -1,4 +1,5 @@
 "use client";
+import { useCurrency } from "@/components/CurrencyProvider";
 
 export type HajjCardAccommodation = {
   city: string;
@@ -43,6 +44,8 @@ export default function HajjLandscapeCard({
   onViewDetail,
   onBook,
 }: HajjLandscapeCardProps) {
+  const currency = useCurrency();
+  const displayPrice = price && /^(?:CAD|GBP|USD|EUR|SAR|PKR|£|\$|€)\s*/i.test(price) ? `${currency.symbol} ${price.replace(/^(?:CAD|GBP|USD|EUR|SAR|PKR|£|\$|€)\s*/i, "")}` : price && /^\d[\d,.]*$/.test(price) ? `${currency.symbol} ${price}` : price;
   return (
     <article className="group flex h-full min-w-0 flex-col overflow-hidden rounded-[22px] border border-[#d1d1d1] border-t-4 border-t-red bg-white transition-transform duration-300 hover:-translate-y-0.5">
       <div className="relative h-48 shrink-0 overflow-hidden bg-[#071a45]">
@@ -73,8 +76,8 @@ export default function HajjLandscapeCard({
           <span className="text-xs font-medium text-ink-soft">
             {priceSubtext || "Starting From"}
           </span>
-          <p className="mb-5 text-xl font-black text-red" title={price || "Price on request"}>
-            {price || "Price on request"}
+          <p className="mb-5 text-xl font-black text-red" title={displayPrice || "Price on request"}>
+            {displayPrice || "Price on request"}
             {price && <span className="ml-1 text-sm font-medium text-ink-soft">/ Person</span>}
           </p>
           <div className="flex gap-2">

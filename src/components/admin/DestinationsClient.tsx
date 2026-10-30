@@ -1,4 +1,5 @@
 'use client';
+import { useCurrency } from '@/components/CurrencyProvider';
 
 import { useState } from 'react';
 import { Copy, Eye, EyeOff, Pencil, Plus, Trash2, X } from 'lucide-react';
@@ -16,6 +17,7 @@ function getPackage(destination: any) {
 }
 
 function DestinationPackagePrices({ packageData, setPackageData }: { packageData: any; setPackageData: (value: any) => void }) {
+  const currencySettings = useCurrency();
   let cardData = packageData.cardData || {};
   if (typeof cardData === 'string') {
     try { cardData = JSON.parse(cardData); } catch { cardData = {}; }
@@ -27,7 +29,7 @@ function DestinationPackagePrices({ packageData, setPackageData }: { packageData
     <div className="col-span-full rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-3">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h4 className="text-sm font-extrabold text-slate-900">Package Type &amp; Price (£) *</h4>
+          <h4 className="text-sm font-extrabold text-slate-900">Package Type &amp; Price ({currencySettings.symbol}) *</h4>
           <p className="text-[11px] text-slate-500 mt-1">Configure the occupancy or package tiers shown on this destination package.</p>
         </div>
         <button type="button" onClick={() => updatePrices([...prices, { packageType: '', price: '' }])} className="rounded-full border border-primary bg-white px-3 py-1.5 text-[11px] font-extrabold text-primary">+ Add Package Type</button>
@@ -36,7 +38,7 @@ function DestinationPackagePrices({ packageData, setPackageData }: { packageData
       {prices.map((item: any, index: number) => (
         <div key={index} className="grid grid-cols-[minmax(0,1fr)_220px_40px] gap-3 rounded-xl border border-slate-200 bg-white p-3 max-md:grid-cols-1">
           <label className="text-[10px] font-bold text-slate-700">PACKAGE TYPE<input value={item.packageType || ''} onChange={(e) => { const next = [...prices]; next[index] = { ...next[index], packageType: e.target.value }; updatePrices(next); }} placeholder="Quad Occupancy" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm font-normal" /></label>
-          <label className="text-[10px] font-bold text-slate-700">PRICE (£)<input type="number" min="0" step="0.01" value={item.price ?? ''} onChange={(e) => { const next = [...prices]; next[index] = { ...next[index], price: e.target.value }; updatePrices(next); }} placeholder="17995.00" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm font-normal" /></label>
+          <label className="text-[10px] font-bold text-slate-700">PRICE ({currencySettings.symbol})<input type="number" min="0" step="0.01" value={item.price ?? ''} onChange={(e) => { const next = [...prices]; next[index] = { ...next[index], price: e.target.value }; updatePrices(next); }} placeholder="17995.00" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm font-normal" /></label>
           <button type="button" onClick={() => updatePrices(prices.filter((_: any, priceIndex: number) => priceIndex !== index))} className="self-end rounded-lg bg-red-50 px-3 py-2 text-red-600" title="Remove package price">×</button>
         </div>
       ))}

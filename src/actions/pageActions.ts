@@ -10,6 +10,7 @@ import { getEditableEmailTemplateHtml, getSharedEmailTemplateHtml, hasRequiredEm
 import { logAdminActivityAction } from '@/actions/activityActions';
 import { dedupeRecipientChannels, hasInvalidEmailRecipient, normalizeEmailRecipients } from '@/lib/emailRecipients';
 import { normalizeFormRoutingRules } from '@/lib/formEmailRules';
+import { mergeFormEmailTemplates, validateFormEmailTemplates } from '@/lib/formEmailTemplates';
 
 // Cached reads go stale after this long (seconds) and refetch in the background.
 // Saves from the admin also bust these instantly via updateTag(), so content
@@ -187,8 +188,28 @@ async function fetchPageBySlugFromDb(slug: string) {
       metaDescription: p.metaDescription || storedSeo?.metaDescription || legacySeo?.metaDescription || undefined,
     };
 
+    // Remove staff-only email recipient/template configuration from public page payloads.
+    let publicSections = p.sections;
+    if (publicSections) {
+      try {
+        const parsed = JSON.parse(publicSections);
+        if (Array.isArray(parsed)) {
+          publicSections = JSON.stringify(parsed.map((section: any) => ({
+            ...section,
+            data: section?.type === 'Custom Layout Builder' ? {
+              ...(section.data || {}),
+              blocks: (Array.isArray(section.data?.blocks) ? section.data.blocks : []).map((block: any) => {
+                const { emailTemplates, ...publicBlock } = block;
+                return publicBlock;
+              }),
+            } : section.data,
+          })));
+        }
+      } catch { publicSections = '[]'; /* do not expose unsanitized editor-only data */ }
+    }
     return {
       ...p,
+      sections: publicSections,
       seoData,
     };
   }
@@ -1271,6 +1292,18 @@ export async function clearFormsSettingsCache() {
 }
 
 const DEFAULT_FORM_FIELDS_STATE: Record<string, Array<{ id: string; label: string; type: string; placeholder: string; required: boolean }>> = {
+  hajjRegistrationForm: [
+    { id: 'name', label: 'Name', type: 'text', placeholder: 'Name', required: true },
+    { id: 'email', label: 'Email', type: 'email', placeholder: 'Email', required: true },
+    { id: 'phone', label: 'Phone', type: 'tel', placeholder: 'xxxx-xxxx xxx', required: true },
+    { id: 'postcode', label: 'Postcode', type: 'text', placeholder: 'Postcode', required: true },
+    { id: 'airport', label: 'Airport', type: 'select', placeholder: 'London (LON)', required: true },
+    { id: 'packageTier', label: 'Hajj Package', type: 'select', placeholder: '5-Star', required: true },
+    { id: 'passengers', label: 'Number of Passengers', type: 'number', placeholder: 'Number of Passengers', required: true },
+    { id: 'days', label: 'Number of Days', type: 'select', placeholder: '12 Days Packages', required: true },
+    { id: 'room', label: 'Room Size', type: 'select', placeholder: 'Double Room', required: true },
+    { id: 'budget', label: 'Budget per person', type: 'select', placeholder: '5K - 7K', required: true },
+  ],
   baanHoldingHajjForm: [
     { id: '1', label: 'Name', type: 'text', placeholder: 'Name', required: true },
     { id: '2', label: 'Email', type: 'email', placeholder: 'Email', required: true },
@@ -1378,6 +1411,7 @@ const DEFAULT_FORM_FIELDS_STATE: Record<string, Array<{ id: string; label: strin
 };
 
 const DEFAULT_FORMS_DATA: Record<string, any> = {
+  hajjRegistrationForm: { title: 'Hajj 2027 Registration Form', subtitle: 'Appears after the banner on five Hajj pages.', recipientEmail: '', successMessage: 'Your Hajj registration enquiry was received.', enabled: true, buttonText: 'Submit', fieldsCount: 10 },
   baanHoldingHajjForm: { title: 'BAAN Holding Hajj — Registration of Interest', subtitle: 'Enquiry popup at /baan-holding-hajj', recipientEmail: 'booking@britishhajjtravel.com', successMessage: 'Your Hajj 2027 interest has been registered.', enabled: true, buttonText: 'Submit Enquiry', fieldsCount: 10 },
   quoteForm: {
     title: 'Homepage Hero Banner — Get a Free Quote Form',
@@ -1538,6 +1572,7 @@ async function readFullFormsSettings() {
           formFieldsState: mergedFormFieldsState,
           emailConfigs: mergedEmailConfigs,
           emailTemplateHtml: getSharedEmailTemplateHtml(parsed.emailTemplateHtml),
+          formEmailTemplates: mergeFormEmailTemplates(parsed.formEmailTemplates, normalizedRules, mergedEmailConfigs.replyTo),
         };
 
         formsSettingsMemoryCache = result;
@@ -1553,6 +1588,7 @@ async function readFullFormsSettings() {
     formFieldsState: DEFAULT_FORM_FIELDS_STATE,
     emailConfigs: DEFAULT_EMAIL_CONFIGS,
     emailTemplateHtml: getEditableEmailTemplateHtml(),
+    formEmailTemplates: mergeFormEmailTemplates(undefined),
   };
 
   return formsSettingsMemoryCache || defaultResult;
@@ -1587,13 +1623,11 @@ export async function saveFormsSettingsAction(settingsData: any) {
   await requireAdmin(['admin']);
 
   const nextSettings = JSON.parse(JSON.stringify(settingsData || {}));
-  // Remove previous per-form template copies. Routing and subjects remain form-specific.
+  // Preserve legacy shared-template fallback for older forms; the current editor
+  // uses independent per-form templates and must not require old {{...}} tokens.
   delete nextSettings.emailTemplates;
-  if (!hasRequiredEmailTemplateTokens(nextSettings.emailTemplateHtml)) {
-    return { success: false, error: 'The shared email template must include {{FORM_NAME}} and {{SUBMISSION_ROWS}}.' };
-  }
-  if (nextSettings.emailTemplateHtml.length > 250000) {
-    return { success: false, error: 'The shared email template exceeds the 250 KB limit.' };
+  if (typeof nextSettings.emailTemplateHtml === 'string' && nextSettings.emailTemplateHtml.length > 250000) {
+    return { success: false, error: 'The legacy shared email template exceeds the 250 KB limit.' };
   }
   nextSettings.emailTemplateHtml = getSharedEmailTemplateHtml(nextSettings.emailTemplateHtml);
   const emailConfigs = nextSettings.emailConfigs || {};
@@ -1678,6 +1712,9 @@ export async function saveFormsSettingsAction(settingsData: any) {
 
   emailConfigs.formRoutingRules = normalizedRules;
   nextSettings.emailConfigs = emailConfigs;
+  nextSettings.formEmailTemplates = mergeFormEmailTemplates(nextSettings.formEmailTemplates, normalizedRules, emailConfigs.replyTo);
+  const templateError = validateFormEmailTemplates(nextSettings.formEmailTemplates);
+  if (templateError) return { success: false, error: templateError };
 
   try {
     const existing = await db.select().from(siteSettings).where(eq(siteSettings.key, 'forms_settings')).limit(1);
@@ -1701,14 +1738,14 @@ export async function saveFormsSettingsAction(settingsData: any) {
     await logAdminActivityAction({
       type: 'settings',
       action: 'Updated Form Settings',
-      details: 'CRM enquiry, per-form email routing and one shared email template saved',
+      details: 'CRM enquiry settings and per-form admin/customer email templates saved',
       previousEntry: previousSettings ? {
         emailConfigs: auditSafeEmailConfigs(previousSettings.emailConfigs),
         sharedEmailTemplateConfigured: hasRequiredEmailTemplateTokens(previousSettings.emailTemplateHtml),
       } : null,
       newEntry: {
         emailConfigs: auditSafeEmailConfigs(nextSettings.emailConfigs),
-        sharedEmailTemplateConfigured: true,
+        formEmailTemplateCount: Object.keys(nextSettings.formEmailTemplates).length,
       },
     });
 

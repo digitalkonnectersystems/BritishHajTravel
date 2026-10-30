@@ -6,6 +6,8 @@ import { useState, useEffect } from "react";
 import { Calendar, TicketPercent, X } from "lucide-react";
 import { submitPackageBookingEnquiryAction } from "@/actions/enquiryActions";
 import { formatTravelMonth } from "@/lib/packageHelpers";
+import { useCurrency, usePriceFormatter } from '@/components/CurrencyProvider';
+
 
 export default function PackageBookingModal({
   isOpen,
@@ -16,6 +18,7 @@ export default function PackageBookingModal({
   onClose: () => void;
   pkg: any;
 }) {
+  const currencySettings = useCurrency();
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("+44");
   const [email, setEmail] = useState("");
@@ -122,7 +125,7 @@ export default function PackageBookingModal({
     })
     : null;
 
-  const currencyCode = "£";
+  const currencyCode = currencySettings.symbol;
   const badgeTag = cd.badgeTag || "Package";
 
   const isHajj =
@@ -580,7 +583,7 @@ export default function PackageBookingModal({
                     >
                       {packagePrices.map((item, idx) => (
                         <option key={idx} value={item.packageType} className="bg-white text-ink">
-                          {item.priceStatus === "tbc" ? "TBC" : `£ ${item.price.toLocaleString("en-CA")}`} - {item.packageType}
+                          {item.priceStatus === "tbc" ? "TBC" : `${currencyCode} ${item.price.toLocaleString("en-GB")}`} - {item.packageType}
                         </option>
                       ))}
                     </select>

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import * as LucideIcons from "lucide-react";
 import DynamicIcon from "@/components/ui/DynamicIcon";
 import { getDurationUnit } from "@/lib/packageHelpers";
+import { useCurrency } from "@/components/CurrencyProvider";
 import PackageBookingModal from "@/components/PackageBookingModal";
 import PackageDetailModal from "@/components/PackageDetailModal";
 
@@ -14,6 +15,7 @@ export default function DestinationsPageSection({
   data: any;
   initialPackages?: any[];
 }) {
+  const currency = useCurrency();
   const destinationPackages = Array.isArray(data?.packagesData)
     ? data.packagesData
     : data?.packageData
@@ -90,7 +92,7 @@ export default function DestinationsPageSection({
               const eligibility = Array.isArray(cardData.eligibility) ? cardData.eligibility : [];
               const heroImage = cardData.bannerImage || pkg.image || pkg.featuredImage || "/images_BHT/sections/hajj_1.jpg";
               const price = pkg.startingPrice
-                ? Number(pkg.startingPrice).toLocaleString("en-GB", { minimumFractionDigits: 0, maximumFractionDigits: 0 })
+                ? Number(pkg.startingPrice).toLocaleString(currency.locale, { minimumFractionDigits: 0, maximumFractionDigits: 0 })
                 : "Contact us";
               const destinationLabel = cardData.destination || pkg.destination || pkg.destinationTitle || "Selected destination";
               const packageTitle = String(pkg.title || pkg.packageTitle || cardData.packageTitle || destinationLabel || "Destination Package").trim();
@@ -153,7 +155,7 @@ export default function DestinationsPageSection({
 
                     <div className="border-t border-gray-100 pt-4 flex items-end justify-between mb-5">
                       <div><div className="text-[10px] font-bold text-ink-soft uppercase tracking-widest mb-1">OPERATOR</div><div className="text-sm font-bold text-ink flex items-center gap-2">{cardData.operatorName || "British Hajj Travel"}<span className="bg-red text-white text-[10px] px-1.5 py-0.5 rounded font-black">{cardData.operatorRating || "4.4/5"}</span></div></div>
-                      <div className="text-right"><div className="text-[10px] font-bold text-red uppercase tracking-widest mb-1">{cardData.priceSubtext || "FROM £ / PERSON"}</div><div className="text-2xl font-black text-primary leading-none">{price}</div></div>
+                      <div className="text-right"><div className="text-[10px] font-bold text-red uppercase tracking-widest mb-1">{cardData.priceSubtext || `FROM ${currency.symbol} / PERSON`}</div><div className="text-2xl font-black text-primary leading-none">{price === "Contact us" ? price : `${currency.symbol} ${price}`}</div></div>
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-2.5 mt-auto">

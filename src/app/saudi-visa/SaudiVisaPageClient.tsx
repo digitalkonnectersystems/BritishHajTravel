@@ -91,8 +91,9 @@ export default function SaudiVisaPageClient({ initialPageData }: { initialPageDa
   }
 
   return (
-    <main>
+    <main className="flex flex-col">
       {/* ================= DYNAMIC HERO BANNER ================= */}
+      <div style={{ order: -100 }}>
       <PageBanner
         title={
           pageData?.bannerTitle ||
@@ -110,47 +111,51 @@ export default function SaudiVisaPageClient({ initialPageData }: { initialPageDa
         variant="saudiVisa"
         eyebrow={heroSettings?.eyebrow}
         features={heroSettings?.features}
-      />
+      /></div>
 
       {/* ================= DYNAMIC OR FALLBACK SECTIONS ================= */}
       {(() => {
+        const position = (types: string[], fallback: number) => {
+          const i = sections.findIndex((section: any) => types.includes(section.type));
+          return i >= 0 ? i * 10 + 10 : fallback;
+        };
         const hasVisaSolutions = sections.some((s: any) => s.type === "Visa Solutions Grid" || s.type === "Visa Cards" || s.type === "Visa Solutions");
         const hasVisaSteps = sections.some((s: any) => s.type === "ProcessStepsSection" || s.type === "Visa Process Steps" || s.type === "3 Easy Steps");
 
         return (
-          <>
-            <UmrahVisaApplicationSection
+          <div className="contents">
+            <div style={{ order: position(['Umrah Visa Application','Umrah Visa Requirements','Umrah Visa Order Form'], 20) }}><UmrahVisaApplicationSection
               data={sections.find((s: any) => s.type === "Umrah Visa Application")?.data}
               requirementsData={sections.find((s: any) => s.type === "Umrah Visa Requirements")?.data}
               formData={sections.find((s: any) => s.type === "Umrah Visa Order Form")?.data}
-            />
-            <UmrahVisaDocumentGuideSection data={sections.find((s: any) => s.type === "Umrah Visa Document Guide")?.data} />
-            <UmrahVisaServicesOverviewSection data={sections.find((s: any) => s.type === "Umrah Visa Services Overview")?.data} />
+            /></div>
+            <div style={{ order: position(['Umrah Visa Document Guide'], 30) }}><UmrahVisaDocumentGuideSection data={sections.find((s: any) => s.type === "Umrah Visa Document Guide")?.data} /></div>
+            <div style={{ order: position(['Umrah Visa Services Overview'], 40) }}><UmrahVisaServicesOverviewSection data={sections.find((s: any) => s.type === "Umrah Visa Services Overview")?.data} /></div>
             {hasVisaSolutions ? (
               sections
                 .filter((s: any) => s.type === "Visa Solutions Grid" || s.type === "Visa Cards" || s.type === "Visa Solutions")
-                .map((sec: any, idx: number) => <VisaSolutionsSection key={idx} data={sec.data} />)
+                .map((sec: any, idx: number) => <div key={idx} style={{ order: position(['Visa Solutions Grid','Visa Cards','Visa Solutions'], 50) + idx }}><VisaSolutionsSection data={sec.data} /></div>)
             ) : (
-              <VisaSolutionsSection />
+              <div style={{ order: 50 }}><VisaSolutionsSection /></div>
             )}
 
             {hasVisaSteps ? (
               sections
                 .filter((s: any) => s.type === "ProcessStepsSection" || s.type === "Visa Process Steps" || s.type === "3 Easy Steps")
-                .map((sec: any, idx: number) => <ProcessStepsSection key={idx} data={sec.data} />)
+                .map((sec: any, idx: number) => <div key={idx} style={{ order: position(['ProcessStepsSection','Visa Process Steps','3 Easy Steps'], 60) + idx }}><ProcessStepsSection data={sec.data} /></div>)
             ) : (
-              <ProcessStepsSection />
+              <div style={{ order: 60 }}><ProcessStepsSection /></div>
             )}
 
             {(() => {
               const handledTypes = ["Umrah Visa Application", "Umrah Visa Requirements", "Umrah Visa Order Form", "Umrah Visa Document Guide", "Umrah Visa Services Overview", "Visa Solutions Grid", "Visa Cards", "Visa Solutions", "ProcessStepsSection", "Visa Process Steps", "3 Easy Steps"];
               const unhandled = sections.filter((s: any) => !handledTypes.includes(s.type));
               if (unhandled.length > 0) {
-                return <PageSectionsRenderer sections={unhandled} pageData={pageData} />;
+                return unhandled.map((section: any) => <div key={section.id} style={{ order: sections.indexOf(section) * 10 + 10 }}><PageSectionsRenderer sections={[section]} pageData={pageData} /></div>);
               }
               return null;
             })()}
-          </>
+          </div>
         );
       })()}
     </main>

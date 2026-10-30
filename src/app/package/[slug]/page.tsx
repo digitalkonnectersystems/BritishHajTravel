@@ -4,6 +4,7 @@ import { getPackageDetailsAction } from '@/actions/pageActions';
 import { getPackageBySlug } from '@/actions/packageActions';
 import PackageDetailPageClient from './PackageDetailPageClient';
 import { buildPackageMetadata, parseSeoSettings, toAbsoluteUrl } from '@/lib/seoMetadata';
+import { getCurrencyConfiguration } from '@/lib/currencyService';
 
 async function loadPackage(slug: string) {
   let pkg = await getPackageBySlug(slug).catch(() => null);
@@ -33,7 +34,7 @@ export default async function StandalonePackageDetailPage({ params }: { params: 
     }
   }
 
-  const currency = initialPackage.currency === '£' ? 'GBP' : (initialPackage.currency || 'GBP');
+  const currency = (await getCurrencyConfiguration()).code;
   const jsonLd = customJsonLd || {
     '@context': 'https://schema.org',
     '@type': 'Product',
