@@ -684,7 +684,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         }
 
         if (sec.type === "Banner 4 Grids") {
-          return <Banner4GridsSection key={idx} data={sec.data || {}} />;
+          return <Banner4GridsSection key={idx} data={sec.data || {}} isInnerBanner={pageData?.slug !== '/'} />;
         }
 
         // Return null for any unmapped sections
