@@ -548,7 +548,7 @@ export default function AdminSettingsPage() {
   // One master template is edited once and shared by every form.
   // Selecting a form below changes only the sample preview, never saved HTML.
   const [emailTemplateHtml, setEmailTemplateHtml] = useState<string>(() => getEditableEmailTemplateHtml());
-  const [formEmailTemplates, setFormEmailTemplates] = useState<FormEmailTemplates>(() => mergeFormEmailTemplates());
+  const [formEmailTemplates, setFormEmailTemplates] = useState<FormEmailTemplates>(() => mergeFormEmailTemplates(undefined));
   const [selectedEmailForm, setSelectedEmailForm] = useState('quoteForm');
   const [selectedEmailAudience, setSelectedEmailAudience] = useState<EmailAudience>('admin');
   const [emailInsertTarget, setEmailInsertTarget] = useState<'subject' | 'body'>('body');

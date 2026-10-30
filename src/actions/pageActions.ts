@@ -1553,7 +1553,7 @@ async function readFullFormsSettings() {
     formFieldsState: DEFAULT_FORM_FIELDS_STATE,
     emailConfigs: DEFAULT_EMAIL_CONFIGS,
     emailTemplateHtml: getEditableEmailTemplateHtml(),
-    formEmailTemplates: mergeFormEmailTemplates(),
+    formEmailTemplates: mergeFormEmailTemplates(undefined),
   };
 
   return formsSettingsMemoryCache || defaultResult;

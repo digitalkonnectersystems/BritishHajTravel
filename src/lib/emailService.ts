@@ -270,14 +270,19 @@ export async function dispatchFormEmails(
         });
       } catch (logErr) { console.error('Failed to log admin email success', logErr); }
     } else if (hasAdminRecipients) {
-      console.error('[Email Dispatcher] Failed to send admin email:', adminResult.reason?.message || adminResult.reason);
+      // PromiseSettledResult.reason is available only for rejected promises.
+      const adminError = adminResult.status === 'rejected'
+        ? adminResult.reason
+        : new Error('Admin email send returned no confirmation.');
+      const adminErrorMessage = adminError instanceof Error ? adminError.message : String(adminError);
+      console.error('[Email Dispatcher] Failed to send admin email:', adminErrorMessage);
       await writeBackendLog({severity:'error',category:'Email Delivery',source:'emailService',message:'Admin notification SMTP delivery failed.'});
       try {
         await db.insert(emailDeliveryLogs).values({
           formId: formName,
           status: 'Failed',
           sentTo: logRecipients,
-          details: adminResult.reason?.message || 'SMTP Error',
+          details: adminErrorMessage || 'SMTP Error',
         });
       } catch (logErr) { console.error('Failed to log admin email error', logErr); }
     }
