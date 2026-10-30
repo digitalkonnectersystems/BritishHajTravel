@@ -101,7 +101,7 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
   return (
     <>
       <header className="sticky top-0 z-[1000] w-full border-b border-gray-100 bg-white shadow-[0_2px_24px_-12px_rgba(19,39,35,0.18)]">
-        <div className="mx-auto flex h-20 w-full max-w-[1400px] items-center justify-between gap-2 px-5 pe-4 xl:p-0 xl:gap-4 ">
+        <div className="mx-auto flex h-20 w-full max-w-[1400px] items-center justify-between gap-2 px-5 pe-4 xl:pe-5 xl:gap-4">
           
 
           <div className="w-full max-w-[200px] shrink-0 transition-opacity hover:opacity-95 sm:max-w-[250px]">
