@@ -14,9 +14,11 @@ import { isTbcPrice } from "@/lib/priceDisplay";
 export default function PackageDetailPageClient({
   initialSlug,
   initialPackage,
+  isDestination = false,
 }: {
   initialSlug: string;
   initialPackage?: any;
+  isDestination?: boolean;
 }) {
   const rawSlug = initialSlug;
   const [pkg] = useState<any>(() => initialPackage || null);
@@ -69,7 +71,7 @@ export default function PackageDetailPageClient({
         startDate: selectedDate,
         totalPrice: estimatedTotalFormatted ? `${currencyCode} ${estimatedTotalFormatted}` :
           (isTbcPrice(minPriceItem.price, minPriceItem.priceStatus) ? 'TBC' : String(pkg?.startingPrice ?? pkg?.price ?? "")),
-        sourceFormName: pkg?.type === 'hajj' ? 'Hajj Package Booking Form' : 'Umrah Package Booking Form',
+        sourceFormName: isDestination ? 'Destination Form' : (pkg?.type === 'hajj' ? 'Hajj Package Booking Form' : 'Umrah Package Booking Form'),
       });
 
       if (res.success) {

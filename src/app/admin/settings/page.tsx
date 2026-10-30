@@ -29,13 +29,13 @@ import {
 } from '@/actions/pageActions';
 import { getDestinations } from '@/actions/destinationActions';
 import { getEmailDeliveryLogsAction, getMailRuntimeStatusAction } from '@/actions/logActions';
-import { resolveSubmissionSubject } from '@/lib/emailSubject';
+import {
+  EMAIL_FORM_DEFINITIONS, FORM_EMAIL_SAMPLES, formEmailPlaceholders,
+  mergeFormEmailTemplates, renderEmailTokens, renderFormEmailBody,
+  renderFormEmailSubject, type EmailAudience, type FormEmailTemplates,
+} from '@/lib/formEmailTemplates';
 import {
   getEditableEmailTemplateHtml,
-  renderSharedEmailTemplateHtml,
-  CANONICAL_FORM_SUBJECTS,
-  FORM_SAMPLE_DATA,
-  CanonicalFormSubject,
 } from '@/lib/emailTemplate';
 import {
   getUsersList,
@@ -547,8 +547,20 @@ export default function AdminSettingsPage() {
 
   // One master template is edited once and shared by every form.
   // Selecting a form below changes only the sample preview, never saved HTML.
-  const [previewForm, setPreviewForm] = useState<CanonicalFormSubject>('Get a Free Quote Form');
   const [emailTemplateHtml, setEmailTemplateHtml] = useState<string>(() => getEditableEmailTemplateHtml());
+  const [formEmailTemplates, setFormEmailTemplates] = useState<FormEmailTemplates>(() => mergeFormEmailTemplates());
+  const [selectedEmailForm, setSelectedEmailForm] = useState('quoteForm');
+  const [selectedEmailAudience, setSelectedEmailAudience] = useState<EmailAudience>('admin');
+  const [emailInsertTarget, setEmailInsertTarget] = useState<'subject' | 'body'>('body');
+  const updateFormTemplate = (field: 'to' | 'cc' | 'bcc' | 'replyTo' | 'subject' | 'body', value: string) => {
+    setFormEmailTemplates(prev => ({
+      ...prev,
+      [selectedEmailForm]: {
+        ...prev[selectedEmailForm],
+        [selectedEmailAudience]: { ...prev[selectedEmailForm][selectedEmailAudience], [field]: value },
+      },
+    }));
+  };
 
   const [formsData, setFormsData] = useState<any>({
     baanHoldingHajjForm: { title: 'BAAN Holding Hajj Interest Form', subtitle: 'BAAN Holding Hajj page registration modal at /baan-holding-hajj/.', recipientEmail: 'booking@britishhajjtravel.com', successMessage: 'Your BAAN Holding Hajj enquiry has been received.', enabled: true, buttonText: 'Submit Enquiry' },
@@ -695,6 +707,7 @@ export default function AdminSettingsPage() {
           }));
         }
         setEmailTemplateHtml(data.emailTemplateHtml || getEditableEmailTemplateHtml());
+        setFormEmailTemplates(mergeFormEmailTemplates(data.formEmailTemplates, data.emailConfigs?.formRoutingRules, data.emailConfigs?.replyTo));
       }
     });
   }, []);
@@ -789,6 +802,7 @@ export default function AdminSettingsPage() {
       formFieldsState,
       emailConfigs,
       emailTemplateHtml,
+      formEmailTemplates,
     };
 
     const res = await saveFormsSettingsAction(fullPayload);
@@ -838,6 +852,7 @@ export default function AdminSettingsPage() {
       formFieldsState: updatedFormFieldsState,
       emailConfigs,
       emailTemplateHtml,
+      formEmailTemplates,
     };
     const res = await saveFormsSettingsAction(fullPayload);
     setSavingForms(false);
@@ -4494,208 +4509,25 @@ export default function AdminSettingsPage() {
                 </div>
               )}
 
-              {/* ── 2. EMAIL CONFIGS SUB-TAB (Redesigned Executive UI) ── */}
+              {/* Global sender and SMTP configuration. Per-form routing is edited under Email Templates. */}
               {formsSubTab === 'emailConfigs' && (
                 <div className="bg-white rounded-3xl p-6 lg:p-8 border border-slate-100 shadow-2xs flex flex-col gap-6">
-                  {/* Notification & Email Routing Settings Box */}
-                  <div className="p-6 lg:p-7 rounded-3xl bg-white border border-slate-200/80 shadow-xs flex flex-col gap-6">
-                    <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-11 h-11 rounded-2xl bg-emerald-50 text-primary border border-emerald-100 flex items-center justify-center text-xl shadow-2xs font-bold">
-                          ✉️
-                        </div>
-                        <div>
-                          <h4 className="text-base font-extrabold text-slate-900 uppercase tracking-wider m-0">NOTIFICATION &amp; EMAIL ROUTING SETTINGS</h4>
-                          <p className="text-xs text-slate-500 mt-0.5 mb-0">Where website form submissions are delivered and how outgoing email notifications appear to recipients.</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        {formsSaveMsg && (
-                          <span className="text-xs font-bold text-primary animate-in fade-in">
-                            {formsSaveMsg}
-                          </span>
-                        )}
-                        <button
-                          type="button"
-                          onClick={handleSaveFormsSettings}
-                          disabled={savingForms}
-                          className="bg-primary hover:bg-white hover:text-primary text-white px-5 py-2.5 rounded-xl text-xs font-extrabold transition-colors cursor-pointer border-none shadow-md flex items-center gap-2"
-                        >
-                          <Save className="w-4 h-4 text-emerald-300" />
-                          {savingForms ? 'Saving Email Configs...' : 'Save Email Configs'}
-                        </button>
-                      </div>
+                  <div className="p-6 lg:p-7 rounded-3xl bg-white border border-slate-200/80 shadow-xs flex flex-col gap-5">
+                    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                      <div><h4 className="text-base font-extrabold text-slate-900 uppercase m-0">GLOBAL SENDER SETTINGS</h4>
+                        <p className="text-xs text-slate-500 mt-1">These two fields apply to every admin and customer email. Edit To, CC, BCC, Reply-To, Subject, and Body in Email Template.</p></div>
+                      <button type="button" disabled={savingForms} onClick={handleSaveFormsSettings} className="bg-primary text-white rounded-xl px-5 py-2.5 text-xs font-bold">Save Email Configs</button>
                     </div>
-
-                    {/* ── Grouped per-form email routing ── */}
-                    {(() => {
-                      const allFormKeys = Object.keys(formsData);
-                      const rules = Array.isArray(emailConfigs.formRoutingRules) ? emailConfigs.formRoutingRules : [];
-                      const assigned = new Set(rules.flatMap(rule => Array.isArray(rule.forms) ? rule.forms : []));
-                      const remaining = allFormKeys.filter(key => !assigned.has(key));
-                      const formLabel = (key: string) => formsData[key]?.title || key;
-
-                      const updateRule = (id: string, field: 'sendTo' | 'cc' | 'bcc', value: string) => {
-                        setEmailConfigs(prev => ({ ...prev, formRoutingRules: (prev.formRoutingRules || []).map(rule => rule.id === id ? { ...rule, [field]: value } : rule) }));
-                      };
-                      const assignForm = (id: string, formKey: string) => {
-                        if (!formKey || !allFormKeys.includes(formKey)) return;
-                        setEmailConfigs(prev => {
-                          const existing = prev.formRoutingRules || [];
-                          if (existing.some(rule => rule.forms.includes(formKey))) return prev;
-                          return { ...prev, formRoutingRules: existing.map(rule => rule.id === id ? { ...rule, forms: [...rule.forms, formKey] } : rule) };
-                        });
-                      };
-                      const unassignForm = (id: string, formKey: string) => {
-                        setEmailConfigs(prev => ({ ...prev, formRoutingRules: (prev.formRoutingRules || []).map(rule => rule.id === id ? { ...rule, forms: rule.forms.filter(key => key !== formKey) } : rule) }));
-                      };
-                      const addRule = () => setEmailConfigs(prev => ({
-                        ...prev,
-                        formRoutingRules: [...(prev.formRoutingRules || []), {
-                          id: `route_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-                          forms: [], sendTo: '', cc: '', bcc: '',
-                        }],
-                      }));
-                      const removeRule = (id: string) => setEmailConfigs(prev => ({ ...prev, formRoutingRules: (prev.formRoutingRules || []).filter(rule => rule.id !== id) }));
-
-                      return (
-                        <div className="flex flex-col gap-4">
-                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-                            <div>
-                              <div className="flex flex-wrap items-center gap-2 mb-1">
-                                <h5 className="text-xs font-black uppercase tracking-wider text-slate-900 m-0">PER-FORM SEND TO EMAIL ROUTING</h5>
-                                <span className="text-[10px] font-extrabold rounded-full px-2 py-0.5 border border-primary/20 bg-primary/5 text-primary">TO · CC · BCC supported</span>
-                              </div>
-                              <p className="text-xs text-slate-500 m-0 leading-relaxed max-w-3xl">
-                                Assign one or more forms to each rule. Enter recipients independently for TO, CC and BCC, separated by commas or semicolons. Empty fields are saved as empty: no address is added automatically. Duplicate recipients are removed in TO, then CC, then BCC order.
-                              </p>
-                            </div>
-                            <button type="button" onClick={addRule} className="bg-primary text-white rounded-xl px-4 py-2.5 text-xs font-bold shadow-xs cursor-pointer border-none whitespace-nowrap hover:opacity-90">
-                              + Add Routing Rule
-                            </button>
-                          </div>
-
-                          {rules.length === 0 && (
-                            <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-5 py-6 text-center">
-                              <p className="text-sm font-bold text-slate-800 m-0">No email routing rules configured</p>
-                              <p className="text-xs text-slate-500 mt-1 mb-0">Use Add Routing Rule to assign forms and recipients. No fallback recipient will be used.</p>
-                            </div>
-                          )}
-
-                          <div className="flex flex-col gap-3">
-                            {rules.map((rule, index) => (
-                              <div key={rule.id} className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4 md:p-5 shadow-xs flex flex-col gap-4">
-                                <div className="flex justify-between items-start gap-3">
-                                  <div>
-                                    <div className="flex flex-wrap items-center gap-2">
-                                      <h6 className="font-extrabold text-xs uppercase tracking-wide text-slate-900 m-0">Send to email address</h6>
-                                      <span className="text-[10px] font-semibold rounded-full border border-primary/20 bg-primary/5 text-primary px-2 py-0.5">{rule.forms.length} selected</span>
-                                      <span className="text-[10px] text-slate-400">Rule {index + 1}</span>
-                                    </div>
-                                    <p className="text-[11px] text-slate-500 mt-1 mb-0">Selected forms share this rule. Remove a form to assign it elsewhere.</p>
-                                  </div>
-                                  <button type="button" title="Remove this routing rule" aria-label={`Remove routing rule ${index + 1}`} onClick={() => removeRule(rule.id)} className="shrink-0 border border-red-200 text-red-600 bg-white rounded-full w-7 h-7 cursor-pointer flex items-center justify-center hover:bg-red-50">×</button>
-                                </div>
-
-                                <div className="flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 bg-white p-2.5 min-h-11">
-                                  {rule.forms.map(formKey => (
-                                    <span key={formKey} className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg border border-slate-200 bg-slate-50 text-[11px] font-semibold text-slate-700">
-                                      {formLabel(formKey)}
-                                      <button type="button" title={`Remove ${formLabel(formKey)} from this rule`} aria-label={`Remove ${formLabel(formKey)}`} onClick={() => unassignForm(rule.id, formKey)} className="border-none bg-transparent cursor-pointer text-red-600 font-bold px-0.5">×</button>
-                                    </span>
-                                  ))}
-                                  {remaining.length > 0 && (
-                                    <select aria-label={`Add a form to routing rule ${index + 1}`} value="" onChange={event => assignForm(rule.id, event.target.value)} className="bg-white border border-dashed border-slate-300 text-xs text-slate-600 rounded-lg px-2 py-1.5 cursor-pointer max-w-full">
-                                      <option value="">+ Add form...</option>
-                                      {remaining.map(key => <option key={key} value={key}>{formLabel(key)}</option>)}
-                                    </select>
-                                  )}
-                                  {!rule.forms.length && remaining.length === 0 && <span className="text-[11px] text-slate-400">Remove an existing form assignment first</span>}
-                                </div>
-
-                                <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-                                  {(['sendTo', 'cc', 'bcc'] as const).map(field => {
-                                    const kind = field === 'sendTo' ? 'TO' : field.toUpperCase();
-                                    const hint = field === 'sendTo' ? 'Primary recipients' : field === 'cc' ? 'Carbon copy (optional)' : 'Blind carbon copy (optional)';
-                                    return (
-                                      <label key={field} className="flex flex-col gap-1.5 rounded-xl p-3 border border-slate-200 bg-white min-w-0">
-                                        <span className="font-extrabold text-[10px] uppercase tracking-wider text-slate-900">{kind} <span className="font-normal text-slate-500 normal-case tracking-normal">{hint}</span></span>
-                                        <input type="text" autoComplete="off" value={rule[field] || ''} onChange={event => updateRule(rule.id, field, event.target.value)} placeholder="Leave empty to omit" className="w-full box-border rounded-lg px-3 py-2 bg-white border border-slate-200 text-xs font-mono text-slate-900 outline-none focus:border-primary" />
-                                        <span className="text-[10px] text-slate-400">Multiple addresses: comma or semicolon separated</span>
-                                      </label>
-                                    );
-                                  })}
-                                </div>
-                                {!rule.sendTo.trim() && !rule.cc.trim() && !rule.bcc.trim() && (
-                                  <p className="text-[11px] font-medium text-amber-700 m-0">No email recipients entered. These forms will not send an admin notification until an address is configured.</p>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                          {remaining.length > 0 && <p className="text-xs text-slate-500 mb-0">{remaining.length} form(s) are not assigned to any email routing rule and will not receive an admin notification.</p>}
-                        </div>
-                      );
-                    })()}
-
-                    {/* ── 2. GENERAL EMAIL NOTIFICATION SETTINGS ── */}
-                    <div className="mt-2 pt-6 border-t border-slate-200/70 grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {/* Email Subject Line */}
-                      <div className="flex flex-col gap-1.5 bg-slate-50/70 p-4 rounded-2xl border border-slate-200/60 hover:border-slate-300 transition-colors md:col-span-2">
-                        <div className="flex items-center justify-between">
-                          <label className="font-extrabold text-xs text-slate-900 uppercase tracking-wide flex items-center gap-1.5">
-                            <span className="w-2 h-2 rounded-full bg-blue-500" /> EMAIL SUBJECT LINE
-                          </label>
-                          <span className="text-[10px] font-bold bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">Smart Tags Enabled</span>
-                        </div>
-                        <p className="text-[11px] text-slate-500 m-0">Use [form_name] for the submitted form, and [name] for the submitter. If omitted, the form name is added automatically. Example: [form_name] | New Enquiry.</p>
-                        <input
-                          type="text"
-                          value={emailConfigs.emailSubjectLine}
-                          onChange={(e) => setEmailConfigs({ ...emailConfigs, emailSubjectLine: e.target.value })}
-                          className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 font-bold text-slate-800 shadow-2xs mt-1"
-                        />
-                        <div className="text-[11px] bg-primary text-white rounded-xl px-3 py-2 mt-2" role="status">Subject preview: {resolveSubmissionSubject(emailConfigs.emailSubjectLine, 'Get a Free Quote Form', { name: 'Customer' })}</div>
-
-                      </div>
-
-                      {/* From Name */}
-                      <div className="flex flex-col gap-1.5 bg-slate-50/70 p-4 rounded-2xl border border-slate-200/60 hover:border-slate-300 transition-colors">
-                        <label className="font-extrabold text-xs text-slate-900 uppercase tracking-wide">FROM NAME</label>
-                        <p className="text-[11px] text-slate-500 m-0">Sender display name. MAIL_FROM_NAME in .env takes priority when set.</p>
-                        <input
-                          type="text"
-                          value={emailConfigs.fromName}
-                          onChange={(e) => setEmailConfigs({ ...emailConfigs, fromName: e.target.value })}
-                          className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 font-bold text-slate-800 shadow-2xs mt-1"
-                        />
-                      </div>
-
-                      {/* From Email */}
-                      <div className="flex flex-col gap-1.5 bg-slate-50/70 p-4 rounded-2xl border border-slate-200/60 hover:border-slate-300 transition-colors">
-                        <label className="font-extrabold text-xs text-slate-900 uppercase tracking-wide">FROM EMAIL</label>
-                        <p className="text-[11px] text-slate-500 m-0">Authenticated sender is selected on the server. MAIL_FROM_EMAIL in .env overrides this field; any alias must be approved by your SMTP provider.</p>
-                        <input
-                          type="email"
-                          value={emailConfigs.fromEmail}
-                          onChange={(e) => setEmailConfigs({ ...emailConfigs, fromEmail: e.target.value })}
-                          className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 font-mono font-bold text-slate-800 shadow-2xs mt-1"
-                        />
-                      </div>
-
-                      {/* Reply-To Email */}
-                      <div className="flex flex-col gap-1.5 bg-slate-50/70 p-4 rounded-2xl border border-slate-200/60 hover:border-slate-300 transition-colors md:col-span-2">
-                        <label className="font-extrabold text-xs text-slate-900 uppercase tracking-wide">REPLY-TO EMAIL ADDRESS</label>
-                        <p className="text-[11px] text-slate-500 m-0">MAIL_REPLY_TO in .env takes priority. Leave blank to use the submitter email as Reply-To for admin messages.</p>
-                        <input
-                          type="email"
-                          value={emailConfigs.replyTo}
-                          onChange={(e) => setEmailConfigs({ ...emailConfigs, replyTo: e.target.value })}
-                          className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 font-mono font-bold text-slate-800 shadow-2xs mt-1"
-                        />
-                      </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <label className="flex flex-col gap-2 text-xs font-bold text-slate-800">FROM NAME
+                        <input type="text" value={emailConfigs.fromName} onChange={e => setEmailConfigs(prev => ({ ...prev, fromName: e.target.value }))} className="rounded-xl border border-slate-200 p-3 text-sm" />
+                      </label>
+                      <label className="flex flex-col gap-2 text-xs font-bold text-slate-800">FROM EMAIL
+                        <input type="email" value={emailConfigs.fromEmail} onChange={e => setEmailConfigs(prev => ({ ...prev, fromEmail: e.target.value }))} className="rounded-xl border border-slate-200 p-3 text-sm" />
+                      </label>
                     </div>
+                    <p className="text-xs text-slate-500 m-0">The authenticated SMTP account or verified sender alias is used by the server. MAIL_FROM_NAME and MAIL_FROM_EMAIL environment variables take precedence if configured.</p>
                   </div>
-
                   {/* ── SMTP Environment Connection (.env Configured) Card ── */}
                   <div className="p-6 lg:p-7 rounded-3xl bg-gradient-to-r from-[#020e43] via-[#102e74] to-[#020e43] text-white border border-[#b50007]/40 shadow-xl relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-red opacity-10 rounded-full blur-3xl pointer-events-none" />
@@ -4819,108 +4651,70 @@ export default function AdminSettingsPage() {
                 </div>
               )}
 
-              {/* ── 3. EMAIL TEMPLATE SUB-TAB (Matching Screenshot 2: Form Subjects Switcher, HTML Editor & Real-Time Preview) ── */}
-              {formsSubTab === 'emailTemplate' && (
-                <div className="flex flex-col gap-6">
-                  {/* Top Bar: Title + Form Subject Selector + Reset Button */}
-                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white p-5 rounded-3xl border border-slate-100 shadow-2xs">
-                    <div>
-                      <h3 className="text-base font-extrabold text-slate-900 m-0 flex items-center gap-2">
-                        ✉️ EMAIL TEMPLATE CONFIGURATION
-                      </h3>
-                      <p className="text-xs text-slate-500 mt-0.5 mb-0">
-                        Edit one responsive email template shared across every form. The form name and submitted fields are inserted automatically.
-                      </p>
+              {/* Independent admin and customer email templates for every form. */}
+              {formsSubTab === 'emailTemplate' && (() => {
+                const selectedForm = EMAIL_FORM_DEFINITIONS.find(form => form.key === selectedEmailForm) || EMAIL_FORM_DEFINITIONS[0];
+                const activeTemplate = formEmailTemplates[selectedForm.key]?.[selectedEmailAudience];
+                const exampleData = FORM_EMAIL_SAMPLES[selectedForm.key] || {};
+                const fields = formEmailPlaceholders(selectedForm.key);
+                return (
+                  <div className="flex flex-col gap-5">
+                    <div className="bg-white rounded-3xl border border-slate-100 p-5 flex flex-wrap items-center justify-between gap-4">
+                      <div><h3 className="text-base font-extrabold text-slate-900 m-0">EMAIL TEMPLATE CONFIGURATION</h3>
+                        <p className="text-xs text-slate-500 mt-1 mb-0">Each form has two separately editable emails: Admin Notification and Customer Confirmation.</p></div>
+                      <div className="flex gap-2 flex-wrap">
+                        <button type="button" onClick={() => updateFormTemplate('body', selectedEmailAudience === 'admin' ? getEditableEmailTemplateHtml() : getEditableEmailTemplateHtml().replace('The following information was submitted through', 'Thank you. We received your request through'))} className="bg-slate-100 rounded-xl border border-slate-200 px-4 py-2 text-xs font-bold">Reset this body</button>
+                        <button type="button" disabled={savingForms} onClick={handleSaveFormsSettings} className="bg-primary text-white rounded-xl px-5 py-2 text-xs font-bold">{savingForms ? 'Saving...' : 'Save Templates'}</button>
+                      </div>
                     </div>
-
-                    <div className="flex items-center gap-2.5 flex-wrap">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setEmailTemplateHtml(getEditableEmailTemplateHtml());
-                        }}
-                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl border border-slate-200 transition-colors cursor-pointer flex items-center gap-1.5"
-                      >
-                        <span>🔄</span> Reset to Default
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={handleSaveFormsSettings}
-                        disabled={savingForms}
-                        className="bg-primary hover:bg-white hover:text-primary text-white px-5 py-2 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer border-none"
-                      >
-                        <Save className="w-3.5 h-3.5 text-emerald-300" />
-                        {savingForms ? 'Saving...' : 'Save Template'}
-                      </button>
+                    <div className="bg-white rounded-3xl border border-slate-100 p-4">
+                      <p className="text-[11px] font-bold uppercase text-slate-500 mb-3">Select form</p>
+                      <div className="flex flex-wrap gap-2" role="tablist" aria-label="Email template forms">
+                        {EMAIL_FORM_DEFINITIONS.map(form => <button key={form.key} type="button" role="tab" aria-selected={selectedEmailForm === form.key} onClick={() => setSelectedEmailForm(form.key)} className={`rounded-xl px-3 py-2 text-xs font-bold border ${selectedEmailForm === form.key ? 'bg-primary text-white border-primary' : 'bg-slate-50 text-slate-700 border-slate-200'}`}>{form.name}</button>)}
+                      </div>
+                    </div>
+                    <div className="bg-white border border-slate-100 rounded-3xl p-5 flex flex-col gap-5">
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <div><h4 className="m-0 text-sm font-extrabold text-slate-900">{selectedForm.name}</h4><p className="m-0 mt-1 text-xs text-slate-500">Configure both messages independently. Commas, semicolons, or line breaks separate email addresses.</p></div>
+                        <div className="flex gap-2" role="tablist" aria-label="Email audience">
+                          {(['admin','customer'] as const).map(audience => <button key={audience} type="button" role="tab" aria-selected={selectedEmailAudience === audience} onClick={() => setSelectedEmailAudience(audience)} className={`rounded-xl px-4 py-2 text-xs font-bold ${selectedEmailAudience === audience ? 'bg-primary text-white' : 'bg-slate-100 text-slate-800'}`}>{audience === 'admin' ? 'Admin Notification' : 'Customer Confirmation'}</button>)}
+                        </div>
+                      </div>
+                      {activeTemplate && <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {(['to','cc','bcc','replyTo'] as const).map(field => <label key={field} className="flex flex-col gap-1.5 text-xs font-bold uppercase text-slate-700">{field === 'replyTo' ? 'Reply-To' : field.toUpperCase()}
+                            <textarea rows={2} value={activeTemplate[field]} onChange={e => updateFormTemplate(field, e.target.value)} placeholder={field === 'to' && selectedEmailAudience === 'customer' ? '[Customer Email]' : 'name@example.com, second@example.com'} className="w-full rounded-xl border border-slate-200 bg-white p-3 text-xs font-mono normal-case text-slate-800" />
+                          </label>)}
+                        </div>
+                        <p className="text-xs text-slate-500 m-0">Use <code>[Customer Email]</code> in any address field to route to the submitting customer. Every email is sent using global From Name and From Email.</p>
+                        <label className="flex flex-col gap-2 text-xs font-bold text-slate-700">EMAIL SUBJECT
+                          <input type="text" value={activeTemplate.subject} onChange={e => updateFormTemplate('subject', e.target.value)} className="w-full rounded-xl border border-slate-200 p-3 text-sm" />
+                          <span className="text-[11px] font-normal text-slate-500">Preview: {renderFormEmailSubject(activeTemplate.subject, selectedForm.name, exampleData)}</span>
+                        </label>
+                        <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                          <div className="flex flex-wrap items-center justify-between gap-3 mb-3"><h5 className="text-xs font-extrabold uppercase text-slate-800 m-0">Available placeholders for {selectedForm.name}</h5>
+                            <div className="flex items-center gap-2 text-xs">Insert into:
+                              <button type="button" onClick={() => setEmailInsertTarget('subject')} className={`rounded-lg px-3 py-1 ${emailInsertTarget === 'subject' ? 'bg-primary text-white' : 'bg-white border border-slate-200'}`}>Subject</button>
+                              <button type="button" onClick={() => setEmailInsertTarget('body')} className={`rounded-lg px-3 py-1 ${emailInsertTarget === 'body' ? 'bg-primary text-white' : 'bg-white border border-slate-200'}`}>Body</button>
+                            </div>
+                          </div>
+                          <div className="flex flex-wrap gap-2">{fields.map(field => <button key={field} type="button" onClick={() => updateFormTemplate(emailInsertTarget, `${activeTemplate[emailInsertTarget]} ${field}`)} className="bg-white border border-slate-200 hover:border-primary px-2.5 py-1.5 rounded-lg text-[11px] font-mono text-slate-700" title={`Insert ${field} into ${emailInsertTarget}`}>{field}</button>)}</div>
+                          <p className="text-[11px] text-slate-500 mt-3 mb-0">Click a placeholder to insert it. You can also type placeholders anywhere in the HTML or subject. Existing HTML tokens such as <code>{'{{SUBMISSION_ROWS}}'}</code> continue to work.</p>
+                        </div>
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                          <div className="bg-[#0B132B] rounded-2xl p-4 text-white flex flex-col gap-3"><div className="text-xs font-bold">&lt;/&gt; EMAIL BODY HTML EDITOR <span className="text-emerald-400 text-[10px]">Live</span></div>
+                            <textarea rows={22} value={activeTemplate.body} onChange={e => updateFormTemplate('body', e.target.value)} className="w-full flex-1 bg-white text-white border border-slate-700 rounded-xl p-3 text-xs font-mono leading-relaxed" />
+                          </div>
+                          <div className="rounded-2xl border border-slate-200 p-4 flex flex-col gap-3"><div className="text-xs font-bold uppercase text-slate-700">Real-time email preview</div>
+                            <div className="text-[11px] text-slate-500">To: {renderEmailTokens(activeTemplate.to, selectedForm.name, exampleData) || '(not configured)'}</div>
+                            <iframe sandbox="" title={`${selectedForm.name} ${selectedEmailAudience} email preview`} srcDoc={renderFormEmailBody(activeTemplate.body, selectedForm.name, exampleData, selectedEmailAudience)} className="min-h-[430px] w-full rounded-xl border border-slate-200 bg-white" />
+                          </div>
+                        </div>
+                      </>}
                     </div>
                   </div>
-
-                  {/* One editable template; this selector only demonstrates different sample submissions. */}
-                  <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div>
-                      <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-700">ONE MASTER EMAIL TEMPLATE</span>
-                      <p className="text-xs text-slate-500 mt-1 mb-0">Applied automatically to every enquiry and booking form. Preview selection does not create separate templates.</p>
-                    </div>
-                    <label className="flex items-center gap-2 text-xs font-semibold text-slate-700">
-                      Preview sample form
-                      <select
-                        value={previewForm}
-                        onChange={(event) => setPreviewForm(event.target.value as CanonicalFormSubject)}
-                        className="bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-slate-800 max-w-[260px]"
-                      >
-                        {CANONICAL_FORM_SUBJECTS.map((name) => <option key={name} value={name}>{name}</option>)}
-                      </select>
-                    </label>
-                  </div>
-
-                  {/* Live Code Editor & Real-Time Preview Panels */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* HTML Editor Panel */}
-                    <div className="bg-[#0B132B] rounded-3xl p-5 border border-slate-800 shadow-xl flex flex-col gap-3 text-white">
-                      <div className="flex items-center justify-between text-xs font-bold text-ink-lt border-b border-slate-800 pb-3">
-                        <span className="flex items-center gap-2">
-                          <span>&lt;/&gt; HTML EDITOR</span>
-                          <span className="text-[10px] font-mono text-red bg-red/10 px-2 py-0.5 rounded-full border border-red/30">
-                            Master Template
-                          </span>
-                        </span>
-                        <span className="text-[10px] text-emerald-400">Live Code Mode</span>
-                      </div>
-                      <div className="rounded-xl border border-slate-700 bg-slate-900/70 px-3 py-2 text-[10px] text-slate-300">
-                        Live-send tokens: <code>{'{{FORM_NAME}}'}</code>, <code>{'{{SUBMISSION_ROWS}}'}</code>, <code>{'{{SUBMISSION_DATE}}'}</code>, <code>{'{{SUBMITTER_NAME}}'}</code>, <code>{'{{EMAIL_AUDIENCE}}'}</code>. Templates without a live token stay preview-only, so sample data is never emailed.
-                      </div>
-                      <textarea
-                        rows={18}
-                        value={emailTemplateHtml}
-                        onChange={(e) => setEmailTemplateHtml(e.target.value)}
-                        className="w-full bg-transparent font-sans text-xs !text-white outline-none resize-y leading-relaxed border-none focus:ring-0"
-                      />
-                    </div>
-
-                    {/* Real-Time Preview Panel */}
-                    <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-2xs flex flex-col gap-3">
-                      <div className="text-xs font-bold text-slate-700 uppercase tracking-wider border-b border-slate-100 pb-3 flex items-center justify-between">
-                        <span className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                          REAL-TIME EMAIL TEMPLATE PREVIEW
-                        </span>
-                        <span className="text-[11px] font-extrabold text-primary">
-                          Preview: {previewForm}
-                        </span>
-                      </div>
-                      <div className="bg-slate-100 p-4 rounded-2xl border border-slate-200 min-h-[420px] overflow-auto">
-                        <iframe
-                          srcDoc={renderSharedEmailTemplateHtml(emailTemplateHtml, previewForm, FORM_SAMPLE_DATA[previewForm], false) || '<p style="font:14px Arial;padding:24px">Include {{FORM_NAME}} and {{SUBMISSION_ROWS}} to enable live preview.</p>'}
-                          sandbox=""
-                          title="Email Template Preview"
-                          className="w-full h-[400px] border-none rounded-xl bg-white shadow-sm"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
+                );
+              })()}
 
               {/* ── 4. INBOX SUB-TAB (Matching Screenshot 3) ── */}
               {formsSubTab === 'inbox' && (

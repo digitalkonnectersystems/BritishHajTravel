@@ -10,6 +10,7 @@ import { getEditableEmailTemplateHtml, getSharedEmailTemplateHtml, hasRequiredEm
 import { logAdminActivityAction } from '@/actions/activityActions';
 import { dedupeRecipientChannels, hasInvalidEmailRecipient, normalizeEmailRecipients } from '@/lib/emailRecipients';
 import { normalizeFormRoutingRules } from '@/lib/formEmailRules';
+import { mergeFormEmailTemplates, validateFormEmailTemplates } from '@/lib/formEmailTemplates';
 
 // Cached reads go stale after this long (seconds) and refetch in the background.
 // Saves from the admin also bust these instantly via updateTag(), so content
@@ -1536,6 +1537,7 @@ async function readFullFormsSettings() {
           formFieldsState: mergedFormFieldsState,
           emailConfigs: mergedEmailConfigs,
           emailTemplateHtml: getSharedEmailTemplateHtml(parsed.emailTemplateHtml),
+          formEmailTemplates: mergeFormEmailTemplates(parsed.formEmailTemplates, normalizedRules, mergedEmailConfigs.replyTo),
         };
 
         formsSettingsMemoryCache = result;
@@ -1551,6 +1553,7 @@ async function readFullFormsSettings() {
     formFieldsState: DEFAULT_FORM_FIELDS_STATE,
     emailConfigs: DEFAULT_EMAIL_CONFIGS,
     emailTemplateHtml: getEditableEmailTemplateHtml(),
+    formEmailTemplates: mergeFormEmailTemplates(),
   };
 
   return formsSettingsMemoryCache || defaultResult;
@@ -1676,6 +1679,9 @@ export async function saveFormsSettingsAction(settingsData: any) {
 
   emailConfigs.formRoutingRules = normalizedRules;
   nextSettings.emailConfigs = emailConfigs;
+  nextSettings.formEmailTemplates = mergeFormEmailTemplates(nextSettings.formEmailTemplates, normalizedRules, emailConfigs.replyTo);
+  const templateError = validateFormEmailTemplates(nextSettings.formEmailTemplates);
+  if (templateError) return { success: false, error: templateError };
 
   try {
     const existing = await db.select().from(siteSettings).where(eq(siteSettings.key, 'forms_settings')).limit(1);
@@ -1699,14 +1705,14 @@ export async function saveFormsSettingsAction(settingsData: any) {
     await logAdminActivityAction({
       type: 'settings',
       action: 'Updated Form Settings',
-      details: 'CRM enquiry, per-form email routing and one shared email template saved',
+      details: 'CRM enquiry settings and per-form admin/customer email templates saved',
       previousEntry: previousSettings ? {
         emailConfigs: auditSafeEmailConfigs(previousSettings.emailConfigs),
         sharedEmailTemplateConfigured: hasRequiredEmailTemplateTokens(previousSettings.emailTemplateHtml),
       } : null,
       newEntry: {
         emailConfigs: auditSafeEmailConfigs(nextSettings.emailConfigs),
-        sharedEmailTemplateConfigured: true,
+        formEmailTemplateCount: Object.keys(nextSettings.formEmailTemplates).length,
       },
     });
 

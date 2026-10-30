@@ -236,6 +236,7 @@ export default function DynamicSiteForm({
           phone,
           travelersCount: parseNumberSafe(quantity, 1),
           nationality: getVal(["nationality"], "British"),
+          travelDate,
           message: [message, travelDate ? `Travel date: ${travelDate}` : ""].filter(Boolean).join("\n"),
           sourceFormName: formKey === 'umrahVisaOrder' ? 'Umrah Visa Order Form' : 'Visa Consultation Form',
         });

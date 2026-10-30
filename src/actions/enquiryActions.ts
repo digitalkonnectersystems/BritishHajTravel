@@ -325,6 +325,7 @@ export async function submitVisaEnquiryAction(data: {
   phone: string;
   travelersCount?: number;
   nationality?: string;
+  travelDate?: string;
   message?: string;
   sourceFormName?: string;
 }) {
@@ -337,6 +338,7 @@ export async function submitVisaEnquiryAction(data: {
       phone,
       travelersCount = 1,
       nationality = 'British',
+      travelDate = '',
       message = '',
       sourceFormName,
     } = data;
@@ -388,6 +390,7 @@ export async function submitVisaEnquiryAction(data: {
       phone,
       travelersCount,
       nationality,
+      travelDate,
       message,
     });
 

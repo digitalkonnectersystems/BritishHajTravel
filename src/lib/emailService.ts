@@ -3,10 +3,11 @@ import { writeBackendLog } from '@/lib/backendLogger';
 import { siteSettings, emailDeliveryLogs } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { getResponsiveEmailTemplateHtml, getSharedEmailTemplateHtml, renderSharedEmailTemplateHtml, formatFieldLabel } from './emailTemplate';
-import { dedupeRecipientChannels, includesRecipient } from './emailRecipients';
+import { dedupeRecipientChannels } from './emailRecipients';
 import { recipientsForForm } from './formEmailRules';
 import { resolveSubmissionSubject } from './emailSubject';
 import { getSmtpRuntimeConfig } from './smtpRuntimeConfig';
+import { emailFormKey, mergeFormEmailTemplates, renderFormEmailBody, renderFormEmailSubject, renderEmailTokens, resolvedEmailRecipients } from './formEmailTemplates';
 
 export { getResponsiveEmailTemplateHtml, formatFieldLabel };
 
@@ -62,6 +63,7 @@ export async function dispatchFormEmails(
     let replyTo = replyToEnv;
     let subjectPattern = '[form_name]';
     let savedFormsConfig: any = null;
+    let formTemplates: ReturnType<typeof mergeFormEmailTemplates> | null = null;
 
     try {
       const res = await db.select().from(siteSettings).where(eq(siteSettings.key, 'forms_settings')).limit(1);
@@ -76,7 +78,8 @@ export async function dispatchFormEmails(
         replyTo = replyToEnv || String(saved.replyTo || '').trim();
         subjectPattern = String(saved.emailSubjectLine || '').trim() || '[form_name]';
 
-        // Form-specific recipient routing. Each form is stored independently; legacy grouped rules remain readable.
+        formTemplates = mergeFormEmailTemplates(config?.formEmailTemplates, saved.formRoutingRules, saved.replyTo);
+        // Legacy routing remains available for forms outside the ten new templates.
         const formRoutingRules: Array<{ id: string; forms: string[]; sendTo: string; cc: string; bcc?: string }> =
           config?.emailConfigs?.formRoutingRules || [];
 
@@ -113,7 +116,7 @@ export async function dispatchFormEmails(
           'Blog Detail Page — Sidebar Booking Form': 'blogSidebarForm',
           'Blog Detail Page': 'blogSidebarForm',
         };
-        const mappedKey = formKeyMap[formName] || formName;
+        const mappedKey = emailFormKey(formName) || formKeyMap[formName] || formName;
 
         // Explicit routing only: never synthesize recipient addresses.
         // A blank TO, CC, or BCC remains blank, even if older form data has an email.
@@ -134,47 +137,47 @@ export async function dispatchFormEmails(
       console.error('[Email Dispatcher] Form routing settings could not be read:', configurationError);
     }
 
-    const recipientChannels = dedupeRecipientChannels(adminRecipientEmail, adminCcEmail, adminBccEmail);
-    if (![...recipientChannels.to, ...recipientChannels.cc, ...recipientChannels.bcc].length) {
-      return { adminSent: false, userSent: false, error: 'No TO, CC or BCC recipients configured for this form; no admin email was sent.' };
+    const formKey = emailFormKey(formName);
+    const templatePair = formTemplates?.[formKey];
+    // For legacy forms, maintain existing routing and the former shared template.
+    const adminTemplate = templatePair?.admin;
+    const customerTemplate = templatePair?.customer;
+    const recipientChannels = adminTemplate
+      ? resolvedEmailRecipients(adminTemplate, formName, submittedData)
+      : dedupeRecipientChannels(adminRecipientEmail, adminCcEmail, adminBccEmail);
+    const customerChannels = customerTemplate
+      ? resolvedEmailRecipients(customerTemplate, formName, submittedData)
+      : dedupeRecipientChannels(providedUserEmail || submittedData.email || submittedData.emailAddress || submittedData.userEmail || '', '', '');
+    const hasAdminRecipients = !!(recipientChannels.to.length || recipientChannels.cc.length || recipientChannels.bcc.length);
+    const hasCustomerRecipients = !!(customerChannels.to.length || customerChannels.cc.length || customerChannels.bcc.length);
+    if (!hasAdminRecipients && !hasCustomerRecipients) {
+      return { adminSent: false, userSent: false, error: 'No recipients configured for this form.' };
     }
-    adminRecipientEmail = recipientChannels.to.join(', ');
-    adminCcEmail = recipientChannels.cc.join(', ');
-    adminBccEmail = recipientChannels.bcc.join(', ');
     const logRecipients = [...recipientChannels.to, ...recipientChannels.cc, ...recipientChannels.bcc].join(', ').slice(0, 255);
-
-    // Determine user email
-    const userEmail =
-      providedUserEmail ||
-      submittedData.email ||
-      submittedData.emailAddress ||
-      submittedData.userEmail ||
-      '';
-
-    const isValidUserEmail = typeof userEmail === 'string' && /\S+@\S+\.\S+/.test(userEmail.trim());
-    const userAlreadyReceivesAdminCopy = isValidUserEmail
-      ? includesRecipient(recipientChannels, userEmail.trim())
-      : false;
-
-    // One master layout for every form. The form name and submission fields are
-    // injected at send time; obsolete per-form templates are never selected.
+    const customerLogRecipients = [...customerChannels.to, ...customerChannels.cc, ...customerChannels.bcc].join(', ').slice(0, 255);
+    const primaryCustomerEmail = String(providedUserEmail || submittedData.email || submittedData.emailAddress || submittedData.userEmail || '');
     const sharedTemplate = getSharedEmailTemplateHtml(savedFormsConfig?.emailTemplateHtml);
-    const adminHtml = renderSharedEmailTemplateHtml(sharedTemplate, formName, submittedData, false)!;
-    const userHtml = isValidUserEmail
-      ? renderSharedEmailTemplateHtml(sharedTemplate, formName, submittedData, true)!
-      : '';
-
-    // Auto-Selected Generic Subjects
-    const adminSubject = resolveSubmissionSubject(subjectPattern, formName, submittedData);
-    const userSubject = `We received your ${formName} submission | British Hajj Travel UK`;
+    const adminHtml = adminTemplate
+      ? renderFormEmailBody(adminTemplate.body, formName, submittedData, 'admin')
+      : renderSharedEmailTemplateHtml(sharedTemplate, formName, submittedData, false)!;
+    const userHtml = customerTemplate
+      ? renderFormEmailBody(customerTemplate.body, formName, submittedData, 'customer')
+      : renderSharedEmailTemplateHtml(sharedTemplate, formName, submittedData, true)!;
+    const adminSubject = adminTemplate
+      ? renderFormEmailSubject(adminTemplate.subject, formName, submittedData)
+      : resolveSubmissionSubject(subjectPattern, formName, submittedData);
+    const userSubject = customerTemplate
+      ? renderFormEmailSubject(customerTemplate.subject, formName, submittedData)
+      : `We received your ${formName} submission | British Hajj Travel UK`;
+    const adminReplyTo = adminTemplate
+      ? renderEmailTokens(adminTemplate.replyTo, formName, submittedData).trim()
+      : (replyTo || primaryCustomerEmail);
+    const customerReplyTo = customerTemplate
+      ? renderEmailTokens(customerTemplate.replyTo, formName, submittedData).trim()
+      : replyTo;
     const emailAuditBase: FormEmailAudit = {
-      formName,
-      to: recipientChannels.to,
-      cc: recipientChannels.cc,
-      bcc: recipientChannels.bcc,
-      subject: adminSubject,
-      html: adminHtml,
-      status: 'Pending',
+      formName, to: recipientChannels.to, cc: recipientChannels.cc, bcc: recipientChannels.bcc,
+      subject: adminSubject, html: adminHtml, status: 'Pending',
     };
 
     // Persist the exact admin email body before SMTP is attempted. This guarantees
@@ -226,34 +229,28 @@ export async function dispatchFormEmails(
       },
     } as any);
 
-    // Prepare Email #1 (Admin) with optional CC and BCC
-    const adminMailOptions: Record<string, any> = {
+    const adminPromise = hasAdminRecipients ? transporter.sendMail({
       from: { name: fromName, address: fromEmail },
-      ...(isValidMailAddress(replyTo || userEmail) ? { replyTo: replyTo || userEmail.trim() } : {}),
+      ...(isValidMailAddress(adminReplyTo) ? { replyTo: adminReplyTo } : {}),
       ...(recipientChannels.to.length ? { to: recipientChannels.to } : {}),
+      ...(recipientChannels.cc.length ? { cc: recipientChannels.cc } : {}),
+      ...(recipientChannels.bcc.length ? { bcc: recipientChannels.bcc } : {}),
       subject: adminSubject,
       html: adminHtml,
-      text: `A new inquiry was submitted via ${formName}.`,
-    };
-    if (adminCcEmail) {
-      adminMailOptions.cc = recipientChannels.cc;
-    }
-    if (adminBccEmail) {
-      adminMailOptions.bcc = recipientChannels.bcc;
-    }
-    const adminPromise = transporter.sendMail(adminMailOptions);
+      text: `New submission: ${formName}`,
+    }) : Promise.resolve(null);
 
-    // Prepare Email #2 (User, if email is valid)
-    const userPromise = (isValidUserEmail && userHtml && !userAlreadyReceivesAdminCopy)
-      ? transporter.sendMail({
-        from: { name: fromName, address: fromEmail },
-        ...(isValidMailAddress(replyTo) ? { replyTo } : {}),
-        to: userEmail.trim(),
-        subject: userSubject,
-        html: userHtml,
-        text: `Thank you for contacting British Hajj Travel UK. We have received your inquiry submitted via ${formName}.`,
-      })
-      : Promise.resolve(null);
+    // Each form owns a separate customer template and independent To/CC/BCC.
+    const userPromise = hasCustomerRecipients ? transporter.sendMail({
+      from: { name: fromName, address: fromEmail },
+      ...(isValidMailAddress(customerReplyTo) ? { replyTo: customerReplyTo } : {}),
+      ...(customerChannels.to.length ? { to: customerChannels.to } : {}),
+      ...(customerChannels.cc.length ? { cc: customerChannels.cc } : {}),
+      ...(customerChannels.bcc.length ? { bcc: customerChannels.bcc } : {}),
+      subject: userSubject,
+      html: userHtml,
+      text: `Your ${formName} request has been received.`,
+    }) : Promise.resolve(null);
 
     // Dispatch both emails in parallel simultaneously
     const [adminResult, userResult] = await Promise.allSettled([adminPromise, userPromise]);
@@ -261,9 +258,9 @@ export async function dispatchFormEmails(
     let adminSent = false;
     let userSent = false;
 
-    if (adminResult.status === 'fulfilled') {
+    if (adminResult.status === 'fulfilled' && adminResult.value !== null) {
       adminSent = true;
-      console.log(`✅ [Email Dispatcher] Admin notification sent to ${adminRecipientEmail}`);
+      console.log(`[Email Dispatcher] Admin notification sent to ${logRecipients}`);
       try {
         await db.insert(emailDeliveryLogs).values({
           formId: formName,
@@ -272,7 +269,7 @@ export async function dispatchFormEmails(
           details: 'Notification sent successfully via SMTP',
         });
       } catch (logErr) { console.error('Failed to log admin email success', logErr); }
-    } else {
+    } else if (hasAdminRecipients) {
       console.error('[Email Dispatcher] Failed to send admin email:', adminResult.reason?.message || adminResult.reason);
       await writeBackendLog({severity:'error',category:'Email Delivery',source:'emailService',message:'Admin notification SMTP delivery failed.'});
       try {
@@ -287,12 +284,12 @@ export async function dispatchFormEmails(
 
     if (userResult.status === 'fulfilled' && userResult.value !== null) {
       userSent = true;
-      console.log(`✅ [Email Dispatcher] User confirmation sent to ${userEmail}`);
+      console.log(`[Email Dispatcher] Customer email sent to ${customerLogRecipients}`);
       try {
         await db.insert(emailDeliveryLogs).values({
           formId: formName,
           status: 'Delivered',
-          sentTo: userEmail.trim(),
+          sentTo: customerLogRecipients,
           details: 'User confirmation sent successfully via SMTP',
         });
       } catch (logErr) { console.error('Failed to log user email success', logErr); }
@@ -303,12 +300,12 @@ export async function dispatchFormEmails(
         await db.insert(emailDeliveryLogs).values({
           formId: formName,
           status: 'Failed',
-          sentTo: userEmail.trim(),
+          sentTo: customerLogRecipients,
           details: userResult.reason?.message || 'SMTP Error',
         });
       } catch (logErr) { console.error('Failed to log user email error', logErr); }
     } else {
-      console.log(`ℹ️ [Email Dispatcher] No user email entered. User confirmation email skipped.`);
+      console.log('[Email Dispatcher] No customer recipients configured; customer email skipped.');
     }
 
     const finalAudit: FormEmailAudit = { ...emailAuditBase, status: adminSent ? 'Delivered' : 'Failed' };
@@ -317,7 +314,7 @@ export async function dispatchFormEmails(
     return {
       adminSent,
       userSent,
-      error: !adminSent || (isValidUserEmail && !userAlreadyReceivesAdminCopy && !userSent)
+      error: (hasAdminRecipients && !adminSent) || (hasCustomerRecipients && !userSent)
         ? getEmailDeliveryError(adminResult, userResult)
         : undefined,
       audit: finalAudit,
