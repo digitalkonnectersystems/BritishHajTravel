@@ -2897,6 +2897,7 @@ select {
 }
 
 .saudi-visa-banner-title {
+  @apply line-clamp-2;
   max-width: 920px;
   text-align: left;
   font-size: clamp(1.5rem, 3vw, 2.25rem);
@@ -2906,6 +2907,7 @@ select {
 }
 
 .saudi-visa-banner-copy {
+  @apply line-clamp-2;
   max-width: 900px;
   margin-left: 0;
   text-align: left;

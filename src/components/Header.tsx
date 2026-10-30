@@ -92,17 +92,17 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
   return (
     <>
       <header className="sticky top-0 z-[1000] w-full border-b border-gray-100 bg-white shadow-[0_2px_24px_-12px_rgba(19,39,35,0.18)]">
-        <div className="mx-auto flex h-20 w-full max-w-[1400px] items-center justify-between gap-2 px-5 pe-4 xl:pe-5 xl:gap-4">
+        <div className="mx-auto flex h-[50px] w-full max-w-[1400px] items-center justify-between gap-2 px-4 sm:h-[72px] sm:px-5 xl:h-20 xl:gap-4">
           
 
-          <div className="w-full max-w-[200px] shrink-0 transition-opacity hover:opacity-95 sm:max-w-[250px]">
+          <div className="w-full max-w-[150px] min-w-0 transition-opacity hover:opacity-95 sm:max-w-[190px] xl:max-w-[250px]">
             <Link href="/" onClick={closeMenu} className="block">
               {identityData?.logo ? (
                 identityData.logo.startsWith("data:") ? (
                   <img
                     src={identityData.logo}
                     alt={identityData.logoAlt || identityData.siteName || "British Hajj Travel Logo"}
-                    className="max-h-[60px] w-full object-contain"
+                    className="max-h-10 w-full object-contain object-left sm:max-h-12 xl:max-h-[60px]"
                   />
                 ) : (
                   <Image
@@ -111,7 +111,7 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
                     width={250}
                     height={60}
                     priority
-                    className="h-auto w-full"
+                    className="h-auto max-h-10 w-full object-contain object-left sm:max-h-12 xl:max-h-[60px]"
                     unoptimized
                   />
                 )
@@ -129,14 +129,14 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
             } xl:translate-x-0`}
           >
             <div className="flex items-center justify-between border-b border-gray-100 pb-4 xl:hidden">
-              <div className="w-full max-w-[200px] shrink-0 transition-opacity hover:opacity-95 sm:max-w-[250px]">
+              <div className="w-full max-w-[180px] min-w-0 transition-opacity hover:opacity-95 sm:max-w-[220px]">
             <Link href="/" onClick={closeMenu} className="block">
               {identityData?.logo ? (
                 identityData.logo.startsWith("data:") ? (
                   <img
                     src={identityData.logo}
                     alt={identityData.logoAlt || identityData.siteName || "British Hajj Travel Logo"}
-                    className="max-h-[60px] w-full object-contain"
+                    className="max-h-11 w-full object-contain object-left sm:max-h-[52px]"
                   />
                 ) : (
                   <Image
@@ -145,7 +145,7 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
                     width={250}
                     height={60}
                     priority
-                    className="h-auto w-full"
+                    className="h-auto max-h-11 w-full object-contain object-left sm:max-h-[52px]"
                     unoptimized
                   />
                 )
@@ -158,7 +158,7 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
                 type="button"
                 onClick={closeMenu}
                 aria-label="Close navigation menu"
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-[#ED1C24] hover:text-white"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-[#ED1C24] hover:text-white"
               >
                 <X size={18} aria-hidden="true" />
               </button>
@@ -275,30 +275,30 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
             </div> : null}
           </nav>
           
-            <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+            <div className="flex shrink-0 items-center gap-0 sm:gap-2 xl:gap-3">
             
             {whatsappUrl ? <a
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`${whatsappLabel}: ${whatsappText}`}
-              className="group flex h-10 w-10 items-center justify-center transition-colors duration-300 hover:bg-[#25D366]"
+              className="group flex h-11 w-9 shrink-0 items-center justify-center transition-colors duration-300 hover:bg-[#25D366] sm:w-11"
             >
               <Image
                 src="/img/whatsapp.svg"
                 alt=""
                 width={40}
                 height={40}
-                className="transition-opacity group-hover:opacity-80"
+                className="h-7 w-7 transition-opacity group-hover:opacity-80 sm:h-8 sm:w-8 xl:h-10 xl:w-10"
               />
             </a> : null}
-            {whatsappText ? <div className="hidden flex-col text-left sm:flex gap-1">
-              <span className="text-[9px] font-bold uppercase leading-tight tracking-wider text-gray-500 md:text-[10px]">
+            {whatsappText ? <div className="hidden flex-col gap-0.5 whitespace-nowrap text-left sm:flex xl:gap-1">
+              <span className="text-[9px] font-bold uppercase leading-tight tracking-wider text-gray-500 xl:text-[10px]">
                 {whatsappLabel}
               </span>
               <a
                 href={`tel:${whatsappText.replace(/[^\d+]/g, "")}`}
-                className="text-xs font-extrabold leading-tight tracking-tight text-[#25D366] hover:underline md:text-lg"
+                className="text-xs font-extrabold leading-tight tracking-tight text-[#25D366] hover:underline md:text-sm xl:text-lg"
               >
                 {whatsappText}
               </a>
@@ -306,7 +306,7 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
             
             <button
               type="button"
-              className="rounded-lg p-2 text-gray-700 transition hover:text-[#1E2B78] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E2B78]/30 xl:hidden"
+              className="flex h-11 w-9 shrink-0 items-center justify-center rounded-lg text-gray-700 transition hover:text-[#1E2B78] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E2B78]/30 sm:w-11 xl:hidden"
               aria-label={menuActive ? "Close navigation menu" : "Open navigation menu"}
               aria-controls="main-nav"
               aria-expanded={menuActive}
@@ -315,7 +315,7 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
                 setOpenDropdown(null);
               }}
             >
-              {menuActive ? <X size={23} aria-hidden="true" /> : <Menu size={23} aria-hidden="true" />}
+              {menuActive ? <X className="h-5 w-5 sm:h-[23px] sm:w-[23px]" aria-hidden="true" /> : <Menu className="h-5 w-5 sm:h-[23px] sm:w-[23px]" aria-hidden="true" />}
             </button>
 
             

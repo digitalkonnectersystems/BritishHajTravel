@@ -365,7 +365,7 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
         <div className="mx-auto w-full px-0">
           <div className="overflow-hidden bg-white shadow-[0_20px_65px_rgba(2,12,27,0.15)]">
             <div className={sidePanelCount === 2
-              ? "grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-[minmax(0,1.08fr)_minmax(0,3.35fr)_minmax(0,1fr)]"
+              ? "grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-[minmax(0,1fr)_minmax(0,3.35fr)_minmax(0,1fr)]"
               : sidePanelCount === 1
                 ? "grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-[minmax(0,3.35fr)_minmax(0,1fr)]"
                 : "grid grid-cols-1"
@@ -405,9 +405,10 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                 <div className="relative z-10 grid h-full grid-cols-1 items-center gap-8 px-5 py-8 sm:px-8 md:px-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,400px)] lg:gap-8 lg:px-8 2xl:grid-cols-[minmax(0,1fr)_minmax(0,440px)] 2xl:gap-10 2xl:px-10 2xl:py-12">
                   <div className="flex min-w-0 flex-col justify-center">
                     <div className="hero">
-                      {heroData.heroEyebrow ? <div className="mb-5 text-[13px] font-extrabold uppercase tracking-[0.18em] text-ink">{heroData.heroEyebrow}</div> : null}
-                      {heroData.title ? <h1 className="font-serif text-[clamp(1.25rem,2.2vw,2.125rem)] leading-[0.98]" dangerouslySetInnerHTML={{ __html: heroData.title }} /> : null}
-                      {heroData.description ? <p className="mt-5 max-w-[36rem] text-[16px] leading-7 text-[#294970] sm:mt-6 lg:text-[17px] lg:leading-8">{heroData.description}</p> : null}
+                      <div className="mb-5 text-[13px] font-extrabold uppercase tracking-[0.18em] text-ink">{heroData.heroEyebrow}</div>
+                      <h1 className="font-serif text-[1.25rem] md:text-[2.875rem]
+- leading-[0.98]" dangerouslySetInnerHTML={{ __html: heroData.title }} />
+                      <p className="mt-5  text-[16px] leading-7 text-[#294970] sm:mt-6 lg:text-[17px] lg:leading-8">{heroData.description}</p>
 
                       {heroData.primaryBtnLink && heroData.primaryBtnLabel || heroData.secondaryBtnLink && heroData.secondaryBtnLabel ? (
                         <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:gap-4">

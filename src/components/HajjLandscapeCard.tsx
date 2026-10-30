@@ -44,7 +44,7 @@ export default function HajjLandscapeCard({
   onBook,
 }: HajjLandscapeCardProps) {
   return (
-    <article className="group flex h-full min-w-0 flex-col overflow-hidden rounded-[22px] border border-[#d1d1d1] border-t-4 border-t-red bg-white shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(0,0,0,0.12)]">
+    <article className="group flex h-full min-w-0 flex-col overflow-hidden rounded-[22px] border border-[#d1d1d1] border-t-4 border-t-red bg-white transition-transform duration-300 hover:-translate-y-0.5">
       <div className="relative h-48 shrink-0 overflow-hidden bg-[#071a45]">
         {heroImage ? (
           <img

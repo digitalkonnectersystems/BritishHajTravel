@@ -154,7 +154,7 @@ export default function HajjPackagesSection({
 
   const sectionClass = isHomepage
     ? "pb-12 md:pb-16 md:pt-16 bg-white"
-    : "pt-12 md:pb-16 bg-blue-lt";
+    : "pt-12 md:pb-16 bg-white";
   return (
     <section className={sectionClass}>
       <div className="max-w-[1400px] mx-auto px-5">

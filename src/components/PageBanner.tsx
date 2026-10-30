@@ -87,10 +87,11 @@ export default function PageBanner({
         ? 'h-[150px] sm:h-[200px] xl:h-[250px] flex items-center py-2 sm:py-3 xl:py-4'
         : 'text-center py-20 !px-5 h-[420px] max-h-[420px] flex flex-col items-center justify-center'}`}
     >
-      <div className={`w-full z-10 ${isInnerBanner ? 'max-w-[1400px] px-5 sm:px-10 lg:px-14' : 'mx-auto'}`}>
+      <div className={`w-full z-10 mx-auto ${isInnerBanner ? 'max-w-[1400px] px-5' : ''}`}>
+        <div className={isInnerBanner ? 'max-sm:w-3/4 md:w-3/5 mr-auto text-left' : 'w-full'}>
         {isInnerBanner && showHeroSupport && Boolean(resolvedEyebrow) && (
-          <div className="mb-7 inline-flex items-center gap-3 rounded-full bg-[#173b8e] px-5 py-3 text-sm font-bold uppercase tracking-wide text-white shadow-lg">
-            <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current" strokeWidth="2">
+          <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-[#173b8e] px-3 py-1.5 text-[10px] sm:text-xs font-bold uppercase tracking-wide text-white shadow-lg">
+            <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4 shrink-0 fill-none stroke-current" strokeWidth="2">
               <path d="M2.5 16.5 21 9l-6.5 5.5-3.5 7-2-6-6.5 1Z" />
               <path d="m9 15-4-3" />
             </svg>
@@ -109,11 +110,11 @@ export default function PageBanner({
           </p>
         )}
         {isInnerBanner && showHeroSupport && saudiFeatures.length > 0 && (
-          <div className="mt-9 flex max-w-[760px] items-center gap-7 text-left max-sm:grid max-sm:grid-cols-1 max-sm:gap-4">
+          <div className="mt-3 flex max-w-[760px] items-center gap-2 text-left sm:gap-5">
             {saudiFeatures.map(({ icon = 'document', first = '', second = '' }, index: number) => (
               <React.Fragment key={`${icon}-${index}`}>
                 {index > 0 && <span className="h-8 w-px bg-white/25 max-sm:hidden" />}
-                <div className="flex min-w-0 max-sm:flex-col max-sm:items-start items-center gap-1 sm:gap-2">
+                <div className="flex min-w-0 items-center gap-1 sm:gap-2">
                   <span className="flex h-6 w-6 sm:h-8 sm:w-8 xl:h-9 xl:w-9 shrink-0 items-center justify-center rounded-full bg-[#12357f] text-white shadow-inner">
                     <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4 sm:h-5 sm:w-5 fill-none stroke-current" strokeWidth="1.8">
                       {icon === 'document' && <><path d="M6 3h9l3 3v15H6z" /><path d="M9 10h6M9 14h6M9 18h4" /></>}
@@ -127,6 +128,7 @@ export default function PageBanner({
             ))}
           </div>
         )}
+        </div>
       </div>
     </section>
   );
