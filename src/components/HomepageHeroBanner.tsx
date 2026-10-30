@@ -180,12 +180,12 @@ function HeroSidePanel({
         "relative flex h-full min-h-[360px] min-w-0 flex-col overflow-hidden px-5 py-6 pb-[44px] text-white sm:px-6 sm:pb-[60px]",
         className,
         isRed
-          ? "bg-gradient-to-b from-[#A40918] via-[#890514] to-[#69020F]"
-          : "bg-gradient-to-b from-[#101D83] via-[#0C1972] to-[#091460]",
+          ? "bg-red"
+          : "bg-[#0B1672]",
       ].join(" ")}
     >
       <div className="relative z-10 flex h-full min-w-0 flex-col">
-        <div className="mb-3 text-[11px] font-extrabold uppercase tracking-[0.2em] text-white/85 sm:tracking-[0.3em] 2xl:tracking-[0.42em]">{eyebrow}</div>
+        <div className="mb-3 text-[11px] font-extrabold uppercase tracking-[0.2em] text-white sm:tracking-[0.3em] 2xl:tracking-[0.42em]">{eyebrow}</div>
 
         <h3 className="font-serif text-[clamp(1.25rem,2.2vw,2.125rem)] leading-[0.98] lg:whitespace-nowrap 2xl:whitespace-normal">
           {title}
@@ -197,7 +197,7 @@ function HeroSidePanel({
         {image ? (
           <div className="mt-5 rounded-2xl border border-white/10 bg-white/5 p-2">
             <div className="relative h-40 overflow-hidden rounded-xl bg-white/5 sm:h-44 2xl:h-[180px]">
-              <img src={image} alt="" className="h-full w-full object-cover" loading="lazy" />
+              <img src={image} alt="" className={`h-full w-full object-cover ${image === "/images_BHT/hotels/makkah-clock-tower-low-angle.png" ? "object-top" : ""}`} loading="lazy" />
             </div>
           </div>
         ) : (
@@ -250,7 +250,7 @@ function HeroSidePanel({
   );
 }
 
-export default function HomepageHeroBanner({ data, pageData, publishedVisaCards = [], publishedSitePaths = [] }: { data: any; pageData?: any; publishedVisaCards?: PublicVisaPage[]; publishedSitePaths?: string[] }) {
+export default function HomepageHeroBanner({ data, pageData, backgroundImage, publishedVisaCards = [], publishedSitePaths = [] }: { data: any; pageData?: any; backgroundImage?: string; publishedVisaCards?: PublicVisaPage[]; publishedSitePaths?: string[] }) {
   const heroData = {
     heroEyebrow: data?.heroEyebrow || "EST IN UK 2001 · LICENSED PILGRIMAGE OPERATOR",
     title: pageData?.bannerTitle || data?.title || "Trusted UK Hajj & Umrah<br/>Travel Agency in the UK",
@@ -262,8 +262,8 @@ export default function HomepageHeroBanner({ data, pageData, publishedVisaCards 
     primaryBtnLink: data?.primaryBtnLink || "/hajj-packages",
     secondaryBtnLabel: data?.secondaryBtnLabel || "Umrah Enquiry 2026-27",
     secondaryBtnLink: data?.secondaryBtnLink || "/umrah-packages",
-    bgImage: pageData?.bannerBgImage || data?.bannerBgImage || data?.bgImage || "",
-    position: pageData?.bannerPosition || data?.bannerPosition || "center center",
+    bgImage: String(backgroundImage || pageData?.bannerBgImage || data?.bannerBgImage || data?.bgImage || "").split(String.fromCharCode(92)).join("/"),
+    position: "left center",
     size: pageData?.bannerSize || data?.bannerSize || "cover",
     visaTitle: data?.visaTitle || "Umrah Visa",
     visaSubtitle: data?.visaSubtitle || "Fast & Hassle-Free Visa Processing",
@@ -277,9 +277,11 @@ export default function HomepageHeroBanner({ data, pageData, publishedVisaCards 
     hotelTitle: data?.hotelTitle ?? "Hotels in Makkah &",
     hotelHighlight: data?.hotelHighlight ?? "Madinah",
     hotelDescription: data?.hotelDescription ?? "Rooms close to the Haram, at prices booked direct.",
-    hotelImage: data?.hotelImage ?? "/images_BHT/hotels/makkah-clock-tower-sunset.jpg",
+    hotelImage: data?.hotelImage == null || /^\/images_BHT\/hotels\/makkah-clock-tower-sunset\.(jpg|png)$/.test(data.hotelImage) || data.hotelImage === "/images_BHT/uploads/A-beautiful-view-of-Makkah-Clock-Royal-Hotel-from-Al-Haram-Mosque-1.jpg"
+      ? "/images_BHT/hotels/makkah-clock-tower-low-angle.png"
+      : data.hotelImage,
     hotelVisible: data?.hotelVisible !== false,
-    hotelCaption: data?.hotelCaption ?? "Makkah hotel / Clock Tower skyline (no people)",
+    hotelCaption: data?.hotelCaption ?? "Makkah Royal Clock Tower",
     hotelTags:
       Array.isArray(data?.hotelTags) ? data.hotelTags.filter((tag: unknown): tag is string => typeof tag === "string" && tag.trim().length > 0) : ["Haram view", "3★ - 5★", "Family rooms"],
     hotelButtonLabel: data?.hotelButtonLabel ?? "Book a Hotel",
@@ -404,20 +406,19 @@ export default function HomepageHeroBanner({ data, pageData, publishedVisaCards 
                       fill
                       priority
                       sizes="(max-width: 1535px) 100vw, 63vw"
-                      className="object-cover opacity-[0.16] mix-blend-screen"
-                      style={{ objectPosition: heroData.position || "center center", objectFit: (heroData.size as any) || "cover" }}
+                      className="object-cover"
+                      style={{ objectPosition: heroData.position, objectFit: (heroData.size as any) || "cover" }}
                     />
-                    <div className="absolute " />
-                    {/* <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(15,23,96,0.94)_0%,rgba(31,32,93,0.88)_58%,rgba(35,25,71,0.92)_100%)]" /> */}
+                    <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(174,205,255,1)_0%,rgba(243,243,243,0.1)_58%,rgba(131,161,227,0.65)_100%)]" />
                   </>
                 ) : null}
 
                 <div className="relative z-10 grid h-full grid-cols-1 items-center gap-8 px-5 py-8 sm:px-8 md:px-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,400px)] lg:gap-8 lg:px-8 2xl:grid-cols-[minmax(0,1fr)_minmax(0,440px)] 2xl:gap-10 2xl:px-10 2xl:py-12">
                   <div className="flex min-w-0 flex-col justify-center">
                     <div className="hero">
-                      <div className="mb-5 text-[13px] font-extrabold uppercase tracking-[0.18em] text-white/85">{heroData.heroEyebrow}</div>
+                      <div className="mb-5 text-[13px] font-extrabold uppercase tracking-[0.18em] text-ink">{heroData.heroEyebrow}</div>
                       <h1 className="font-serif text-[clamp(1.25rem,2.2vw,2.125rem)] leading-[0.98]" dangerouslySetInnerHTML={{ __html: heroData.title }} />
-                      <p className="mt-5 max-w-[36rem] text-[16px] leading-7 text-white/88 sm:mt-6 lg:text-[17px] lg:leading-8">{heroData.description}</p>
+                      <p className="mt-5 max-w-[36rem] text-[16px] leading-7 text-[#294970] sm:mt-6 lg:text-[17px] lg:leading-8">{heroData.description}</p>
 
                       <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:gap-4">
                         <Link
@@ -438,7 +439,7 @@ export default function HomepageHeroBanner({ data, pageData, publishedVisaCards 
 
                   <div className="mx-auto w-full max-w-[400px] min-w-0 rounded-2xl bg-[#0B1672] p-5 shadow-[0_22px_40px_rgba(2,12,27,0.25)] sm:rounded-[28px] sm:p-6 md:p-7 2xl:max-w-[440px]">
                     <h2 className="mb-6 text-center font-serif text-[26px] leading-none text-white md:text-[30px]">{heroData.quoteTitle}</h2>
-                    {quoteStatus ? <p className="mb-4 text-center text-sm font-semibold text-white/85">{quoteStatus}</p> : null}
+                    {quoteStatus ? <p className="mb-4 text-center text-sm font-semibold text-ink">{quoteStatus}</p> : null}
 
                     <form noValidate className="flex h-full flex-col gap-5" onSubmit={handleQuoteSubmit}>
                       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

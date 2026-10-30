@@ -39,6 +39,14 @@ import { useEffect, useRef, useState } from "react";
 export default function PageSectionsRenderer({ sections, pageData, initialPackageData, initialDestinationData, initialBlogData, initialGuideData, publishedVisaCards, publishedSitePaths }: { sections: any[], pageData?: any, initialPackageData?: any, initialDestinationData?: any[], initialBlogData?: any[], initialGuideData?: any[], publishedVisaCards?: { slug: string; title: string }[], publishedSitePaths?: string[] }) {
   if (!sections || !Array.isArray(sections)) return null;
 
+  const whoWeAreSection = sections.find((section: any) =>
+    section && ["Who We Are", "Image+Text", "Intro"].includes(section.type)
+  );
+  const heroBackgroundImage = typeof whoWeAreSection?.data?.backgroundImage === "string"
+    && whoWeAreSection.data.backgroundImage.trim()
+    ? whoWeAreSection.data.backgroundImage.trim()
+    : "/images_BHT/sections/who-we-are-bgwebp-1789556234030.png";
+
   return (
     <div className="w-full">
       {sections.map((sec: any, idx: number) => {
@@ -652,7 +660,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         }
 
         if (sec.type === "Homepage Hero Banner" || sec.type === "Hero Slider") {
-          return <HomepageHeroBanner key={idx} data={sec.data} pageData={pageData} publishedVisaCards={publishedVisaCards} publishedSitePaths={publishedSitePaths} />;
+          return <HomepageHeroBanner key={idx} data={sec.data} backgroundImage={heroBackgroundImage} pageData={pageData} publishedVisaCards={publishedVisaCards} publishedSitePaths={publishedSitePaths} />;
         }
 
         if (sec.type === "Who We Are" || sec.type === "Image+Text" || sec.type === "Intro") {

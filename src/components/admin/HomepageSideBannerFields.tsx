@@ -30,7 +30,7 @@ export const DEFAULT_HOMEPAGE_SIDE_BANNERS: HomepageSideBanners = {
   hotelTitle: "Hotels in Makkah &",
   hotelHighlight: "Madinah",
   hotelDescription: "Rooms close to the Haram, at prices booked direct.",
-  hotelImage: "/images_BHT/hotels/makkah-clock-tower-sunset.jpg",
+  hotelImage: "/images_BHT/hotels/makkah-clock-tower-low-angle.png",
   hotelVisible: true,
   hotelTags: ["Haram view", "3\u2605 - 5\u2605", "Family rooms"],
   hotelButtonLabel: "Book a Hotel",
@@ -65,6 +65,9 @@ export function readHomepageSideBanners(data: Record<string, unknown> | undefine
 
   if (Array.isArray(data.hotelTags) && data.hotelTags.every((tag) => typeof tag === "string")) {
     result.hotelTags = data.hotelTags.slice(0, 3);
+  }
+  if (/^\/images_BHT\/hotels\/makkah-clock-tower-sunset\.(jpg|png)$/.test(result.hotelImage) || result.hotelImage === "/images_BHT/uploads/A-beautiful-view-of-Makkah-Clock-Royal-Hotel-from-Al-Haram-Mosque-1.jpg") {
+    result.hotelImage = defaults.hotelImage;
   }
   return result;
 }
