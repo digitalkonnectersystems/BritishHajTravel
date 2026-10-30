@@ -92,10 +92,10 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
   return (
     <>
       <header className="sticky top-0 z-[1000] w-full border-b border-gray-100 bg-white shadow-[0_2px_24px_-12px_rgba(19,39,35,0.18)]">
-        <div className="mx-auto flex h-[50px] w-full max-w-[1400px] items-center justify-between gap-2 px-4 sm:h-[72px] sm:px-5 xl:h-20 xl:gap-4">
+        <div className="mx-auto flex h-[60px] w-full max-w-[1400px] items-center justify-between gap-2 px-4 sm:h-[72px] sm:px-5 xl:h-20 xl:gap-4">
           
 
-          <div className="w-full max-w-[150px] min-w-0 transition-opacity hover:opacity-95 sm:max-w-[190px] xl:max-w-[250px]">
+          <div className="w-full max-w-[175px] min-w-0 transition-opacity hover:opacity-95 sm:max-w-[220px] xl:max-w-[250px]">
             <Link href="/" onClick={closeMenu} className="block">
               {identityData?.logo ? (
                 identityData.logo.startsWith("data:") ? (
