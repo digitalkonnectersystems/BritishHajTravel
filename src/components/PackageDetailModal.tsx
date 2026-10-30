@@ -770,7 +770,7 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
                 </button>
 
                 <p className="text-[10px] text-slate-400 text-center leading-normal pt-1">
-                  *Hajj & Umrah Packages are subject to seat availability. Visa processing is included. Comprehensive medical insurance and Ahram Kit provided upon arrival.
+                  *Hajj & Umrah Packages are subject to seat availability. Visa processing is included.
                 </p>
               </form>
             </div>
