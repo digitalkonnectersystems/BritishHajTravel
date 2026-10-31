@@ -501,7 +501,7 @@ export default function PackageDetailPageClient({
             {overviewArray.length > 0 && (
               <div>
                 <h3 className="text-xl sm:text-2xl font-bold font-serif text-primary mb-5">
-                  Package Overview
+                  Package Inluded
                 </h3>
                 <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-md space-y-6">
                   {overviewArray.map((block: any, bIdx: number) => {
