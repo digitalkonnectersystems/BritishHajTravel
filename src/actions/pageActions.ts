@@ -219,6 +219,14 @@ async function fetchPageBySlugFromDb(slug: string) {
 
 export async function getPageBySlug(slug: string) {
   try {
+    // The Flights CMS page was renamed from /cheap-flights-air-tickets to
+    // /flights. Avoid retaining a cached null result after a direct SQL import
+    // or a slug change performed outside of the CMS editor.
+    // This is deliberately limited to /flights; other pages stay cached.
+    if (slug === '/flights') {
+      return await fetchPageBySlugFromDb(slug);
+    }
+
     const getCachedPage = unstable_cache(
       () => fetchPageBySlugFromDb(slug),
       ['page-by-slug', slug],
@@ -226,9 +234,11 @@ export async function getPageBySlug(slug: string) {
     );
     return await getCachedPage();
   } catch (err) {
+    // A DB outage is not a missing CMS page. Propagate the error so a
+    // transient connection failure cannot produce an incorrect HTTP 404.
     console.error('getPageBySlug DB query failed:', err);
+    throw err;
   }
-  return null;
 }
 
 export async function savePageAction(formData: FormData) {

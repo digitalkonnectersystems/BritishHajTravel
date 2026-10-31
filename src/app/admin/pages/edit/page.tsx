@@ -1026,7 +1026,7 @@ function PageBuilderContent() {
 
                 ]);
 
-              } else if ((p.slug === '/airlines' || p.slug === '/flights' || p.slug === '/cheap-flights-air-tickets') || pageId === 6) {
+              } else if ((p.slug === '/airlines' || p.slug === '/flights') || pageId === 6) {
 
                 setSections([
 

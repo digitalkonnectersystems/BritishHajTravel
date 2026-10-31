@@ -21,7 +21,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug = [] } = await params;
   const slugPath = `/${slug.join('/')}`;
-  if (slugPath === '/about') return {};
+  if (slugPath === '/about' || slugPath === '/cheap-flights-air-tickets') return {};
 
   const page = await getPageBySlug(slugPath).catch(() => null);
   if (page && page.status !== 'draft') {
@@ -46,7 +46,7 @@ export default async function DynamicPage({
 }) {
   const { slug = [] } = await params;
   const slugPath = `/${slug.join("/")}`;
-  if (slugPath === "/about") notFound();
+  if (slugPath === "/about" || slugPath === "/cheap-flights-air-tickets") notFound();
   const showRelatedUmrahPackages = [
     "/ramadan-umrah-packages",
     "/october-umrah-packages",

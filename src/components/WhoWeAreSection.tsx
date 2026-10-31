@@ -270,8 +270,9 @@ export default function WhoWeAreSection({ data }: { data: any }) {
               className="
                 text-[#08245c]
                 font-serif
-                text-[32px]
-                sm:text-[38px]
+                text-[28px]
+                sm:text-[32px]
+                md:text-[36px]
                 lg:text-[44px]
                 xl:text-[48px]
                 leading-[1.02]
@@ -297,7 +298,7 @@ export default function WhoWeAreSection({ data }: { data: any }) {
             <div
               className="
                 grid grid-cols-2
-                sm:grid-cols-4
+                lg:grid-cols-4
                 gap-3
                 mt-7
               "

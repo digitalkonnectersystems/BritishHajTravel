@@ -2,9 +2,12 @@ import type { Metadata } from 'next';
 import DynamicPage, { generateMetadata as generateCmsMetadata } from '@/app/[...slug]/page';
 import { toCanonicalUrl } from '@/lib/seoMetadata';
 
-// Keep the existing CMS database record and its content. Only the public URL
-// changes. This is a direct server render, not a redirect or client navigation.
-const cmsParams = Promise.resolve({ slug: ['cheap-flights-air-tickets'] });
+// /flights is CMS-driven and must not serve a stale not-found response.
+export const dynamic = 'force-dynamic';
+
+// Page ID 6 in the current CMS database is published at /flights.
+// Render only the published CMS record whose slug is /flights.
+const cmsParams = Promise.resolve({ slug: ['flights'] });
 
 export async function generateMetadata(): Promise<Metadata> {
   const metadata = await generateCmsMetadata({ params: cmsParams });

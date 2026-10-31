@@ -45,7 +45,7 @@ export default function DestinationsPageSection({
         </div>
 
         {loading && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 min-[1025px]:grid-cols-3 gap-4 sm:gap-6 xl:gap-8">
             {[1, 2, 3].map((item) => (
               <div key={item} className="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 animate-pulse">
                 <div className="h-[230px] bg-gray-200" />
@@ -65,7 +65,7 @@ export default function DestinationsPageSection({
         )}
 
         {!loading && packages.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 min-[1025px]:grid-cols-3 gap-4 sm:gap-6 xl:gap-8">
             {packages.map((pkg, index) => {
               let cardData = pkg.cardData || {};
               if (typeof cardData === "string") {

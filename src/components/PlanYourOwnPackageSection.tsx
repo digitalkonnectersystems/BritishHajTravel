@@ -26,11 +26,7 @@ export default function PlanYourOwnPackageSection({ data = {}, sourcePage }: { d
       const response = await submitPlanYourOwnPackageSectionAction({ ...form, days: Number(form.days), sourcePage });
       if (!response.success) setError(response.error || 'Could not submit your request.');
       else {
-        setSuccess(
-          'emailWarning' in response && response.emailWarning
-            ? 'Your package request was saved. Email delivery may be delayed.'
-            : 'Your package request has been received.'
-        );
+        setSuccess('emailWarning' in response && response.emailWarning ? 'Your package request was saved. Email delivery may be delayed.' : 'Your package request has been received.');
         setForm({ fullName: '', email: '', phone: '+44', days: '' });
       }
     } catch {
@@ -42,11 +38,11 @@ export default function PlanYourOwnPackageSection({ data = {}, sourcePage }: { d
 
   const inputClass = 'mt-1.5 block w-full min-w-0 h-[48px] border border-[#ededed] bg-[#f5f5f5] px-4 text-[15px] text-slate-900 outline-none focus:border-[#e30000] focus:ring-1 focus:ring-[#e30000]';
   const labelClass = 'block min-w-0 text-[15px] font-normal text-[#343434]';
-  return <section aria-labelledby={`${instanceId}-title`} className="w-full bg-white px-4 py-7 md:py-10">
+  return <section aria-labelledby={`${instanceId}-title`} className="w-full bg-white px-3 py-6 sm:px-4 sm:py-7 min-[1025px]:py-10">
     <div className="mx-auto w-full" style={{ maxWidth: /^\d{3,4}px$/.test(data.maxWidth || '') ? data.maxWidth : '1440px' }}>
       <h2 id={`${instanceId}-title`} className="mb-5 text-[28px] md:text-[38px] font-normal leading-tight text-[#333]">{title}</h2>
-      <div className="border border-[#c7c7c7] bg-white p-4 md:p-5 shadow-[0_1px_5px_rgba(0,0,0,0.12)]">
-        <form onSubmit={submit} className="grid grid-cols-1 gap-x-8 gap-y-4 md:grid-cols-3" autoComplete="on">
+      <div className="border border-[#c7c7c7] bg-white p-3 sm:p-4 min-[1025px]:p-5 shadow-[0_1px_5px_rgba(0,0,0,0.12)]">
+        <form onSubmit={submit} className="grid grid-cols-1 gap-x-8 gap-y-4 md:grid-cols-2 min-[1025px]:grid-cols-3" autoComplete="on">
           <label className={labelClass} htmlFor={`${instanceId}-name`}>Your Name <span className="text-red-600">*</span>
             <input id={`${instanceId}-name`} name="fullName" type="text" autoComplete="name" required maxLength={255} className={inputClass} value={form.fullName} onChange={e => setForm(p => ({ ...p, fullName: e.target.value }))} />
           </label>
@@ -66,8 +62,8 @@ export default function PlanYourOwnPackageSection({ data = {}, sourcePage }: { d
             <button type="submit" disabled={sending} className="h-[50px] w-full bg-[#ff0808] px-5 text-[17px] font-semibold text-white transition-colors hover:bg-[#cc0000] disabled:opacity-60">{sending ? 'SENDING...' : buttonText}</button>
           </div>
           <div aria-hidden="true" className="hidden md:block" />
-          {error && <p role="alert" className="md:col-span-3 text-sm text-red-700">{error}</p>}
-          {success && <p role="status" className="md:col-span-3 text-sm text-green-800">{success}</p>}
+          {error && <p role="alert" className="md:col-span-2 min-[1025px]:col-span-3 text-sm text-red-700">{error}</p>}
+          {success && <p role="status" className="md:col-span-2 min-[1025px]:col-span-3 text-sm text-green-800">{success}</p>}
         </form>
       </div>
     </div>

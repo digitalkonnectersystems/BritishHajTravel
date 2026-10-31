@@ -230,7 +230,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
                   <p className="text-sm text-slate-500 max-w-xl mx-auto">{subtitle}</p>
                 )}
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
                 {services.map((svc: any, i: number) => (
                   <div
                     key={i}

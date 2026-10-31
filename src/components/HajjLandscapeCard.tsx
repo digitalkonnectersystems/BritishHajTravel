@@ -47,8 +47,8 @@ export default function HajjLandscapeCard({
   const currency = useCurrency();
   const displayPrice = price && /^(?:CAD|GBP|USD|EUR|SAR|PKR|£|\$|€)\s*/i.test(price) ? `${currency.symbol} ${price.replace(/^(?:CAD|GBP|USD|EUR|SAR|PKR|£|\$|€)\s*/i, "")}` : price && /^\d[\d,.]*$/.test(price) ? `${currency.symbol} ${price}` : price;
   return (
-    <article className="group flex h-full min-w-0 flex-col overflow-hidden rounded-[22px] border border-[#d1d1d1] border-t-4 border-t-red bg-white transition-transform duration-300 hover:-translate-y-0.5">
-      <div className="relative h-48 shrink-0 overflow-hidden bg-[#071a45]">
+    <article className="group flex h-full min-w-0 flex-col overflow-hidden rounded-[22px] border border-[#d1d1d1] border-t-4 border-t-red bg-white shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(0,0,0,0.12)]">
+      <div className="relative h-44 shrink-0 overflow-hidden bg-[#071a45] sm:h-48">
         {heroImage ? (
           <img
             src={heroImage}

@@ -8,8 +8,8 @@ import SafeRichText from "@/components/SafeRichText";
 
 function SavedStats({ items }: { items: any[] }) {
   if (!items?.length) return null;
-  return <div className="max-w-7xl mx-auto px-4 relative z-20 mb-8">
-    <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-slate-100 grid grid-cols-2 md:grid-cols-4 gap-6 text-center divide-x-0 md:divide-x divide-slate-100">
+  return <div className="max-w-7xl mx-auto px-4 -mt-12 relative z-20 mb-8">
+    <div className="bg-white rounded-2xl p-6 shadow-xl border border-slate-100 grid grid-cols-2 lg:grid-cols-4 gap-6 text-center divide-x-0 md:divide-x divide-slate-100">
       {items.filter(item => item?.label && item?.value !== undefined && item?.value !== '').map((item: any, i: number) => (
         <div key={i} className="flex flex-col items-center justify-center p-2">
           <h3 className="text-2xl md:text-3xl font-bold text-primary font-serif m-0">{String(item.value)}</h3>
@@ -147,7 +147,7 @@ export default function AboutPageClient({ initialPageData, sectionContext }: { i
           if (!badges.length) return null;
           return (
             <div key={idx} className="max-w-6xl mx-auto px-4 my-8">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {badges.map((b: any, bI: number) => (
                   <div key={bI} className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center gap-3">
                     <div className="w-12 h-12 rounded-full bg-emerald-50/80 flex items-center justify-center text-primary text-xl">
@@ -173,7 +173,7 @@ export default function AboutPageClient({ initialPageData, sectionContext }: { i
           if (!defaultPackages.length) return null;
           return (
             <section key={idx} className="py-10 max-w-7xl mx-auto px-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 min-[1025px]:grid-cols-3 gap-4 sm:gap-6">
                 {defaultPackages.map((pkg: any) => (
                   <article key={pkg.id} className="bg-white rounded-3xl overflow-hidden shadow-lg border border-slate-100 flex flex-col group">
                     <div className="relative h-56 overflow-hidden">

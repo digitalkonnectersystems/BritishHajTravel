@@ -58,7 +58,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
     : "";
 
   return (
-    <div className="w-full">
+    <div className="bht-public-sections w-full">
       {sections.map((sec: any, idx: number) => {
         if (!sec || !sec.type) return null;
         if (sec.hidden === true || sec.visible === false) return null;
@@ -186,7 +186,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         }
 
         if (sec.type === "Available Flights Grid" || sec.type === "Flights Cards") {
-          return <AvailableFlightsSection key={idx} data={sec.data || {}} bookingTarget={pageData?.slug === "/cheap-flights-air-tickets" || pageData?.slug === "cheap-flights-air-tickets" ? "/contact" : undefined} />;
+          return <AvailableFlightsSection key={idx} data={sec.data || {}} />;
         }
         if (sec.type === "Available Seats") {
           return <AvailableSeatsSection key={idx} data={sec.data || {}} />;

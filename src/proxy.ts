@@ -3,14 +3,14 @@ import type { NextRequest } from 'next/server';
 
 /**
  * The public URL for flight tickets is /flights.
- * Redirect legacy paths TO /flights (never redirect /flights away).
+ * Only the current public Flights route is /flights; /airlines remains an alias.
  * Admin session verification is performed by the protected server-side code.
  */
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const normalizedPath = pathname.replace(/\/+$/, '') || '/';
 
-  if (normalizedPath === '/airlines' || normalizedPath === '/cheap-flights-air-tickets') {
+  if (normalizedPath === '/airlines') {
     const destination = request.nextUrl.clone();
     destination.pathname = '/flights';
     return NextResponse.redirect(destination, 308);
@@ -28,5 +28,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/airlines/:path*', '/cheap-flights-air-tickets/:path*'],
+  matcher: ['/admin/:path*', '/airlines/:path*'],
 };
