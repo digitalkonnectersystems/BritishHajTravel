@@ -17,6 +17,8 @@ import { getPageById, getGuidesList, savePageAction, type GuideCategory } from '
 import { getVisaProcessingById, saveVisaProcessingAction } from '@/actions/visaProcessingActions';
 
 import { getAllPackages } from '@/actions/packageActions';
+import { getHotelAdminData } from '@/actions/hotelActions';
+import { hotelCategoryMatchesSection } from '@/lib/hotelSectionSelection';
 import { getDestinations } from '@/actions/destinationActions';
 
 import { getPackageCategories } from '@/actions/packageCategoryActions';
@@ -267,6 +269,15 @@ const SECTION_CATALOG: SectionCategory[] = [
 
     ],
 
+  },
+
+  {
+    category: 'Hotel Directory',
+    icon: '🏨',
+    items: [
+      { type: 'Makkah Hotels Directory', description: 'Select a published Makkah category, then choose and reorder the hotels displayed on this page.', pages: ['Hotels', 'Any Page'] },
+      { type: 'Madinah Hotels Directory', description: 'Select a published Madinah category, then choose and reorder the hotels displayed on this page.', pages: ['Hotels', 'Any Page'] },
+    ],
   },
 
   {
@@ -614,6 +625,17 @@ function PageBuilderContent() {
   }, [sections, guideCategory]);
 
 
+
+  const [hotelCategories, setHotelCategories] = useState<any[]>([]);
+  const [directoryHotels, setDirectoryHotels] = useState<any[]>([]);
+  const [hotelPickerSelection, setHotelPickerSelection] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    getHotelAdminData().then(({ categories, hotels }) => {
+      setHotelCategories(categories);
+      setDirectoryHotels(hotels);
+    }).catch((error) => console.error('Failed to load hotel directory for page sections:', error));
+  }, []);
 
   const [allPackages, setAllPackages] = useState<any[]>([]);
   const [soldOutDestinations, setSoldOutDestinations] = useState<any[]>([]);
@@ -1344,7 +1366,13 @@ function PageBuilderContent() {
 
 
 
-    if (['Package Detail Blocks', 'Package Flight Details', 'Package Hotel Details', 'Package Occupancy Prices', 'Package Inclusions', 'Package Detail Gallery'].includes(type)) {
+    if (type === 'Makkah Hotels Directory' || type === 'Madinah Hotels Directory') {
+      defaultData = {
+        title: type === 'Makkah Hotels Directory' ? 'Hotels in Makkah' : 'Hotels in Madina',
+        categoryId: 0,
+        hotelIds: [],
+      };
+    } else if (['Package Detail Blocks', 'Package Flight Details', 'Package Hotel Details', 'Package Occupancy Prices', 'Package Inclusions', 'Package Detail Gallery'].includes(type)) {
       const all = type === 'Package Detail Blocks';
       defaultData = { eyebrow: 'PACKAGE DETAILS', title: '', packageId: 0,
         showFlight: all || type === 'Package Flight Details',
@@ -4798,6 +4826,61 @@ function PageBuilderContent() {
 
                           <div className="pt-4 border-t border-slate-200 flex flex-col gap-3">
 
+                            {(sec.type === 'Makkah Hotels Directory' || sec.type === 'Madinah Hotels Directory') && (() => {
+                              const sectionCategoryId = Number(sec.data?.categoryId || 0);
+                              const selectedCategory = hotelCategories.find(category => Number(category.id) === sectionCategoryId);
+                              const chosenIds: number[] = Array.isArray(sec.data?.hotelIds) ? sec.data.hotelIds.map(Number).filter((id: number) => Number.isSafeInteger(id)) : [];
+                              const availableHotels = directoryHotels.filter(hotel => Number(hotel.categoryId) === sectionCategoryId && hotel.isPublished !== false);
+                              const selectedHotels = chosenIds.map(id => availableHotels.find(hotel => Number(hotel.id) === id)).filter(Boolean);
+                              const addHotel = (id: number) => {
+                                if (!id || chosenIds.includes(id)) return;
+                                updateSectionData(sec.id, 'hotelIds', [...chosenIds, id]);
+                                setHotelPickerSelection(prev => ({ ...prev, [sec.id]: '' }));
+                              };
+                              return <div className="rounded-xl border border-blue-200 bg-white p-4 space-y-3">
+                                <h4 className="text-sm font-bold text-primary">Hotel Directory Selector</h4>
+                                <p className="text-xs text-slate-600">First select a hotel category, then pick the exact hotels to display. Only selected published hotels appear on the website.</p>
+                                <label className="block text-xs font-bold text-slate-700">Section heading
+                                  <input className="mt-1 block w-full rounded border border-slate-300 px-3 py-2 text-xs" type="text" value={sec.data?.title || ''} onChange={e => updateSectionData(sec.id, 'title', e.target.value)} />
+                                </label>
+                                <label className="block text-xs font-bold text-slate-700">1. Hotel category
+                                  <select className="mt-1 block w-full rounded border border-slate-300 px-3 py-2 text-xs" value={sectionCategoryId || ''}
+                                    onChange={e => {
+                                      const id = Number(e.target.value) || 0;
+                                      // Reset selected hotels to prevent accidental mixing across categories.
+                                      setSections(prev => prev.map(item => item.id === sec.id ? { ...item, data: { ...(item.data || {}), categoryId: id, hotelIds: [] } } : item));
+                                      setHotelPickerSelection(prev => ({ ...prev, [sec.id]: '' }));
+                                    }}>
+                                    <option value="">Select a category</option>
+                                    {hotelCategories.filter(category => category.isPublished !== false && hotelCategoryMatchesSection(category, sec.type)).map(category => <option key={category.id} value={category.id}>{category.name} ({directoryHotels.filter(hotel => Number(hotel.categoryId) === Number(category.id) && hotel.isPublished !== false).length} hotels)</option>)}
+                                  </select>
+                                </label>
+                                {selectedCategory && <>
+                                  <label className="block text-xs font-bold text-slate-700">2. Select a hotel
+                                    <div className="mt-1 flex flex-wrap gap-2">
+                                      <select className="min-w-[180px] flex-1 rounded border border-slate-300 px-3 py-2 text-xs" value={hotelPickerSelection[sec.id] || ''} onChange={e => setHotelPickerSelection(prev => ({ ...prev, [sec.id]: e.target.value }))}>
+                                        <option value="">Choose a hotel</option>
+                                        {availableHotels.filter(hotel => !chosenIds.includes(Number(hotel.id))).map(hotel => <option key={hotel.id} value={hotel.id}>{hotel.name}</option>)}
+                                      </select>
+                                      <button type="button" className="rounded bg-primary px-3 py-2 text-xs font-semibold text-white" disabled={!hotelPickerSelection[sec.id]} onClick={() => addHotel(Number(hotelPickerSelection[sec.id]))}>+ Add hotel</button>
+                                    </div>
+                                  </label>
+                                  <button type="button" className="rounded border border-primary px-3 py-2 text-xs font-semibold text-primary" onClick={() => updateSectionData(sec.id, 'hotelIds', [...chosenIds, ...availableHotels.map(h => Number(h.id)).filter(id => !chosenIds.includes(id))])}>+ Add all hotels in {selectedCategory.name}</button>
+                                  <div className="space-y-2">
+                                    <p className="text-xs font-bold text-slate-700">Selected hotels ({selectedHotels.length})</p>
+                                    {selectedHotels.length === 0 && <p className="text-xs text-slate-500">No hotels selected. Add hotels above to display this section on the website.</p>}
+                                    {selectedHotels.map((hotel: any, index: number) => <div key={hotel.id} className="flex items-center gap-2 rounded border border-slate-200 bg-slate-50 p-2 text-xs">
+                                      {hotel.imageUrl && <img src={hotel.imageUrl} alt="" className="h-10 w-12 rounded object-cover" />}
+                                      <span className="min-w-0 flex-1 font-semibold text-slate-800">{hotel.name}</span>
+                                      <button type="button" title="Move up" disabled={index === 0} onClick={() => { const ids = [...chosenIds]; [ids[index-1], ids[index]] = [ids[index], ids[index-1]]; updateSectionData(sec.id, 'hotelIds', ids); }} className="rounded border px-2 py-1 disabled:opacity-30">↑</button>
+                                      <button type="button" title="Move down" disabled={index === selectedHotels.length - 1} onClick={() => { const ids = [...chosenIds]; [ids[index+1], ids[index]] = [ids[index], ids[index+1]]; updateSectionData(sec.id, 'hotelIds', ids); }} className="rounded border px-2 py-1 disabled:opacity-30">↓</button>
+                                      <button type="button" title="Remove hotel" onClick={() => updateSectionData(sec.id, 'hotelIds', chosenIds.filter(id => id !== Number(hotel.id)))} className="rounded border border-red-300 px-2 py-1 font-bold text-red-600">Remove</button>
+                                    </div>)}
+                                  </div>
+                                </>}
+                              </div>;
+                            })()}
+
                             {['Package Detail Blocks', 'Package Flight Details', 'Package Hotel Details', 'Package Occupancy Prices', 'Package Inclusions', 'Package Detail Gallery'].includes(sec.type) && (
                               <div className="rounded-xl border p-4 bg-white space-y-3">
                                 <h4 className="text-sm font-bold text-primary">Package Detail Sections</h4>
@@ -4818,15 +4901,9 @@ function PageBuilderContent() {
                                 {(sec.type === 'Package Hotel Details' || sec.type === 'Package Detail Blocks') && (() => {
                                   const selected = allPackages.find(p => Number(p.id) === Number(sec.data?.packageId));
                                   if (!selected) return <p className="text-xs text-slate-500">Select a package to edit hotel cards for this section.</p>;
-                                  const sectionHotelCards = sec.data?.hotelCards;
-                                  const overridden = Array.isArray(sectionHotelCards);
-                                  const currentHotels = overridden
-                                    ? sectionHotelCards
-                                    : getPackageHotelEntries(
-                                        selected.detailPageData,
-                                        selected.cardData,
-                                        selected
-                                      );
+                                  const hotelCards = sec.data?.hotelCards;
+                                  const overridden = Array.isArray(hotelCards);
+                                  const currentHotels = overridden ? hotelCards : getPackageHotelEntries(selected.detailPageData, selected.cardData, selected);
                                   return <div className="pt-3 border-t border-slate-200 space-y-3">
                                     <div className="flex flex-wrap gap-2 items-center justify-between">
                                       <div>

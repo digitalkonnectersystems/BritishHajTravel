@@ -3,6 +3,7 @@ import { notFound, redirect, permanentRedirect } from "next/navigation";
 import { lookupRedirect, recordNotFound } from "@/actions/redirectActions";
 import type { Metadata } from "next";
 import { getGuidesList, getPageBySlug } from "@/actions/pageActions";
+import { getHotelDirectory } from "@/actions/hotelActions";
 import { getPackagesByType, getSoldOutPackages } from "@/actions/packageActions";
 import PageBanner from "@/components/PageBanner";
 import PageSectionsRenderer from "@/components/PageSectionsRenderer";
@@ -118,6 +119,11 @@ export default async function DynamicPage({
     ? (await Promise.all(guideCategories.map((category) => getGuidesList(category, false)))).flat()
     : [];
 
+  const needsHotelDirectory = sections.some((sec: any) =>
+    ['Makkah Hotels Directory', 'Madinah Hotels Directory'].includes(sec?.type) && sec?.hidden !== true && sec?.visible !== false
+  );
+  const initialHotelDirectory = needsHotelDirectory ? await getHotelDirectory() : [];
+
   const [umrahPackages, hajjPackages, soldOutPackages] = await Promise.all([
     needsUmrah ? getPackagesByType("umrah") : Promise.resolve([]),
     needsHajj ? getPackagesByType("hajj") : Promise.resolve([]),
@@ -168,6 +174,7 @@ export default async function DynamicPage({
               soldOut: hasSoldOut ? soldOutPackages : undefined,
             }}
             initialGuideData={initialGuideData}
+            initialHotelDirectory={initialHotelDirectory}
           />
         </div>
       ) : page.richText ? (

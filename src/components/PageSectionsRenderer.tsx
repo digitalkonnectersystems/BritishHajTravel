@@ -39,8 +39,10 @@ import FlightAccommodationSection from '@/components/FlightAccommodationSection'
 import ProcessStepsSection from '@/components/ProcessStepsSection';
 import GuideVideoSection from '@/components/GuideVideoSection';
 import SafeRichText from '@/components/SafeRichText';
+import HotelDirectorySection from '@/components/HotelDirectorySection';
+import type { DirectoryCategory } from '@/lib/hotelSectionSelection';
 import { useEffect, useRef, useState } from "react";
-export default function PageSectionsRenderer({ sections, pageData, initialPackageData, initialDestinationData, initialBlogData, initialGuideData, publishedVisaCards, publishedSitePaths }: { sections: any[], pageData?: any, initialPackageData?: any, initialDestinationData?: any[], initialBlogData?: any[], initialGuideData?: any[], publishedVisaCards?: { slug: string; title: string }[], publishedSitePaths?: string[] }) {
+export default function PageSectionsRenderer({ sections, pageData, initialPackageData, initialDestinationData, initialBlogData, initialGuideData, publishedVisaCards, publishedSitePaths, initialHotelDirectory = [] }: { sections: any[], pageData?: any, initialPackageData?: any, initialDestinationData?: any[], initialBlogData?: any[], initialGuideData?: any[], publishedVisaCards?: { slug: string; title: string }[], publishedSitePaths?: string[], initialHotelDirectory?: DirectoryCategory[] }) {
   if (!sections || !Array.isArray(sections)) return null;
 
   const whoWeAreSection = sections.find((section: any) =>
@@ -58,6 +60,9 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         if (sec.hidden === true || sec.visible === false) return null;
         // Legacy custom-builder data is intentionally not rendered after removal.
         if (sec.type === 'Custom Layout Builder') return null;
+        if (sec.type === 'Makkah Hotels Directory' || sec.type === 'Madinah Hotels Directory') {
+          return <HotelDirectorySection key={sec.id || idx} type={sec.type} data={sec.data || {}} categories={initialHotelDirectory} />;
+        }
         if (sec.type === 'Umrah Enquiry 2026-27 Form') {
           const rawSlug = typeof pageData?.slug === 'string' ? pageData.slug : '/';
           const sourcePage = `/${rawSlug.split('/').filter(Boolean).join('/')}/`;
