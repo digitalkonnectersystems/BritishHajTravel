@@ -18,7 +18,6 @@ import {
   getFooterData,
   getSeoIntelligenceSettings,
 } from "@/actions/pageActions";
-import { getHotelDirectory } from "@/actions/hotelActions";
 import { getHiddenSitePagePaths } from "@/lib/sitePageVisibility";
 import { db } from "@/db";
 import { visaProcessing } from "@/db/schema";
@@ -26,6 +25,16 @@ import { isHiddenInternalLink, removeHiddenNavigation } from "@/lib/publicPageVi
 import "./globals.css";
 import { getCurrencyConfiguration } from "@/lib/currencyService";
 import { CurrencyProvider } from "@/components/CurrencyProvider";
+
+// The CMS navigation JSON is dynamically loaded; give it an explicit shape
+// before passing it to the generic visibility filter.
+type NavigationItem = {
+  id: string;
+  label: string;
+  url: string;
+  level: number;
+  children: NavigationItem[];
+};
 
 const marcellus = Marcellus({
   subsets: ["latin"],
@@ -86,14 +95,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [identity, loginAuth, navItems, galleryNavItems, footerData, seoSettings, hotelDirectory, currencySettings] = await Promise.all([
+  const [identity, loginAuth, navItems, galleryNavItems, footerData, seoSettings, currencySettings] = await Promise.all([
     getSiteIdentity(),
     getLoginAuthSettings(),
     getNavItems(),
     getGalleryNavItems(),
     getFooterData(),
     getSeoIntelligenceSettings(),
-    getHotelDirectory().catch(() => []),
     getCurrencyConfiguration(),
   ]);
   const [unpublishedSitePaths, visaRecords] = await Promise.all([
@@ -105,19 +113,11 @@ export default async function RootLayout({
   const publishedVisaPaths = visaRecords.filter(page => page.status === 'published').map(page => page.slug);
   const hiddenPaths = [...unpublishedSitePaths, ...unpublishedVisaPaths];
   // Keep configured links, but never link visitors to unpublished or missing visa CMS pages.
-  const navWithDestinations = removeHiddenNavigation(navItems, hiddenPaths, publishedVisaPaths);
-  const liveNavItems = navWithDestinations.map((item: any) => {
-    if (item.label?.toLowerCase() !== 'hotels') return item;
-    const categoryChildren = hotelDirectory.map((category: any) => ({
-      id: `hotel-category-${category.id}`,
-      label: `${category.name} Hotels`,
-      url: `/hotels/#${category.slug}`,
-      level: 2,
-      children: [],
-    }));
-    const manualChildren = Array.isArray(item.children) ? item.children.filter((child: any) => !String(child.id).startsWith('hotel-category-')) : [];
-    return { ...item, children: [...categoryChildren, ...manualChildren] };
-  });
+  const navWithDestinations = removeHiddenNavigation(navItems as NavigationItem[], hiddenPaths, publishedVisaPaths);
+  // Navigation submenu links are managed in Admin > Navigation Menus.
+  // Do not inject hotel-directory categories here: they duplicate the
+  // manually configured Makkah/Madina hotel links in nav_items.
+  const liveNavItems = navWithDestinations;
   const existingGalleryItem = liveNavItems.find((item: any) => item.id === 'galleries' || item.label?.toLowerCase() === 'gallery');
   if (galleryNavItems.length > 0 && !hiddenPaths.includes('/gallery')) {
     if (existingGalleryItem) {
