@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
 import { getSeoIntelligenceSettings } from '@/actions/pageActions';
-import { resolveCanonicalPublicOrigin, deriveSeoUrls } from '@/lib/urlResolver';
+import { resolveCanonicalPublicOrigin, deriveSeoUrls, getSiteEnvironment } from '@/lib/urlResolver';
 
-export const revalidate = 3600;
+export const revalidate = 0;
 
 export async function GET() {
   try {
     const seoSettings = await getSeoIntelligenceSettings();
-    const isIndexingEnabled = seoSettings?.siteIndexingEnabled ?? true;
+    const isIndexingEnabled = getSiteEnvironment(seoSettings) === 'production' && (seoSettings?.siteIndexingEnabled ?? true);
     const canonicalOrigin = resolveCanonicalPublicOrigin(seoSettings);
     const seoUrls = deriveSeoUrls(canonicalOrigin);
 
@@ -49,7 +49,7 @@ Disallow: /api/
       status: 200,
       headers: {
         'Content-Type': 'text/plain',
-        'Cache-Control': 'public, max-age=3600, s-maxage=3600, stale-while-revalidate',
+        'Cache-Control': 'no-store',
       },
     });
   } catch (error) {

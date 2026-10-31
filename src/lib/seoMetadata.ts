@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
-import { resolveCanonicalPublicOrigin } from '@/lib/urlResolver';
+import { resolveCanonicalPublicOrigin, STAGING_SITE_ORIGIN } from '@/lib/urlResolver';
 import { getBlogFeaturedImage } from '@/lib/blogImages';
 
 export type SeoEntityType = 'page' | 'package' | 'blog' | 'visa' | 'destination';
 
-const DEFAULT_ORIGIN = 'https://britishhajtravel.com';
+const DEFAULT_ORIGIN = STAGING_SITE_ORIGIN;
 const BRAND = 'British Hajj Travel UK';
-const DEFAULT_OG_IMAGE = `${DEFAULT_ORIGIN}/img/logo.png`;
+const DEFAULT_OG_IMAGE = '/img/logo.png';
 
 export function parseSeoSettings(value: unknown): Record<string, any> {
   if (!value) return {};
@@ -32,21 +32,16 @@ export function normalizeRoutePath(pathname: string): string {
   return path || '/';
 }
 
-export function toCanonicalUrl(value: unknown, fallbackPath = '/'): string {
-  const raw = String(value || '').trim();
-  let path = fallbackPath;
-  if (raw) {
-    try { path = new URL(raw, DEFAULT_ORIGIN).pathname; }
-    catch { path = fallbackPath; }
-  }
-  // Only this verified UK domain is an acceptable canonical target.
-  const canonicalOrigin = DEFAULT_ORIGIN;
-  const normalized = normalizeRoutePath(path);
-  return `${canonicalOrigin}${normalized === '/' ? '/' : normalized}`;
+export function toCanonicalUrl(_value: unknown, fallbackPath = '/'): string {
+  // Canonical path is determined by the actual published route, not the
+  // source-domain URL imported into seo_settings.canonicalUrl.
+  // Next.js resolves this relative canonical using root metadataBase,
+  // which is read from Admin > Settings > SEO Intelligence.
+  return normalizeRoutePath(fallbackPath);
 }
 
-export function toAbsoluteUrl(value: unknown, fallbackPath = '/'): string {
-  const origin = getPublicOrigin();
+export function toAbsoluteUrl(value: unknown, fallbackPath = '/', configuredOrigin?: string): string {
+  const origin = configuredOrigin || getPublicOrigin();
   const raw = String(value || '').trim();
   if (!raw) return `${origin}${normalizeRoutePath(fallbackPath) === '/' ? '' : normalizeRoutePath(fallbackPath)}`;
   try {
@@ -123,7 +118,11 @@ function metadataFromParts({
   noFollow?: unknown;
   type?: 'website' | 'article';
 }): Metadata {
-  const ogImage = toAbsoluteUrl(image || DEFAULT_OG_IMAGE, '/img/logo.png');
+  const rawImage = String(image || DEFAULT_OG_IMAGE).trim();
+  // Relative image URLs are resolved by Next.js against the same metadataBase.
+  const ogImage = /^https?:\/\//i.test(rawImage)
+    ? rawImage
+    : normalizeRoutePath(rawImage || '/img/logo.png');
   const keywordValue = Array.isArray(keywords)
     ? keywords.map(String).filter(Boolean)
     : typeof keywords === 'string'
@@ -268,7 +267,8 @@ export function buildDestinationMetadata(destination: any, slug?: string): Metad
   }, `/destinations/${cleanSlug}`);
 }
 
-export function metadataSnapshot(metadata: Metadata) {
+export function metadataSnapshot(metadata: Metadata, canonicalOrigin = STAGING_SITE_ORIGIN) {
+  const absolutize = (url: string) => url.startsWith('/') ? `${canonicalOrigin.replace(/\/+$/, '')}${url}` : url;
   const title = typeof metadata.title === 'string'
     ? metadata.title
     : (metadata.title && typeof metadata.title === 'object' && 'absolute' in metadata.title ? String(metadata.title.absolute || '') : '');
@@ -306,17 +306,17 @@ export function metadataSnapshot(metadata: Metadata) {
     title,
     description: String(metadata.description || ''),
     keywords,
-    canonical,
+    canonical: absolutize(canonical),
     robotsIndex: robots.index !== false,
     robotsFollow: robots.follow !== false,
     ogTitle: String(openGraph.title || ''),
     ogDescription: String(openGraph.description || ''),
-    ogUrl: String(openGraph.url || ''),
-    ogImage,
+    ogUrl: absolutize(String(openGraph.url || '')),
+    ogImage: absolutize(ogImage),
     twitterCard: String(twitter.card || ''),
     twitterTitle: String(twitter.title || ''),
     twitterDescription: String(twitter.description || ''),
-    twitterImage,
+    twitterImage: absolutize(twitterImage),
   };
 }
 

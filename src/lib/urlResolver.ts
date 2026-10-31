@@ -1,13 +1,21 @@
 /**
- * Centralized Production-Safe Public URL Resolver
- * 
- * Strict guardrails:
- * - Never returns localhost, 127.0.0.1, 0.0.0.0, .local, internal Docker hostnames.
- * - Prioritizes:
- *   1. Explicit `canonicalSiteUrl` configured in SEO Intelligence DB settings.
- *   2. Server-side environment variable (NEXT_PUBLIC_APP_URL / NEXT_PUBLIC_BASE_URL / SITE_URL) IF it is a valid public domain.
- *   3. If neither is a valid public domain, returns null / "not configured" rather than guessing or leaking development hostnames.
+ * Public SEO origin selection. Admin > Settings > SEO Intelligence chooses
+ * staging or production. The legacy free-text canonicalSiteUrl is ignored so
+ * imported live-domain values cannot override the active environment.
  */
+
+export const STAGING_SITE_ORIGIN = 'https://new.britishhajtravel.com';
+export const PRODUCTION_SITE_ORIGIN = 'https://www.britishhajtravel.com';
+export type SiteEnvironment = 'staging' | 'production';
+
+export function getSiteEnvironment(settings?: { siteEnvironment?: string | null }): SiteEnvironment {
+  return settings?.siteEnvironment === 'production' ? 'production' : 'staging';
+}
+
+/** Authoritative public origin for the selected Admin > SEO environment. */
+export function getEnvironmentOrigin(settings?: { siteEnvironment?: string | null }): string {
+  return getSiteEnvironment(settings) === 'production' ? PRODUCTION_SITE_ORIGIN : STAGING_SITE_ORIGIN;
+}
 
 const FORBIDDEN_HOST_PATTERNS = [
   /^localhost(:\d+)?$/i,
@@ -66,31 +74,11 @@ export function normalizePublicOrigin(urlString?: string | null): string | null 
   }
 }
 
-/**
- * Resolves the Canonical Public Origin using strict precedence:
- * 1. explicitly configured `canonicalSiteUrl` in settings
- * 2. environment variable `NEXT_PUBLIC_APP_URL` / `NEXT_PUBLIC_BASE_URL` (if valid public domain)
- * 3. returns null if no valid public origin is configured
- */
-export function resolveCanonicalPublicOrigin(settings?: { canonicalSiteUrl?: string | null }): string | null {
-  // 1. Explicitly configured Site URL in database
-  if (settings?.canonicalSiteUrl && isValidPublicOrigin(settings.canonicalSiteUrl)) {
-    return normalizePublicOrigin(settings.canonicalSiteUrl);
-  }
-
-  // 2. Production Environment Variable (supports both NEXT_PUBLIC_ prefixes and non-prefixed keys)
-  const envUrl =
-    process.env.APP_URL ||
-    process.env.BASE_URL ||
-    process.env.SITE_URL ||
-    process.env.NEXT_PUBLIC_APP_URL ||
-    process.env.NEXT_PUBLIC_BASE_URL;
-
-  if (envUrl && isValidPublicOrigin(envUrl)) {
-    return normalizePublicOrigin(envUrl);
-  }
-
-  return null;
+/** Environment selection is authoritative; legacy/host environment variables do not override it. */
+export function resolveCanonicalPublicOrigin(settings?: { siteEnvironment?: string | null; canonicalSiteUrl?: string | null }): string {
+  // The environment selector is authoritative, including for legacy DB rows that
+  // have a hardcoded production canonicalSiteUrl. Do not use that old field.
+  return getEnvironmentOrigin(settings);
 }
 
 /**

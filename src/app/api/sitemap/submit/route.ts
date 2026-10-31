@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { db } from '@/db';
 import { sitemapLogs } from '@/db/schema';
 import { getSeoIntelligenceSettings } from '@/actions/pageActions';
-import { resolveCanonicalPublicOrigin } from '@/lib/urlResolver';
+import { resolveCanonicalPublicOrigin, getSiteEnvironment } from '@/lib/urlResolver';
 
 export async function POST() {
   const session = await getCurrentSession();
@@ -11,7 +11,11 @@ export async function POST() {
   try {
     const seoSettings = await getSeoIntelligenceSettings();
     const canonicalOrigin = resolveCanonicalPublicOrigin(seoSettings);
-    const baseUrl = canonicalOrigin || 'https://www.britishhajjtravel.com';
+    // Never submit a staging sitemap to search engines.
+    if (getSiteEnvironment(seoSettings) !== 'production') {
+      return NextResponse.json({ success: false, error: 'Sitemap submission is disabled in staging mode.' }, { status: 400 });
+    }
+    const baseUrl = canonicalOrigin;
     const sitemapUrl = `${baseUrl}/sitemap.xml`;
 
     // Ping Google

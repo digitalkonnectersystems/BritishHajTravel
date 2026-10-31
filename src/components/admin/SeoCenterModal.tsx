@@ -22,6 +22,7 @@ import {
   Plus,
   Loader2,
 } from 'lucide-react';
+import { getSeoIntelligenceSettings } from '@/actions/pageActions';
 import { generateSeoSectionAction } from '@/actions/pageActions';
 import type { SeoGenerationContext } from '@/actions/pageActions';
 import { getEntitySeoAction, saveEntitySeoAction } from '@/actions/seoActions';
@@ -68,6 +69,7 @@ export default function SeoCenterModal({
   const [schemaType, setSchemaType] = useState('WebPage');
   const [jsonLdPayload, setJsonLdPayload] = useState('');
   const [canonicalUrl, setCanonicalUrl] = useState('');
+  const [seoOrigin, setSeoOrigin] = useState('https://new.britishhajtravel.com');
   const [noIndex, setNoIndex] = useState(false);
   const [noFollow, setNoFollow] = useState(false);
   const [ogImageUrl, setOgImageUrl] = useState('');
@@ -147,6 +149,15 @@ export default function SeoCenterModal({
       const pageSlug = pageData.slug || '/';
       const cleanSlug = pageSlug === '/' ? '' : pageSlug.startsWith('/') ? pageSlug : `/${pageSlug}`;
       let existingSeo = pageData.seoData || {};
+      let configuredOrigin = 'https://new.britishhajtravel.com';
+      try {
+        const siteSettings = await getSeoIntelligenceSettings();
+        configuredOrigin = siteSettings?.siteEnvironment === 'production'
+          ? 'https://www.britishhajtravel.com'
+          : 'https://new.britishhajtravel.com';
+      } catch (error) {
+        console.warn('Could not load SEO environment; defaulting preview to staging.', error);
+      }
 
       try {
         const storedSeo = await getEntitySeoAction(pageData.entityType || 'page', pageData.id);
@@ -158,6 +169,7 @@ export default function SeoCenterModal({
       }
 
       if (cancelled) return;
+      setSeoOrigin(configuredOrigin);
 
       setMetaTitle(existingSeo.metaTitle || pageData.metaTitle || generateOptimalTitle(pageTitle));
       setMetaDescription(existingSeo.metaDescription || pageData.metaDescription || generateOptimalDescription(pageTitle));
@@ -174,7 +186,7 @@ export default function SeoCenterModal({
         '@type': existingSeo.schemaType || 'TravelAgency',
         name: `${pageTitle} | British Hajj Travel UK`,
         description: pageData.metaDescription || existingSeo.metaDescription || `Official ${pageTitle} packages and travel services provided by British Hajj Travel UK.`,
-        url: `https://britishhajjtravel.com${cleanSlug}`,
+        url: `${configuredOrigin}${cleanSlug}`,
         publisher: {
           '@type': 'Organization',
           name: 'British Hajj Travel UK',
@@ -186,7 +198,7 @@ export default function SeoCenterModal({
           ? existingSeo.jsonLdPayload
           : JSON.stringify(initialSchema, null, 2)
       );
-      setCanonicalUrl(existingSeo.canonicalUrl || `https://britishhajjtravel.com${cleanSlug}`);
+      setCanonicalUrl(`${configuredOrigin}${cleanSlug}`);
       setNoIndex(Boolean(existingSeo.noIndex));
       setNoFollow(Boolean(existingSeo.noFollow));
       setOgImageUrl(existingSeo.ogImageUrl || pageData.bannerBgImage || '');
@@ -209,13 +221,13 @@ export default function SeoCenterModal({
       heroImageUrl: pageData?.bannerBgImage || undefined,
       ogImageUrl: ogImageUrl || pageData?.bannerBgImage || undefined,
       schemaType: schemaType || 'WebPage',
-      canonicalUrl: canonicalUrl || `https://britishhajjtravel.com${normalizedSlug === '/' ? '' : normalizedSlug}`,
+      canonicalUrl: canonicalUrl || `${seoOrigin}${normalizedSlug === '/' ? '' : normalizedSlug}`,
       existingContent,
       siteContext: {
         brandName: 'British Hajj Travel UK',
-        domain: 'https://britishhajjtravel.com',
+        domain: seoOrigin,
         industry: 'Hajj, Umrah and Saudi travel',
-        logoUrl: 'https://britishhajjtravel.com/img/logo.png',
+        logoUrl: `${seoOrigin}/img/logo.png`,
       },
     };
   };
@@ -362,12 +374,15 @@ export default function SeoCenterModal({
       const ctx = buildGenerationContext();
       const res = await generateSeoSectionAction('technical', ctx);
       if (res.success && res.data) {
-        if (res.data.canonicalUrl) setCanonicalUrl(res.data.canonicalUrl);
+        if (res.data.canonicalUrl) {
+          const normalized = pageData.slug === '/' ? '' : pageData.slug.startsWith('/') ? pageData.slug : `/${pageData.slug}`;
+          setCanonicalUrl(`${seoOrigin}${normalized}`);
+        }
         if (typeof res.data.noIndex === 'boolean') setNoIndex(res.data.noIndex);
       }
     } catch (err) {
       const cleanSlug = pageData.slug === '/' ? '' : pageData.slug.startsWith('/') ? pageData.slug : `/${pageData.slug}`;
-      setCanonicalUrl(`https://britishhajjtravel.com${cleanSlug}`);
+      setCanonicalUrl(`${seoOrigin}${cleanSlug}`);
       setNoIndex(false);
     } finally {
       setGeneratingSection(null);
@@ -973,9 +988,11 @@ export default function SeoCenterModal({
                   <input
                     type="text"
                     value={canonicalUrl}
-                    onChange={(e) => setCanonicalUrl(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs text-slate-800"
+                    readOnly
+                    title="Generated from the active SEO environment and page slug; change in Admin Settings."
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs text-slate-800"
                   />
+                  <p className="text-[11px] text-slate-500 mt-1">Managed by Admin Settings → SEO Intelligence → Website SEO Environment.</p>
                 </div>
 
                 <div>
@@ -1115,7 +1132,7 @@ export default function SeoCenterModal({
                 {/* Google Search Result Card */}
                 <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-1">
                   <div className="text-[11px] text-emerald-700 truncate font-mono">
-                    {canonicalUrl || 'https://britishhajjtravel.com'}
+                    {canonicalUrl || seoOrigin}
                   </div>
                   <div className="text-base font-bold text-blue-800 hover:underline cursor-pointer truncate">
                     {metaTitle || 'British Hajj Travel UK'}

@@ -1903,7 +1903,8 @@ export async function getPageSeoAction(pageId: number | string) {
 export async function getDefaultSeoIntelligence() {
   return {
     siteIndexingEnabled: true,
-    canonicalSiteUrl: '',
+    siteEnvironment: 'staging' as 'staging' | 'production',
+    canonicalSiteUrl: 'https://new.britishhajtravel.com',
     additionalDisallowPaths: [] as string[],
     googleSearchConsoleCode: '',
     googleAnalyticsId: '',
@@ -1956,7 +1957,16 @@ export async function saveSeoIntelligenceSettingsAction(settings: any) {
 
   try {
     const existing = await db.select().from(siteSettings).where(eq(siteSettings.key, 'seo_intelligence')).limit(1);
-    const value = JSON.stringify(settings);
+    // Do not allow a stale imported canonicalSiteUrl to override the selected mode.
+    const siteEnvironment = settings?.siteEnvironment === 'production' ? 'production' : 'staging';
+    const valueObject = {
+      ...settings,
+      siteEnvironment,
+      canonicalSiteUrl: siteEnvironment === 'production'
+        ? 'https://www.britishhajtravel.com'
+        : 'https://new.britishhajtravel.com',
+    };
+    const value = JSON.stringify(valueObject);
 
     if (existing && existing.length > 0) {
       await db.update(siteSettings).set({ value, updatedAt: new Date() }).where(eq(siteSettings.key, 'seo_intelligence'));
@@ -1964,7 +1974,7 @@ export async function saveSeoIntelligenceSettingsAction(settings: any) {
       await db.insert(siteSettings).values({ key: 'seo_intelligence', value });
     }
 
-    seoIntelligenceMemoryCache = settings;
+    seoIntelligenceMemoryCache = valueObject;
     await logAdminActivityAction({
       type: 'settings',
       action: 'Updated SEO Intelligence',

@@ -18,6 +18,7 @@ import {
   getFooterData,
   getSeoIntelligenceSettings,
 } from "@/actions/pageActions";
+import { resolveCanonicalPublicOrigin, getSiteEnvironment } from '@/lib/urlResolver';
 import { getHiddenSitePagePaths } from "@/lib/sitePageVisibility";
 import { db } from "@/db";
 import { visaProcessing } from "@/db/schema";
@@ -73,9 +74,10 @@ export async function generateMetadata(): Promise<Metadata> {
     getSeoIntelligenceSettings(),
   ]);
   const faviconUrl = identity?.favicon || "/img/favicon.png";
-  const isIndexingEnabled = seoSettings?.siteIndexingEnabled ?? true;
+  const isIndexingEnabled = getSiteEnvironment(seoSettings) === 'production' && (seoSettings?.siteIndexingEnabled ?? true);
 
   return {
+    metadataBase: new URL(resolveCanonicalPublicOrigin(seoSettings)),
     title: identity?.siteName || "British Hajj Travel UK",
     description: identity?.tagline || "",
     icons: {

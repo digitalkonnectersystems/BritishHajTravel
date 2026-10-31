@@ -245,6 +245,10 @@ export default function AdminSettingsPage() {
     sitemapLastGenerated: null,
     sitemapTotalUrls: 0,
   });
+  const activeSeoOrigin = seoData.siteEnvironment === 'production'
+    ? 'https://www.britishhajtravel.com'
+    : 'https://new.britishhajtravel.com';
+  const seoIndexingActive = seoData.siteEnvironment === 'production' && Boolean(seoData.siteIndexingEnabled ?? true);
   const [seoSaveMsg, setSeoSaveMsg] = useState<string | null>(null);
   const [savingSeo, setSavingSeo] = useState(false);
   const [sitemapLoading, setSitemapLoading] = useState(false);
@@ -765,6 +769,7 @@ export default function AdminSettingsPage() {
     try {
       const res = await saveSeoIntelligenceSettingsAction(seoData);
       if (res.success) {
+        setSeoData((prev: any) => ({ ...prev, canonicalSiteUrl: activeSeoOrigin }));
         setSeoSaveMsg('✓ SEO Intelligence settings saved successfully!');
         showNotification(
           'SEO Settings Saved',
@@ -2354,16 +2359,16 @@ export default function AdminSettingsPage() {
               </div>
 
               {/* Status Banner */}
-              <div className={`p-4 sm:p-5 rounded-2xl border flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors ${seoData.siteIndexingEnabled
+              <div className={`p-4 sm:p-5 rounded-2xl border flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors ${seoIndexingActive
                 ? 'bg-emerald-50/70 border-emerald-200 text-emerald-950'
                 : 'bg-red-50 border-red-200 text-red-950'
                 }`}>
                 <div className="flex items-start gap-3.5">
-                  <div className={`p-2.5 rounded-xl shrink-0 ${seoData.siteIndexingEnabled
+                  <div className={`p-2.5 rounded-xl shrink-0 ${seoIndexingActive
                     ? 'bg-primary text-white shadow-sm'
                     : 'bg-red-600 text-white shadow-sm'
                     }`}>
-                    {seoData.siteIndexingEnabled ? (
+                    {seoIndexingActive ? (
                       <ShieldCheck className="w-5 h-5" />
                     ) : (
                       <ShieldAlert className="w-5 h-5" />
@@ -2372,19 +2377,19 @@ export default function AdminSettingsPage() {
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="text-sm font-extrabold m-0">
-                        {seoData.siteIndexingEnabled ? 'Search Engine Indexing is Active' : 'Search Engine Indexing is Blocked (NoIndex)'}
+                        {seoIndexingActive ? 'Search Engine Indexing is Active' : 'Search Engine Indexing is Blocked (NoIndex)'}
                       </h3>
-                      <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full border ${seoData.siteIndexingEnabled
+                      <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full border ${seoIndexingActive
                         ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
                         : 'bg-red-100 text-red-900 border-red-300'
                         }`}>
-                        {seoData.siteIndexingEnabled ? '🟢 Indexable by Google' : '🔴 NoIndex / Disallow'}
+                        {seoIndexingActive ? '🟢 Indexable by Google' : '🔴 NoIndex / Disallow'}
                       </span>
                     </div>
                     <p className="text-xs text-slate-600 mt-1 mb-0 leading-relaxed max-w-2xl">
-                      {seoData.siteIndexingEnabled
+                      {seoIndexingActive
                         ? 'Googlebot and other compliant search engines are permitted to crawl and index your public website pages, packages, blogs, and visa services.'
-                        : 'Googlebot and web crawlers are instructed NOT to index pages (disallow /). Search engine visibility is blocked.'}
+                        : 'Search engines are blocked. Staging always uses noindex and robots.txt Disallow: /, even if the production Allow Indexing preference is enabled.'}
                     </p>
                   </div>
                 </div>
@@ -2413,27 +2418,32 @@ export default function AdminSettingsPage() {
                 </div>
               </div>
 
-              {/* Canonical Website Origin Configuration Card */}
+              {/* Public environment controls canonical host without changing page slugs. */}
               <div className="p-5 rounded-3xl bg-white border border-slate-200 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">
-                    🌐
-                  </div>
+                  <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">🌐</div>
                   <div>
-                    <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider m-0">Production Canonical Site URL</h3>
+                    <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider m-0">Website SEO Environment</h3>
                     <p className="text-[11px] text-slate-500 m-0 mt-0.5">
-                      The authoritative public HTTPS domain used to generate canonical meta tags, XML sitemaps, and robots.txt.
+                      Select Staging for testing, or Production when the live site is ready. Save SEO settings to apply.
+                    </p>
+                    <p className="text-[11px] text-amber-800 m-0 mt-1">
+                      Staging automatically blocks search engine indexing. Stored page titles and descriptions are unchanged.
                     </p>
                   </div>
                 </div>
-                <div className="flex-1 max-w-md w-full">
-                  <input
-                    type="url"
-                    value={seoData.canonicalSiteUrl || ''}
-                    onChange={(e) => setSeoData({ ...seoData, canonicalSiteUrl: e.target.value.trim() })}
-                    placeholder="https://www.britishhajjtravel.com"
-                    className="w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs font-mono font-bold text-slate-800 outline-none focus:border-primary focus:bg-white transition-colors"
-                  />
+                <div className="flex-1 max-w-md w-full flex flex-col gap-2">
+                  <label htmlFor="seo-site-environment" className="text-xs font-bold text-slate-800">Active environment</label>
+                  <select
+                    id="seo-site-environment"
+                    value={seoData.siteEnvironment === 'production' ? 'production' : 'staging'}
+                    onChange={(e) => setSeoData({ ...seoData, siteEnvironment: e.target.value })}
+                    className="w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs font-semibold text-slate-800 outline-none focus:border-primary"
+                  >
+                    <option value="staging">Staging</option>
+                    <option value="production">Production</option>
+                  </select>
+                  <div className="rounded-lg bg-slate-50 border border-slate-200 px-3 py-2 text-xs font-mono break-all">{activeSeoOrigin}</div>
                 </div>
               </div>
 
@@ -2484,18 +2494,12 @@ export default function AdminSettingsPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="flex-1 bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-mono font-semibold text-slate-800 select-all truncate">
-                        {seoData.canonicalSiteUrl
-                          ? `${seoData.canonicalSiteUrl.replace(/\/+$/, '')}/sitemap.xml`
-                          : (typeof window !== 'undefined' && !window.location.hostname.includes('localhost')
-                            ? `${window.location.origin}/sitemap.xml`
-                            : 'https://www.britishhajjtravel.com/sitemap.xml')}
+                        {`${activeSeoOrigin}/sitemap.xml`}
                       </div>
                       <button
                         type="button"
                         onClick={() => {
-                          const url = seoData.canonicalSiteUrl
-                            ? `${seoData.canonicalSiteUrl.replace(/\/+$/, '')}/sitemap.xml`
-                            : (typeof window !== 'undefined' ? `${window.location.origin}/sitemap.xml` : 'https://www.britishhajjtravel.com/sitemap.xml');
+                          const url = `${activeSeoOrigin}/sitemap.xml`;
                           navigator.clipboard.writeText(url);
                           showNotification('Copied', 'Sitemap URL copied to clipboard!', 'success');
                         }}
@@ -2560,9 +2564,7 @@ export default function AdminSettingsPage() {
                       <button
                         type="button"
                         onClick={() => {
-                          const url = seoData.canonicalSiteUrl
-                            ? `${seoData.canonicalSiteUrl.replace(/\/+$/, '')}/robots.txt`
-                            : (typeof window !== 'undefined' ? `${window.location.origin}/robots.txt` : 'https://www.britishhajjtravel.com/robots.txt');
+                          const url = `${activeSeoOrigin}/robots.txt`;
                           navigator.clipboard.writeText(url);
                           showNotification('Copied', 'robots.txt URL copied to clipboard!', 'success');
                         }}
@@ -2586,11 +2588,11 @@ export default function AdminSettingsPage() {
                   <div className="bg-white p-3.5 rounded-xl border border-slate-200 flex flex-col gap-2 font-mono text-[11px] text-slate-800">
                     <div className="flex items-center justify-between text-ink-lt uppercase text-[10px] font-bold border-b border-slate-100 pb-1">
                       <span>EFFECTIVE ROBOTS.TXT DIRECTIVES</span>
-                      <span className={seoData.siteIndexingEnabled ? 'text-emerald-700 font-bold' : 'text-red-700 font-bold'}>
-                        {seoData.siteIndexingEnabled ? '● HEALTHY' : '● BLOCKED'}
+                      <span className={seoIndexingActive ? 'text-emerald-700 font-bold' : 'text-red-700 font-bold'}>
+                        {seoIndexingActive ? '● HEALTHY' : '● BLOCKED'}
                       </span>
                     </div>
-                    {seoData.siteIndexingEnabled ? (
+                    {seoIndexingActive ? (
                       <div className="space-y-1">
                         <div>User-agent: *</div>
                         <div className="text-emerald-700 font-bold">Allow: /</div>
@@ -2600,11 +2602,7 @@ export default function AdminSettingsPage() {
                           <div key={pIdx} className="text-amber-700">Disallow: {p}</div>
                         ))}
                         <div className="text-blue-700 font-bold pt-1">
-                          Sitemap: {seoData.canonicalSiteUrl
-                            ? `${seoData.canonicalSiteUrl.replace(/\/+$/, '')}/sitemap.xml`
-                            : (typeof window !== 'undefined' && !window.location.hostname.includes('localhost')
-                              ? `${window.location.origin}/sitemap.xml`
-                              : 'https://www.britishhajjtravel.com/sitemap.xml')}
+                          Sitemap: {`${activeSeoOrigin}/sitemap.xml`}
                         </div>
                       </div>
                     ) : (
@@ -2815,8 +2813,8 @@ export default function AdminSettingsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                   <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-700">Crawler Access (Robots.txt)</span>
-                    <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full ${seoData.siteIndexingEnabled ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}`}>
-                      {seoData.siteIndexingEnabled ? 'Passed' : 'Blocked'}
+                    <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full ${seoIndexingActive ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}`}>
+                      {seoIndexingActive ? 'Passed' : 'Blocked'}
                     </span>
                   </div>
                   <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex items-center justify-between">
@@ -2827,8 +2825,8 @@ export default function AdminSettingsPage() {
                   </div>
                   <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-700">Canonical Site URL</span>
-                    <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full ${seoData.canonicalSiteUrl ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
-                      {seoData.canonicalSiteUrl ? 'Configured' : 'Default / Fallback'}
+                    <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800`}>
+                      {seoData.siteEnvironment === 'production' ? 'Production' : 'Staging'}
                     </span>
                   </div>
                   <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex items-center justify-between">
@@ -2853,7 +2851,7 @@ export default function AdminSettingsPage() {
 
                 {/* Contextual Guidance */}
                 <div className="p-3.5 bg-blue-50/70 rounded-xl border border-blue-100 text-[11px] text-blue-900 leading-relaxed">
-                  {seoData.siteIndexingEnabled ? (
+                  {seoIndexingActive ? (
                     <div>
                       <strong>💡 SEO Foundation Status:</strong> Search engine crawlers can reach public pages, your sitemap is dynamically generated at <code className="font-bold">/sitemap.xml</code>, and robots.txt directives are active. Verify your ownership in Google Search Console to monitor real-time Google indexing metrics.
                     </div>

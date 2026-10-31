@@ -1,5 +1,7 @@
 'use server';
 
+import { getSeoIntelligenceSettings } from '@/actions/pageActions';
+import { resolveCanonicalPublicOrigin } from '@/lib/urlResolver';
 import { requireAdmin } from '@/lib/requireAdmin';
 
 import { db } from '@/db';
@@ -253,13 +255,14 @@ export async function getSeoAuditReportAction(): Promise<SeoAuditItem[]> {
     db.select().from(destinations),
   ]);
 
+  const canonicalOrigin = resolveCanonicalPublicOrigin(await getSeoIntelligenceSettings());
   const items: SeoAuditItem[] = [];
 
   for (const row of pageRows) {
     const legacy = await getLegacyPageSeo(row.id);
     const seoData = mergePageSeo(row, legacy);
     const entity = { ...row, seoData };
-    const metadata = metadataSnapshot(buildEntityMetadata('page', entity));
+    const metadata = metadataSnapshot(buildEntityMetadata('page', entity), canonicalOrigin);
     items.push(auditSingleItem({
       key: `page:${row.id}`,
       entityType: 'page',
@@ -276,7 +279,7 @@ export async function getSeoAuditReportAction(): Promise<SeoAuditItem[]> {
   for (const row of packageRows) {
     const seoData = parseSeoSettings(row.seoSettings);
     const entity = { ...row, seoData };
-    const metadata = metadataSnapshot(buildEntityMetadata('package', entity));
+    const metadata = metadataSnapshot(buildEntityMetadata('package', entity), canonicalOrigin);
     items.push(auditSingleItem({
       key: `package:${row.id}`,
       entityType: 'package',
@@ -293,7 +296,7 @@ export async function getSeoAuditReportAction(): Promise<SeoAuditItem[]> {
   for (const row of blogRows) {
     const seoData = parseSeoSettings(row.seoSettings);
     const entity = { ...row, seoData };
-    const metadata = metadataSnapshot(buildEntityMetadata('blog', entity));
+    const metadata = metadataSnapshot(buildEntityMetadata('blog', entity), canonicalOrigin);
     items.push(auditSingleItem({
       key: `blog:${row.id}`,
       entityType: 'blog',
@@ -315,7 +318,7 @@ export async function getSeoAuditReportAction(): Promise<SeoAuditItem[]> {
     if (cmsRoutes.has(route)) continue;
     const seoData = parseSeoSettings(row.seoSettings);
     const entity = { ...row, seoData };
-    const metadata = metadataSnapshot(buildEntityMetadata('destination', entity));
+    const metadata = metadataSnapshot(buildEntityMetadata('destination', entity), canonicalOrigin);
     items.push(auditSingleItem({
       key: `destination:${row.id}`,
       entityType: 'destination',

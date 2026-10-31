@@ -4,6 +4,8 @@ import { getPackageDetailsAction } from '@/actions/pageActions';
 import { getPackageBySlug } from '@/actions/packageActions';
 import PackageDetailPageClient from './PackageDetailPageClient';
 import { buildPackageMetadata, parseSeoSettings, toAbsoluteUrl } from '@/lib/seoMetadata';
+import { resolveCanonicalPublicOrigin } from '@/lib/urlResolver';
+import { getSeoIntelligenceSettings } from '@/actions/pageActions';
 import { getCurrencyConfiguration } from '@/lib/currencyService';
 
 async function loadPackage(slug: string) {
@@ -34,17 +36,19 @@ export default async function StandalonePackageDetailPage({ params }: { params: 
     }
   }
 
-  const currency = (await getCurrencyConfiguration()).code;
+  const [currencySettings, siteSeoSettings] = await Promise.all([getCurrencyConfiguration(), getSeoIntelligenceSettings()]);
+  const currency = currencySettings.code;
+  const seoOrigin = resolveCanonicalPublicOrigin(siteSeoSettings);
   const jsonLd = customJsonLd || {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: initialPackage.title,
-    image: toAbsoluteUrl(initialPackage.featuredImage || '/img/logo.png', '/img/logo.png'),
+    image: toAbsoluteUrl(initialPackage.featuredImage || '/img/logo.png', '/img/logo.png', seoOrigin),
     description: initialPackage.shortDescription || `Travel package from British Hajj Travel UK: ${initialPackage.title}`,
     brand: { '@type': 'Brand', name: 'British Hajj Travel UK' },
     ...(Number(initialPackage.startingPrice) > 0 ? { offers: {
       '@type': 'Offer',
-      url: toAbsoluteUrl(`/package/${slug}`, `/package/${slug}`),
+      url: toAbsoluteUrl(`/package/${slug}`, `/package/${slug}`, seoOrigin),
       priceCurrency: currency,
       price: String(initialPackage.startingPrice || '').replace(/,/g, ''),
       availability: initialPackage.status === 'sold_out' ? 'https://schema.org/SoldOut' : 'https://schema.org/InStock',
