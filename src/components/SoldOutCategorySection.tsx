@@ -82,7 +82,7 @@ export default function SoldOutCategorySection({
   if (!loading && packages.length === 0) return null;
 
   return (
-    <section className="w-full py-10 sm:py-12 lg:py-14" style={{ backgroundColor: '#fff' }} aria-label={heading}>
+    <section className="w-full py-10 sm:py-12 lg:py-14 bg-blue-lt" aria-label={heading}>
       <div className="mx-auto w-full max-w-[1400px] px-4">
         <div className="mb-7 grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,370px)] md:items-end md:gap-8">
           <div>
