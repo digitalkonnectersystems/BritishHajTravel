@@ -1,7 +1,7 @@
 'use server';
 
 import { requireAdmin } from '@/lib/requireAdmin';
-import { getFormsSettings } from '@/actions/pageActions';
+import { getFormsSettings, getPageBySlug } from '@/actions/pageActions';
 import { randomUUID } from 'node:crypto';
 import { writeBackendLog, databaseErrorCode } from '@/lib/backendLogger';
 import { recordPublicEnquiry } from '@/lib/publicEnquiryAudit';
@@ -85,7 +85,24 @@ export async function submitHajjRegistrationEnquiryAction(data: {
     budget: String(data.budget || '').trim(),
   };
   const sourcePage = '/' + String(data.sourcePage || '').split('/').filter(Boolean).join('/') + '/';
-  if (!allowedPages.has(sourcePage)) return { success: false, error: 'Invalid registration page.' };
+  // The original five pages keep their built-in form until a CMS section is added.
+  // Other pages may submit only if a published CMS page contains this visible section.
+  const pageSlug = sourcePage === '/' ? '/' : sourcePage.replace(/\/$/, '');
+  const cmsPage = await getPageBySlug(pageSlug);
+  const cmsSections = (() => {
+    if (!cmsPage?.sections) return [] as any[];
+    if (Array.isArray(cmsPage.sections)) return cmsPage.sections;
+    try { const parsed = JSON.parse(String(cmsPage.sections)); return Array.isArray(parsed) ? parsed : []; }
+    catch { return [] as any[]; }
+  })();
+  const configuredForms = cmsSections.filter((section: any) => section?.type === 'Hajj 2027 Registration Form');
+  if (configuredForms.length > 0) {
+    if (cmsPage?.status !== 'published' || !configuredForms.some((section: any) => section.hidden !== true && section.visible !== false)) {
+      return { success: false, error: 'This registration form is currently unavailable on this page.' };
+    }
+  } else if (!allowedPages.has(sourcePage)) {
+    return { success: false, error: 'Invalid registration page.' };
+  }
   if (!validName(clean.name) || !validEmail(clean.email) || !isValidUkPhone(clean.phone) ||
       !clean.postcode || clean.postcode.length > 30 || !countOk(clean.passengers, 1) || clean.passengers > 100 ||
       [clean.airport, clean.packageTier, clean.days, clean.room, clean.budget].some(v => !v || v.length > 120)) {

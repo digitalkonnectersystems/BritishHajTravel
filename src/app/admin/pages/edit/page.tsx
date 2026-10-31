@@ -353,6 +353,8 @@ const SECTION_CATALOG: SectionCategory[] = [
 
       { type: 'Banner 4 Grids', description: 'Reusable responsive icon and title cards. Editable items, order and positioning; works on any CMS page.', pages: ['Any Page', 'Homepage', 'Hajj Packages', 'Umrah Packages'] },
 
+      { type: 'Hajj 2027 Registration Form', description: 'Reusable 10-field Hajj enquiry form with global form fields and separate admin/customer email templates. Place and reorder on any CMS page.', pages: ['Any Page', 'Hajj Packages', 'Homepage'] },
+
       { type: 'Image+Text', description: 'Split image-and-text block with eyebrow, heading, body, and optional CTA.', pages: ['Any Page'] },
 
       { type: 'Text Block (Rich Text)', description: 'Free-form rich text editor block for long-form content.', pages: ['Any Page'] },
@@ -1517,6 +1519,10 @@ function PageBuilderContent() {
         ],
 
       };
+
+    } else if (type === 'Hajj 2027 Registration Form') {
+
+      defaultData = { title: 'Register for Hajj 2027', branded: false };
 
     } else if (type === 'Banner 4 Grids') {
 
@@ -4795,9 +4801,32 @@ function PageBuilderContent() {
                               </div>
                             )}
 
+                            {sec.type === 'Hajj 2027 Registration Form' && (
+                              <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
+                                <h4 className="text-sm font-bold text-primary">Hajj 2027 Registration Form</h4>
+                                <p className="text-xs text-slate-500">Move this section up or down to set its frontend position. Form fields, options, and admin/customer email templates are managed globally in Settings &gt; Forms &gt; Hajj 2027 Registration Form.</p>
+                                <label className="block text-xs font-semibold text-slate-700">
+                                  Form heading
+                                  <input type="text" maxLength={140} value={sec.data?.title ?? 'Register for Hajj 2027'}
+                                    onChange={(e) => updateSectionData(sec.id, 'title', e.target.value)}
+                                    className="block w-full p-2 border border-slate-300 rounded mt-1" />
+                                </label>
+                                <label className="block text-xs font-semibold text-slate-700">
+                                  Display style
+                                  <select value={sec.data?.branded === true ? 'branded' : 'standard'}
+                                    onChange={(e) => updateSectionData(sec.id, 'branded', e.target.value === 'branded')}
+                                    className="block w-full p-2 border border-slate-300 rounded mt-1">
+                                    <option value="standard">Standard heading above the form</option>
+                                    <option value="branded">Logo and red heading inside form card</option>
+                                  </select>
+                                </label>
+                                <Link href="/admin/settings" className="text-xs font-semibold text-primary underline">Configure form fields and email templates</Link>
+                              </div>
+                            )}
+
                             {/* Universal Section Header Block (Eyebrow, Heading, Description) - Hidden for Blog sections */}
 
-                            {sec.type !== 'Latest Blogs Grid' && sec.type !== 'Blog Posts Carousel' && sec.type !== 'Testimonials' && sec.type !== 'Hajj Services Grid' && sec.type !== 'Text Block (Rich Text)' && sec.type !== 'Packages Content (Rich Text)' && !['Package Detail Blocks', 'Package Flight Details', 'Package Hotel Details', 'Package Occupancy Prices', 'Package Inclusions', 'Package Detail Gallery'].includes(sec.type) && (
+                            {sec.type !== 'Latest Blogs Grid' && sec.type !== 'Blog Posts Carousel' && sec.type !== 'Testimonials' && sec.type !== 'Hajj Services Grid' && sec.type !== 'Text Block (Rich Text)' && sec.type !== 'Packages Content (Rich Text)' && sec.type !== 'Hajj 2027 Registration Form' && !['Package Detail Blocks', 'Package Flight Details', 'Package Hotel Details', 'Package Occupancy Prices', 'Package Inclusions', 'Package Detail Gallery'].includes(sec.type) && (
 
                               <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 flex flex-col gap-2">
 

@@ -75,7 +75,9 @@ export default async function HajjPackagesPage() {
         heroSettings={pageData?.seoSettings}
       />
 
-      <HajjRegistrationForm sourcePage="/hajj-packages/" />
+      {!pageSections.some((section: any) => section?.type === 'Hajj 2027 Registration Form') && (
+        <HajjRegistrationForm sourcePage="/hajj-packages/" />
+      )}
 
       {pageSections.length > 0 ? (
         <PageSectionsRenderer sections={pageSections} pageData={pageData} initialPackageData={{ hajj: liveCards.length > 0 ? hajjPackages : undefined }} />

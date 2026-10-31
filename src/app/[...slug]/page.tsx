@@ -162,7 +162,7 @@ export default async function DynamicPage({
         '/hajj-2027-registration',
         '/yosr-al-mashaer-hajj-uk-guide',
         '/holiday-in-bakkah',
-      ].includes(slugPath) && (
+      ].includes(slugPath) && !sections.some((section: any) => section?.type === 'Hajj 2027 Registration Form') && (
         <HajjRegistrationForm
           sourcePage={slugPath}
           branded={slugPath !== '/hajj-2027-registration'}
