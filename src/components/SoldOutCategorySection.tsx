@@ -135,12 +135,12 @@ export default function SoldOutCategorySection({
                     {inclusions.length > 0 && (
                       <>
                         <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.12em]" style={{ color: '#071B2E' }}>PACKAGE INCLUDES</p>
-                        <ul className="mt-auto space-y-3">
+                        <ul className="space-y-3">
                           {inclusions.map((item: any, index: number) => {
                             const text = typeof item === 'string' ? item : String(item?.text || '');
                             if (!text) return null;
                             const Icon = includeIcon(text);
-                            return <li key={index} className="flex items-start gap-3 text-[12px] leading-5" style={{ color: '#0F2433' }}>
+                            return <li key={index} className="flex items-start gap-3 text-[15px] leading-5" style={{ color: '#0F2433' }}>
                               <Icon className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
                               <span>{text}</span>
                             </li>;
