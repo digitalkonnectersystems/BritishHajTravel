@@ -197,7 +197,7 @@ export default function UpcomingUmrahPackages({
                 <div
                   key={pkg.id || idx}
                   className={`${isGold
-                    ? "bg-primary hover:bg-primary/90 transition duration-400 shadow-[0_8px_30px_rgb(0,0,0,0.12)] mt-0 xl:-mt-8 xl:mb-8"
+                    ? "bg-primary hover:bg-primary/90 transition duration-400 shadow-[0_8px_30px_rgb(0,0,0,0.12)] mt-0"
                     : "hover:bg-[#ebefff] transition-[transform,box-shadow] duration-400 border-1 border-[#ccc] transition duration-400 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)]"
                     } rounded-3xl overflow-hidden flex flex-col`}
                 >
