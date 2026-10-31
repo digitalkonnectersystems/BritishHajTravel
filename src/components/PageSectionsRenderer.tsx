@@ -20,6 +20,7 @@ import CertificationsFlipCardsSection from '@/components/CertificationsFlipCards
 import SoldOutPackagesSection from '@/components/SoldOutPackagesSection';
 import Banner4GridsSection from '@/components/Banner4GridsSection';
 import HajjRegistrationForm from '@/components/HajjRegistrationForm';
+import UmrahRegistrationForm from '@/components/UmrahRegistrationForm';
 import PackageBrochuresSection from '@/components/PackageBrochuresSection';
 import GallerySection from '@/components/GallerySection';
 import DynamicSiteForm from '@/components/DynamicSiteForm';
@@ -56,6 +57,15 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         if (sec.hidden === true || sec.visible === false) return null;
         // Legacy custom-builder data is intentionally not rendered after removal.
         if (sec.type === 'Custom Layout Builder') return null;
+        if (sec.type === 'Umrah Enquiry 2026-27 Form') {
+          const rawSlug = typeof pageData?.slug === 'string' ? pageData.slug : '/';
+          const sourcePage = `/${rawSlug.split('/').filter(Boolean).join('/')}/`;
+          return <UmrahRegistrationForm
+            key={sec.id || idx}
+            sourcePage={sourcePage}
+            heading={typeof sec.data?.title === 'string' ? sec.data.title : undefined}
+          />;
+        }
         if (sec.type === 'Hajj 2027 Registration Form') {
           const rawSlug = typeof pageData?.slug === 'string' ? pageData.slug : '/';
           const sourcePage = `/${rawSlug.split('/').filter(Boolean).join('/')}/`;

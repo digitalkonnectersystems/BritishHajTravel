@@ -54,6 +54,89 @@ async function dispatchAndStoreEnquiryEmail(
   );
 }
 
+/** Enquiry for a reusable Umrah registration section on published CMS pages. */
+export async function submitUmrahRegistrationEnquiryAction(data: {
+  name: string;
+  email: string;
+  phone: string;
+  airport: string;
+  packageTier: string;
+  travelDate: string;
+  passengers: number;
+  makkahDays: number;
+  madinahDays: number;
+  sourcePage: string;
+}) {
+  const sourcePage = '/' + String(data.sourcePage || '').split('/').filter(Boolean).join('/') + '/';
+  if (sourcePage.length > 255 || sourcePage.includes('..')) {
+    return { success: false, error: 'Invalid enquiry page.' };
+  }
+  const clean = {
+    name: String(data.name || '').trim(),
+    email: String(data.email || '').trim(),
+    phone: String(data.phone || '').trim(),
+    airport: String(data.airport || '').trim(),
+    packageTier: String(data.packageTier || '').trim(),
+    travelDate: String(data.travelDate || '').trim(),
+    passengers: data.passengers,
+    makkahDays: data.makkahDays,
+    madinahDays: data.madinahDays,
+  };
+  const dateValid = /^\d{4}-\d{2}-\d{2}$/.test(clean.travelDate)
+    && !Number.isNaN(Date.parse(clean.travelDate))
+    && new Date(clean.travelDate).toISOString().slice(0, 10) === clean.travelDate;
+  if (!validName(clean.name) || !validEmail(clean.email) || !isValidUkPhone(clean.phone) ||
+      !clean.airport || clean.airport.length > 120 || !clean.packageTier || clean.packageTier.length > 120 ||
+      !dateValid || !countOk(clean.passengers, 1) ||
+      !countOk(clean.makkahDays, 1) || clean.makkahDays > 60 ||
+      !countOk(clean.madinahDays, 1) || clean.madinahDays > 60) {
+    return { success: false, error: 'Please complete all fields with valid details. Phone must be +44 followed by 10 digits.' };
+  }
+  try {
+    const pageSlug = sourcePage === '/' ? '/' : sourcePage.slice(0, -1);
+    const cmsPage = await getPageBySlug(pageSlug);
+    const sections = (() => {
+      if (!cmsPage?.sections) return [] as any[];
+      if (Array.isArray(cmsPage.sections)) return cmsPage.sections;
+      try { const parsed = JSON.parse(String(cmsPage.sections)); return Array.isArray(parsed) ? parsed : []; }
+      catch { return [] as any[]; }
+    })();
+    if (cmsPage?.status !== 'published' || !sections.some((section: any) =>
+      section?.type === 'Umrah Enquiry 2026-27 Form' && section.hidden !== true && section.visible !== false)) {
+      return { success: false, error: 'This Umrah form is not available on this page.' };
+    }
+    const settings = await getFormsSettings();
+    if (settings.formsData?.umrahRegistrationForm?.enabled === false) {
+      return { success: false, error: 'This Umrah form is currently unavailable.' };
+    }
+    const enquiryNumber = enquiryReference('UM');
+    const details = [
+      `Page: ${sourcePage}`, `Airport: ${clean.airport}`, `Umrah Package: ${clean.packageTier}`,
+      `Estimated Date of Travel: ${clean.travelDate}`, `Passengers: ${clean.passengers}`,
+      `Days in Makkah: ${clean.makkahDays}`, `Days in Madinah: ${clean.madinahDays}`,
+    ].join('\n');
+    await db.insert(enquiries).values({
+      enquiryNumber, type: 'quote_request', fullName: clean.name, email: clean.email,
+      phone: clean.phone, preferredPackageType: clean.packageTier, adults: clean.passengers,
+      message: details, sourceForm: 'Umrah Enquiry 2026-27 Form', status: 'new',
+    });
+    await recordPublicEnquiry('Umrah Enquiry 2026-27 Form', enquiryNumber);
+    const emailResult = await dispatchAndStoreEnquiryEmail(enquiryNumber, 'Umrah Enquiry 2026-27 Form', {
+      enquiryNumber, fullName: clean.name, email: clean.email, phone: clean.phone,
+      airport: clean.airport, packageTier: clean.packageTier, travelDate: clean.travelDate,
+      passengers: clean.passengers, makkahDays: clean.makkahDays, madinahDays: clean.madinahDays,
+      sourcePage,
+    });
+    revalidatePath('/admin/enquiries');
+    revalidatePath('/admin/dashboard');
+    return { success: true, enquiryNumber, emailWarning: emailResult.error };
+  } catch (error) {
+    console.error('Umrah registration enquiry failed:', error);
+    await recordSubmissionFailure('umrahRegistrationForm', error);
+    return { success: false, error: 'Unable to save your enquiry. Please try again.' };
+  }
+}
+
 /** Shared inline Hajj 2027 enquiry form used on five public Hajj pages. */
 export async function submitHajjRegistrationEnquiryAction(data: {
   name: string;

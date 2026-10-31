@@ -9,6 +9,7 @@ export type FormEmailTemplates = Record<string, FormEmailTemplatePair>;
 // These keys are stable identifiers and must match the form's actual submission source.
 export const EMAIL_FORM_DEFINITIONS = [
   { key: 'hajjRegistrationForm', name: 'Hajj 2027 Registration Form', fields: 'enquiryNumber fullName email phone postcode airport packageTier passengers days room budget sourcePage' },
+  { key: 'umrahRegistrationForm', name: 'Umrah Enquiry 2026-27 Form', fields: 'enquiryNumber fullName email phone airport packageTier travelDate passengers makkahDays madinahDays sourcePage' },
   { key: 'baanHoldingHajjForm', name: 'BAAN Holding Hajj Interest Form', fields: 'enquiryNumber fullName email phone postcode airport packageTier passengers days room budget' },
   { key: 'quoteForm', name: 'Get a Free Quote', fields: 'enquiryNumber fullName email phone packageType numberOfPilgrims message' },
   { key: 'packageDetailForm', name: 'Book Umrah Package', fields: 'bookingNumber packageName packageType fullName email phone adults children infants startDate totalPrice message' },
@@ -29,6 +30,8 @@ export const EMAIL_FORM_DEFINITIONS = [
 // Additional existing forms remain supported without removing their working routes.
 const ALIASES: Record<string, string> = {
   'Hajj 2027 Registration Form': 'hajjRegistrationForm',
+  'Umrah Enquiry 2026-27 Form': 'umrahRegistrationForm',
+  'Umrah Registration Form': 'umrahRegistrationForm',
   'BAAN Holding Hajj Interest Form': 'baanHoldingHajjForm',
   'Hajj Customize Form': 'hajjCustomizeForm',
   'Hajj Page — Customize Your Hajj Package Form': 'hajjCustomizeForm',
@@ -169,6 +172,7 @@ export function validateFormEmailTemplates(input: FormEmailTemplates): string | 
   return null;
 }
 export const FORM_EMAIL_SAMPLES: Record<string, Record<string, unknown>> = {
+  umrahRegistrationForm: { enquiryNumber: 'UM-123', fullName: 'Aisha Khan', email: 'aisha@example.com', phone: '+447957197390', airport: 'London (LON)', packageTier: '5-Star', travelDate: '2027-02-15', passengers: 2, makkahDays: 10, madinahDays: 8, sourcePage: '/umrah-packages/' },
   hajjRegistrationForm: { enquiryNumber: 'HJ-123', fullName: 'Ahmed Khan', email: 'ahmed@example.com', phone: '+447957197390', postcode: 'PR1 1AA', airport: 'London (LON)', packageTier: '5-Star', passengers: 2, days: '12 Days Packages', room: 'Double Room', budget: '5K - 7K', sourcePage: '/hajj-packages/' },
   baanHoldingHajjForm: { enquiryNumber: 'BH-123', fullName: 'Ahmed Khan', email: 'ahmed@example.com', phone: '+447957197390', postcode: 'PR1 1AA', airport: 'London (LON)', packageTier: '5-Star', passengers: 2, days: '12 Days Packages', room: 'Double Room', budget: '5K - 7K' },
   hajjCustomizeForm: { enquiryNumber: 'QT-122', fullName: 'Fatima', email: 'fatima@example.com', phone: '+447957197390', packageType: 'Hajj', numberOfPilgrims: 2 },

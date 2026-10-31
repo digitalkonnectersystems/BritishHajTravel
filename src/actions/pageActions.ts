@@ -1292,6 +1292,17 @@ export async function clearFormsSettingsCache() {
 }
 
 const DEFAULT_FORM_FIELDS_STATE: Record<string, Array<{ id: string; label: string; type: string; placeholder: string; required: boolean }>> = {
+  umrahRegistrationForm: [
+    { id: 'name', label: 'Name', type: 'text', placeholder: 'Name', required: true },
+    { id: 'email', label: 'Email', type: 'email', placeholder: 'Email', required: true },
+    { id: 'phone', label: 'Phone', type: 'tel', placeholder: 'xxxx-xxxx xxx', required: true },
+    { id: 'airport', label: 'Airport', type: 'select', placeholder: 'London (LON)', required: true },
+    { id: 'packageTier', label: 'Umrah Package', type: 'select', placeholder: '5-Star', required: true },
+    { id: 'travelDate', label: 'Estimated Date of Travel', type: 'date', placeholder: 'Select Date', required: true },
+    { id: 'passengers', label: 'Number of Passengers', type: 'number', placeholder: 'Number of Passengers', required: true },
+    { id: 'makkahDays', label: 'Number of Days in Makkah', type: 'select', placeholder: '10', required: true },
+    { id: 'madinahDays', label: 'Number of Days in Madinah', type: 'select', placeholder: '8', required: true },
+  ],
   hajjRegistrationForm: [
     { id: 'name', label: 'Name', type: 'text', placeholder: 'Name', required: true },
     { id: 'email', label: 'Email', type: 'email', placeholder: 'Email', required: true },
@@ -1411,6 +1422,7 @@ const DEFAULT_FORM_FIELDS_STATE: Record<string, Array<{ id: string; label: strin
 };
 
 const DEFAULT_FORMS_DATA: Record<string, any> = {
+  umrahRegistrationForm: { title: 'Umrah Enquiry 2026-27 Form', subtitle: 'Reusable Umrah registration form, place on any published CMS page.', recipientEmail: '', successMessage: 'Your Umrah enquiry has been received. We will be in touch.', enabled: true, buttonText: 'Submit', fieldsCount: 9 },
   hajjRegistrationForm: { title: 'Hajj 2027 Registration Form', subtitle: 'Appears after the banner on five Hajj pages.', recipientEmail: '', successMessage: 'Your Hajj registration enquiry was received.', enabled: true, buttonText: 'Submit', fieldsCount: 10 },
   baanHoldingHajjForm: { title: 'BAAN Holding Hajj — Registration of Interest', subtitle: 'Enquiry popup at /baan-holding-hajj', recipientEmail: 'booking@britishhajjtravel.com', successMessage: 'Your Hajj 2027 interest has been registered.', enabled: true, buttonText: 'Submit Enquiry', fieldsCount: 10 },
   quoteForm: {

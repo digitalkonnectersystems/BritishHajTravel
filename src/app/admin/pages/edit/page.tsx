@@ -353,6 +353,8 @@ const SECTION_CATALOG: SectionCategory[] = [
 
       { type: 'Banner 4 Grids', description: 'Reusable responsive icon and title cards. Editable items, order and positioning; works on any CMS page.', pages: ['Any Page', 'Homepage', 'Hajj Packages', 'Umrah Packages'] },
 
+      { type: 'Umrah Enquiry 2026-27 Form', description: 'Reusable nine-field Umrah enquiry section with separate admin/customer email templates.', pages: ['Any Page', 'Umrah Packages', 'Homepage'] },
+
       { type: 'Hajj 2027 Registration Form', description: 'Reusable 10-field Hajj enquiry form with global form fields and separate admin/customer email templates. Place and reorder on any CMS page.', pages: ['Any Page', 'Hajj Packages', 'Homepage'] },
 
       { type: 'Image+Text', description: 'Split image-and-text block with eyebrow, heading, body, and optional CTA.', pages: ['Any Page'] },
@@ -1519,6 +1521,10 @@ function PageBuilderContent() {
         ],
 
       };
+
+    } else if (type === 'Umrah Enquiry 2026-27 Form') {
+
+      defaultData = { title: 'Umrah Enquiry 2026-27' };
 
     } else if (type === 'Hajj 2027 Registration Form') {
 
@@ -4801,6 +4807,20 @@ function PageBuilderContent() {
                               </div>
                             )}
 
+                            {sec.type === 'Umrah Enquiry 2026-27 Form' && (
+                              <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
+                                <h4 className="text-sm font-bold text-primary">Umrah Enquiry 2026-27 Form</h4>
+                                <p className="text-xs text-slate-500">Move this section to position the form. Configure its fields and separate admin/customer email templates under Settings &gt; Forms.</p>
+                                <label className="block text-xs font-semibold text-slate-700">
+                                  Form heading
+                                  <input type="text" maxLength={140} value={sec.data?.title ?? 'Umrah Enquiry 2026-27'}
+                                    onChange={(e) => updateSectionData(sec.id, 'title', e.target.value)}
+                                    className="block w-full p-2 border border-slate-300 rounded mt-1" />
+                                </label>
+                                <Link href="/admin/settings" className="text-xs font-semibold text-primary underline">Configure form fields and email templates</Link>
+                              </div>
+                            )}
+
                             {sec.type === 'Hajj 2027 Registration Form' && (
                               <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
                                 <h4 className="text-sm font-bold text-primary">Hajj 2027 Registration Form</h4>
@@ -4826,7 +4846,7 @@ function PageBuilderContent() {
 
                             {/* Universal Section Header Block (Eyebrow, Heading, Description) - Hidden for Blog sections */}
 
-                            {sec.type !== 'Latest Blogs Grid' && sec.type !== 'Blog Posts Carousel' && sec.type !== 'Testimonials' && sec.type !== 'Hajj Services Grid' && sec.type !== 'Text Block (Rich Text)' && sec.type !== 'Packages Content (Rich Text)' && sec.type !== 'Hajj 2027 Registration Form' && !['Package Detail Blocks', 'Package Flight Details', 'Package Hotel Details', 'Package Occupancy Prices', 'Package Inclusions', 'Package Detail Gallery'].includes(sec.type) && (
+                            {sec.type !== 'Latest Blogs Grid' && sec.type !== 'Blog Posts Carousel' && sec.type !== 'Testimonials' && sec.type !== 'Hajj Services Grid' && sec.type !== 'Text Block (Rich Text)' && sec.type !== 'Packages Content (Rich Text)' && sec.type !== 'Hajj 2027 Registration Form' && sec.type !== 'Umrah Enquiry 2026-27 Form' && !['Package Detail Blocks', 'Package Flight Details', 'Package Hotel Details', 'Package Occupancy Prices', 'Package Inclusions', 'Package Detail Gallery'].includes(sec.type) && (
 
                               <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 flex flex-col gap-2">
 

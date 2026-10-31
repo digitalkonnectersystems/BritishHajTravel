@@ -417,7 +417,18 @@ export default function AdminSettingsPage() {
   }, [activeTab, formsSubTab]);
 
   const [formFieldsState, setFormFieldsState] = useState<Record<string, Array<{ id: string; label: string; type: string; placeholder: string; required: boolean }>>>({
-    hajjRegistrationForm: [
+    umrahRegistrationForm: [
+    { id: 'name', label: 'Name', type: 'text', placeholder: 'Name', required: true },
+    { id: 'email', label: 'Email', type: 'email', placeholder: 'Email', required: true },
+    { id: 'phone', label: 'Phone', type: 'tel', placeholder: 'xxxx-xxxx xxx', required: true },
+    { id: 'airport', label: 'Airport', type: 'select', placeholder: 'London (LON)', required: true },
+    { id: 'packageTier', label: 'Umrah Package', type: 'select', placeholder: '5-Star', required: true },
+    { id: 'travelDate', label: 'Estimated Date of Travel', type: 'date', placeholder: 'Select Date', required: true },
+    { id: 'passengers', label: 'Number of Passengers', type: 'number', placeholder: 'Number of Passengers', required: true },
+    { id: 'makkahDays', label: 'Number of Days in Makkah', type: 'select', placeholder: '10', required: true },
+    { id: 'madinahDays', label: 'Number of Days in Madinah', type: 'select', placeholder: '8', required: true },
+  ],
+  hajjRegistrationForm: [
     { id: 'name', label: 'Name', type: 'text', placeholder: 'Name', required: true },
     { id: 'email', label: 'Email', type: 'email', placeholder: 'Email', required: true },
     { id: 'phone', label: 'Phone', type: 'tel', placeholder: 'xxxx-xxxx xxx', required: true },
@@ -592,6 +603,7 @@ export default function AdminSettingsPage() {
   };
 
   const [formsData, setFormsData] = useState<any>({
+    umrahRegistrationForm: { title: 'Umrah Enquiry 2026-27 Form', subtitle: 'Reusable 9-field Umrah enquiry form for any published CMS page.', recipientEmail: '', successMessage: 'Your Umrah enquiry has been received. We will be in touch.', enabled: true, buttonText: 'Submit' },
     hajjRegistrationForm: { title: 'Hajj 2027 Registration Form', subtitle: 'Inline registration enquiry form immediately after the banner on Hajj Packages, Hajj 2027 Registration, Yosr Al Mashaer, Holiday in Bakkah, and BAAN Holding Hajj.', recipientEmail: '', successMessage: 'Your Hajj 2027 registration enquiry has been received. We will be in touch.', enabled: true, buttonText: 'Submit' },
     baanHoldingHajjForm: { title: 'BAAN Holding Hajj Interest Form', subtitle: 'BAAN Holding Hajj page registration modal at /baan-holding-hajj/.', recipientEmail: 'booking@britishhajjtravel.com', successMessage: 'Your BAAN Holding Hajj enquiry has been received.', enabled: true, buttonText: 'Submit Enquiry' },
     quoteForm: { title: 'Homepage Hero Banner — Get a Free Quote Form', subtitle: 'Inline quote form embedded in the Homepage & Umrah landing page hero banner.', recipientEmail: 'saudivisa@britishhajjtravel.com', successMessage: 'Thank you! Your quote request has been received.', enabled: true, buttonText: 'Submit Quote' },
@@ -4225,6 +4237,7 @@ export default function AdminSettingsPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {Object.keys(formsData).map((formKey) => {
                       const DEFAULT_META: Record<string, { title: string; icon: string; desc: string }> = {
+                        umrahRegistrationForm: { title: 'Umrah Enquiry 2026-27 Form', icon: '🕋', desc: 'Reusable Umrah registration form. Add from Pages > Add Section; email templates are configured separately.' },
                         baanHoldingHajjForm: {
                           title: 'BAAN Holding Hajj Interest Form',
                           icon: '🕋',
@@ -4757,7 +4770,7 @@ export default function AdminSettingsPage() {
                         </div>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
                           <div className="bg-[#0B132B] rounded-2xl p-4 text-white flex flex-col gap-3"><div className="text-xs font-bold">&lt;/&gt; EMAIL BODY HTML EDITOR <span className="text-emerald-400 text-[10px]">Live</span></div>
-                            <textarea rows={22} value={activeTemplate.body} onChange={e => updateFormTemplate('body', e.target.value)} className="w-full flex-1 bg-white text-white border border-slate-700 rounded-xl p-3 text-xs font-mono leading-relaxed" />
+                            <textarea rows={22} value={activeTemplate.body} onChange={e => updateFormTemplate('body', e.target.value)} className="w-full flex-1 bg-slate-900 text-white border border-slate-700 rounded-xl p-3 text-xs font-mono leading-relaxed" />
                           </div>
                           <div className="rounded-2xl border border-slate-200 p-4 flex flex-col gap-3"><div className="text-xs font-bold uppercase text-slate-700">Real-time email preview</div>
                             <div className="text-[11px] text-slate-500">To: {renderEmailTokens(activeTemplate.to, selectedForm.name, exampleData) || '(not configured)'}</div>
