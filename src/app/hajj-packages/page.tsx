@@ -4,6 +4,7 @@ import Image from "next/image";
 import { getPackagesByType } from "@/actions/packageActions";
 import { getPageBySlug } from "@/actions/pageActions";
 import PageSectionsRenderer from "@/components/PageSectionsRenderer";
+import { loadCmsSectionContext } from "@/lib/cmsSectionContext";
 import HajjPackagesSection from "@/components/HajjPackagesSection";
 import PackageCustomizationCTA from "@/components/PackageCustomizationCTA";
 import PageBanner from "@/components/PageBanner";
@@ -61,6 +62,7 @@ export default async function HajjPackagesPage() {
 
   if (pageData?.status === 'draft') notFound();
   const cards = liveCards;
+  const sectionContext = await loadCmsSectionContext(pageSections);
 
   return (
     <main>
@@ -75,7 +77,7 @@ export default async function HajjPackagesPage() {
       />
 
       {pageSections.length > 0 ? (
-        <PageSectionsRenderer sections={pageSections} pageData={pageData} initialPackageData={{ hajj: liveCards.length > 0 ? hajjPackages : undefined }} />
+        <PageSectionsRenderer sections={pageSections} pageData={pageData} {...sectionContext} />
       ) : (
         <><HajjPackagesSection data={{}} initialPackages={cards} /><PackageCustomizationCTA journey="hajj" /></>
       )}

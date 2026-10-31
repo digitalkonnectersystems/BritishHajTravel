@@ -445,13 +445,13 @@ function ContactMapsSection({ data }: { data?: any }) {
   );
 }
 
-export default function ContactPageClient({ initialPageData, initialFormConfig }: { initialPageData?: any; initialFormConfig?: any }) {
+export default function ContactPageClient({ initialPageData, initialFormConfig, sectionContext }: { initialPageData?: any; initialFormConfig?: any; sectionContext?: any }) {
   const pageData = initialPageData || null;
   let sections: any[] = [];
   if (pageData?.sections) {
     try {
       const parsed = typeof pageData.sections === "string" ? JSON.parse(pageData.sections) : pageData.sections;
-      if (Array.isArray(parsed)) sections = parsed;
+      if (Array.isArray(parsed)) sections = parsed.filter(s => s && s.hidden !== true && s.visible !== false);
     } catch (e) {
       console.error("Error parsing contact page sections:", e);
     }
@@ -491,7 +491,7 @@ export default function ContactPageClient({ initialPageData, initialFormConfig }
         const handledTypes = ["Contact Info Cards", "Contact Bar", "Contact Form", "Contact Maps", "Google Maps", "Contact Form + Maps"];
         const unhandled = sections.filter((s: any) => !handledTypes.includes(s.type));
         if (unhandled.length > 0) {
-          return unhandled.map((section: any) => <div key={section.id} style={{ order: sections.indexOf(section) * 10 + 10 }}><PageSectionsRenderer sections={[section]} pageData={pageData} /></div>);
+          return unhandled.map((section: any) => <div key={section.id} style={{ order: sections.indexOf(section) * 10 + 10 }}><PageSectionsRenderer sections={[section]} pageData={pageData} {...(sectionContext || {})} /></div>);
         }
         return null;
       })()}

@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import ContactPageClient from "./ContactPageClient";
+import { loadCmsSectionContext } from "@/lib/cmsSectionContext";
 import { getPageBySlug, getFormsSettings } from "@/actions/pageActions";
 import type { Metadata } from "next";
 import { buildPageMetadata } from "@/lib/seoMetadata";
@@ -18,6 +19,9 @@ export default async function ContactPage() {
   const formsConfig = await getFormsSettings();
   const contactFormConfig = formsConfig?.contact || null;
 
-  return <ContactPageClient initialPageData={pageData} initialFormConfig={contactFormConfig} />;
+  let sections: any[] = [];
+  try { const parsed = typeof pageData?.sections === 'string' ? JSON.parse(pageData.sections) : pageData?.sections; sections = Array.isArray(parsed) ? parsed : []; } catch {}
+  const sectionContext = await loadCmsSectionContext(sections);
+  return <ContactPageClient initialPageData={pageData} initialFormConfig={contactFormConfig} sectionContext={sectionContext} />;
 }
 // Force recompile to clear RSC cache

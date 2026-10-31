@@ -7,6 +7,7 @@ import AvailableSeatsSection from '@/components/AvailableSeatsSection';
 import MarqueeTrack from '@/components/MarqueeTrack';
 import PageBanner from '@/components/PageBanner';
 
+
 type AirlineSectionData = {
   items?: unknown[];
   logos?: unknown[];
@@ -62,10 +63,11 @@ const handledTypes = new Set([
   'Flight Desk CTA',
 ]);
 
-export default function AirlinesPageClient({ initialPageData }: { initialPageData?: AirlinePageData }) {
-  const pageData = initialPageData || null;
-  const sections = parseAirlineSections(pageData?.sections);
+export default function AirlinesPageClient({ initialPageData, sectionContext }: { initialPageData?: any; sectionContext?: any }) {
+  const pageData: AirlinePageData | null = initialPageData || null;
+  const sections = parseAirlineSections(pageData?.sections).filter((section: any) => section.hidden !== true && section.visible !== false);
 
+  const unhandledSections = sections.filter((section) => !handledTypes.has(section.type));
 
   return (
     <main className="min-h-screen bg-blue-lt">
@@ -139,8 +141,9 @@ export default function AirlinesPageClient({ initialPageData }: { initialPageDat
               );
             }
 
-            return <PageSectionsRenderer key={index} sections={[section]} pageData={pageData} />;
+            return null;
           })}
+          {unhandledSections.length > 0 ? <PageSectionsRenderer sections={unhandledSections} pageData={pageData} {...(sectionContext || {})} /> : null}
         </>
       )}
     </main>

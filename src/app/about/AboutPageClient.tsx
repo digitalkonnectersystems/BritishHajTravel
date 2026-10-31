@@ -4,6 +4,7 @@ import Image from "next/image";
 import PageBanner from "@/components/PageBanner";
 import CertificationsFlipCardsSection from "@/components/CertificationsFlipCardsSection";
 import PageSectionsRenderer from "@/components/PageSectionsRenderer";
+import SafeRichText from "@/components/SafeRichText";
 
 function SavedStats({ items }: { items: any[] }) {
   if (!items?.length) return null;
@@ -19,7 +20,7 @@ function SavedStats({ items }: { items: any[] }) {
   </div>;
 }
 
-export default function AboutPageClient({ initialPageData }: { initialPageData?: any }) {
+export default function AboutPageClient({ initialPageData, sectionContext }: { initialPageData?: any; sectionContext?: any }) {
   const pageData = initialPageData || null;
 
   let parsedSections: any[] = [];
@@ -27,7 +28,7 @@ export default function AboutPageClient({ initialPageData }: { initialPageData?:
     try {
       const dbSecs = typeof pageData.sections === "string" ? JSON.parse(pageData.sections) : pageData.sections;
       if (Array.isArray(dbSecs) && dbSecs.length > 0) {
-        parsedSections = dbSecs;
+        parsedSections = dbSecs.filter((sec: any) => sec && sec.hidden !== true && sec.visible !== false);
       }
     } catch (e) {
       console.error("Error parsing about page sections:", e);
@@ -85,6 +86,7 @@ export default function AboutPageClient({ initialPageData }: { initialPageData?:
                       alt={sec.data?.title || "Why Choose Us"}
                       width={800}
                       height={450}
+                      unoptimized={/\.svg(?:[?#]|$)/i.test(sec.data.image)}
                       className="w-full h-auto"
                     />}
                   </div>
@@ -112,7 +114,7 @@ export default function AboutPageClient({ initialPageData }: { initialPageData?:
         // Section Type 4: Services Grid (What We Provide)
         if (sec.type === "Services Grid" || sec.type === "What We Provide") {
           const svcs = Array.isArray(sec.data?.items) ? sec.data.items : [];
-          if (!svcs.length) return null;
+          if (!svcs.length && !sec.data?.title && !sec.data?.eyebrow && !sec.data?.description) return null;
           return (
             <section key={idx} className="services-section py-10">
               <div className="wrap">
@@ -120,7 +122,8 @@ export default function AboutPageClient({ initialPageData }: { initialPageData?:
                   <span className="eyebrow mx-auto block">{sec.data?.eyebrow || ""}</span>
                   <h2 className="sectionpr-title">{sec.data?.title || ""}</h2>
                 </div>
-                <div className="flex flex-col md:grid md:grid-cols-2 gap-6">
+                {sec.data?.description && <p className="text-center text-sm text-slate-600 max-w-4xl mx-auto mb-6">{sec.data.description}</p>}
+                {svcs.length > 0 && <div className="flex flex-col md:grid md:grid-cols-2 gap-6">
                   {svcs.map((item: any, i: number) => (
                     <div key={i} className="about-service-card">
                       <div className="flex items-center gap-3 mb-4">
@@ -133,7 +136,7 @@ export default function AboutPageClient({ initialPageData }: { initialPageData?:
                       <p className="text-[14px] text-ink-soft leading-relaxed font-normal m-0">{item.description}</p>
                     </div>
                   ))}
-                </div>
+                </div>}
               </div>
             </section>
           );
@@ -148,7 +151,9 @@ export default function AboutPageClient({ initialPageData }: { initialPageData?:
                 {badges.map((b: any, bI: number) => (
                   <div key={bI} className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center gap-3">
                     <div className="w-12 h-12 rounded-full bg-emerald-50/80 flex items-center justify-center text-primary text-xl">
-                      {b.iconType === "fontawesome" || !b.iconType ? (
+                      {b.iconType === 'image' && b.icon ? (
+                        <Image src={b.icon} alt={b.title || 'Accreditation'} width={48} height={48} unoptimized={/\.svg(?:[?#]|$)/i.test(b.icon)} className="w-full h-full object-contain" />
+                      ) : b.iconType === "fontawesome" || !b.iconType ? (
                         <i className={b.icon}></i>
                       ) : (
                         <span className="font-bold text-sm">{b.icon}</span>
@@ -266,18 +271,11 @@ export default function AboutPageClient({ initialPageData }: { initialPageData?:
         // }
 
         if (sec.type === 'Text Block (Rich Text)') {
-          let content: string = sec.data?.content || '';
-          if (!content) return null;
-          content = content.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, '\u00a0');
-          const innerM = content.match(/^<p>([\s\S]*)<\/p>$/);
-          if (innerM) { const inner = innerM[1].trim(); if (/^<(h[1-6]|ul|ol|blockquote)/.test(inner)) content = inner; }
+          const content: string = sec.data?.content || '';
           if (!content || content === '<p></p>') return null;
           return (
-            <section key={idx} className="bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-slate-100 max-w-5xl mx-auto my-8 w-full">
-              <div
-                className="prose prose-slate prose-headings:font-serif prose-headings:text-primary prose-a:text-primary prose-strong:text-slate-900 max-w-none text-sm leading-relaxed"
-                dangerouslySetInnerHTML={{ __html: content }}
-              />
+            <section key={sec.id || idx} className="bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-slate-100 max-w-5xl mx-auto my-8 w-full">
+              <SafeRichText html={content} className="prose prose-slate prose-headings:font-serif prose-headings:text-primary prose-a:text-primary prose-strong:text-slate-900 max-w-none text-sm leading-relaxed" />
             </section>
           );
         }
@@ -286,7 +284,7 @@ export default function AboutPageClient({ initialPageData }: { initialPageData?:
           return <CertificationsFlipCardsSection key={idx} data={sec.data || {}} />;
         }
 
-        return <PageSectionsRenderer key={idx} sections={[sec]} pageData={pageData} />;
+        return <PageSectionsRenderer key={sec.id || idx} sections={[sec]} pageData={pageData} {...(sectionContext || {})} />;
       })}
     </main>
   );

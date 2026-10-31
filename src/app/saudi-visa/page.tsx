@@ -4,6 +4,7 @@ import Link from "next/link";
 import PageBanner from "@/components/PageBanner";
 import VisaSolutionsSection from "@/components/VisaSolutionsSection";
 import PageSectionsRenderer from "@/components/PageSectionsRenderer";
+import { loadCmsSectionContext } from "@/lib/cmsSectionContext";
 import UmrahVisaApplicationSection from "@/components/UmrahVisaApplicationSection";
 import UmrahVisaServicesOverviewSection from "@/components/UmrahVisaServicesOverviewSection";
 import UmrahVisaDocumentGuideSection from "@/components/UmrahVisaDocumentGuideSection";
@@ -90,15 +91,16 @@ export default async function SaudiVisaPage() {
   
   if (pageData?.sections) {
     try {
-      const parsed = JSON.parse(pageData.sections);
+      const parsed = typeof pageData.sections === "string" ? JSON.parse(pageData.sections) : pageData.sections;
       if (Array.isArray(parsed) && parsed.length > 0) {
-        sections = parsed;
+        sections = parsed.filter((sec: any) => sec && sec.hidden !== true && sec.visible !== false);
       }
     } catch (e) {
       console.error("Error parsing page sections:", e);
     }
   }
 
+  const sectionContext = await loadCmsSectionContext(sections);
   return (
     <main className="flex flex-col">
       {/* ================= DYNAMIC HERO BANNER ================= */}
@@ -159,7 +161,7 @@ export default async function SaudiVisaPage() {
             )}
 
             {unhandledSections.length > 0 && (
-              unhandledSections.map((section: any) => <div key={section.id} style={{ order: sections.indexOf(section) * 10 + 10 }}><PageSectionsRenderer sections={[section]} pageData={pageData} /></div>)
+              unhandledSections.map((section: any) => <div key={section.id} style={{ order: sections.indexOf(section) * 10 + 10 }}><PageSectionsRenderer sections={[section]} pageData={pageData} {...sectionContext} /></div>)
             )}
           </div>
         );

@@ -40,6 +40,7 @@ import ProcessStepsSection from '@/components/ProcessStepsSection';
 import GuideVideoSection from '@/components/GuideVideoSection';
 import SafeRichText from '@/components/SafeRichText';
 import HotelDirectorySection from '@/components/HotelDirectorySection';
+import CmsBasicSection from '@/components/CmsBasicSections';
 import type { DirectoryCategory } from '@/lib/hotelSectionSelection';
 import { useEffect, useRef, useState } from "react";
 export default function PageSectionsRenderer({ sections, pageData, initialPackageData, initialDestinationData, initialBlogData, initialGuideData, publishedVisaCards, publishedSitePaths, initialHotelDirectory = [] }: { sections: any[], pageData?: any, initialPackageData?: any, initialDestinationData?: any[], initialBlogData?: any[], initialGuideData?: any[], publishedVisaCards?: { slug: string; title: string }[], publishedSitePaths?: string[], initialHotelDirectory?: DirectoryCategory[] }) {
@@ -60,6 +61,9 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         if (sec.hidden === true || sec.visible === false) return null;
         // Legacy custom-builder data is intentionally not rendered after removal.
         if (sec.type === 'Custom Layout Builder') return null;
+        if (['Stats Grid','Intro','Image+Text','Intro (Text + Image)','Why Choose Us','Services Grid','Accreditations Bar','Badges Cards'].includes(sec.type)) {
+          return <CmsBasicSection key={sec.id || idx} type={sec.type} data={sec.data || {}} />;
+        }
         if (sec.type === 'Makkah Hotels Directory' || sec.type === 'Madinah Hotels Directory') {
           return <HotelDirectorySection key={sec.id || idx} type={sec.type} data={sec.data || {}} categories={initialHotelDirectory} />;
         }
@@ -559,7 +563,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
           return <HomepageHeroBanner key={idx} data={sec.data} backgroundImage={heroBackgroundImage} pageData={pageData} publishedVisaCards={publishedVisaCards} publishedSitePaths={publishedSitePaths} />;
         }
 
-        if (sec.type === "Who We Are" || sec.type === "Image+Text" || sec.type === "Intro") {
+        if (sec.type === "Who We Are") {
           return <WhoWeAreSection key={idx} data={sec.data} />;
         }
 
@@ -567,11 +571,11 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
           return <div key={idx}><UpcomingUmrahPackages data={sec.data} initialPackages={initialPackageData?.umrah} pageData={pageData} />{pageData?.slug === '/umrah-packages' && !sections.slice(0,idx).some((p:any)=>['Upcoming Umrah Packages','Umrah Packages','Umrah Packages Grid'].includes(p.type) && p.hidden !== true) && <PackageCustomizationCTA journey='umrah' />}</div>;
         }
 
-        if (sec.type === "Travel Services" || sec.type === "Services Grid" || sec.type === "Umrah Services Grid" || sec.type === "Hajj Services Grid") {
+        if (sec.type === "Travel Services" || sec.type === "Umrah Services Grid" || sec.type === "Hajj Services Grid") {
           return <TravelServicesSection key={idx} data={sec.data} />;
         }
 
-        if (sec.type === "What We Provide" || sec.type === "Why Choose Us" || sec.type === "Stats Grid" || sec.type === "Accreditations Bar") {
+        if (sec.type === "What We Provide") {
           return <WhatWeProvideSection key={idx} data={sec.data} />;
         }
 
@@ -583,7 +587,9 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
           return <Banner4GridsSection key={idx} data={sec.data || {}} isInnerBanner={pageData?.slug !== '/'} />;
         }
 
-        // Return null for any unmapped sections
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn(`[CMS] No frontend renderer for section type "${sec.type}" on ${pageData?.slug || 'unknown page'}`);
+        }
         return null;
       })}
     </div>

@@ -4,6 +4,7 @@ import { getHotelDirectory } from '@/actions/hotelActions';
 import { getPageBySlug } from '@/actions/pageActions';
 import PageBanner from '@/components/PageBanner';
 import PageSectionsRenderer from '@/components/PageSectionsRenderer';
+import { loadCmsSectionContext } from '@/lib/cmsSectionContext';
 import { buildPageMetadata } from '@/lib/seoMetadata';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -22,6 +23,7 @@ export default async function HotelsPage() {
     const stored = typeof page?.sections === 'string' ? JSON.parse(page.sections) : page?.sections;
     sections = Array.isArray(stored) ? stored : [];
   } catch { sections = []; }
+  const sectionContext = await loadCmsSectionContext(sections);
   const active = sections.filter(s => s && s.hidden !== true && s.visible !== false);
 
   return <main className="min-h-screen bg-blue-lt pb-16">
@@ -33,7 +35,7 @@ export default async function HotelsPage() {
       size={page?.bannerSize || undefined}
       heroSettings={page?.seoSettings}
     />
-    {active.length ? <PageSectionsRenderer sections={sections} pageData={page} initialHotelDirectory={categories} /> :
+    {active.length ? <PageSectionsRenderer sections={sections} pageData={page} {...sectionContext} initialHotelDirectory={categories} /> :
       <div className="mx-auto max-w-4xl px-5 py-20 text-center text-slate-500">Hotel listings will be available soon.</div>}
   </main>;
 }

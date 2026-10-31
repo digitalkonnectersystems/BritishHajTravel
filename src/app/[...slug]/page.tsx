@@ -1,12 +1,11 @@
-import { getSoldOutDestinationPackages } from '@/actions/destinationActions';
 import { notFound, redirect, permanentRedirect } from "next/navigation";
 import { lookupRedirect, recordNotFound } from "@/actions/redirectActions";
 import type { Metadata } from "next";
-import { getGuidesList, getPageBySlug } from "@/actions/pageActions";
-import { getHotelDirectory } from "@/actions/hotelActions";
-import { getPackagesByType, getSoldOutPackages } from "@/actions/packageActions";
+import { getPageBySlug } from "@/actions/pageActions";
 import PageBanner from "@/components/PageBanner";
 import PageSectionsRenderer from "@/components/PageSectionsRenderer";
+import AboutPageClient from '@/app/about/AboutPageClient';
+import { loadCmsSectionContext } from '@/lib/cmsSectionContext';
 import RelatedUmrahPackages from "@/components/seasonal/RelatedUmrahPackages";
 import { getPackageBySlug } from "@/actions/packageActions";
 import PackageDetailPageClient from "@/app/package/[slug]/PackageDetailPageClient";
@@ -22,6 +21,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug = [] } = await params;
   const slugPath = `/${slug.join('/')}`;
+  if (slugPath === '/about') return {};
 
   const page = await getPageBySlug(slugPath).catch(() => null);
   if (page && page.status !== 'draft') {
@@ -46,6 +46,7 @@ export default async function DynamicPage({
 }) {
   const { slug = [] } = await params;
   const slugPath = `/${slug.join("/")}`;
+  if (slugPath === "/about") notFound();
   const showRelatedUmrahPackages = [
     "/ramadan-umrah-packages",
     "/october-umrah-packages",
@@ -103,32 +104,11 @@ export default async function DynamicPage({
     }
   }
 
-  // Only preload package data when this page actually renders package sections.
-  // This avoids extra DB work on ordinary CMS pages while removing the
-  // post-hydration package fetch/skeleton on package-heavy pages.
-  const hasSoldOut = sections.some((sec: any) => sec?.type === "Sold Out Packages");
-  const needsUmrah = sections.some((sec: any) =>
-    ["Upcoming Umrah Packages", "Umrah Packages", "Umrah Packages Grid"].includes(sec?.type)
-  );
-  const needsHajj = sections.some((sec: any) =>
-    ["Hajj Packages", "Packages Grid"].includes(sec?.type)
-  );
-  const isGalleryPage = sections.some((sec: any) => sec?.type === "Gallery");
-  const guideCategories = Array.from(new Set(sections.map((sec: any) => sec?.type === "Guide" ? sec.data?.guideCategory : null).filter(Boolean)));
-  const initialGuideData = guideCategories.length > 0
-    ? (await Promise.all(guideCategories.map((category) => getGuidesList(category, false)))).flat()
-    : [];
-
-  const needsHotelDirectory = sections.some((sec: any) =>
-    ['Makkah Hotels Directory', 'Madinah Hotels Directory'].includes(sec?.type) && sec?.hidden !== true && sec?.visible !== false
-  );
-  const initialHotelDirectory = needsHotelDirectory ? await getHotelDirectory() : [];
-
-  const [umrahPackages, hajjPackages, soldOutPackages] = await Promise.all([
-    needsUmrah ? getPackagesByType("umrah") : Promise.resolve([]),
-    needsHajj ? getPackagesByType("hajj") : Promise.resolve([]),
-    hasSoldOut ? Promise.all([getSoldOutPackages(), getSoldOutDestinationPackages()]).then(([p, d]) => [...p, ...d]) : Promise.resolve([]),
-  ]);
+  const sectionContext = await loadCmsSectionContext(sections);
+  const isGalleryPage = sections.some((sec: any) => sec?.type === 'Gallery');
+  if (slugPath === '/about-umrah') {
+    return <AboutPageClient initialPageData={page} sectionContext={sectionContext} />;
+  }
 
   const isFlightBooking = slug.join("/") === "airline-tickets-booking";
 
@@ -168,13 +148,7 @@ export default async function DynamicPage({
           <PageSectionsRenderer
             sections={sections}
             pageData={page}
-            initialPackageData={{
-              umrah: needsUmrah ? umrahPackages : undefined,
-              hajj: needsHajj ? hajjPackages : undefined,
-              soldOut: hasSoldOut ? soldOutPackages : undefined,
-            }}
-            initialGuideData={initialGuideData}
-            initialHotelDirectory={initialHotelDirectory}
+            {...sectionContext}
           />
         </div>
       ) : page.richText ? (

@@ -449,10 +449,10 @@ export async function getDefaultNavItems() {
     {
       id: '1',
       label: 'About Us',
-      url: '/about',
+      url: '/about-umrah',
       level: 1,
       children: [
-        { id: '2-1', label: 'Licenses', url: '/about#licenses', level: 2 },
+        { id: '2-1', label: 'Licenses', url: '/about-umrah#licenses', level: 2 },
       ],
     },
     { id: '2', label: 'Umrah Packages', url: '/umrah-packages', level: 1, children: [] },
@@ -602,7 +602,7 @@ export async function getDefaultFooterData() {
     ],
     sitemapTitle: 'SITEMAP',
     sitemapLinks: [
-      { label: 'About Us', url: '/about' },
+      { label: 'About Us', url: '/about-umrah' },
       { label: 'Packages', url: '/umrah-packages' },
       { label: 'Contact', url: '/contact' },
       { label: 'Terms of Use', url: '#' },

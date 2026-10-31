@@ -1,10 +1,8 @@
-import { getSoldOutDestinationPackages } from '@/actions/destinationActions';
 import type { Metadata } from "next";
 import PageSectionsRenderer from "@/components/PageSectionsRenderer";
 import { getPageBySlug } from "@/actions/pageActions";
-import { getLatestBlogs } from "@/actions/blogActions";
 import { getPublishedVisaProcessingCards } from "@/actions/visaProcessingActions";
-import { getSoldOutPackages } from "@/actions/packageActions";
+import { loadCmsSectionContext } from "@/lib/cmsSectionContext";
 import { buildPageMetadata } from "@/lib/seoMetadata";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -13,9 +11,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const [pageData, blogs, publishedVisaCards, saudiVisaPage] = await Promise.all([
+  const [pageData, publishedVisaCards, saudiVisaPage] = await Promise.all([
     getPageBySlug("/"),
-    getLatestBlogs(3),
     getPublishedVisaProcessingCards(),
     getPageBySlug("/saudi-visa"),
   ]);
@@ -33,8 +30,7 @@ export default async function Home() {
     } catch {}
   }
 
-  const hasSoldOut = dynamicSections.some((sec: any) => sec?.type === "Sold Out Packages");
-  const soldOutPackages = hasSoldOut ? [...await getSoldOutPackages(), ...await getSoldOutDestinationPackages()] : [];
+  const sectionContext = await loadCmsSectionContext(dynamicSections);
 
   return (
     <main>
@@ -42,10 +38,10 @@ export default async function Home() {
       <PageSectionsRenderer
         sections={dynamicSections}
         pageData={pageData}
-        initialBlogData={blogs}
+        {...sectionContext}
         publishedVisaCards={publishedVisaCards}
         publishedSitePaths={saudiVisaPage?.status === "published" ? ["/saudi-visa"] : []}
-        initialPackageData={{ soldOut: hasSoldOut ? soldOutPackages : undefined }}
+
       />
     </main>
   );

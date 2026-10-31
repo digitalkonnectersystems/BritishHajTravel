@@ -1154,7 +1154,7 @@ function PageBuilderContent() {
 
                 ]);
 
-              } else if (p.slug === '/about' || pageId === 2) {
+              } else if (p.slug === '/about-umrah' || pageId === 2) {
 
                 setSections([
 
@@ -1248,7 +1248,7 @@ function PageBuilderContent() {
 
             }
 
-          } else if (p.slug === '/about' || pageId === 2) {
+          } else if (p.slug === '/about-umrah' || pageId === 2) {
 
             setSections([
 
@@ -6943,17 +6943,7 @@ function PageBuilderContent() {
 
                                     onClick={() => {
 
-                                      const currentServices = [...((sec.data?.items && Array.isArray(sec.data.items)) ? sec.data.items : [
-
-                                        { icon: "✈️", title: "Lowest Fares", subtitle: "We Offer the Lowest Fair on Air Ticketing around the Globe.", description: "As a partner with major airlines, including PIA, British Hajj Travel LTD guarantees the lowest airfares for flights to Pakistan, Saudi Arabia, and beyond." },
-
-                                        { icon: "✨", title: "Special Deals", subtitle: "We Provide Best Prices Of All Inclusive Packages.", description: "We offer exclusive special deals on Umrah, Hajj, and international flight packages, tailored to fit your budget." },
-
-                                        { icon: "🛡️", title: "Trusted & Certified", subtitle: "We are The Only Authorized Saudi Visa Providers UK!", description: "Recognized by IATA, ACTA, TICO, ASTA, ATAC, and the Saudi Ministry of Hajj & Umrah." },
-
-                                        { icon: "🕌", title: "Pilgrimage Experts", subtitle: "We Offer Best Accommodations & Transports In Saudia Arabia", description: "From visa processing and ticketing to 5-star accommodations and guided tours, British Hajj Travel provides a complete pilgrimage experience." }
-
-                                      ])];
+                                      const currentServices = Array.isArray(sec.data?.items) ? [...sec.data.items] : [];
 
                                       currentServices.push({ icon: "🌟", title: "New Service Card", subtitle: "Service Subtitle", description: "Service details description..." });
 
@@ -6971,17 +6961,8 @@ function PageBuilderContent() {
 
                                 </div>
 
-                                {((sec.data?.items && Array.isArray(sec.data.items) && sec.data.items.length > 0) ? sec.data.items : [
-
-                                  { icon: "✈️", title: "Lowest Fares", subtitle: "We Offer the Lowest Fair on Air Ticketing around the Globe.", description: "As a partner with major airlines, including PIA, British Hajj Travel LTD guarantees the lowest airfares for flights to Pakistan, Saudi Arabia, and beyond." },
-
-                                  { icon: "✨", title: "Special Deals", subtitle: "We Provide Best Prices Of All Inclusive Packages.", description: "We offer exclusive special deals on Umrah, Hajj, and international flight packages, tailored to fit your budget." },
-
-                                  { icon: "🛡️", title: "Trusted & Certified", subtitle: "We are The Only Authorized Saudi Visa Providers UK!", description: "Recognized by IATA, ACTA, TICO, ASTA, ATAC, and the Saudi Ministry of Hajj & Umrah." },
-
-                                  { icon: "🕌", title: "Pilgrimage Experts", subtitle: "We Offer Best Accommodations & Transports In Saudia Arabia", description: "From visa processing and ticketing to 5-star accommodations and guided tours, British Hajj Travel provides a complete pilgrimage experience." }
-
-                                ]).map((svc: any, sIdx: number, allItems: any[]) => (
+                                {(!Array.isArray(sec.data?.items) || sec.data.items.length === 0) && <p className="text-xs text-amber-700 bg-amber-50 rounded-lg px-3 py-2">No service cards saved. Click Add Service Card to create and save one. The frontend will display the section heading until cards are added.</p>}
+                                {(Array.isArray(sec.data?.items) ? sec.data.items : []).map((svc: any, sIdx: number, allItems: any[]) => (
 
                                   <div key={sIdx} className="bg-slate-50 border border-slate-300 rounded-lg p-2.5 flex flex-col gap-2 relative">
 
