@@ -38,7 +38,7 @@ import GuideSection from '@/components/GuideSection';
 import FlightAccommodationSection from '@/components/FlightAccommodationSection';
 import ProcessStepsSection from '@/components/ProcessStepsSection';
 import GuideVideoSection from '@/components/GuideVideoSection';
-import { RICH_TEXT_PROSE_CLASS } from '@/lib/richTextProseClass';
+import SafeRichText from '@/components/SafeRichText';
 import { useEffect, useRef, useState } from "react";
 export default function PageSectionsRenderer({ sections, pageData, initialPackageData, initialDestinationData, initialBlogData, initialGuideData, publishedVisaCards, publishedSitePaths }: { sections: any[], pageData?: any, initialPackageData?: any, initialDestinationData?: any[], initialBlogData?: any[], initialGuideData?: any[], publishedVisaCards?: { slug: string; title: string }[], publishedSitePaths?: string[] }) {
   if (!sections || !Array.isArray(sections)) return null;
@@ -140,11 +140,8 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         if (sec.type === 'Text Block (Rich Text)' || sec.type === 'Packages Content (Rich Text)') {
           let content: string = sec.data?.content || '';
           if (!content) return null;
-          content = content.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, '\u00a0');
-          // Ensure empty paragraphs (like those created by pressing Enter) don't collapse
-          content = content.replace(/<p>\s*(?:<br\s*\/?>)?\s*<\/p>/gi, '<p>&nbsp;</p>');
-          const innerM = content.match(/^<p>([\s\S]*)<\/p>$/);
-          if (innerM) { const inner = innerM[1].trim(); if (/^<(h[1-6]|ul|ol|blockquote)/.test(inner)) content = inner; }
+          // SafeRichText normalizes legacy encoded markup and sanitizes it in
+          // the browser. Do not blindly decode every HTML entity here.
           if (!content || content === '<p></p>') return null;
 
           const isPackagesPage = pageData?.slug === '/umrah-packages' || pageData?.slug === 'umrah-packages' || pageData?.slug === '/hajj-packages' || pageData?.slug === 'hajj-packages';
@@ -153,10 +150,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
             return (
               <section key={idx} className="pb-12 md:pt-16 md:pb-16 bg-blue-lt px-4">
                 <div className="section-rich bg-white rounded-3xl p-4 md:p-8 max-w-[1360px] mx-auto w-full">
-                  <div
-                    className={`${RICH_TEXT_PROSE_CLASS} max-w-none text-sm leading-relaxed`}
-                    dangerouslySetInnerHTML={{ __html: content }}
-                  />
+                  <SafeRichText html={content} className="max-w-none text-sm leading-relaxed" />
                 </div>
               </section>
             );
@@ -164,10 +158,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
 
           return (
             <section key={idx} className="section-rich bg-white rounded-3xl p-4 md:p-8 max-w-[1400px] mx-auto w-full">
-              <div
-                className={`${RICH_TEXT_PROSE_CLASS} max-w-none text-sm leading-relaxed`}
-                dangerouslySetInnerHTML={{ __html: content }}
-              />
+              <SafeRichText html={content} className="max-w-none text-sm leading-relaxed" />
             </section>
           );
         }

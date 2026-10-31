@@ -7,6 +7,7 @@ import ImageUploadWidget from './ImageUploadWidget';
 import DurationInput from './DurationInput';
 import IconPicker from './IconPicker';
 import { formatDuration } from '@/lib/packageHelpers';
+import { getPackageHotelEntries, type PackageHotelCard } from '@/lib/packageHotelEntries';
 
 export interface DetailPageData {
   durationText?: string;
@@ -49,6 +50,7 @@ export interface DetailPageData {
     nightsIcon?: string;
     image: string;
   };
+  hotelCards?: PackageHotelCard[];
   overview: {
     groupTitle: string;
     items: string[];
@@ -80,13 +82,15 @@ export default function DetailPageDataFields({
   onChange,
   onHotelSync,
   packagesGallery = [],
-  onGalleryChange
+  onGalleryChange,
+  cardData
 }: {
   data: DetailPageData;
   onChange: (newData: DetailPageData) => void;
   onHotelSync?: (hotelKey: string, field: string, val: string) => void;
   packagesGallery?: string[];
   onGalleryChange?: (gallery: string[]) => void;
+  cardData?: any;
 }) {
   const d = data || defaultDetailPageData;
 
@@ -125,331 +129,58 @@ export default function DetailPageDataFields({
         </div>
       </div>
 
-      {/* Premium Accommodations (Makkah, Madinah, Aziziya, Mina) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Makkah Hotel */}
-        <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200 space-y-4">
-          <h4 className="text-sm font-extrabold text-slate-900 uppercase tracking-wide">Makkah Hotel</h4>
-          <button type="button" aria-pressed={(d.makkahHotel as any)?.isVisible !== false}
-            onClick={() => updateHotel('makkahHotel', 'isVisible' as any, (d.makkahHotel as any)?.isVisible === false)}
-            className="mb-3 rounded-full border border-primary bg-white px-3 py-1 text-xs font-bold text-primary">
-            {(d.makkahHotel as any)?.isVisible !== false ? 'Hide whole hotel card' : 'Show whole hotel card'}
+      {/* Editable hotel cards, migrated from legacy fixed accommodations on first save. */}
+      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h4 className="text-sm font-extrabold uppercase text-slate-900">Package Hotel Details</h4>
+            <p className="text-xs text-slate-500">Edit, add, remove or reorder accommodations. Changes appear on the package detail page.</p>
+          </div>
+          <button type="button" onClick={() => update('hotelCards', [
+            ...getPackageHotelEntries(d, cardData),
+            { id: `new-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, label: 'New Hotel', name: '', location: '', badge: '', nights: '', image: '', isVisible: true, badgeEnabled: true, durationEnabled: true },
+          ])} className="flex items-center gap-1 rounded-lg bg-primary px-3 py-2 text-xs font-bold text-white">
+            <Plus className="w-4 h-4" /> Add Hotel
           </button>
-          <div>
-            <label className="text-[10px] font-bold text-ink-lt mb-1 block">HOTEL NAME</label>
-            <input type="text" value={d.makkahHotel?.name || ''} onChange={e => updateHotel('makkahHotel', 'name', e.target.value)} className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs" />
-          </div>
-          <div>
-            <label className="text-[10px] font-bold text-ink-lt mb-1 block">LOCATION</label>
-            <input type="text" value={d.makkahHotel?.location || ''} onChange={e => updateHotel('makkahHotel', 'location', e.target.value)} className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs" />
-          </div>
-          <div className="space-y-3">
-            <div>
-              <label className="text-[10px] font-bold text-ink-lt mb-1 block">BOARD (BADGE)</label>
-              <div className="flex items-center gap-2">
-                <div className="w-32 shrink-0">
-                  <IconPicker
-                    value={d.makkahHotel?.badgeIcon || 'Utensils'}
-                    onChange={(iconName) => updateHotel('makkahHotel', 'badgeIcon', iconName)}
-                    placeholder="Icon"
-                  />
-                </div>
-                <input
-                  type="text"
-                  value={d.makkahHotel?.badge || ''}
-                  onChange={e => updateHotel('makkahHotel', 'badge', e.target.value)}
-                  placeholder="e.g. Breakfast Included"
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs"
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    const currentEnabled = (d.makkahHotel as any)?.badgeEnabled !== false;
-                    updateHotel('makkahHotel', 'badgeEnabled' as any, !currentEnabled);
-                  }}
-                  title={(d.makkahHotel as any)?.badgeEnabled !== false ? 'Hide board badge on frontend' : 'Display board badge on frontend'}
-                  className={`px-2 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer border flex items-center gap-1 shrink-0 ${(d.makkahHotel as any)?.badgeEnabled !== false
-                    ? 'bg-emerald-50 text-[#004B39] border-emerald-300 hover:bg-emerald-100'
-                    : 'bg-amber-100 text-amber-500 border-amber-500 hover:bg-amber-200 hover:text-amber-600'
-                    }`}
-                >
-                  {(d.makkahHotel as any)?.badgeEnabled !== false ? (
-                    <Eye className="w-3 h-3 text-[#004B39]" />
-                  ) : (
-                    <EyeOff className="w-3 h-3 text-slate-400" />
-                  )}
-                  <span className="text-[10px] font-bold">{(d.makkahHotel as any)?.badgeEnabled !== false ? 'Show' : 'Hide'}</span>
-                </button>
-              </div>
-            </div>
-            <div>
-              <label className="text-[10px] font-bold text-ink-lt mb-1 block">DURATION (DAYS / NIGHTS)</label>
-              <DurationInput
-                value={d.makkahHotel?.nights || '6 Nights'}
-                onChange={(dur) => updateHotel('makkahHotel', 'nights', formatDuration(dur))}
-                defaultUnit="nights"
-                showToggle={true}
-                enabled={(d.makkahHotel as any)?.durationEnabled !== undefined ? (d.makkahHotel as any)?.durationEnabled : (d.makkahHotel as any)?.enabled !== false}
-                onToggleChange={(val) => {
-                  updateHotel('makkahHotel', 'durationEnabled' as any, val as any);
-                  updateHotel('makkahHotel', 'enabled' as any, val as any);
-                }}
-              />
-            </div>
-          </div>
-          <div>
-            <label className="text-[10px] font-bold text-ink-lt mb-1 block">IMAGE URL</label>
-            <ImageUploadWidget
-              value={d.makkahHotel?.image || ''}
-              onChange={(url) => updateHotel('makkahHotel', 'image', url)}
-              subfolder="hotels"
-              compact={true}
-            />
-          </div>
         </div>
-
-        {/* Madinah Hotel */}
-        <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200 space-y-4">
-          <h4 className="text-sm font-extrabold text-slate-900 uppercase tracking-wide">Madinah Hotel</h4>
-          <button type="button" aria-pressed={(d.madinahHotel as any)?.isVisible !== false}
-            onClick={() => updateHotel('madinahHotel', 'isVisible' as any, (d.madinahHotel as any)?.isVisible === false)}
-            className="mb-3 rounded-full border border-primary bg-white px-3 py-1 text-xs font-bold text-primary">
-            {(d.madinahHotel as any)?.isVisible !== false ? 'Hide whole hotel card' : 'Show whole hotel card'}
-          </button>
-          <div>
-            <label className="text-[10px] font-bold text-ink-lt mb-1 block">HOTEL NAME</label>
-            <input type="text" value={d.madinahHotel?.name || ''} onChange={e => updateHotel('madinahHotel', 'name', e.target.value)} className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs" />
-          </div>
-          <div>
-            <label className="text-[10px] font-bold text-ink-lt mb-1 block">LOCATION</label>
-            <input type="text" value={d.madinahHotel?.location || ''} onChange={e => updateHotel('madinahHotel', 'location', e.target.value)} className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs" />
-          </div>
-          <div className="space-y-3">
-            <div>
-              <label className="text-[10px] font-bold text-ink-lt mb-1 block">BOARD (BADGE)</label>
-              <div className="flex items-center gap-2">
-                <div className="w-32 shrink-0">
-                  <IconPicker
-                    value={d.madinahHotel?.badgeIcon || 'Utensils'}
-                    onChange={(iconName) => updateHotel('madinahHotel', 'badgeIcon', iconName)}
-                    placeholder="Icon"
-                  />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {getPackageHotelEntries(d, cardData).map((hotel, index, hotels) => {
+            const changeHotel = (key: keyof PackageHotelCard, val: any) => {
+              update('hotelCards', hotels.map((entry, i) => i === index ? { ...entry, [key]: val } : entry));
+            };
+            return <div key={hotel.id} className="bg-white rounded-xl border border-slate-200 p-4 space-y-3">
+              <div className="flex items-center justify-between gap-2">
+                <strong className="text-xs text-primary">{hotel.label || `Hotel ${index + 1}`}</strong>
+                <div className="flex items-center gap-2">
+                  <button type="button" onClick={() => changeHotel('isVisible', hotel.isVisible === false)} className="text-xs text-primary underline">{hotel.isVisible === false ? 'Show' : 'Hide'}</button>
+                  <button type="button" disabled={index === 0} onClick={() => { const next = [...hotels]; [next[index - 1], next[index]] = [next[index], next[index - 1]]; update('hotelCards', next); }} className="text-xs disabled:opacity-40" title="Move up">↑</button>
+                  <button type="button" disabled={index === hotels.length - 1} onClick={() => { const next = [...hotels]; [next[index + 1], next[index]] = [next[index], next[index + 1]]; update('hotelCards', next); }} className="text-xs disabled:opacity-40" title="Move down">↓</button>
+                  <button type="button" onClick={() => { if (window.confirm(`Remove ${hotel.name || hotel.label || 'this hotel'} from this package?`)) update('hotelCards', hotels.filter((_, i) => i !== index)); }} className="text-red-600" title="Remove hotel"><Trash2 className="w-4 h-4" /></button>
                 </div>
-                <input
-                  type="text"
-                  value={d.madinahHotel?.badge || ''}
-                  onChange={e => updateHotel('madinahHotel', 'badge', e.target.value)}
-                  placeholder="e.g. Breakfast Included"
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs"
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    const currentEnabled = (d.madinahHotel as any)?.badgeEnabled !== false;
-                    updateHotel('madinahHotel', 'badgeEnabled' as any, !currentEnabled);
-                  }}
-                  title={(d.madinahHotel as any)?.badgeEnabled !== false ? 'Hide board badge on frontend' : 'Display board badge on frontend'}
-                  className={`px-2 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer border flex items-center gap-1 shrink-0 ${(d.madinahHotel as any)?.badgeEnabled !== false
-                    ? 'bg-emerald-50 text-[#004B39] border-emerald-300 hover:bg-emerald-100'
-                    : 'bg-amber-100 text-amber-500 border-amber-500 hover:bg-amber-200 hover:text-amber-600'
-                    }`}
-                >
-                  {(d.madinahHotel as any)?.badgeEnabled !== false ? (
-                    <Eye className="w-3 h-3 text-[#004B39]" />
-                  ) : (
-                    <EyeOff className="w-3 h-3 text-slate-400" />
-                  )}
-                  <span className="text-[10px] font-bold">{(d.madinahHotel as any)?.badgeEnabled !== false ? 'Show' : 'Hide'}</span>
-                </button>
               </div>
-            </div>
-            <div>
-              <label className="text-[10px] font-bold text-ink-lt mb-1 block">DURATION (DAYS / NIGHTS)</label>
-              <DurationInput
-                value={d.madinahHotel?.nights || '6 Nights'}
-                onChange={(dur) => updateHotel('madinahHotel', 'nights', formatDuration(dur))}
-                defaultUnit="nights"
-                showToggle={true}
-                enabled={(d.madinahHotel as any)?.durationEnabled !== undefined ? (d.madinahHotel as any)?.durationEnabled : (d.madinahHotel as any)?.enabled !== false}
-                onToggleChange={(val) => {
-                  updateHotel('madinahHotel', 'durationEnabled' as any, val as any);
-                  updateHotel('madinahHotel', 'enabled' as any, val as any);
-                }}
-              />
-            </div>
-          </div>
-          <div>
-            <label className="text-[10px] font-bold text-ink-lt mb-1 block">IMAGE URL</label>
-            <ImageUploadWidget
-              value={d.madinahHotel?.image || ''}
-              onChange={(url) => updateHotel('madinahHotel', 'image', url)}
-              subfolder="hotels"
-              compact={true}
-            />
-          </div>
-        </div>
-
-        {/* Aziziya Hotel */}
-        <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200 space-y-4">
-          <h4 className="text-sm font-extrabold text-slate-900 uppercase tracking-wide">Aziziya Hotel</h4>
-          <button type="button" aria-pressed={(d.aziziyaHotel as any)?.isVisible !== false}
-            onClick={() => updateHotel('aziziyaHotel', 'isVisible' as any, (d.aziziyaHotel as any)?.isVisible === false)}
-            className="mb-3 rounded-full border border-primary bg-white px-3 py-1 text-xs font-bold text-primary">
-            {(d.aziziyaHotel as any)?.isVisible !== false ? 'Hide whole hotel card' : 'Show whole hotel card'}
-          </button>
-          <div>
-            <label className="text-[10px] font-bold text-ink-lt mb-1 block">HOTEL NAME</label>
-            <input type="text" value={d.aziziyaHotel?.name || ''} onChange={e => updateHotel('aziziyaHotel', 'name', e.target.value)} placeholder="e.g. HOTEL NEAR" className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs" />
-          </div>
-          <div>
-            <label className="text-[10px] font-bold text-ink-lt mb-1 block">LOCATION</label>
-            <input type="text" value={d.aziziyaHotel?.location || ''} onChange={e => updateHotel('aziziyaHotel', 'location', e.target.value)} placeholder="e.g. Aziziya – Near to Mina" className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs" />
-          </div>
-          <div className="space-y-3">
-            <div>
-              <label className="text-[10px] font-bold text-ink-lt mb-1 block">BOARD (BADGE)</label>
-              <div className="flex items-center gap-2">
-                <div className="w-32 shrink-0">
-                  <IconPicker
-                    value={d.aziziyaHotel?.badgeIcon || 'Utensils'}
-                    onChange={(iconName) => updateHotel('aziziyaHotel', 'badgeIcon', iconName)}
-                    placeholder="Icon"
-                  />
-                </div>
-                <input
-                  type="text"
-                  value={d.aziziyaHotel?.badge || ''}
-                  onChange={e => updateHotel('aziziyaHotel', 'badge', e.target.value)}
-                  placeholder="e.g. Breakfast Included / Full Board"
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs"
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    const currentEnabled = (d.aziziyaHotel as any)?.badgeEnabled !== false;
-                    updateHotel('aziziyaHotel', 'badgeEnabled' as any, !currentEnabled);
-                  }}
-                  title={(d.aziziyaHotel as any)?.badgeEnabled !== false ? 'Hide board badge on frontend' : 'Display board badge on frontend'}
-                  className={`px-2 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer border flex items-center gap-1 shrink-0 ${(d.aziziyaHotel as any)?.badgeEnabled !== false
-                    ? 'bg-emerald-50 text-[#004B39] border-emerald-300 hover:bg-emerald-100'
-                    : 'bg-amber-100 text-amber-500 border-amber-500 hover:bg-amber-200 hover:text-amber-600'
-                    }`}
-                >
-                  {(d.aziziyaHotel as any)?.badgeEnabled !== false ? (
-                    <Eye className="w-3 h-3 text-[#004B39]" />
-                  ) : (
-                    <EyeOff className="w-3 h-3 text-slate-400" />
-                  )}
-                  <span className="text-[10px] font-bold">{(d.aziziyaHotel as any)?.badgeEnabled !== false ? 'Show' : 'Hide'}</span>
-                </button>
+              {([['label', 'Accommodation label'], ['name', 'Hotel name'], ['location', 'Location / distance'], ['description', 'Additional hotel details']] as const).map(([field, label]) => (
+                <label key={field} className="block text-[10px] font-bold text-slate-600 uppercase">{label}
+                  <input type="text" value={hotel[field] || ''} onChange={e => changeHotel(field, e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-xs text-slate-900" />
+                </label>
+              ))}
+              <label className="block text-[10px] font-bold text-slate-600 uppercase">Hotel image
+                <ImageUploadWidget value={hotel.image} onChange={url => changeHotel('image', url)} subfolder="hotels" compact />
+              </label>
+              <div className="flex gap-2 items-end">
+                <div className="w-32"><label className="block text-[10px] font-bold text-slate-600 mb-1">Badge icon</label><IconPicker value={hotel.badgeIcon || 'Utensils'} onChange={val => changeHotel('badgeIcon', val)} /></div>
+                <label className="flex-1 text-[10px] font-bold text-slate-600 uppercase">Board / badge<input type="text" value={hotel.badge} onChange={e => changeHotel('badge', e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-xs" /></label>
               </div>
-            </div>
-            <div>
-              <label className="text-[10px] font-bold text-ink-lt mb-1 block">DURATION (DAYS / NIGHTS)</label>
-              <DurationInput
-                value={d.aziziyaHotel?.nights || '3 Nights'}
-                onChange={(dur) => updateHotel('aziziyaHotel', 'nights', formatDuration(dur))}
-                defaultUnit="nights"
-                showToggle={true}
-                enabled={(d.aziziyaHotel as any)?.durationEnabled !== undefined ? (d.aziziyaHotel as any)?.durationEnabled : (d.aziziyaHotel as any)?.enabled !== false}
-                onToggleChange={(val) => {
-                  updateHotel('aziziyaHotel', 'durationEnabled' as any, val as any);
-                  updateHotel('aziziyaHotel', 'enabled' as any, val as any);
-                }}
-              />
-            </div>
-          </div>
-          <div>
-            <label className="text-[10px] font-bold text-ink-lt mb-1 block">IMAGE URL</label>
-            <ImageUploadWidget
-              value={d.aziziyaHotel?.image || ''}
-              onChange={(url) => updateHotel('aziziyaHotel', 'image', url)}
-              subfolder="hotels"
-              compact={true}
-            />
-          </div>
-        </div>
-
-        {/* Mina Maktab / Camp */}
-        <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200 space-y-4">
-          <h4 className="text-sm font-extrabold text-slate-900 uppercase tracking-wide">Mina Maktab / Camp</h4>
-          <button type="button" aria-pressed={(d.minaHotel as any)?.isVisible !== false}
-            onClick={() => updateHotel('minaHotel', 'isVisible' as any, (d.minaHotel as any)?.isVisible === false)}
-            className="mb-3 rounded-full border border-primary bg-white px-3 py-1 text-xs font-bold text-primary">
-            {(d.minaHotel as any)?.isVisible !== false ? 'Hide whole hotel card' : 'Show whole hotel card'}
-          </button>
-          <div>
-            <label className="text-[10px] font-bold text-ink-lt mb-1 block">CAMP / HOTEL NAME</label>
-            <input type="text" value={d.minaHotel?.name || ''} onChange={e => updateHotel('minaHotel', 'name', e.target.value)} placeholder="e.g. MAKTAB – A" className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs" />
-          </div>
-          <div>
-            <label className="text-[10px] font-bold text-ink-lt mb-1 block">LOCATION</label>
-            <input type="text" value={d.minaHotel?.location || ''} onChange={e => updateHotel('minaHotel', 'location', e.target.value)} placeholder="e.g. Mina – Maktab A Camps" className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs" />
-          </div>
-          <div className="space-y-3">
-            <div>
-              <label className="text-[10px] font-bold text-ink-lt mb-1 block">BOARD (BADGE)</label>
-              <div className="flex items-center gap-2">
-                <div className="w-32 shrink-0">
-                  <IconPicker
-                    value={d.minaHotel?.badgeIcon || 'Utensils'}
-                    onChange={(iconName) => updateHotel('minaHotel', 'badgeIcon', iconName)}
-                    placeholder="Icon"
-                  />
-                </div>
-                <input
-                  type="text"
-                  value={d.minaHotel?.badge || ''}
-                  onChange={e => updateHotel('minaHotel', 'badge', e.target.value)}
-                  placeholder="e.g. Breakfast Included / Full Board"
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs"
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    const currentEnabled = (d.minaHotel as any)?.badgeEnabled !== false;
-                    updateHotel('minaHotel', 'badgeEnabled' as any, !currentEnabled);
-                  }}
-                  title={(d.minaHotel as any)?.badgeEnabled !== false ? 'Hide board badge on frontend' : 'Display board badge on frontend'}
-                  className={`px-2 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer border flex items-center gap-1 shrink-0 ${(d.minaHotel as any)?.badgeEnabled !== false
-                    ? 'bg-emerald-50 text-[#004B39] border-emerald-300 hover:bg-emerald-100'
-                    : 'bg-amber-100 text-amber-500 border-amber-500 hover:bg-amber-200 hover:text-amber-600'
-                    }`}
-                >
-                  {(d.minaHotel as any)?.badgeEnabled !== false ? (
-                    <Eye className="w-3 h-3 text-[#004B39]" />
-                  ) : (
-                    <EyeOff className="w-3 h-3 text-slate-400" />
-                  )}
-                  <span className="text-[10px] font-bold">{(d.minaHotel as any)?.badgeEnabled !== false ? 'Show' : 'Hide'}</span>
-                </button>
+              <label className="block text-[10px] font-bold text-slate-600 uppercase">Stay duration
+                <DurationInput value={hotel.nights || ''} onChange={val => changeHotel('nights', formatDuration(val))} defaultUnit="nights" />
+              </label>
+              <div className="flex flex-wrap gap-4 text-xs">
+                <label className="flex items-center gap-2"><input type="checkbox" checked={hotel.badgeEnabled !== false} onChange={e => changeHotel('badgeEnabled', e.target.checked)} /> Show badge</label>
+                <label className="flex items-center gap-2"><input type="checkbox" checked={hotel.durationEnabled !== false} onChange={e => changeHotel('durationEnabled', e.target.checked)} /> Show duration</label>
               </div>
-            </div>
-            <div>
-              <label className="text-[10px] font-bold text-ink-lt mb-1 block">DURATION (DAYS / NIGHTS)</label>
-              <DurationInput
-                value={d.minaHotel?.nights || '2 Nights'}
-                onChange={(dur) => updateHotel('minaHotel', 'nights', formatDuration(dur))}
-                defaultUnit="nights"
-                showToggle={true}
-                enabled={(d.minaHotel as any)?.durationEnabled !== undefined ? (d.minaHotel as any)?.durationEnabled : (d.minaHotel as any)?.enabled !== false}
-                onToggleChange={(val) => {
-                  updateHotel('minaHotel', 'durationEnabled' as any, val as any);
-                  updateHotel('minaHotel', 'enabled' as any, val as any);
-                }}
-              />
-            </div>
-          </div>
-          <div>
-            <label className="text-[10px] font-bold text-ink-lt mb-1 block">IMAGE URL</label>
-            <ImageUploadWidget
-              value={d.minaHotel?.image || ''}
-              onChange={(url) => updateHotel('minaHotel', 'image', url)}
-              subfolder="hotels"
-              compact={true}
-            />
-          </div>
+            </div>;
+          })}
         </div>
+        {getPackageHotelEntries(d, cardData).length === 0 && <p className="text-xs text-slate-500">No hotels. Click Add Hotel to create one.</p>}
       </div>
 
       {/* Overview Builder */}

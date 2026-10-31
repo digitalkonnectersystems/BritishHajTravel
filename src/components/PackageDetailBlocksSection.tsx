@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { getPackagesByIds } from '@/actions/packageActions';
 import { usePriceFormatter } from '@/components/CurrencyProvider';
 import { isTbcPrice } from '@/lib/priceDisplay';
+import { visiblePackageHotels } from '@/lib/packageHotelEntries';
 
 function parseStored(value: any) {
   if (!value) return {};
@@ -23,12 +24,9 @@ export default function PackageDetailBlocksSection({ data }: { data: any }) {
   const card = parseStored(pkg.cardData), details = parseStored(pkg.detailPageData);
   const galleryRaw = parseStored(pkg.packagesGallery);
   const gallery = Array.isArray(galleryRaw) ? galleryRaw : (Array.isArray(galleryRaw.items) ? galleryRaw.items : []);
-  const hotels = [
-    { key: 'makkahHotel', label: 'Makkah Hotel' },
-    { key: 'madinahHotel', label: 'Madinah Hotel' },
-    { key: 'aziziyaHotel', label: 'Aziziyah Hotel' },
-    { key: 'minaHotel', label: 'Mina Accommodation' },
-  ];
+  const hotels = Array.isArray(data?.hotelCards)
+    ? visiblePackageHotels({ hotelCards: data.hotelCards })
+    : visiblePackageHotels(details, card, pkg);
   const enabled = (key: string) => data?.[key] !== false;
   const prices = Array.isArray(details.packagePrices) && details.packagePrices.length ? details.packagePrices : (card.packagePrices || []);
   return <section className="bg-white py-12 px-4">
@@ -37,18 +35,16 @@ export default function PackageDetailBlocksSection({ data }: { data: any }) {
         <h2 className="text-2xl md:text-3xl font-semibold text-primary">{data?.title || pkg.title}</h2></div>
       {enabled('showOverview') && (pkg.shortDescription || pkg.fullDescription) && <div className="rounded-xl border p-5 leading-relaxed"><h3 className="font-bold text-primary mb-2">Package Overview</h3><p className="whitespace-pre-line">{pkg.shortDescription || pkg.fullDescription}</p></div>}
       {enabled('showFlight') && (card.flightRoute || details.flightRoute) && <div className="rounded-xl bg-blue-50 border p-5"><h3 className="font-bold text-primary mb-2">Flight Route</h3><p>{card.flightRoute || details.flightRoute}</p></div>}
-      {enabled('showHotels') && <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {hotels.map(({key, label}) => {
-          const hotel = details[key] || card[key] || {};
-          if (!hotel.name || hotel.enabled === false) return null;
-          return <article key={key} className="rounded-2xl border overflow-hidden bg-white shadow-sm">
-            {(hotel.image || card[key]?.image) && <img className="w-full h-48 object-cover" loading="lazy" src={hotel.image || card[key]?.image} alt={hotel.name} />}
-            <div className="p-5"><h3 className="font-bold text-primary text-lg">{label}</h3><p className="font-semibold">{hotel.name}</p>
-              {hotel.location && <p className="text-sm text-slate-600">{hotel.location}</p>}
-              {hotel.nights && <p className="text-sm">{hotel.nights}</p>}
-            </div>
-          </article>;
-        })}
+      {enabled('showHotels') && hotels.length > 0 && <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {hotels.map((hotel) => <article key={hotel.id} className="rounded-2xl border overflow-hidden bg-white shadow-sm">
+          {hotel.image && <img className="w-full h-48 object-cover" loading="lazy" src={hotel.image} alt={hotel.name || hotel.label} />}
+          <div className="p-5"><h3 className="font-bold text-primary text-lg">{hotel.label}</h3><p className="font-semibold">{hotel.name}</p>
+            {hotel.location && <p className="text-sm text-slate-600">{hotel.location}</p>}
+            {hotel.description && <p className="text-sm text-slate-600 whitespace-pre-line">{hotel.description}</p>}
+            {hotel.badgeEnabled !== false && hotel.badge && <p className="text-sm">{hotel.badge}</p>}
+            {hotel.durationEnabled !== false && hotel.nights && <p className="text-sm">{hotel.nights}</p>}
+          </div>
+        </article>)}
       </div>}
       {enabled('showPrices') && <div className="rounded-xl border p-5">
         <h3 className="font-bold text-primary mb-3">Package Prices</h3>

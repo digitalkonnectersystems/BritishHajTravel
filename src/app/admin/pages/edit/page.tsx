@@ -32,6 +32,8 @@ import { uploadFile, uploadFileToFtp, generateAutoAltText } from '@/lib/uploadCl
 import SeoCenterModal from '@/components/admin/SeoCenterModal';
 
 import TiptapEditor from '@/components/admin/TiptapEditor';
+import PackageHotelCardsEditor from '@/components/admin/PackageHotelCardsEditor';
+import { getPackageHotelEntries } from '@/lib/packageHotelEntries';
 
 import SeoSettingsForm, { SeoSettings } from '@/components/admin/SeoSettingsForm';
 
@@ -4801,7 +4803,11 @@ function PageBuilderContent() {
                                 <h4 className="text-sm font-bold text-primary">Package Detail Sections</h4>
                                 <p className="text-xs text-slate-500">Select one published package. Content, hotels, prices and inclusions are read directly from its detail-page records.</p>
                                 <label className="block text-xs font-semibold">Package
-                                  <select className="block w-full p-2 border rounded mt-1" value={sec.data?.packageId || 0} onChange={e => updateSectionData(sec.id, 'packageId', Number(e.target.value))}>
+                                  <select className="block w-full p-2 border rounded mt-1" value={sec.data?.packageId || 0} onChange={e => {
+                                    updateSectionData(sec.id, 'packageId', Number(e.target.value));
+                                    // Hotel overrides belong to their selected package.
+                                    updateSectionData(sec.id, 'hotelCards', null);
+                                  }}>
                                     <option value={0}>Select a package</option>
                                     {allPackages.filter(p => p.status !== 'draft' && p.status !== 'sold_out').map(p => <option key={p.id} value={p.id}>{p.type?.toUpperCase()} - {p.title}</option>)}
                                   </select>
@@ -4809,6 +4815,34 @@ function PageBuilderContent() {
                                 {(['showOverview', 'showFlight', 'showHotels', 'showPrices', 'showInclusions', 'showGallery'] as const).map(key => <label key={key} className="inline-flex items-center gap-2 mr-4 text-xs">
                                   <input type="checkbox" checked={sec.data?.[key] !== false} onChange={e => updateSectionData(sec.id, key, e.target.checked)} /> {key.replace(/^show/, 'Show ')}
                                 </label>)}
+                                {(sec.type === 'Package Hotel Details' || sec.type === 'Package Detail Blocks') && (() => {
+                                  const selected = allPackages.find(p => Number(p.id) === Number(sec.data?.packageId));
+                                  if (!selected) return <p className="text-xs text-slate-500">Select a package to edit hotel cards for this section.</p>;
+                                  const sectionHotelCards = sec.data?.hotelCards;
+                                  const overridden = Array.isArray(sectionHotelCards);
+                                  const currentHotels = overridden
+                                    ? sectionHotelCards
+                                    : getPackageHotelEntries(
+                                        selected.detailPageData,
+                                        selected.cardData,
+                                        selected
+                                      );
+                                  return <div className="pt-3 border-t border-slate-200 space-y-3">
+                                    <div className="flex flex-wrap gap-2 items-center justify-between">
+                                      <div>
+                                        <h5 className="font-bold text-sm text-primary">Hotel details for this section</h5>
+                                        <p className="text-xs text-slate-500">{overridden ? 'Custom hotel cards are saved with this page section only.' : 'Currently using live hotel details from the selected package.'}</p>
+                                      </div>
+                                      {overridden ? <button type="button" className="text-xs border border-slate-300 rounded-lg px-3 py-2" onClick={() => updateSectionData(sec.id, 'hotelCards', null)}>Reset to live package hotels</button>
+                                        : <button type="button" className="text-xs bg-primary text-white rounded-lg px-3 py-2" onClick={() => updateSectionData(sec.id, 'hotelCards', currentHotels.map((hotel: any) => ({ ...hotel })))}>Customize hotels for this section</button>}
+                                    </div>
+                                    {overridden && <PackageHotelCardsEditor
+                                      hotels={currentHotels}
+                                      onChange={hotels => updateSectionData(sec.id, 'hotelCards', hotels)}
+                                      title="Editable hotels on this CMS section"
+                                    />}
+                                  </div>;
+                                })()}
                               </div>
                             )}
 

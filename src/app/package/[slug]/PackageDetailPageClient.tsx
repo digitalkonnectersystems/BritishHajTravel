@@ -1,15 +1,15 @@
 "use client";
+import PackageAccommodationCards from '@/components/PackageAccommodationCards';
+import SafeRichText from '@/components/SafeRichText';
 import SoldOutBadge from '@/components/SoldOutBadge';
 import { normalizeUkPhoneInput } from '@/lib/ukPhone';
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { X, Calendar, User, Check, Star, MapPin, Utensils, Plane, TicketPercent, AlertCircle, ChevronDown, ChevronUp, ArrowLeft, ChevronLeft, ChevronRight, Sun, MoonStar } from "lucide-react";
+import { X, Calendar, User, Check, Star, Plane, TicketPercent, AlertCircle, ChevronDown, ChevronUp, ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import { submitPackageBookingEnquiryAction } from "@/actions/enquiryActions";
 import SubmissionSuccessModal from "@/components/SubmissionSuccessModal";
-import DynamicIcon from "@/components/ui/DynamicIcon";
-import { getDurationUnit } from "@/lib/packageHelpers";
 import { isTbcPrice } from "@/lib/priceDisplay";
 import { useCurrency, usePriceFormatter } from '@/components/CurrencyProvider';
 
@@ -224,28 +224,6 @@ export default function PackageDetailPageClient({
   const operatorName = cardData.operatorName || pkg.operatorName || "British Hajj Travel";
   const operatorRating = cardData.operatorRating || pkg.operatorRating || "4.4/5";
   const operatorReviews = cardData.operatorReviews || pkg.operatorReviews || "942 verified reviews";
-
-  // Hotel relation fallback if present
-  const dbMakkahHotel = Array.isArray(pkg.hotels) ? pkg.hotels.find((h: any) => /makkah/i.test(h.city)) : null;
-  const dbMadinahHotel = Array.isArray(pkg.hotels) ? pkg.hotels.find((h: any) => /madinah/i.test(h.city)) : null;
-
-  const rawMakkahHotel = detailData.makkahHotel || cardData.makkahHotel || pkg.makkahHotel || {};
-  const makkahImg = rawMakkahHotel.image || rawMakkahHotel.image_url || dbMakkahHotel?.imageUrl || "";
-  const makkahName = rawMakkahHotel.name || dbMakkahHotel?.hotelName || "";
-  const makkahLoc = rawMakkahHotel.location || dbMakkahHotel?.distanceFromHaram || "";
-  const makkahBadge = rawMakkahHotel.badge || "";
-  const makkahBadgeIcon = rawMakkahHotel.badgeIcon || "";
-  const makkahNights = rawMakkahHotel.nights || (dbMakkahHotel?.nights ? `${dbMakkahHotel.nights} Nights Stay` : "");
-  const makkahNightsIcon = rawMakkahHotel.nightsIcon || "";
-
-  const rawMadinahHotel = detailData.madinahHotel || cardData.madinahHotel || pkg.madinahHotel || {};
-  const madinahImg = rawMadinahHotel.image || rawMadinahHotel.image_url || dbMadinahHotel?.imageUrl || "";
-  const madinahName = rawMadinahHotel.name || dbMadinahHotel?.hotelName || "";
-  const madinahLoc = rawMadinahHotel.location || dbMadinahHotel?.distanceFromHaram || "";
-  const madinahBadge = rawMadinahHotel.badge || "";
-  const madinahBadgeIcon = rawMadinahHotel.badgeIcon || "";
-  const madinahNights = rawMadinahHotel.nights || (dbMadinahHotel?.nights ? `${dbMadinahHotel.nights} Nights Stay` : "");
-  const madinahNightsIcon = rawMadinahHotel.nightsIcon || "";
 
   const isHajjPkg = /hajj/i.test(title) || (pkg.type === 'hajj');
 
@@ -500,7 +478,7 @@ export default function PackageDetailPageClient({
               {exclusiveBadge}
             </span>
             <div className="text-3xl font-black text-white font-serif">
-              {currencyCode} {price}
+              {currencyCode}{price}
             </div>
             <span className="text-[10px] font-medium text-white/90 uppercase tracking-wide block mt-1">
               {priceSubtext}
@@ -517,123 +495,7 @@ export default function PackageDetailPageClient({
           <div className="lg:col-span-8 flex flex-col gap-10">
 
             {/* 1. Premium Accommodations */}
-            {((rawMakkahHotel.isVisible !== false && (rawMakkahHotel.name || rawMakkahHotel.image)) || (rawMadinahHotel.isVisible !== false && (rawMadinahHotel.name || rawMadinahHotel.image))) && (
-              <div>
-                <h3 className="text-xl sm:text-2xl font-bold font-serif text-slate-800 mb-5 flex items-center gap-2">
-                  Premium Accommodations
-                </h3>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  {/* Makkah Hotel Card */}
-                  {(rawMakkahHotel.isVisible !== false && (rawMakkahHotel.name || rawMakkahHotel.image)) && (
-                    <div className="bg-white rounded-2xl overflow-hidden border border-blue-100 shadow-md flex flex-col">
-                      <div className="relative h-48 w-full bg-slate-200">
-                        {makkahImg ? (
-                          <Image
-                            src={makkahImg}
-                            alt={makkahName || "Makkah Hotel"}
-                            fill
-                            className="object-cover"
-                            unoptimized
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-blue-900/10 flex items-center justify-center text-slate-400 text-xs">
-                            No image available
-                          </div>
-                        )}
-                        <span className="absolute top-3 left-3 bg-primary text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
-                          Makkah
-                        </span>
-                      </div>
-                      <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
-                        <div>
-                          <h4 className="font-bold text-primary text-base line-clamp-1">{makkahName}</h4>
-                          {makkahLoc && (
-                            <p className="text-xs text-slate-500 flex items-center gap-1 mt-1">
-                              <MapPin className="w-3.5 h-3.5 text-primary" />
-                              <span>{makkahLoc}</span>
-                            </p>
-                          )}
-                        </div>
-                        {(makkahBadge || makkahNights) && (
-                          <div className="flex items-center gap-2 pt-2 border-t border-slate-100 text-xs font-semibold text-slate-600">
-                            {makkahBadge && (
-                              <span className="bg-blue-100 text-primary px-2.5 py-1 rounded-lg border border-primary/10 flex items-center gap-1 text-[11px]">
-                                {makkahBadgeIcon ? <DynamicIcon name={makkahBadgeIcon} className="w-3 h-3" /> : <Utensils className="w-3 h-3" />} {makkahBadge}
-                              </span>
-                            )}
-                            {makkahNights && (
-                              <span className="bg-slate-100 text-slate-600 px-2.5 py-1 capitalize rounded-lg text-[11px] flex items-center gap-1">
-                                {getDurationUnit(makkahNights) === 'days' ? (
-                                  <Sun className="w-3 h-3 text-amber-500" />
-                                ) : (
-                                  <MoonStar className="w-3 h-3 text-slate-600" />
-                                )}
-                                <span>{makkahNights}</span>
-                              </span>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Madinah Hotel Card */}
-                  {(rawMadinahHotel.isVisible !== false && (rawMadinahHotel.name || rawMadinahHotel.image)) && (
-                    <div className="bg-white rounded-2xl overflow-hidden border border-red-soft shadow-md flex flex-col">
-                      <div className="relative h-48 w-full bg-slate-200">
-                        {madinahImg ? (
-                          <Image
-                            src={madinahImg}
-                            alt={madinahName || "Madinah Hotel"}
-                            fill
-                            className="object-cover"
-                            unoptimized
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-amber-900/10 flex items-center justify-center text-slate-400 text-xs">
-                            No image available
-                          </div>
-                        )}
-                        <span className="absolute top-3 left-3 bg-red text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
-                          Madinah
-                        </span>
-                      </div>
-                      <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
-                        <div>
-                          <h4 className="font-bold text-red text-base line-clamp-1">{madinahName}</h4>
-                          {madinahLoc && (
-                            <p className="text-xs text-slate-500 flex items-center gap-1 mt-1">
-                              <MapPin className="w-3.5 h-3.5 text-red" />
-                              <span>{madinahLoc}</span>
-                            </p>
-                          )}
-                        </div>
-                        {(madinahBadge || madinahNights) && (
-                          <div className="flex items-center gap-2 pt-2 border-t border-slate-100 text-xs font-semibold text-slate-600">
-                            {madinahBadge && (
-                              <span className="bg-red-soft text-red px-2.5 py-1 rounded-lg border border-red-lt flex items-center gap-1 text-[11px]">
-                                {madinahBadgeIcon ? <DynamicIcon name={madinahBadgeIcon} className="w-3 h-3" /> : <Utensils className="w-3 h-3" />} {madinahBadge}
-                              </span>
-                            )}
-                            {madinahNights && (
-                              <span className="bg-slate-100 text-slate-600 px-2.5 py-1 capitalize rounded-lg text-[11px] flex items-center gap-1">
-                                {getDurationUnit(madinahNights) === 'days' ? (
-                                  <Sun className="w-3 h-3 text-amber-500" />
-                                ) : (
-                                  <MoonStar className="w-3 h-3 text-slate-600" />
-                                )}
-                                <span>{madinahNights}</span>
-                              </span>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
+            <PackageAccommodationCards detail={detailData} card={cardData} pkg={pkg} />
 
             {/* 2. Package Overview (Timeline) */}
             {overviewArray.length > 0 && (
@@ -774,9 +636,7 @@ export default function PackageDetailPageClient({
                 </div>
                 <div className="space-y-1">
                   <h4 className="font-bold text-red text-sm">Important Booking Notice</h4>
-                  <p className="text-xs text-red-900/80 leading-relaxed font-medium">
-                    {importantNotice}
-                  </p>
+                  <SafeRichText html={String(importantNotice)} className="text-xs text-red-900/80 leading-relaxed font-medium" />
                 </div>
               </div>
             )}
@@ -1049,7 +909,7 @@ export default function PackageDetailPageClient({
                 <div className="pt-2 flex justify-between items-center">
                   <span className="text-xs font-bold text-ink">Estimated Total</span>
                   <span className="text-xl font-black text-ink font-serif">
-                    {estimatedTotalFormatted ? `${currencyCode} ${estimatedTotalFormatted}` : "—"}
+                    {estimatedTotalFormatted ? `${currencyCode}${estimatedTotalFormatted}` : "—"}
                   </span>
                 </div>
 

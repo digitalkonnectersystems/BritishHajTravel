@@ -1065,6 +1065,7 @@ export default function EditPackageClient({ packageData }: EditPackageClientProp
           {activeTab === 'detail' && (
             <DetailPageDataFields
               data={editingPkg.detailPageData}
+              cardData={editingPkg.cardData}
               onChange={newData => setEditingPkg({ ...editingPkg, detailPageData: newData })}
               onHotelSync={(hotelKey, field, val) => {
                 setEditingPkg((prev: any) => ({

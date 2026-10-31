@@ -185,6 +185,13 @@ function unescapeHtml(raw: string): string {
 function toTiptapContent(value: string): string {
   if (!value) return '<p></p>';
   const trimmed = value.trim();
+  // Older saved content can contain escaped HTML tags inside a paragraph,
+  // especially after switching from the HTML-source tab to Visual mode.
+  // Unwrap only recognizable encoded markup, not ordinary text like `2 < 5`.
+  if (/^<(?:p|div)\b/i.test(trimmed) && /&lt;\/?(?:h[1-6]|p|ul|ol|li|strong|em|div|blockquote|span|br)\b/i.test(trimmed)) {
+    const decoded = unescapeHtml(trimmed).trim();
+    if (/^<(?:h[1-6]|p|ul|ol|li|strong|em|div|blockquote|span|br)\b/i.test(decoded)) return decoded;
+  }
   // Already valid HTML
   if (trimmed.startsWith('<')) return trimmed;
   // Entity-encoded HTML stored as text — unescape first
@@ -297,7 +304,7 @@ export default function TiptapEditor({
   // Sync when the `value` prop changes externally (e.g. DB load after mount).
   // Skip the first run — content was already set via `content:` above.
   useEffect(() => {
-    if (!editor) return;
+    if (!editor || sourceMode) return;
 
     if (!isMounted.current) {
       isMounted.current = true;
@@ -312,7 +319,7 @@ export default function TiptapEditor({
     if (incoming !== current) {
       editor.commands.setContent(incoming || '<p></p>', { emitUpdate: false });
     }
-  }, [value, editor]);
+  }, [value, editor, sourceMode]);
 
   useEffect(() => {
     if (!editor || !editor.isActive('image')) return;
@@ -496,7 +503,7 @@ export default function TiptapEditor({
       setSourceMode(true);
     } else {
       // HTML source -> Visual editor
-      editor.commands.setContent(htmlSource || '<p></p>', { emitUpdate: false });
+      editor.commands.setContent(toTiptapContent(htmlSource), { emitUpdate: false });
       onChange(editor.isEmpty ? '' : editor.getHTML());
       setSourceMode(false);
     }
