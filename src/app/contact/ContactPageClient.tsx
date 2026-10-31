@@ -9,7 +9,7 @@ import SubmissionSuccessModal from "@/components/SubmissionSuccessModal";
 
 function ContactInfoCardsSection({ data }: { data?: any }) {
   return (
-    <div className="w-full max-w-7xl mx-auto px-5 relative z-20 -mt-20 md:-mt-24">
+    <div className="w-full max-w-7xl mx-auto px-5 relative z-20 -mt-2 md:-mt-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
         {/* Card 1: Locations */}
         <div className="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-slate-100/80 flex flex-col items-center text-center h-full">

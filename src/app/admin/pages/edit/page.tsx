@@ -288,6 +288,10 @@ const SECTION_CATALOG: SectionCategory[] = [
 
     items: [
 
+      { type: 'Plan Your Own Package Form', description: 'Compact three-column package enquiry with Name, Email, Phone and Days. Sends to existing quote enquiries and email templates.', pages: ['Any Page', 'Homepage', 'Umrah Packages', 'Hajj Packages'] },
+
+      { type: 'Flight Enquiry Form', description: 'Six-field flight enquiry, dates and flight option, using the existing flight enquiries and email templates.', pages: ['Any Page', 'Homepage', 'Airlines'] },
+
       { type: 'Quote Form', description: 'Dynamic CMS controlled get a free quote form.', pages: ['Any Page'] },
 
       { type: 'Package Inquiry Form', description: 'Dynamic CMS controlled package inquiry form.', pages: ['Any Page'] },
@@ -1553,6 +1557,10 @@ function PageBuilderContent() {
 
       };
 
+    } else if (type === 'Plan Your Own Package Form') {
+      defaultData = { title: 'Plan your own Package', buttonText: 'SEND', dayOptions: '7, 10, 14, 21, 28', maxWidth: '1440px' };
+    } else if (type === 'Flight Enquiry Form') {
+      defaultData = { title: 'Flight Enquiry', buttonText: 'Submit', flightOptions: 'Return Flight\nOne Way\nFlexible', maxWidth: '1440px' };
     } else if (type === 'Umrah Enquiry 2026-27 Form') {
 
       defaultData = { title: 'Umrah Enquiry 2026-27' };
@@ -4923,6 +4931,35 @@ function PageBuilderContent() {
                               </div>
                             )}
 
+                            {(sec.type === 'Plan Your Own Package Form' || sec.type === 'Flight Enquiry Form') && (
+                              <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
+                                <h4 className="text-sm font-bold text-primary">{sec.type}</h4>
+                                <p className="text-xs text-slate-500">
+                                  {sec.type === 'Plan Your Own Package Form'
+                                    ? 'Name, email, phone and number of days. Enquiries are saved under Quotes and use the existing Get a Free Quote email routing.'
+                                    : 'Name, email, phone, traveling date, return date and flight option. Enquiries appear under Flights and use existing Flight Booking emails.'}
+                                </p>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                  {([['title', 'Section heading'], ['buttonText', 'Submit button text'], ['maxWidth', 'Maximum width (e.g. 1440px)']] as const).map(([field, label]) => (
+                                    <label key={field} className="block text-xs font-semibold text-slate-700">{label}
+                                      <input type="text" maxLength={field === 'maxWidth' ? 8 : 140}
+                                        value={sec.data?.[field] ?? ''}
+                                        onChange={e => updateSectionData(sec.id, field, e.target.value)}
+                                        className="mt-1 block w-full rounded border border-slate-300 p-2 text-sm" />
+                                    </label>
+                                  ))}
+                                </div>
+                                <label className="block text-xs font-semibold text-slate-700">
+                                  {sec.type === 'Plan Your Own Package Form' ? 'Number of Days options (comma-separated numbers 1–90)' : 'Flight Options (one per line)'}
+                                  <textarea rows={3}
+                                    value={sec.type === 'Plan Your Own Package Form' ? (sec.data?.dayOptions ?? '7, 10, 14, 21, 28') : (sec.data?.flightOptions ?? 'Return Flight\nOne Way\nFlexible')}
+                                    onChange={e => updateSectionData(sec.id, sec.type === 'Plan Your Own Package Form' ? 'dayOptions' : 'flightOptions', e.target.value)}
+                                    className="mt-1 block w-full rounded border border-slate-300 p-2 text-sm" />
+                                </label>
+                                <Link href="/admin/settings" className="text-xs font-semibold text-primary underline">Manage existing form email routing and templates</Link>
+                              </div>
+                            )}
+
                             {sec.type === 'Umrah Enquiry 2026-27 Form' && (
                               <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
                                 <h4 className="text-sm font-bold text-primary">Umrah Enquiry 2026-27 Form</h4>
@@ -4976,7 +5013,7 @@ function PageBuilderContent() {
 
                             {/* Universal Section Header Block (Eyebrow, Heading, Description) - Hidden for Blog sections */}
 
-                            {sec.type !== 'Latest Blogs Grid' && sec.type !== 'Blog Posts Carousel' && sec.type !== 'Testimonials' && sec.type !== 'Hajj Services Grid' && sec.type !== 'Text Block (Rich Text)' && sec.type !== 'Packages Content (Rich Text)' && sec.type !== 'Hajj 2027 Registration Form' && sec.type !== 'YOSR Al Mashaer Hajj Form' && sec.type !== 'Umrah Enquiry 2026-27 Form' && !['Package Detail Blocks', 'Package Flight Details', 'Package Hotel Details', 'Package Occupancy Prices', 'Package Inclusions', 'Package Detail Gallery'].includes(sec.type) && (
+                            {sec.type !== 'Latest Blogs Grid' && sec.type !== 'Blog Posts Carousel' && sec.type !== 'Testimonials' && sec.type !== 'Hajj Services Grid' && sec.type !== 'Text Block (Rich Text)' && sec.type !== 'Packages Content (Rich Text)' && sec.type !== 'Plan Your Own Package Form' && sec.type !== 'Flight Enquiry Form' && sec.type !== 'Hajj 2027 Registration Form' && sec.type !== 'YOSR Al Mashaer Hajj Form' && sec.type !== 'Umrah Enquiry 2026-27 Form' && !['Package Detail Blocks', 'Package Flight Details', 'Package Hotel Details', 'Package Occupancy Prices', 'Package Inclusions', 'Package Detail Gallery'].includes(sec.type) && (
 
                               <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 flex flex-col gap-2">
 

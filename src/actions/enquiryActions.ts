@@ -238,6 +238,65 @@ async function submitHajjVariantEnquiry(data: {
   }
 }
 
+/** The two short-form CMS sections reuse existing quote and flight enquiry tables,
+ * existing admin/customer email routing, and the unified enquiries screen. */
+async function isEnabledPublicSection(rawPath: string, sectionType: string) {
+  const path = '/' + String(rawPath || '').split('/').filter(Boolean).join('/');
+  if (path.length > 255 || path.includes('..')) return false;
+  const page = await getPageBySlug(path);
+  if (!page || page.status !== 'published') return false;
+  let sections: any[] = [];
+  try {
+    const saved = typeof page.sections === 'string' ? JSON.parse(page.sections) : page.sections;
+    if (Array.isArray(saved)) sections = saved;
+  } catch { return false; }
+  return sections.some(section => section?.type === sectionType && section.hidden !== true && section.visible !== false);
+}
+
+export async function submitPlanYourOwnPackageSectionAction(data: {
+  fullName: string; email: string; phone: string; days: number; sourcePage: string;
+}) {
+  if (!data || !validName(data.fullName) || !validEmail(data.email) || !isValidUkPhone(data.phone) ||
+      !Number.isSafeInteger(data.days) || data.days < 1 || data.days > 90) {
+    return { success: false, error: 'Enter a valid name, email, UK phone and number of days (1 to 90).' };
+  }
+  if (!await isEnabledPublicSection(data.sourcePage, 'Plan Your Own Package Form'))
+    return { success: false, error: 'This enquiry form is not available on this page.' };
+  return submitQuoteEnquiryAction({
+    fullName: data.fullName.trim(), email: data.email.trim(), phone: data.phone,
+    packageType: 'Customized Package', numberOfPilgrims: 1,
+    message: `Number of Days: ${data.days}\nPage: ${data.sourcePage}`,
+    sourceFormName: 'Get a Free Quote Form',
+  });
+}
+
+export async function submitFlightEnquirySectionAction(data: {
+  fullName: string; email: string; phone: string;
+  departureDate: string; returnDate: string; flightOption?: string; sourcePage: string;
+}) {
+  if (!data || !validName(data.fullName) || !validEmail(data.email) || !isValidUkPhone(data.phone))
+    return { success: false, error: 'Enter a valid name, email and UK phone number.' };
+  const validDate = (s: string) => /^\d{4}-\d{2}-\d{2}$/.test(s) &&
+    !Number.isNaN(new Date(s).getTime()) && new Date(s).toISOString().slice(0,10) === s;
+  const today = new Date().toISOString().slice(0,10);
+  if (!validDate(data.departureDate) || !validDate(data.returnDate) ||
+      data.departureDate < today || data.returnDate < data.departureDate)
+    return { success: false, error: 'Select valid travel and return dates. Return must be on or after departure.' };
+  if (String(data.flightOption || '').length > 120) return { success: false, error: 'Invalid flight option.' };
+  if (!await isEnabledPublicSection(data.sourcePage, 'Flight Enquiry Form'))
+    return { success: false, error: 'This flight enquiry form is not available on this page.' };
+  return submitFlightInquiry({
+    fullName: data.fullName.trim(), email: data.email.trim(), phone: data.phone,
+    // This six-field form does not collect airports. Never default to a fictitious route.
+    originCity: 'Not specified', destinationCity: 'Not specified',
+    departureDate: data.departureDate, returnDate: data.returnDate,
+    tripType: data.flightOption?.toLowerCase().includes('one way') ? 'One-Way' : 'Round Trip',
+    flightClass: 'Not specified', passengers: 1,
+    message: `Flight Option: ${data.flightOption || 'Not specified'}\nPage: ${data.sourcePage}`,
+    sourceFormName: 'Flight Booking Form',
+  });
+}
+
 export async function submitQuoteEnquiryAction(data: {
   fullName: string;
   phone: string;

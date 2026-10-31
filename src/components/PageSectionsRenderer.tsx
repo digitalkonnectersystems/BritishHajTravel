@@ -40,6 +40,8 @@ import ProcessStepsSection from '@/components/ProcessStepsSection';
 import GuideVideoSection from '@/components/GuideVideoSection';
 import SafeRichText from '@/components/SafeRichText';
 import HotelDirectorySection from '@/components/HotelDirectorySection';
+import PlanYourOwnPackageSection from '@/components/PlanYourOwnPackageSection';
+import FlightEnquirySection from '@/components/FlightEnquirySection';
 import CmsBasicSection from '@/components/CmsBasicSections';
 import type { DirectoryCategory } from '@/lib/hotelSectionSelection';
 import { useEffect, useRef, useState } from "react";
@@ -63,6 +65,13 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         if (sec.type === 'Custom Layout Builder') return null;
         if (['Stats Grid','Intro','Image+Text','Intro (Text + Image)','Why Choose Us','Services Grid','Accreditations Bar','Badges Cards'].includes(sec.type)) {
           return <CmsBasicSection key={sec.id || idx} type={sec.type} data={sec.data || {}} />;
+        }
+        if (sec.type === 'Plan Your Own Package Form' || sec.type === 'Flight Enquiry Form') {
+          const path = typeof pageData?.slug === 'string' ? pageData.slug : '/';
+          const sourcePage = '/' + path.split('/').filter(Boolean).join('/');
+          return sec.type === 'Plan Your Own Package Form'
+            ? <PlanYourOwnPackageSection key={sec.id || idx} data={sec.data || {}} sourcePage={sourcePage} />
+            : <FlightEnquirySection key={sec.id || idx} data={sec.data || {}} sourcePage={sourcePage} />;
         }
         if (sec.type === 'Makkah Hotels Directory' || sec.type === 'Madinah Hotels Directory') {
           return <HotelDirectorySection key={sec.id || idx} type={sec.type} data={sec.data || {}} categories={initialHotelDirectory} />;
