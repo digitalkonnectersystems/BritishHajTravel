@@ -13,7 +13,7 @@ export async function loadCmsSectionContext(sections: any[]) {
   const [umrah, hajj, soldOut, destinationData, blogData, guideData, hotelData] = await Promise.all([
     has('Upcoming Umrah Packages', 'Umrah Packages', 'Umrah Packages Grid') ? getPackagesByType('umrah') : Promise.resolve([]),
     has('Hajj Packages', 'Packages Grid') ? getPackagesByType('hajj') : Promise.resolve([]),
-    has('Sold Out Packages') ? Promise.all([getSoldOutPackages(),getSoldOutDestinationPackages()]).then(([p,d]) => [...p,...d]) : Promise.resolve([]),
+    has('Sold Out Packages') ? Promise.all([getSoldOutPackages(),getSoldOutDestinationPackages()]).then(([p,d]) => [...p,...d]) : has('Sold Out Hajj Packages', 'Sold Out Umrah Packages') ? getSoldOutPackages() : Promise.resolve([]),
     has('Destinations Grid') ? getDestinations() : Promise.resolve([]),
     has('Latest Blogs Grid','Blog Posts Carousel') ? getLatestBlogs(12) : Promise.resolve([]),
     categories.length ? Promise.all(categories.map(c => getGuidesList(c,false))).then(v => v.flat()) : Promise.resolve([]),

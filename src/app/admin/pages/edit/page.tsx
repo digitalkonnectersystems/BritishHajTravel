@@ -167,6 +167,8 @@ const SECTION_CATALOG: SectionCategory[] = [
       { type: 'Hajj Packages', description: 'Database-driven Hajj package cards with full details and booking form.', pages: ['Homepage'] },
 
       { type: 'Sold Out Packages', description: 'Display previously sold out luxury packages.', pages: ['Homepage'] },
+      { type: 'Sold Out Hajj Packages', description: 'Automatically display every visible Hajj package marked Sold Out. Per-section PNG/JPG badge.', pages: ['Any Page'] },
+      { type: 'Sold Out Umrah Packages', description: 'Automatically display every visible Umrah package marked Sold Out. Per-section PNG/JPG badge.', pages: ['Any Page'] },
 
       { type: 'Visa Solutions', description: 'Visa type cards (Tourist, Business, Umrah, Hajj) with features and apply CTA.', pages: ['Homepage'] },
 
@@ -1404,6 +1406,14 @@ function PageBuilderContent() {
 
       };
 
+    } else if (type === 'Sold Out Hajj Packages' || type === 'Sold Out Umrah Packages') {
+      const hajj = type === 'Sold Out Hajj Packages';
+      defaultData = {
+        eyebrow: 'LUXURY PACKAGES',
+        title: hajj ? 'Hajj Packages Officially Sold Out' : 'Umrah Packages Officially Sold Out',
+        description: '',
+        badgeImage: '',
+      };
     } else if (type === 'Sold Out Packages') {
       defaultData = {
         eyebrow: 'SOLD OUT PACKAGES', title: 'Packages Officially<br />Sold Out',
@@ -6930,6 +6940,44 @@ function PageBuilderContent() {
 
                             )}
 
+                            {(sec.type === 'Sold Out Hajj Packages' || sec.type === 'Sold Out Umrah Packages') && (
+                              <div className="mt-2 flex flex-col gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
+                                <h4 className="m-0 text-xs font-bold uppercase text-amber-900">Sold Out Badge Image</h4>
+                                <p className="m-0 text-xs text-slate-700">
+                                  Upload a transparent PNG or JPG/JPEG stamp. This badge appears over every sold-out package image in this section.
+                                  Packages are selected automatically by status and type. No manual package selection is needed.
+                                </p>
+                                {sec.data?.badgeImage && (
+                                  <div className="flex items-center gap-3">
+                                    <div className="flex h-24 w-40 items-center justify-center overflow-hidden rounded-lg bg-slate-700 p-2">
+                                      <img src={sec.data.badgeImage} alt="Selected sold out badge" className="max-h-full max-w-full object-contain" />
+                                    </div>
+                                    <button type="button" className="rounded-lg bg-red-50 px-3 py-2 text-xs font-bold text-red-700" onClick={() => updateSectionData(sec.id, 'badgeImage', '')}>Remove Badge</button>
+                                  </div>
+                                )}
+                                <label className="inline-flex w-fit cursor-pointer items-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-bold text-white">
+                                  <Upload className="h-4 w-4" /> {sec.data?.badgeImage ? 'Replace Badge' : 'Upload Badge (PNG / JPG / JPEG)'}
+                                  <input type="file" accept=".png,.jpg,.jpeg,image/png,image/jpeg" className="sr-only" onChange={async (e) => {
+                                    const file = e.target.files?.[0];
+                                    e.target.value = '';
+                                    if (!file) return;
+                                    const extensionOk = /\.(png|jpe?g)$/i.test(file.name);
+                                    if (!extensionOk || !['image/png', 'image/jpeg'].includes(file.type)) {
+                                      alert('Please choose a PNG, JPG, or JPEG image.');
+                                      return;
+                                    }
+                                    if (file.size > 10 * 1024 * 1024) {
+                                      alert('Badge image must be smaller than 10 MB.');
+                                      return;
+                                    }
+                                    const url = await uploadFile(file, 'badges');
+                                    if (url) updateSectionData(sec.id, 'badgeImage', url);
+                                  }} />
+                                </label>
+                                <p className="m-0 text-[11px] text-slate-600">Without an uploaded image, the card displays a built-in SOLD OUT stamp. Save the page after uploading the badge.</p>
+                              </div>
+                            )}
+
                             {sec.type === 'Sold Out Packages' && (
                               <div className="mt-1 rounded-xl border border-red-200 bg-red-50 p-4 flex flex-col gap-3">
                                 <div className="text-xs font-extrabold text-red-800 uppercase">Sold Out Packages: Two-Stage Filter</div>
@@ -6966,7 +7014,7 @@ function PageBuilderContent() {
                                     ? soldOutDestinations.find(d => `destination:${d.id}` === String(id))
                                     : allPackages.find(p => String(p.id) === String(id));
                                   if (!pkg) return null;
-                                  return <div key={String(id)} className="flex items-center justify-between rounded-lg border border-red-100 bg-white px-3 py-2 text-xs">
+                                  return <div key={String(id)} className="flex items-center justify-between text-black rounded-lg border border-red-100 bg-white px-3 py-2 text-xs">
                                     <span className="font-semibold">{pkg.title}</span>
                                     <button type="button" className="rounded-lg bg-red-50 p-2 text-red-600" aria-label="Remove selected package" title="Remove selected package" onClick={() => updateSectionData(sec.id, 'packageIds', (sec.data?.packageIds || []).filter((value: string | number) => String(value) !== String(id)))}><Trash2 className="h-4 w-4" /></button>
                                   </div>;

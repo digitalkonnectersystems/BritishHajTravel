@@ -18,6 +18,8 @@ import ContactInfoCardsSection from '@/components/ContactInfoCardsSection';
 import ContactMapsSection from '@/components/ContactMapsSection';
 import CertificationsFlipCardsSection from '@/components/CertificationsFlipCardsSection';
 import SoldOutPackagesSection from '@/components/SoldOutPackagesSection';
+import SoldOutHajjPackagesSection from '@/components/SoldOutHajjPackagesSection';
+import SoldOutUmrahPackagesSection from '@/components/SoldOutUmrahPackagesSection';
 import Banner4GridsSection from '@/components/Banner4GridsSection';
 import HajjRegistrationForm from '@/components/HajjRegistrationForm';
 import YosrAlMashaerHajjForm from '@/components/YosrAlMashaerHajjForm';
@@ -237,6 +239,14 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
               />
             </section>
           );
+        }
+
+        if (sec.type === 'Sold Out Hajj Packages' || sec.type === 'Sold Out Umrah Packages') {
+          const initialSoldOut = initialPackageData?.soldOut
+            ?? initialPackageData?.all?.filter((pkg: any) => pkg.status === 'sold_out');
+          return sec.type === 'Sold Out Hajj Packages'
+            ? <SoldOutHajjPackagesSection key={sec.id || idx} data={sec.data || {}} initialPackages={initialSoldOut} />
+            : <SoldOutUmrahPackagesSection key={sec.id || idx} data={sec.data || {}} initialPackages={initialSoldOut} />;
         }
 
         if (sec.type === "Sold Out Packages") {
