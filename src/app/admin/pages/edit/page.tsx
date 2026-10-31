@@ -11200,7 +11200,7 @@ function PageBuilderContent() {
 
 
 
-                                {/* Dynamic Social Media Links Manager (With SVG Uploaders) */}
+                                {/* Dynamic Social Media Links Manager */}
 
                                 <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-3">
 
@@ -11210,7 +11210,7 @@ function PageBuilderContent() {
 
                                       <span className="text-xs font-bold text-slate-800 uppercase">
 
-                                        📱 Social Media Profiles (With SVG Icons)
+                                        📱 Social Media Profiles (With Icons)
 
                                       </span>
 
@@ -11332,7 +11332,7 @@ function PageBuilderContent() {
 
                                                 ) : (
 
-                                                  <span className="text-[9px] text-white font-bold">SVG</span>
+                                                  <span className="text-[9px] text-white font-bold">Icon</span>
 
                                                 )}
 
@@ -11396,13 +11396,13 @@ function PageBuilderContent() {
 
                                                   <label className="flex bg-slate-200 hover:bg-slate-300 text-slate-800 px-2 py-1 rounded text-[10px] font-bold cursor-pointer gap-1.5 items-center transition-colors">
 
-                                                    <Upload className="w-3 h-3" /> Upload SVG
+                                                    <Upload className="w-3 h-3" /> Upload
 
                                                     <input
 
                                                       type="file"
 
-                                                      accept=".svg,image/svg+xml"
+                                                      accept="image/svg+xml,image/png,image/jpeg,image/webp,image/gif,image/avif,.svg"
 
                                                       className="hidden"
 
@@ -11412,9 +11412,13 @@ function PageBuilderContent() {
 
                                                         if (file) {
 
-                                                          if (!file.name.toLowerCase().endsWith('.svg') && file.type !== 'image/svg+xml') {
+                                                          const extension = file.name.slice(file.name.lastIndexOf('.')).toLowerCase();
 
-                                                            alert('Please upload an SVG file (.svg format only).');
+                                                          if (!['.svg', '.png', '.jpg', '.jpeg', '.webp', '.gif', '.avif'].includes(extension)) {
+
+                                                            alert('Please upload an SVG, PNG, JPG, WebP, GIF or AVIF image.');
+
+                                                            e.currentTarget.value = '';
 
                                                             return;
 

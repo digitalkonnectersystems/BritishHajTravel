@@ -75,6 +75,9 @@ export default function MediaLibrary({ onSelect, multiple = false, onClose, acce
     let succeeded = 0;
     try {
       for (const file of Array.from(files)) {
+        if (/\.svg$/i.test(file.name) || file.type === 'image/svg+xml') {
+          throw new Error(`${file.name}: SVG uploads are not supported in Media Library. Use PNG, JPG or WebP instead.`);
+        }
         const data = new FormData(); data.set('file', file); data.set('subfolder', 'uploads');
         const response = await fetch('/api/admin/upload', { method: 'POST', body: data });
         const body = await response.json();
@@ -100,7 +103,7 @@ export default function MediaLibrary({ onSelect, multiple = false, onClose, acce
         <button type="button" disabled={!!busy} onClick={() => action('rescan')} className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-3 py-2.5 text-xs font-semibold text-[#082a34] hover:bg-amber-400 disabled:opacity-60"><RefreshCcw className="h-4 w-4" />Rescan Media</button>
         <button type="button" disabled={!!busy} onClick={() => inputRef.current?.click()} className="inline-flex items-center gap-2 rounded-xl bg-[#020E43] px-3 py-2.5 text-xs font-semibold text-white disabled:opacity-60"><CloudUpload className="h-4 w-4" />Upload Media</button>
         {onClose && <button type="button" onClick={onClose} aria-label="Close library" className="rounded-lg border border-slate-200 p-2.5 hover:bg-slate-100"><X className="h-4 w-4" /></button>}
-        <input ref={inputRef} data-no-media-picker="true" type="file" multiple accept="image/*,.svg,image/svg+xml,.pdf,video/mp4,video/webm,video/quicktime" className="hidden" onChange={e => void upload(e.target.files)} />
+        <input ref={inputRef} data-no-media-picker="true" type="file" multiple accept="image/png,image/jpeg,image/webp,image/gif,image/avif,image/x-icon,.ico,.pdf,video/mp4,video/webm,video/quicktime" className="hidden" onChange={e => void upload(e.target.files)} />
       </div>
     </div>
     <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm space-y-3">

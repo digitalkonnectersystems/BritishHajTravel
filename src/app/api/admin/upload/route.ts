@@ -90,6 +90,15 @@ export async function POST(req: NextRequest) {
     const imageDocumentExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg', '.pdf', '.ico', '.avif'];
     const videoExtensions = ['.mp4', '.webm', '.mov'];
     const cleanExt = originalExt.toLowerCase();
+    // Media Library uploads use the generic 'uploads' folder. Keep SVG out of
+    // that workflow, while retaining the checked SVG icon uploads in 'social'
+    // and other dedicated admin icon folders.
+    if (subfolder === 'uploads' && (cleanExt === '.svg' || file.type === 'image/svg+xml')) {
+      return NextResponse.json(
+        { success: false, error: 'SVG uploads are disabled in Media Library. Upload PNG, JPG or WebP instead.' },
+        { status: 400 }
+      );
+    }
     const isVideo = videoExtensions.includes(cleanExt);
     const allowedExtensions = [...imageDocumentExtensions, ...videoExtensions];
 
