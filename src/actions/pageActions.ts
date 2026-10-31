@@ -1315,6 +1315,18 @@ const DEFAULT_FORM_FIELDS_STATE: Record<string, Array<{ id: string; label: strin
     { id: 'room', label: 'Room Size', type: 'select', placeholder: 'Double Room', required: true },
     { id: 'budget', label: 'Budget per person', type: 'select', placeholder: '5K - 7K', required: true },
   ],
+  yosrHajjForm: [
+    { id: 'name', label: 'Name', type: 'text', placeholder: 'Name', required: true },
+    { id: 'email', label: 'Email', type: 'email', placeholder: 'Email', required: true },
+    { id: 'phone', label: 'Phone', type: 'tel', placeholder: 'xxxx-xxxx xxx', required: true },
+    { id: 'postcode', label: 'Postcode', type: 'text', placeholder: 'Postcode', required: true },
+    { id: 'airport', label: 'Airport', type: 'select', placeholder: 'London (LON)', required: true },
+    { id: 'packageTier', label: 'Hajj Package', type: 'select', placeholder: '5-Star', required: true },
+    { id: 'passengers', label: 'Number of Passengers', type: 'number', placeholder: 'Number of Passengers', required: true },
+    { id: 'days', label: 'Number of Days', type: 'select', placeholder: '12 Days Packages', required: true },
+    { id: 'room', label: 'Room Size', type: 'select', placeholder: 'Double Room', required: true },
+    { id: 'budget', label: 'Budget per person', type: 'select', placeholder: '5K - 7K', required: true },
+  ],
   baanHoldingHajjForm: [
     { id: '1', label: 'Name', type: 'text', placeholder: 'Name', required: true },
     { id: '2', label: 'Email', type: 'email', placeholder: 'Email', required: true },
@@ -1423,7 +1435,8 @@ const DEFAULT_FORM_FIELDS_STATE: Record<string, Array<{ id: string; label: strin
 
 const DEFAULT_FORMS_DATA: Record<string, any> = {
   umrahRegistrationForm: { title: 'Umrah Enquiry 2026-27 Form', subtitle: 'Reusable Umrah registration form, place on any published CMS page.', recipientEmail: '', successMessage: 'Your Umrah enquiry has been received. We will be in touch.', enabled: true, buttonText: 'Submit', fieldsCount: 9 },
-  hajjRegistrationForm: { title: 'Hajj 2027 Registration Form', subtitle: 'Appears after the banner on five Hajj pages.', recipientEmail: '', successMessage: 'Your Hajj registration enquiry was received.', enabled: true, buttonText: 'Submit', fieldsCount: 10 },
+  hajjRegistrationForm: { title: 'Hajj 2027 Registration Form', subtitle: 'Reusable Hajj registration form. Add it from Admin > Pages > Sections.', recipientEmail: '', successMessage: 'Your Hajj registration enquiry was received.', enabled: true, buttonText: 'Submit', fieldsCount: 10 },
+  yosrHajjForm: { title: 'YOSR Al Mashaer Hajj Form', subtitle: 'Branded YOSR form. Add it from Admin > Pages > Sections.', recipientEmail: '', successMessage: 'Your YOSR Al Mashaer Hajj registration enquiry was received.', enabled: true, buttonText: 'Submit', fieldsCount: 10 },
   baanHoldingHajjForm: { title: 'BAAN Holding Hajj — Registration of Interest', subtitle: 'Enquiry popup at /baan-holding-hajj', recipientEmail: 'booking@britishhajjtravel.com', successMessage: 'Your Hajj 2027 interest has been registered.', enabled: true, buttonText: 'Submit Enquiry', fieldsCount: 10 },
   quoteForm: {
     title: 'Homepage Hero Banner — Get a Free Quote Form',

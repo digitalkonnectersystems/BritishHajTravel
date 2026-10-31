@@ -440,6 +440,18 @@ export default function AdminSettingsPage() {
     { id: 'room', label: 'Room Size', type: 'select', placeholder: 'Double Room', required: true },
     { id: 'budget', label: 'Budget per person', type: 'select', placeholder: '5K - 7K', required: true },
     ],
+  yosrHajjForm: [
+    { id: 'name', label: 'Name', type: 'text', placeholder: 'Name', required: true },
+    { id: 'email', label: 'Email', type: 'email', placeholder: 'Email', required: true },
+    { id: 'phone', label: 'Phone', type: 'tel', placeholder: 'xxxx-xxxx xxx', required: true },
+    { id: 'postcode', label: 'Postcode', type: 'text', placeholder: 'Postcode', required: true },
+    { id: 'airport', label: 'Airport', type: 'select', placeholder: 'London (LON)', required: true },
+    { id: 'packageTier', label: 'Hajj Package', type: 'select', placeholder: '5-Star', required: true },
+    { id: 'passengers', label: 'Number of Passengers', type: 'number', placeholder: 'Number of Passengers', required: true },
+    { id: 'days', label: 'Number of Days', type: 'select', placeholder: '12 Days Packages', required: true },
+    { id: 'room', label: 'Room Size', type: 'select', placeholder: 'Double Room', required: true },
+    { id: 'budget', label: 'Budget per person', type: 'select', placeholder: '5K - 7K', required: true },
+    ],
     baanHoldingHajjForm: [
       { id: 'name', label: 'Full Name', type: 'text', placeholder: 'Full name', required: true },
       { id: 'email', label: 'Email Address', type: 'email', placeholder: 'Email address', required: true },
@@ -604,7 +616,8 @@ export default function AdminSettingsPage() {
 
   const [formsData, setFormsData] = useState<any>({
     umrahRegistrationForm: { title: 'Umrah Enquiry 2026-27 Form', subtitle: 'Reusable 9-field Umrah enquiry form for any published CMS page.', recipientEmail: '', successMessage: 'Your Umrah enquiry has been received. We will be in touch.', enabled: true, buttonText: 'Submit' },
-    hajjRegistrationForm: { title: 'Hajj 2027 Registration Form', subtitle: 'Inline registration enquiry form immediately after the banner on Hajj Packages, Hajj 2027 Registration, Yosr Al Mashaer, Holiday in Bakkah, and BAAN Holding Hajj.', recipientEmail: '', successMessage: 'Your Hajj 2027 registration enquiry has been received. We will be in touch.', enabled: true, buttonText: 'Submit' },
+    hajjRegistrationForm: { title: 'Hajj 2027 Registration Form', subtitle: 'Reusable Hajj registration form. Add it to a published CMS page from Admin > Pages > Sections.', recipientEmail: '', successMessage: 'Your Hajj 2027 registration enquiry has been received. We will be in touch.', enabled: true, buttonText: 'Submit' },
+    yosrHajjForm: { title: 'YOSR Al Mashaer Hajj Form', subtitle: 'Reusable branded YOSR Hajj registration form. Add it from Admin > Pages > Sections.', recipientEmail: '', successMessage: 'Your YOSR Hajj registration enquiry was received. We will be in touch.', enabled: true, buttonText: 'Submit' },
     baanHoldingHajjForm: { title: 'BAAN Holding Hajj Interest Form', subtitle: 'BAAN Holding Hajj page registration modal at /baan-holding-hajj/.', recipientEmail: 'booking@britishhajjtravel.com', successMessage: 'Your BAAN Holding Hajj enquiry has been received.', enabled: true, buttonText: 'Submit Enquiry' },
     quoteForm: { title: 'Homepage Hero Banner — Get a Free Quote Form', subtitle: 'Inline quote form embedded in the Homepage & Umrah landing page hero banner.', recipientEmail: 'saudivisa@britishhajjtravel.com', successMessage: 'Thank you! Your quote request has been received.', enabled: true, buttonText: 'Submit Quote' },
     packageDetailForm: { title: 'Umrah Package Booking Form (Detail Page & Popup Modal)', subtitle: 'Primary booking form used across individual Umrah detail pages (/package/[slug]) and the “Book Now” popup modal.', recipientEmail: 'booking@britishhajjtravel.com', successMessage: 'Your package booking request has been submitted.', enabled: true, buttonText: 'Book Package' },
@@ -4238,6 +4251,8 @@ export default function AdminSettingsPage() {
                     {Object.keys(formsData).map((formKey) => {
                       const DEFAULT_META: Record<string, { title: string; icon: string; desc: string }> = {
                         umrahRegistrationForm: { title: 'Umrah Enquiry 2026-27 Form', icon: '🕋', desc: 'Reusable Umrah registration form. Add from Pages > Add Section; email templates are configured separately.' },
+                        hajjRegistrationForm: { title: 'Hajj 2027 Registration Form', icon: '🕋', desc: 'Reusable Hajj registration form with admin/customer email templates.' },
+                        yosrHajjForm: { title: 'YOSR Al Mashaer Hajj Form', icon: '🕋', desc: 'Branded reusable YOSR Hajj form with its own admin/customer email templates.' },
                         baanHoldingHajjForm: {
                           title: 'BAAN Holding Hajj Interest Form',
                           icon: '🕋',

@@ -3,11 +3,11 @@ import { FORM_SUCCESS_HEADING, FORM_SUCCESS_MESSAGE } from '@/lib/formSuccess';
 import { useEffect, useState } from 'react';
 import { ArrowRight, CheckCircle2, Compass, Headphones, ShieldCheck, Sparkles, X, Building2, CalendarDays, ClipboardCheck, Plane } from 'lucide-react';
 import type { BaanContent } from '@/lib/baanContent';
+import type { ReactNode } from 'react';
 import { submitBaanInterest } from '@/actions/baanActions';
 import styles from './baan.module.css';
-import HajjRegistrationForm from '@/components/HajjRegistrationForm';
 import { normalizeUkPhoneInput } from '@/lib/ukPhone';
-export default function BaanLanding({ content: c }: { content: BaanContent }) {
+export default function BaanLanding({ content: c, pageSections }: { content: BaanContent; pageSections?: ReactNode }) {
   const [open, setOpen] = useState(false), [busy, setBusy] = useState(false), [error, setError] = useState(''), [done, setDone] = useState(false);
   useEffect(() => { if (!open) return; const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false); }; window.addEventListener('keydown', onKey); return () => window.removeEventListener('keydown', onKey); }, [open]);
   const openForm = () => { setDone(false); setError(''); setOpen(true); };
@@ -22,7 +22,7 @@ export default function BaanLanding({ content: c }: { content: BaanContent }) {
       <div className={styles.heroDecor} aria-hidden="true"><svg viewBox="0 0 350 350"><circle cx="175" cy="175" r="135" fill="none" stroke="currentColor" strokeWidth="1"/><circle cx="175" cy="175" r="96" fill="none" stroke="currentColor" strokeWidth="1"/><path d="M175 25V325M25 175H325M70 70L280 280M280 70L70 280" stroke="currentColor" strokeWidth="1"/></svg></div>
       <div className={styles.heroInner}><div><p className={styles.eyebrow}><Sparkles size={16}/>{c.eyebrow}</p><h1>{c.heading}</h1><p className={styles.heroDesc}>{c.description}</p><div className={styles.heroActions}><button className={styles.cta} onClick={openForm}>{c.heroButton}<ArrowRight size={19}/></button><span><ShieldCheck size={18}/> UK-based enquiry assistance</span></div><div className={styles.heroStats}><span><strong>2027</strong> Hajj season</span><span><strong>BAAN</strong> Package provider</span><span><strong>UK</strong> Reseller support</span></div></div><div className={styles.heroPhoto}>{c.heroImage ? <img src={c.heroImage} alt={c.heroAlt} onError={(e) => { e.currentTarget.style.display = 'none'; }} /> : null}<div className={styles.photoOverlay}><span>MAKKAH • SAUDI ARABIA</span><strong>A journey worth preparing for.</strong></div></div></div>
     </section>
-    <HajjRegistrationForm sourcePage="/baan-holding-hajj/" />
+    {pageSections}
     <section className={styles.intro}><div><p className={styles.kicker}>OFFICIAL PROVIDER RELATIONSHIP</p><h2>{c.introTitle}</h2><p>{c.introText}</p></div><div className={styles.relationship}><div><Building2/><small>HAJJ PACKAGE PROVIDER</small><strong>{c.provider}</strong></div><ArrowRight className={styles.relArrow}/><div><Headphones/><small>UK RESELLER & SUPPORT</small><strong>{c.reseller}</strong></div></div></section>
     <section className={styles.process}><div className={styles.heading}><p className={styles.kicker}>FOUR SIMPLE STEPS</p><h2>From your first enquiry to Hajj preparation</h2><p>Our team is here to help you explore suitable packages.</p></div><div className={styles.steps}>{c.process.map((s, i) => <div className={styles.step} key={i}><div className={styles.stepTop}><span>{String(i+1).padStart(2,'0')}</span>{i===0?<Compass size={25}/>:i===1?<Headphones size={25}/>:i===2?<ClipboardCheck size={25}/>:<CalendarDays size={25}/>}</div><h3>{s.title}</h3><p>{s.text}</p></div>)}</div></section>
     <section className={styles.support}><div className={styles.heading}><p className={styles.kicker}>BRITISH HAJ TRAVEL</p><h2>Support for UK Pilgrims</h2><p>Explore pilgrimage package options available through our partner providers.</p></div><div className={styles.supportCards}>{c.support.map((s,i) => <div key={i} className={styles.supportCard}><span>{i===0?<Headphones/>:i===1?<Building2/>:<CheckCircle2/>}</span><h3>{s.title}</h3><p>{s.text}</p></div>)}</div></section>

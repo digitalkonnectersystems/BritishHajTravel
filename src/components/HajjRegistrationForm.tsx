@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useState, type FormEvent } from 'react';
 import { getFormsSettings } from '@/actions/pageActions';
-import { submitHajjRegistrationEnquiryAction } from '@/actions/enquiryActions';
+import { submitHajjRegistrationEnquiryAction, submitYosrHajjRegistrationEnquiryAction } from '@/actions/enquiryActions';
 import { normalizeUkPhoneInput } from '@/lib/ukPhone';
 import { defaultBaanContent } from '@/lib/baanContent';
 
@@ -33,7 +33,8 @@ const fieldRows: FieldKey[][] = [
   ['days', 'room', 'budget'],
 ];
 
-export default function HajjRegistrationForm({sourcePage, branded = false, heading = 'Register for Hajj 2027'}: { sourcePage: string; branded?: boolean; heading?: string }) {
+export default function HajjRegistrationForm({sourcePage, branded = false, heading = 'Register for Hajj 2027', variant = 'standard'}: { sourcePage: string; branded?: boolean; heading?: string; variant?: 'standard' | 'yosr' }) {
+  const formKey = variant === 'yosr' ? 'yosrHajjForm' : 'hajjRegistrationForm';
   const instanceId = useId();
   const [config, setConfig] = useState<Record<FieldKey, FieldConfig>>(defaultFields);
   const [enabled, setEnabled] = useState(true);
@@ -52,13 +53,13 @@ export default function HajjRegistrationForm({sourcePage, branded = false, headi
     let live = true;
     getFormsSettings().then(settings => {
       if (!live) return;
-      const form = settings.formsData?.hajjRegistrationForm;
+      const form = settings.formsData?.[formKey];
       if (form) {
         setEnabled(form.enabled !== false);
         if (typeof form.buttonText === 'string' && form.buttonText.trim()) setButtonText(form.buttonText);
         if (typeof form.successMessage === 'string' && form.successMessage.trim()) setSuccessText(form.successMessage);
       }
-      const saved = settings.formFieldsState?.hajjRegistrationForm;
+      const saved = settings.formFieldsState?.[formKey];
       if (Array.isArray(saved)) {
         setConfig(current => {
           const next = { ...current };
@@ -77,7 +78,7 @@ export default function HajjRegistrationForm({sourcePage, branded = false, headi
       }
     }).catch(() => {});
     return () => { live = false; };
-  }, []);
+  }, [formKey]);
 
   if (!enabled) return null;
 
@@ -90,7 +91,8 @@ export default function HajjRegistrationForm({sourcePage, branded = false, headi
     if (busy) return;
     setBusy(true); setError(''); setSuccess('');
     try {
-      const result = await submitHajjRegistrationEnquiryAction({
+      const submitAction = variant === 'yosr' ? submitYosrHajjRegistrationEnquiryAction : submitHajjRegistrationEnquiryAction;
+      const result = await submitAction({
         ...values,
         passengers: Number(values.passengers),
         sourcePage,
@@ -110,7 +112,7 @@ export default function HajjRegistrationForm({sourcePage, branded = false, headi
 
   function field(key: FieldKey) {
     const f = config[key];
-    const id = `hajj-registration-${instanceId}-${key}`;
+    const id = `${formKey}-${instanceId}-${key}`;
     const standard = 'block w-full h-[44px] border border-[#c5c5c5] rounded-sm bg-white px-3 text-[15px] text-[#162348] focus:outline-none focus:ring-2 focus:ring-[#072366] focus:border-[#072366]';
     const opts = choices[key];
     return <div key={key} className="min-w-0">
@@ -128,12 +130,12 @@ export default function HajjRegistrationForm({sourcePage, branded = false, headi
     </div>;
   }
 
-  return <section aria-label="Hajj 2027 registration enquiry" className="bg-white w-full px-4 py-9 md:py-12">
+  return <section aria-label={variant === 'yosr' ? 'YOSR Al Mashaer Hajj registration enquiry' : 'Hajj 2027 registration enquiry'} className="bg-white w-full px-4 py-9 md:py-12">
     <div className="max-w-[1140px] mx-auto">
       {!branded && <h2 className="font-semibold text-center text-[#062a65] text-[28px] md:text-[32px] leading-tight mb-8">{heading}</h2>}
       <div className="bg-white border border-[#d0d0d0] rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,.18)] p-5 md:p-7">
         {branded && <div className="text-center mb-6 flex flex-wrap items-center justify-center gap-2">
-          <img src="https://britishhajtravel.com/wp-content/uploads/2019/02/bht-logo.png" alt="British Haj Travel Ltd" className="object-contain max-w-[160px] h-auto" />
+          <img src="https://britishhajtravel.com/wp-content/uploads/2019/02/bht-logo.png" alt="British Haj Travel Ltd" className={`object-contain h-auto ${variant === 'yosr' ? 'w-full max-w-[400px]' : 'max-w-[160px]'}`} />
           <span className="font-bold text-xl md:text-2xl text-[#ee1b2b]">{heading}</span>
         </div>}
         <form onSubmit={submit} className="space-y-3" autoComplete="on">

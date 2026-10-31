@@ -20,6 +20,7 @@ import CertificationsFlipCardsSection from '@/components/CertificationsFlipCards
 import SoldOutPackagesSection from '@/components/SoldOutPackagesSection';
 import Banner4GridsSection from '@/components/Banner4GridsSection';
 import HajjRegistrationForm from '@/components/HajjRegistrationForm';
+import YosrAlMashaerHajjForm from '@/components/YosrAlMashaerHajjForm';
 import UmrahRegistrationForm from '@/components/UmrahRegistrationForm';
 import PackageBrochuresSection from '@/components/PackageBrochuresSection';
 import GallerySection from '@/components/GallerySection';
@@ -61,6 +62,15 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
           const rawSlug = typeof pageData?.slug === 'string' ? pageData.slug : '/';
           const sourcePage = `/${rawSlug.split('/').filter(Boolean).join('/')}/`;
           return <UmrahRegistrationForm
+            key={sec.id || idx}
+            sourcePage={sourcePage}
+            heading={typeof sec.data?.title === 'string' ? sec.data.title : undefined}
+          />;
+        }
+        if (sec.type === 'YOSR Al Mashaer Hajj Form') {
+          const rawSlug = typeof pageData?.slug === 'string' ? pageData.slug : '/';
+          const sourcePage = `/${rawSlug.split('/').filter(Boolean).join('/')}/`;
+          return <YosrAlMashaerHajjForm
             key={sec.id || idx}
             sourcePage={sourcePage}
             heading={typeof sec.data?.title === 'string' ? sec.data.title : undefined}

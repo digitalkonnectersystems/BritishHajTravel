@@ -137,8 +137,23 @@ export async function submitUmrahRegistrationEnquiryAction(data: {
   }
 }
 
-/** Shared inline Hajj 2027 enquiry form used on five public Hajj pages. */
-export async function submitHajjRegistrationEnquiryAction(data: {
+type HajjRegistrationEnquiryInput = {
+  name: string; email: string; phone: string; postcode: string; airport: string;
+  packageTier: string; passengers: number; days: string; room: string;
+  budget: string; sourcePage: string;
+};
+
+/** Standard Hajj form. Existing page assignments and email templates are unchanged. */
+export async function submitHajjRegistrationEnquiryAction(data: HajjRegistrationEnquiryInput) {
+  return submitHajjVariantEnquiry(data, 'standard');
+}
+
+/** YOSR form. Uses its own email template pair and source form in enquiries. */
+export async function submitYosrHajjRegistrationEnquiryAction(data: HajjRegistrationEnquiryInput) {
+  return submitHajjVariantEnquiry(data, 'yosr');
+}
+
+async function submitHajjVariantEnquiry(data: {
   name: string;
   email: string;
   phone: string;
@@ -150,11 +165,11 @@ export async function submitHajjRegistrationEnquiryAction(data: {
   room: string;
   budget: string;
   sourcePage: string;
-}) {
-  const allowedPages = new Set([
-    '/hajj-packages/', '/hajj-2027-registration/', '/yosr-al-mashaer-hajj-uk-guide/',
-    '/holiday-in-bakkah/', '/baan-holding-hajj/',
-  ]);
+}, variant: 'standard' | 'yosr') {
+  const isYosr = variant === 'yosr';
+  const formName = isYosr ? 'YOSR Al Mashaer Hajj Form' : 'Hajj 2027 Registration Form';
+  const formKey = isYosr ? 'yosrHajjForm' : 'hajjRegistrationForm';
+  const sectionType = formName;
   const clean = {
     ...data,
     name: String(data.name || '').trim(),
@@ -168,6 +183,7 @@ export async function submitHajjRegistrationEnquiryAction(data: {
     budget: String(data.budget || '').trim(),
   };
   const sourcePage = '/' + String(data.sourcePage || '').split('/').filter(Boolean).join('/') + '/';
+  if (sourcePage.length > 255 || sourcePage.includes('..')) return { success: false, error: 'Invalid registration page.' };
   // The original five pages keep their built-in form until a CMS section is added.
   // Other pages may submit only if a published CMS page contains this visible section.
   const pageSlug = sourcePage === '/' ? '/' : sourcePage.replace(/\/$/, '');
@@ -178,13 +194,11 @@ export async function submitHajjRegistrationEnquiryAction(data: {
     try { const parsed = JSON.parse(String(cmsPage.sections)); return Array.isArray(parsed) ? parsed : []; }
     catch { return [] as any[]; }
   })();
-  const configuredForms = cmsSections.filter((section: any) => section?.type === 'Hajj 2027 Registration Form');
-  if (configuredForms.length > 0) {
-    if (cmsPage?.status !== 'published' || !configuredForms.some((section: any) => section.hidden !== true && section.visible !== false)) {
-      return { success: false, error: 'This registration form is currently unavailable on this page.' };
-    }
-  } else if (!allowedPages.has(sourcePage)) {
-    return { success: false, error: 'Invalid registration page.' };
+  // Registration forms are available only when an admin has added a visible
+  // section to a published CMS page, even on the original five Hajj URLs.
+  if (cmsPage?.status !== 'published' || !cmsSections.some((section: any) =>
+      section?.type === sectionType && section.hidden !== true && section.visible !== false)) {
+    return { success: false, error: 'This registration form is not available on this page.' };
   }
   if (!validName(clean.name) || !validEmail(clean.email) || !isValidUkPhone(clean.phone) ||
       !clean.postcode || clean.postcode.length > 30 || !countOk(clean.passengers, 1) || clean.passengers > 100 ||
@@ -193,10 +207,10 @@ export async function submitHajjRegistrationEnquiryAction(data: {
   }
   try {
     const settings = await getFormsSettings();
-    if (settings.formsData?.hajjRegistrationForm?.enabled === false) {
+    if (settings.formsData?.[formKey]?.enabled === false) {
       return { success: false, error: 'This registration form is currently unavailable.' };
     }
-    const enquiryNumber = enquiryReference('HJ');
+    const enquiryNumber = enquiryReference(isYosr ? 'YS' : 'HJ');
     const details = [
       `Page: ${sourcePage}`, `Postcode: ${clean.postcode}`, `Airport: ${clean.airport}`,
       `Hajj Package: ${clean.packageTier}`, `Passengers: ${clean.passengers}`,
@@ -205,10 +219,10 @@ export async function submitHajjRegistrationEnquiryAction(data: {
     await db.insert(enquiries).values({
       enquiryNumber, type: 'quote_request', fullName: clean.name, email: clean.email,
       phone: clean.phone, preferredPackageType: clean.packageTier, adults: clean.passengers,
-      message: details, sourceForm: 'Hajj 2027 Registration Form', status: 'new',
+      message: details, sourceForm: formName, status: 'new',
     });
-    await recordPublicEnquiry('Hajj 2027 Registration Form', enquiryNumber);
-    const emailResult = await dispatchAndStoreEnquiryEmail(enquiryNumber, 'Hajj 2027 Registration Form', {
+    await recordPublicEnquiry(formName, enquiryNumber);
+    const emailResult = await dispatchAndStoreEnquiryEmail(enquiryNumber, formName, {
       enquiryNumber, fullName: clean.name, email: clean.email, phone: clean.phone,
       postcode: clean.postcode, airport: clean.airport, packageTier: clean.packageTier,
       passengers: clean.passengers, days: clean.days, room: clean.room, budget: clean.budget,
@@ -219,7 +233,7 @@ export async function submitHajjRegistrationEnquiryAction(data: {
     return { success: true, enquiryNumber, emailWarning: emailResult.error };
   } catch (error) {
     console.error('Hajj 2027 registration enquiry failed:', error);
-    await recordSubmissionFailure('hajjRegistrationForm', error);
+    await recordSubmissionFailure(formKey, error);
     return { success: false, error: 'Unable to save your enquiry. Please try again.' };
   }
 }
