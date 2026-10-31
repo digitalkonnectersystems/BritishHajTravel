@@ -379,6 +379,8 @@ const SECTION_CATALOG: SectionCategory[] = [
 
       { type: 'Text Block (Rich Text)', description: 'Free-form rich text editor block for long-form content.', pages: ['Any Page'] },
 
+      { type: 'Elegant Text Content', description: 'New styled content section: paste text in Tiptap, choose card or clean layout, and get polished typography.', pages: ['Any Page'] },
+
     ],
 
   },
@@ -1623,6 +1625,14 @@ function PageBuilderContent() {
 
       };
 
+    } else if (type === 'Elegant Text Content') {
+      defaultData = {
+        eyebrow: '',
+        title: '',
+        content: '',
+        appearance: 'card',
+        alignment: 'left',
+      };
     } else if (type === 'Text Block (Rich Text)' || type === 'Packages Content (Rich Text)') {
 
       defaultData = {
@@ -5013,7 +5023,7 @@ function PageBuilderContent() {
 
                             {/* Universal Section Header Block (Eyebrow, Heading, Description) - Hidden for Blog sections */}
 
-                            {sec.type !== 'Latest Blogs Grid' && sec.type !== 'Blog Posts Carousel' && sec.type !== 'Testimonials' && sec.type !== 'Hajj Services Grid' && sec.type !== 'Text Block (Rich Text)' && sec.type !== 'Packages Content (Rich Text)' && sec.type !== 'Plan Your Own Package Form' && sec.type !== 'Flight Enquiry Form' && sec.type !== 'Hajj 2027 Registration Form' && sec.type !== 'YOSR Al Mashaer Hajj Form' && sec.type !== 'Umrah Enquiry 2026-27 Form' && !['Package Detail Blocks', 'Package Flight Details', 'Package Hotel Details', 'Package Occupancy Prices', 'Package Inclusions', 'Package Detail Gallery'].includes(sec.type) && (
+                            {sec.type !== 'Latest Blogs Grid' && sec.type !== 'Blog Posts Carousel' && sec.type !== 'Testimonials' && sec.type !== 'Hajj Services Grid' && sec.type !== 'Elegant Text Content' && sec.type !== 'Text Block (Rich Text)' && sec.type !== 'Packages Content (Rich Text)' && sec.type !== 'Plan Your Own Package Form' && sec.type !== 'Flight Enquiry Form' && sec.type !== 'Hajj 2027 Registration Form' && sec.type !== 'YOSR Al Mashaer Hajj Form' && sec.type !== 'Umrah Enquiry 2026-27 Form' && !['Package Detail Blocks', 'Package Flight Details', 'Package Hotel Details', 'Package Occupancy Prices', 'Package Inclusions', 'Package Detail Gallery'].includes(sec.type) && (
 
                               <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 flex flex-col gap-2">
 
@@ -8173,6 +8183,57 @@ function PageBuilderContent() {
 
                             )}
 
+
+
+                            {sec.type === 'Elegant Text Content' && (
+                              <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-4 mt-1">
+                                <div>
+                                  <h4 className="text-sm font-extrabold text-primary m-0">Elegant Text Content</h4>
+                                  <p className="text-xs text-slate-500 mt-1 mb-0">A separate styled section. Add headings and paragraphs below; the frontend handles typography and spacing.</p>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                  <label className="block text-xs font-semibold text-slate-700">
+                                    Optional small label
+                                    <input type="text" maxLength={100} value={sec.data?.eyebrow || ''}
+                                      onChange={e => updateSectionData(sec.id, 'eyebrow', e.target.value)}
+                                      placeholder="e.g. OUR PACKAGES"
+                                      className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                                  </label>
+                                  <label className="block text-xs font-semibold text-slate-700">
+                                    Optional section heading
+                                    <input type="text" maxLength={170} value={sec.data?.title || ''}
+                                      onChange={e => updateSectionData(sec.id, 'title', e.target.value)}
+                                      placeholder="Leave empty to use headings in your content"
+                                      className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                                  </label>
+                                  <label className="block text-xs font-semibold text-slate-700">
+                                    Layout
+                                    <select value={sec.data?.appearance === 'clean' ? 'clean' : 'card'}
+                                      onChange={e => updateSectionData(sec.id, 'appearance', e.target.value)}
+                                      className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm">
+                                      <option value="card">Soft background + white content card</option>
+                                      <option value="clean">Clean editorial text with accent line</option>
+                                    </select>
+                                  </label>
+                                  <label className="block text-xs font-semibold text-slate-700">
+                                    Text alignment
+                                    <select value={sec.data?.alignment === 'center' ? 'center' : 'left'}
+                                      onChange={e => updateSectionData(sec.id, 'alignment', e.target.value)}
+                                      className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm">
+                                      <option value="left">Left aligned (recommended)</option>
+                                      <option value="center">Centered</option>
+                                    </select>
+                                  </label>
+                                </div>
+                                <label className="block text-xs font-semibold text-slate-700">Section text (Tiptap editor)</label>
+                                <TiptapEditor
+                                  value={sec.data?.content || ''}
+                                  onChange={html => updateSectionData(sec.id, 'content', html)}
+                                  minHeight="220px"
+                                />
+                                <p className="text-xs text-slate-500 m-0">Use Heading 2 and Heading 3 for titles inside the text. The styling is automatic. Existing Rich Text sections are unchanged.</p>
+                              </div>
+                            )}
 
 
                             {(sec.type === 'Text Block (Rich Text)' || sec.type === 'Packages Content (Rich Text)') && (

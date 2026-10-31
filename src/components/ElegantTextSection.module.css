@@ -1,0 +1,90 @@
+.section {
+  width: 100%;
+  padding: clamp(32px, 5vw, 76px) 20px;
+  background: radial-gradient(ellipse at 0% 0%, rgba(215, 229, 245, 0.52), transparent 53%), #f7f9fc;
+}
+.container { max-width: 1180px; margin: 0 auto; }
+.panel {
+  position: relative;
+  padding: clamp(26px, 5vw, 64px);
+  border: 1px solid #e8edf3;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 18px 55px rgba(9, 30, 67, 0.055);
+  overflow: hidden;
+}
+.panel::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 40px;
+  bottom: 40px;
+  width: 4px;
+  border-radius: 0 4px 4px 0;
+  background: linear-gradient(to bottom, #ba2a39, #ec9e78);
+}
+.header { margin: 0 0 26px; max-width: 940px; }
+.eyebrow {
+  margin: 0 0 12px;
+  color: #a42b3b;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+}
+.title {
+  margin: 0;
+  color: #0b1b46;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(28px, 3.5vw, 42px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -.025em;
+}
+.accentRule { display: block; width: 52px; height: 3px; margin-top: 21px; border-radius: 3px; background: #bc2d3d; }
+.content {
+  max-width: 980px;
+  color: #334155;
+  font-size: clamp(15px, 1.2vw, 17px);
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+.content :global(p) { margin: 0 0 1.2em; line-height: 1.85; }
+.content :global(p:last-child) { margin-bottom: 0; }
+.content :global(h1), .content :global(h2), .content :global(h3),
+.content :global(h4), .content :global(h5), .content :global(h6) {
+  color: #0b1b46;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -.015em;
+}
+.content :global(h1), .content :global(h2) { font-size: clamp(24px, 2.6vw, 34px); margin: 1.35em 0 .65em; }
+.content :global(h3) { font-size: clamp(20px, 2vw, 25px); margin: 1.4em 0 .6em; }
+.content :global(h4) { font-size: 19px; margin: 1.3em 0 .6em; }
+.content :global(h5), .content :global(h6) { font-size: 17px; margin: 1.25em 0 .5em; }
+.content :global(h1:first-child), .content :global(h2:first-child), .content :global(h3:first-child) { margin-top: 0; }
+.content :global(strong) { color: #172650; font-weight: 700; }
+.content :global(a) { color: #aa293a; text-decoration-color: #d5a3aa; text-underline-offset: 3px; }
+.content :global(ul), .content :global(ol) { padding-left: 1.6em; margin: .8em 0 1.3em; }
+.content :global(li) { padding-left: .2em; margin-bottom: .45em; }
+.content :global(li::marker) { color: #b83244; }
+.content :global(blockquote) { margin: 24px 0; border-left: 3px solid #bb3042; background: #f8f5f6; padding: 18px 24px; border-radius: 0 12px 12px 0; color: #364152; }
+.content :global(hr) { border: 0; border-top: 1px solid #e4e9f0; margin: 32px 0; }
+.content :global(img) { max-width: 100%; height: auto; border-radius: 12px; }
+.content :global(table) { display: block; max-width: 100%; overflow-x: auto; }
+.section[data-appearance='clean'] { background: transparent; padding-top: clamp(28px, 4vw, 56px); padding-bottom: clamp(28px, 4vw, 56px); }
+.section[data-appearance='clean'] .panel { border: 0; border-radius: 0; box-shadow: none; padding: 0 0 0 24px; background: transparent; }
+.section[data-appearance='clean'] .panel::before { top: 4px; bottom: 4px; width: 3px; }
+.section[data-alignment='center'] .header { margin-left: auto; margin-right: auto; text-align: center; }
+.section[data-alignment='center'] .accentRule { margin-left: auto; margin-right: auto; }
+.section[data-alignment='center'] .content { margin-left: auto; margin-right: auto; text-align: center; }
+.section[data-alignment='center'] .content :global(ul), .section[data-alignment='center'] .content :global(ol) { text-align: left; display: inline-block; }
+@media (max-width: 640px) {
+  .section { padding: 28px 14px; }
+  .panel { border-radius: 16px; padding: 26px 22px; }
+  .panel::before { top: 26px; bottom: 26px; width: 3px; }
+  .section[data-appearance='clean'] .panel { padding-left: 17px; }
+  .header { margin-bottom: 20px; }
+  .content { font-size: 15px; line-height: 1.75; }
+}
