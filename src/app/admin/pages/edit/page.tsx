@@ -212,7 +212,6 @@ const SECTION_CATALOG: SectionCategory[] = [
 
       { type: 'Hajj Services Grid', description: '4-column icon grid showcasing Hajj services (e.g. Pre-Hajj Meet-up, Buffet Meals, Transport, Scholar).', pages: ['Hajj Packages'] },
 
-      { type: 'Banner 4 Grids', description: 'Banner with 4 overlapping accreditation/feature cards.', pages: ['Hajj Packages', 'Umrah Packages'] },
 
       { type: 'Package Detail Blocks', description: 'Display real package detail data: flights, hotels, occupancy prices and inclusions for a selected package.', pages: ['Hajj Packages', 'Umrah Packages', 'Any Page'] },
       { type: 'Package Flight Details', description: 'Show the selected package flight route from its detail record.', pages: ['Hajj Packages', 'Umrah Packages', 'Any Page'] },
@@ -351,6 +350,8 @@ const SECTION_CATALOG: SectionCategory[] = [
       { type: 'Guide', description: 'Responsive step-by-step guide cards with selectable SVG icons and Learn More links.', pages: ['Any Page', 'Homepage'] },
 
       { type: 'Services Grid', description: 'Icon + heading + description service tiles in a responsive grid.', pages: ['About', 'Any Page'] },
+
+      { type: 'Banner 4 Grids', description: 'Reusable responsive icon and title cards. Editable items, order and positioning; works on any CMS page.', pages: ['Any Page', 'Homepage', 'Hajj Packages', 'Umrah Packages'] },
 
       { type: 'Image+Text', description: 'Split image-and-text block with eyebrow, heading, body, and optional CTA.', pages: ['Any Page'] },
 
@@ -1520,6 +1521,8 @@ function PageBuilderContent() {
     } else if (type === 'Banner 4 Grids') {
 
       defaultData = {
+
+        placement: 'auto',
 
         items: [
 
@@ -5321,23 +5324,13 @@ function PageBuilderContent() {
 
                                 <div className="flex items-center justify-between">
 
-                                  <span className="text-[11px] font-extrabold text-primary uppercase">🖼 Banner 4 Grids Items (Lucide Icon & Title)</span>
+                                  <span className="text-[11px] font-extrabold text-primary uppercase">Banner 4 Grids (Icon &amp; Title)</span>
 
                                   <button type="button" onClick={() => {
 
-                                    const currentItems = [...((sec.data?.items && Array.isArray(sec.data.items) && sec.data.items.length > 0) ? sec.data.items : [
+                                    const currentItems = Array.isArray(sec.data?.items) ? [...sec.data.items] : [];
 
-                                      { icon: 'Shield', title: 'ATOL PROTECTED' },
-
-                                      { icon: 'Building', title: 'SAUDI MINISTRY APPROVED' },
-
-                                      { icon: 'Plane', title: 'IATA ACCREDITED' },
-
-                                      { icon: 'Award', title: 'ABTA BONDED' },
-
-                                    ])];
-
-                                    currentItems.push({ icon: 'Award', title: 'NEW BADGE' });
+                                    currentItems.push({ icon: 'Star', title: 'NEW FEATURE' });
 
                                     updateSectionData(sec.id, 'items', currentItems);
 
@@ -5349,17 +5342,24 @@ function PageBuilderContent() {
 
                                 </div>
 
-                                {((sec.data?.items && Array.isArray(sec.data.items) && sec.data.items.length > 0) ? sec.data.items : [
+                                <label className="flex flex-col gap-1 text-xs font-semibold text-slate-700">
 
-                                  { icon: 'Shield', title: 'ATOL PROTECTED' },
+                                  Section placement
 
-                                  { icon: 'Building', title: 'SAUDI MINISTRY APPROVED' },
+                                  <select
+                                    value={sec.data?.placement === 'overlap' || sec.data?.placement === 'inline' ? sec.data.placement : 'auto'}
+                                    onChange={(e) => updateSectionData(sec.id, 'placement', e.target.value)}
+                                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-800"
+                                  >
+                                    <option value="auto">Automatic (overlap home banner; inline on inner pages)</option>
+                                    <option value="inline">Inline (normal section; no negative top margin)</option>
+                                    <option value="overlap">Overlap previous banner</option>
+                                  </select>
+                                </label>
 
-                                  { icon: 'Plane', title: 'IATA ACCREDITED' },
+                                <p className="m-0 text-[11px] text-slate-500">Move this section with the page section arrows. Cards display two per row on mobile and four per row on desktop.</p>
 
-                                  { icon: 'Award', title: 'ABTA BONDED' },
-
-                                ]).map((stat: any, sIdx: number, allItems: any[]) => {
+                                {(Array.isArray(sec.data?.items) ? sec.data.items : []).map((stat: any, sIdx: number, allItems: any[]) => {
 
                                   const isFirst = sIdx === 0;
 
