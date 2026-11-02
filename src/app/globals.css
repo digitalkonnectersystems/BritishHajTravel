@@ -3280,12 +3280,12 @@ hr {
   #bht-public-header > div {
     height: 66px;
     gap: 8px;
-    padding-inline: 12px;
+    /* padding-inline: 12px; */
   }
   #bht-public-header > div > div:first-child {
-    flex: 0 1 165px;
+    flex: 0 1 200px;
     min-width: 0;
-    max-width: 165px;
+    max-width: 200px;
   }
   #bht-public-header > div > div:first-child img { max-height: 48px; }
   #bht-public-header button[aria-controls="main-nav"] {
@@ -3395,7 +3395,6 @@ hr {
 }
 
 @media (max-width: 380px) {
-  #bht-public-header > div > div:first-child { max-width: 142px; }
   body:has(#bht-public-header) .hero-cta { flex-direction: column; align-items: stretch; }
   body:has(#bht-public-header) .hero-cta :is(a, button) { width: 100%; justify-content: center; }
   body:has(#bht-public-header) .section-outer { padding-inline: 12px; }

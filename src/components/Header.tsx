@@ -282,7 +282,7 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`${whatsappLabel}: ${whatsappText}`}
-              className="group flex h-10 w-10 items-center justify-center transition-colors duration-300 hover:bg-[#25D366]"
+              className="group flex h-9 w-9 items-center justify-center transition-colors duration-300 hover:bg-[#25D366]"
             >
               <Image
                 src="/img/whatsapp.svg"
