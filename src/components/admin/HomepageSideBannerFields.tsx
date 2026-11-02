@@ -152,7 +152,7 @@ function SideBannerPreview({ theme, value }: { theme: "hotel" | "flights"; value
                   ))}
                 </div>
               ) : null}
-              <div className="mt-5 inline-flex min-h-[58px] w-full items-center justify-center rounded-full bg-white px-6 text-center text-[15px] font-extrabold uppercase tracking-[0.12em] text-primary">
+              <div className="mt-5 inline-flex min-h-[48px] sm:min-h-[56px] w-full items-center justify-center rounded-full bg-white px-6 text-center text-[15px] font-extrabold uppercase tracking-[0.12em] text-primary">
                 {buttonLabel} <MoveRight className="ml-2 h-5 w-5" />
               </div>
             </>
