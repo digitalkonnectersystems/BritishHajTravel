@@ -4131,7 +4131,7 @@ hr {
   .bht-mobile-visa-slide {
     box-sizing: border-box;
     flex: 0 0 auto;
-    width: min(300px, 76vw);
+    width: min(180px, 76vw);
     min-width: 0;
   }
 
