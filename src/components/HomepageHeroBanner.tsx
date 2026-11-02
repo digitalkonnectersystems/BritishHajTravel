@@ -177,9 +177,9 @@ function HeroSidePanel({
       <div className="relative z-10 flex h-full min-w-0 flex-col">
         <div className="mb-3 text-[11px] font-extrabold uppercase tracking-[0.2em] text-white sm:tracking-[0.3em] 2xl:tracking-[0.42em]">{eyebrow}</div>
 
-        <h3 className="font-serif text-[clamp(1.25rem,2.2vw,2.125rem)] leading-[0.98] lg:whitespace-nowrap 2xl:whitespace-normal">
+        <h3 className="font-serif text-[clamp(1.25rem,2.2vw,1.75rem)] leading-[0.98] lg:whitespace-nowrap 2xl:whitespace-normal">
           {title}
-          {highlight ? <span className="block text-red lg:ml-2 lg:inline 2xl:ml-0 2xl:block">{highlight}</span> : null}
+          {highlight ? <span className=" text-red ml-2">{highlight}</span> : null}
         </h3>
 
         <p className="mt-4 text-[15px] leading-6 text-white/90 lg:whitespace-nowrap lg:text-[12px] lg:leading-5 2xl:whitespace-normal 2xl:text-[15px] 2xl:leading-6">{description}</p>
@@ -406,7 +406,7 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                   <div className="flex min-w-0 flex-col justify-center">
                     <div className="hero">
                       {heroData.heroEyebrow ? <div className="mb-3 text-[11px] md:text-[13px] font-extrabold uppercase tracking-[0.18em] text-ink">{heroData.heroEyebrow}</div> : null}
-                      {heroData.title ? <h1 className="font-serif text-[clamp(1.5rem,2.2vw,2.125rem)] leading-[0.98]" dangerouslySetInnerHTML={{ __html: heroData.title }} /> : null}
+                      {heroData.title ? <h1 className="font-serif text-[clamp(1.75rem,2.2vw,2.25rem)] leading-[0.98]" dangerouslySetInnerHTML={{ __html: heroData.title }} /> : null}
                       {heroData.description ? <p className="mt-4 max-w-[36rem] text-[14px] sm:text-[16px] leading-6 sm:leading-7 text-ink lg:leading-8">{heroData.description}</p> : null}
 
                       {heroData.primaryBtnLink && heroData.primaryBtnLabel || heroData.secondaryBtnLink && heroData.secondaryBtnLabel ? (
