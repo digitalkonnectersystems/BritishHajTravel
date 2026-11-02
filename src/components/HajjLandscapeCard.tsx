@@ -66,7 +66,7 @@ export default function HajjLandscapeCard({
       </div>
 
       <div className="flex flex-1 flex-col p-4">
-        <div className="mb-2 w-fit rounded-full border border-[#e1e7f0] bg-[#f3f6fc] px-2.5 py-1 text-xs font-bold uppercase tracking-widest text-gray-500">
+        <div className="text-gray-500 text-[11px] font-bold uppercase tracking-widest mb-2">
           {duration || "HAJJ 2027"}
         </div>
         <h3 title={packageTitle} className="text-xl md:text-2xl font-serif mb-2">

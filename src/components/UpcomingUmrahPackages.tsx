@@ -101,10 +101,10 @@ export default function UpcomingUmrahPackages({
   const sectionBgClass = isUmrahListingPage ? "bg-blue-lt" : isHomepage ? "bg-white" : (pathname === "/" ? "bg-white" : "bg-blue-lt");
  
   return (
-    <section className={`py-8 md:py-10 ${sectionBgClass}`}>
+    <section className={`py-10 bg-[#f4f7fb]  ${sectionBgClass}`}>
       <div className="max-w-[1400px] mx-auto px-5">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-6 md:mb-16 gap-6 text-center md:text-left">
+        <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-6 gap-6 text-center md:text-left">
           <div className="flex flex-col items-center md:items-start">
             <h3 className="eyebrow">{eyebrow}</h3>
             <h2
@@ -216,7 +216,7 @@ export default function UpcomingUmrahPackages({
                   <div className="p-4 flex-1 flex flex-col">
                     <div
                       className={`${isGold ? "text-white/90" : "text-gray-500"
-                        } text-xs font-bold uppercase tracking-widest mb-2`}
+                        } text-[11px] font-bold uppercase tracking-widest mb-2`}
                     >
                       {formatTravelMonth(month) || month}
                     </div>
