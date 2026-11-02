@@ -153,7 +153,7 @@ export default function HajjPackagesSection({
   };
 
   const sectionClass = isHomepage
-    ? "pb-12 md:pb-16 md:pt-16 bg-white"
+    ? "pb-12 md:pb-16 bg-white"
     : "pt-12 md:pb-16 bg-white";
   return (
     <section className={sectionClass}>

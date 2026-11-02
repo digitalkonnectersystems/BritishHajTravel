@@ -69,14 +69,14 @@ export default function HajjLandscapeCard({
         <div className="mb-2 w-fit rounded-full border border-[#e1e7f0] bg-[#f3f6fc] px-2.5 py-1 text-xs font-bold uppercase tracking-widest text-gray-500">
           {duration || "HAJJ 2027"}
         </div>
-        <h3 title={packageTitle} className="mb-2 line-clamp-2 font-serif text-2xl leading-[28px] text-primary">
+        <h3 title={packageTitle} className="text-xl md:text-2xl font-serif mb-2">
           {packageTitle}
         </h3>
-        <div className="mt-auto -mx-4 -mb-4 border-t border-[#e5ebf4] bg-[#f6f8fc] p-4">
-          <span className="text-xs font-medium text-ink-soft">
+        <div className="mt-4 md:mt-auto -mx-4 -mb-4 border-t border-[#e5ebf4] bg-[#f6f8fc] p-4">
+          <span className="text-xs font-medium text-ink-soft font-semibold">
             {priceSubtext || "Starting From"}
           </span>
-          <p className="mb-5 text-xl font-black text-red" title={displayPrice || "Price on request"}>
+          <p className="mb-5 text-xl font-black text-red flex items-center gap-2" title={displayPrice || "Price on request"}>
             {displayPrice || "Price on request"}
             {price && <span className="ml-1 text-sm font-medium text-ink-soft">/ Person</span>}
           </p>

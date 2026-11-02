@@ -30,7 +30,7 @@ export default function MarqueeTrack({ type, images, speedMs = 35000, direction 
         >
           {displayImages.map((img, idx) => (
             <div className={`marquee-item ${cardStyle ? 'p-3' : ''}`} key={idx}>
-              <div className={`w-full h-full flex items-center justify-center ${cardStyle ? 'min-h-[110px]' : ''}`}>
+              <div className={`w-full h-full flex items-center justify-center ${cardStyle ? '' : ''}`}>
                 {img.src.startsWith('data:') ? (
                   <img
                     src={img.src}

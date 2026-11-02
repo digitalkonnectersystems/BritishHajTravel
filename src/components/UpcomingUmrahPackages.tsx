@@ -104,11 +104,11 @@ export default function UpcomingUmrahPackages({
     <section className={`py-8 md:py-10 ${sectionBgClass}`}>
       <div className="max-w-[1400px] mx-auto px-5">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-10 md:mb-16 gap-6 text-center md:text-left">
+        <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-6 md:mb-16 gap-6 text-center md:text-left">
           <div className="flex flex-col items-center md:items-start">
             <h3 className="eyebrow">{eyebrow}</h3>
             <h2
-              className="section-heading head"
+              className="font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]"
               dangerouslySetInnerHTML={{ __html: title }}
             />
           </div>
@@ -220,7 +220,7 @@ export default function UpcomingUmrahPackages({
                     >
                       {formatTravelMonth(month) || month}
                     </div>
-                    <h3 className={`text-2xl font-serif mb-2 ${isGold ? "text-white" : "text-primary"}`}>
+                    <h3 className={`text-xl md:text-2xl font-serif mb-2 ${isGold ? "text-white" : "text-primary"}`}>
                       {pkg.title}
                     </h3>
                     <span className={`text-xs font-medium ${isGold ? "text-white/85" : "text-ink-soft"}`}>
@@ -319,7 +319,7 @@ export default function UpcomingUmrahPackages({
         )}
  
         {!hideFooterLink && pathname !== "/umrah-packages" && (
-          <div className="flex justify-center mt-12">
+          <div className="flex justify-center mt-6 md:mt-12">
             <a
               href="/umrah-packages"
               className="px-8 py-3.5 border-2 border-red text-red font-bold text-xs uppercase tracking-widest rounded-md hover:bg-red hover:text-white transition-all flex items-center gap-3"

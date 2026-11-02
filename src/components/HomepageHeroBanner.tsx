@@ -7,6 +7,8 @@ import Link from "next/link";
 import {
   FileText,
   ChevronRight,
+  ChevronDown,
+  ChevronUp,
   ArrowRight,
   ImageIcon,
   MoveRight,
@@ -167,7 +169,7 @@ function HeroSidePanel({
   return (
     <div
       className={[
-        "bht-hero-side-panel relative flex h-full min-h-[300px] sm:min-h-[330px] lg:min-h-[360px] min-w-0 flex-col overflow-hidden px-5 py-6 pb-[44px] text-white sm:px-6 sm:pb-[60px]",
+        "bht-hero-side-panel relative flex h-full min-h-[300px] sm:min-h-[330px] lg:min-h-[360px] min-w-0 flex-col overflow-hidden px-5 py-6 pb-6 md:pb-[44px] text-white sm:px-6 sm:pb-[60px]",
         className,
         isRed
           ? "bg-red"
@@ -175,14 +177,14 @@ function HeroSidePanel({
       ].join(" ")}
     >
       <div className="relative z-10 flex h-full min-w-0 flex-col">
-        <div className="mb-3 text-[11px] font-extrabold uppercase tracking-[0.2em] text-white sm:tracking-[0.3em] 2xl:tracking-[0.42em]">{eyebrow}</div>
+        <div className="mb-3 text-[11px] md:text-[13px] font-extrabold uppercase tracking-[0.18em] text-white ">{eyebrow}</div>
 
         <h3 className="font-serif text-[clamp(1.25rem,2.2vw,1.75rem)] leading-[0.98] lg:whitespace-nowrap 2xl:whitespace-normal">
           {title}
           {highlight ? <span className=" text-red ml-2">{highlight}</span> : null}
         </h3>
 
-        <p className="mt-4 text-[15px] leading-6 text-white/90 lg:whitespace-nowrap lg:text-[12px] lg:leading-5 2xl:whitespace-normal 2xl:text-[15px] 2xl:leading-6">{description}</p>
+        <p className="mt-3 text-sm sm:text-[16px] leading-6 text-white/90 ">{description}</p>
 
         {image ? (
           <div className="mt-5 rounded-2xl border border-white/10 bg-white/5 p-2">
@@ -211,7 +213,7 @@ function HeroSidePanel({
             {buttonLink && buttonLabel ? (
               <Link
                 href={buttonLink}
-                className="inline-flex min-h-[58px] w-full items-center justify-center rounded-full bg-white px-6 text-center text-[15px] font-extrabold uppercase tracking-[0.12em] text-red transition hover:translate-y-[-1px] hover:shadow-lg"
+                className="inline-flex min-h-[58px] w-full items-center justify-center rounded-full bg-white px-6 text-center text-sm md:text-[16px] font-extrabold uppercase tracking-[0.1em] text-red transition hover:translate-y-[-1px] hover:shadow-lg"
               >
                 {buttonLabel} <MoveRight className="ml-2 h-5 w-5" />
               </Link>
@@ -232,7 +234,7 @@ function HeroSidePanel({
             {buttonLink && buttonLabel ? (
               <Link
                 href={buttonLink}
-                className="mt-5 inline-flex min-h-[48px] sm:min-h-[56px] w-full items-center justify-center rounded-full bg-white px-6 text-center text-[15px] font-extrabold uppercase tracking-[0.12em] text-primary transition hover:translate-y-[-1px] hover:shadow-lg"
+                className="mt-5 inline-flex min-h-[48px] sm:min-h-[56px] w-full items-center justify-center rounded-full bg-white px-6 text-center text-sm md:text-[16px] font-extrabold uppercase tracking-[0.1em] text-primary transition hover:translate-y-[-1px] hover:shadow-lg"
               >
                 {buttonLabel} <MoveRight className="ml-2 h-5 w-5" />
               </Link>
@@ -419,7 +421,7 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
         <div className="mx-auto w-full px-0">
           <div className="overflow-hidden bg-white shadow-[0_20px_65px_rgba(2,12,27,0.15)]">
             <div className={sidePanelCount === 2
-              ? "grid grid-cols-1 min-[1025px]:grid-cols-2 2xl:grid-cols-[minmax(0,1.08fr)_minmax(0,3.35fr)_minmax(0,1fr)]"
+              ? "grid grid-cols-1 min-[1025px]:grid-cols-2 2xl:grid-cols-[minmax(0,1fr)_minmax(0,3.35fr)_minmax(0,1fr)]"
               : sidePanelCount === 1
                 ? "grid grid-cols-1 min-[1025px]:grid-cols-2 2xl:grid-cols-[minmax(0,3.35fr)_minmax(0,1fr)]"
                 : "grid grid-cols-1"
@@ -456,11 +458,11 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                   </>
                 ) : null}
 
-                <div className="relative z-10 grid h-full grid-cols-1 items-center gap-8 px-5 py-8 sm:px-8 md:px-10 min-[1025px]:grid-cols-[minmax(0,1fr)_minmax(0,400px)] lg:gap-8 lg:px-8 2xl:grid-cols-[minmax(0,1fr)_minmax(0,440px)] 2xl:gap-10 2xl:px-10 2xl:py-12">
+                <div className="relative z-10 grid h-full grid-cols-1 items-center gap-6 px-5 py-6 sm:px-8 md:px-10 min-[1025px]:grid-cols-[minmax(0,1fr)_minmax(0,400px)] lg:gap-8 lg:px-8 2xl:grid-cols-[minmax(0,1fr)_minmax(0,440px)] 2xl:gap-10 2xl:px-10 2xl:py-12">
                   <div className="flex min-w-0 flex-col justify-center">
                     <div className="hero">
                       {heroData.heroEyebrow ? <div className="mb-3 text-[11px] md:text-[13px] font-extrabold uppercase tracking-[0.18em] text-ink">{heroData.heroEyebrow}</div> : null}
-                      {heroData.title ? <h1 className="font-serif text-[clamp(1.75rem,2.2vw,2.25rem)] leading-[0.98]" dangerouslySetInnerHTML={{ __html: heroData.title }} /> : null}
+                      {heroData.title ? <h1 className="font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]" dangerouslySetInnerHTML={{ __html: heroData.title }} /> : null}
                       {heroData.description ? <p className="mt-4 max-w-[36rem] text-[14px] sm:text-[16px] leading-6 sm:leading-7 text-ink lg:leading-8">{heroData.description}</p> : null}
 
                       {heroData.primaryBtnLink && heroData.primaryBtnLabel || heroData.secondaryBtnLink && heroData.secondaryBtnLabel ? (
@@ -468,7 +470,7 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                           {heroData.primaryBtnLink && heroData.primaryBtnLabel ? (
                             <Link
                               href={heroData.primaryBtnLink}
-                              className="inline-flex min-h-[48px] sm:min-h-[56px]  max-w-full items-center justify-center rounded-full bg-red px-6 text-center md:text-[15px] text-[14px] font-extrabold uppercase tracking-[0.1em] text-white transition hover:translate-y-[-1px] hover:bg-red/90 hover:shadow-lg sm:px-7"
+                              className="inline-flex min-h-[48px] sm:min-h-[56px]  max-w-full items-center justify-center rounded-full bg-red px-6 text-center md:text-[16px] text-[14px] font-extrabold uppercase tracking-[0.1em] text-white transition hover:translate-y-[-1px] hover:bg-red/90 hover:shadow-lg sm:px-7"
                             >
                               {heroData.primaryBtnLabel}
                             </Link>
@@ -476,7 +478,7 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                           {heroData.secondaryBtnLink && heroData.secondaryBtnLabel ? (
                             <Link
                               href={heroData.secondaryBtnLink}
-                              className="inline-flex min-h-[48px] sm:min-h-[56px] max-w-full items-center justify-center rounded-full bg-white px-6 text-center md:text-[15px] text-[14px] font-extrabold uppercase tracking-[0.1em] text-primary transition hover:translate-y-[-1px] hover:bg-slate-100 hover:shadow-lg sm:px-7"
+                              className="inline-flex min-h-[48px] sm:min-h-[56px] max-w-full items-center justify-center rounded-full bg-white px-6 text-center md:text-[16px] text-[14px] font-extrabold uppercase tracking-[0.1em] text-primary transition hover:translate-y-[-1px] hover:bg-slate-100 hover:shadow-lg sm:px-7"
                             >
                               {heroData.secondaryBtnLabel}
                             </Link>
@@ -487,13 +489,13 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                   </div>
 
                   <div className="mx-auto w-full max-w-[400px] min-w-0 rounded-2xl bg-[#0B1672] p-5 shadow-[0_22px_40px_rgba(2,12,27,0.25)] sm:rounded-[28px] sm:p-6 md:p-7 2xl:max-w-[440px]">
-                    <h2 className="mb-6 text-center font-serif text-[26px] leading-none text-white md:text-[30px]">{heroData.quoteTitle}</h2>
+                    {/* <h2 className="mb-6 text-center font-serif text-[26px] leading-none text-white md:text-[30px]">{heroData.quoteTitle}</h2> */}
                     {quoteStatus ? <p className="mb-4 text-center text-sm font-semibold text-ink">{quoteStatus}</p> : null}
 
                     <form noValidate className="flex h-full flex-col gap-5" onSubmit={handleQuoteSubmit}>
-                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2">
                         <div>
-                          <label htmlFor="quote-fullName" className="mb-2 block text-xs font-extrabold uppercase tracking-wide text-white">
+                          <label htmlFor="quote-fullName" className="mb-2 block text-xs md:text-[13px] font-extrabold uppercase tracking-wide text-white">
                             Your Name
                           </label>
                           <input
@@ -505,14 +507,14 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                               setQuoteForm({ ...quoteForm, fullName: e.target.value });
                               if (quoteErrors.fullName) setQuoteErrors((prev) => ({ ...prev, fullName: "" }));
                             }}
-                            className={`h-14 w-full rounded-none border bg-white px-4 text-[15px] text-slate-900 outline-none transition ${quoteErrors.fullName ? "border-red-600 ring-1 ring-red-600" : "border-slate-200 focus:border-red"
+                            className={`h-12 w-full font-medium rounded-sm border bg-white px-3 text-sm text-ink outline-none transition ${quoteErrors.fullName ? "border-red-600 ring-1 ring-red-600" : "border-slate-200 focus:border-red"
                               }`}
                           />
                           {quoteErrors.fullName ? <span className="mt-1 block text-xs font-semibold text-red-200">{quoteErrors.fullName}</span> : null}
                         </div>
 
                         <div>
-                          <label htmlFor="quote-phone" className="mb-2 block text-xs font-extrabold uppercase tracking-wide text-white">
+                          <label htmlFor="quote-phone" className="mb-2 block text-xs md:text-[13px] font-extrabold uppercase tracking-wide text-white">
                             Phone Number
                           </label>
                           <input
@@ -527,14 +529,14 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                               setQuoteForm({ ...quoteForm, phone: value });
                               if (quoteErrors.phone) setQuoteErrors((prev) => ({ ...prev, phone: "" }));
                             }}
-                            className={`h-14 w-full rounded-none border bg-white px-4 text-[15px] text-slate-900 outline-none transition ${quoteErrors.phone ? "border-red-600 ring-1 ring-red-600" : "border-slate-200 focus:border-red"
+                            className={`h-12 w-full font-medium rounded-sm border bg-white px-3 text-sm text-ink outline-none transition ${quoteErrors.phone ? "border-red-600 ring-1 ring-red-600" : "border-slate-200 focus:border-red"
                               }`}
                           />
                           {quoteErrors.phone ? <span className="mt-1 block text-xs font-semibold text-red-200">{quoteErrors.phone}</span> : null}
                         </div>
 
                         <div>
-                          <label htmlFor="quote-email" className="mb-2 block text-xs font-extrabold uppercase tracking-wide text-white">
+                          <label htmlFor="quote-email" className="mb-2 block text-xs md:text-[13px] font-extrabold uppercase tracking-wide text-white">
                             Email Address
                           </label>
                           <input
@@ -546,21 +548,22 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                               setQuoteForm({ ...quoteForm, email: e.target.value });
                               if (quoteErrors.email) setQuoteErrors((prev) => ({ ...prev, email: "" }));
                             }}
-                            className={`h-14 w-full rounded-none border bg-white px-4 text-[15px] text-slate-900 outline-none transition ${quoteErrors.email ? "border-red-600 ring-1 ring-red-600" : "border-slate-200 focus:border-red"
+                            className={`h-12 w-full font-medium rounded-sm border bg-white px-3 text-sm text-ink outline-none transition ${quoteErrors.email ? "border-red-600 ring-1 ring-red-600" : "border-slate-200 focus:border-red"
                               }`}
                           />
                           {quoteErrors.email ? <span className="mt-1 block text-xs font-semibold text-red-200">{quoteErrors.email}</span> : null}
                         </div>
 
                         <div>
-                          <label htmlFor="quote-package" className="mb-2 block text-xs font-extrabold uppercase tracking-wide text-white">
+                          <label htmlFor="quote-package" className="mb-2 block text-xs md:text-[13px] font-extrabold uppercase tracking-wide text-white">
                             Select Your Package
                           </label>
+                          <div className="relative">
                           <select
                             id="quote-package"
                             value={quoteForm.packageType}
                             onChange={(e) => setQuoteForm({ ...quoteForm, packageType: e.target.value })}
-                            className="h-14 w-full cursor-pointer appearance-none rounded-none border border-slate-200 bg-white px-4 text-[15px] text-slate-900 outline-none transition focus:border-red"
+                            className="h-12 w-full font-medium cursor-pointer appearance-none rounded-sm border border-slate-200 bg-white pl-3 pr-10 text-sm text-ink outline-none transition focus:border-red"
                           >
                             <option>Select Package</option>
                             <option>Umrah Package</option>
@@ -568,27 +571,50 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                             <option>Flight Only</option>
                             <option>Saudi Visa</option>
                           </select>
+                          <ChevronDown aria-hidden="true" className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-700" />
+                          </div>
                         </div>
                       </div>
 
                       <div>
-                        <label htmlFor="quote-pilgrims" className="mb-2 block text-xs font-extrabold uppercase tracking-wide text-white">
+                        <label htmlFor="quote-pilgrims" className="mb-2 block text-xs md:text-[13px] font-extrabold uppercase tracking-wide text-white">
                           Number of Pilgrims
                         </label>
+                        <div className="relative">
                         <input
                           id="quote-pilgrims"
                           type="number"
                           min="1"
                           value={quoteForm.adults}
                           onChange={(e) => setQuoteForm({ ...quoteForm, adults: parseInt(e.target.value, 10) || 1 })}
-                          className="h-14 w-full rounded-none border border-slate-200 bg-white px-4 text-[15px] text-slate-900 outline-none transition focus:border-red"
+                          className="h-12 w-full font-medium appearance-none rounded-sm border border-slate-200 bg-white pl-3 pr-12 text-sm text-ink outline-none transition focus:border-red [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                         />
+                        <div className="absolute inset-y-1 right-1 flex w-8 flex-col">
+                          <button
+                            type="button"
+                            aria-label="Increase number of pilgrims"
+                            onClick={() => setQuoteForm((prev) => ({ ...prev, adults: prev.adults + 1 }))}
+                            className="flex flex-1 items-center justify-center rounded-sm text-slate-700 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-red"
+                          >
+                            <ChevronUp aria-hidden="true" className="h-4 w-4" />
+                          </button>
+                          <button
+                            type="button"
+                            aria-label="Decrease number of pilgrims"
+                            disabled={quoteForm.adults <= 1}
+                            onClick={() => setQuoteForm((prev) => ({ ...prev, adults: Math.max(1, prev.adults - 1) }))}
+                            className="flex flex-1 items-center justify-center rounded-sm text-slate-700 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-red disabled:cursor-not-allowed disabled:opacity-40"
+                          >
+                            <ChevronDown aria-hidden="true" className="h-4 w-4" />
+                          </button>
+                        </div>
+                        </div>
                       </div>
 
                       <div className="pt-2">
                         <button
                           type="submit"
-                          className="inline-flex min-h-[60px] w-full items-center justify-center bg-red px-6 text-center text-[16px] font-extrabold uppercase tracking-[0.12em] text-white transition hover:bg-red/90"
+                          className="inline-flex min-h-[48px] sm:min-h-[56px] w-full items-center justify-center bg-red px-6 text-center text-sm md:text-[16px] rounded-full font-extrabold uppercase tracking-[0.1em] text-white transition hover:bg-red/90"
                         >
                           Submit
                         </button>
@@ -631,7 +657,7 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
 
               <div className="flex flex-col items-center text-center lg:w-2/4">
                 <div className="flex items-center gap-2.5">
-                  <h2 className="m-0 font-serif text-2xl font-normal tracking-tight text-primary sm:text-3xl md:text-[34px]">
+                  <h2 className="font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">
                     {heroData.visaTitle}
                   </h2>
                 </div>
@@ -641,7 +667,7 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
               <div className="flex items-center justify-center lg:w-1/4 lg:justify-end">
                 {visaDocumentsVisible ? <Link
                   href={heroData.visaDocumentsLink}
-                  className="inline-flex whitespace-nowrap rounded-full border border-slate-200/60 bg-[#F1F5F9] px-4 py-2 text-xs font-semibold text-primary shadow-sm transition-all hover:bg-[#E2E8F0] md:text-sm"
+                  className="inline-flex items-center whitespace-nowrap rounded-full border border-slate-200/60 bg-[#F1F5F9] px-4 py-2 text-xs font-semibold text-primary shadow-sm transition-all hover:bg-[#E2E8F0] md:text-sm"
                 >
                   <FileText className="mr-2 h-4 w-4 text-primary" />
                   <span>{heroData.visaDocumentsLabel}</span>

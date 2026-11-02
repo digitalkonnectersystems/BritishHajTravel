@@ -532,15 +532,15 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
           }));
 
           return (
-            <section key={idx} className="py-12 bg-white">
+            <section key={idx} className="py-6 md:py-12 bg-white pb-0">
               <div className="w-full mx-auto px-0">
-                <div className="flex flex-col items-center text-center mb-8">
+                <div className="flex flex-col items-center text-center mb-6 md:mb-8">
                   {sec.data?.eyebrow && (
                     <span className="eyebrow mx-auto">
                       {sec.data.eyebrow}
                     </span>
                   )}
-                  <h2 className="section-heading text-primary font-normal">
+                  <h2 className="font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">
                     {sec.data?.title || "Trusted Travel Organizations"}
                   </h2>
                 </div>

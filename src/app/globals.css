@@ -303,7 +303,11 @@ h2.section-heading {
 .eyebrow.pill::before {
   display: none;
 }
-
+@media (max-width: 720px) {
+  .eyebrow {
+    font-weight: 800;
+  }
+}
 .star {
   display: inline-block;
   width: 16px;
@@ -2694,9 +2698,9 @@ select {
 }
 
 @media (max-width:768px) {
-  .marquee-item {
-    width: 200px;
-    padding: 0 12px;
+  .marquee-track.travel .marquee-item {
+    width: 140px;
+    padding: 0 20px;
   }
 
   .badge-grid {
