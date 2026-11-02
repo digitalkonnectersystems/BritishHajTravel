@@ -17,9 +17,9 @@ export default function FeaturedTravelExperiencesSection({ data }: { data?: Part
     <section className="bg-[#fafbfe] py-12 md:py-16" aria-label={data?.title || 'Featured travel experiences'}>
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="mx-auto mb-9 max-w-3xl text-center md:mb-11">
-          {data?.eyebrow && <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-red">{data.eyebrow}</p>}
-          {data?.title && <h2 className="m-0 font-serif text-3xl font-normal text-primary md:text-4xl">{data.title}</h2>}
-          {data?.subtitle && <p className="mx-auto mb-0 mt-3 max-w-2xl text-sm leading-7 text-slate-600 md:text-base">{data.subtitle}</p>}
+          {data?.eyebrow && <p className="eyebrow justify-center">{data.eyebrow}</p>}
+          {data?.title && <h2 className="section-heading text-primary !justify-center">{data.title}</h2>}
+          {data?.subtitle && <p className="max-w-2xl text-center mx-auto text-sm leading-relaxed pt-4">{data.subtitle}</p>}
         </div>
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
@@ -38,10 +38,10 @@ export default function FeaturedTravelExperiencesSection({ data }: { data?: Part
                   {/* <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border border-red/15 bg-red/5 text-red">
                     <Icon size={27} strokeWidth={1.7} aria-hidden="true" />
                   </div> */}
-                  <h3 className="m-0 font-serif text-[22px] leading-snug text-primary">{card.title}</h3>
-                  {card.description && <p className="mb-0 mt-3 text-sm leading-6 text-slate-600">{card.description}</p>}
+                  <h3 className="m-0 font-serif text-2xl leading-snug text-primary">{card.title}</h3>
+                  {card.description && <p className="mb-0 mt-3 text-sm leading-5 text-ink-soft">{card.description}</p>}
                   {lines.length > 0 && (
-                    <ul className="mb-6 mt-5 space-y-2 border-t border-slate-100 pt-4 text-sm leading-6 text-slate-700">
+                    <ul className="mb-6 mt-5 space-y-2 border-t border-slate-100 pt-4 text-sm leading-6 text-ink-soft">
                       {lines.map((line, j) => (
                         <li key={`${card.id || i}-${j}`} className="flex gap-2.5"><span aria-hidden="true" className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-red" />{line}</li>
                       ))}
