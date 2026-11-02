@@ -235,7 +235,7 @@ h2.section-heading {
   font-size: clamp(28px, 3.2vw, 38px);
 }
 
-.head{
+.head {
   color: var(--primary);
 }
 
@@ -327,8 +327,8 @@ h2.section-heading {
   border-radius: 99px;
   text-transform: uppercase;
   border: 1px solid var(--red);
-  color: var(--white); 
-   /* color: var(--ink); */
+  color: var(--white);
+  /* color: var(--ink); */
   background: var(--red);
   transition: .35s ease;
   white-space: nowrap;
@@ -339,7 +339,7 @@ h2.section-heading {
   /* background: var(--red-lt); */
   background: var(--white);
   transform: translateY(-2px);
-  color: var(--red); 
+  color: var(--red);
 
   /* box-shadow: 0 18px 34px -14px rgba(217, 65, 65, 0.6); */
   text-decoration: none;
@@ -402,14 +402,14 @@ h2.section-heading {
 
 .btnff {
   border: var(--red);
-  color: var(--white); 
+  color: var(--white);
   background: var(--red);
 }
 
 .btnff:hover {
   border: var(--red);
   background: var(--white);
-  color: var(--red); 
+  color: var(--red);
 }
 
 .travels-section {
@@ -1502,7 +1502,7 @@ section#flights {
 /* ============ PAGE SPECIFIC OVERRIDES ============ */
 /* ── Internal Page Hero Banners ── */
 .hero.about {
-  background: linear-gradient(#c8c9f0eb , #020e43),
+  background: linear-gradient(#c8c9f0eb, #020e43),
     url('https://images.unsplash.com/photo-1542856391-010fb87dcfed?auto=format&fit=crop&w=1800&q=80') no-repeat center center/cover;
   min-height: 360px;
   display: flex;
@@ -1531,7 +1531,7 @@ section#flights {
 
 
 .hero.contact {
-  background: linear-gradient(#c8c9f0eb , #020e43),
+  background: linear-gradient(#c8c9f0eb, #020e43),
     url('https://images.unsplash.com/photo-1740560051533-3acef26ace95?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center/cover;
   min-height: 360px;
   display: flex;
@@ -1547,7 +1547,7 @@ section#flights {
 }
 
 .hero.airlines {
-  background: linear-gradient(#c8c9f0eb , #020e43),
+  background: linear-gradient(#c8c9f0eb, #020e43),
     url('https://antiquewhite-stinkbug-399384.hostingersite.com/wp-content/uploads/2026/05/Hero_section_background_image_202605072032.jpeg') no-repeat center center/cover;
   min-height: 360px;
   display: flex;
@@ -1555,7 +1555,7 @@ section#flights {
 }
 
 .hero.umrahpackages {
-  background: linear-gradient(#c8c9f0eb , #020e43),
+  background: linear-gradient(#c8c9f0eb, #020e43),
     url('https://antiquewhite-stinkbug-399384.hostingersite.com/wp-content/uploads/2026/05/Umrah_packages_202605092201.jpeg') no-repeat center center/cover;
   min-height: 360px;
   display: flex;
@@ -1563,7 +1563,7 @@ section#flights {
 }
 
 .hero.saudi {
-  background: linear-gradient(#c8c9f0eb , #020e43),
+  background: linear-gradient(#c8c9f0eb, #020e43),
     url('https://img.magnific.com/free-photo/camel-caravan-dune-erg-chebbi-morocco_53876-139877.jpg?t=st=1784205613~exp=1784209213~hmac=0a5071804cc48cc625bc249e99a2bba04c55f77f5ae049763989b5a3c25e0787&w=2000') no-repeat center center/cover;
   min-height: 360px;
   display: flex;
@@ -1757,7 +1757,7 @@ section#flights {
 /* .visa-section {
   background: linear-gradient(rgb(26 23 1 / 75%), rgb(21 22 16 / 94%)), url('https://img.magnific.com/free-photo/flag-saudi-arabia_1401-215.jpg?t=st=1784206123~exp=1784209723~hmac=d433eb4d0392c4a5c7c9592a479a3b8c1baf56355edce3d9278c4e39e692331f&w=2000') no-repeat center center / cover;
   /* padding: 100px 0; */
-  /*color: #ffffff;
+/*color: #ffffff;
 } */
 
 .visa-grid-bottom {
@@ -3023,66 +3023,314 @@ hr {
   font-weight: 800;
 }
 
-.umrah-visa-section-heading p { color: #526176; font-size: .78rem; margin: 0 0 10px; }
-.umrah-visa-requirements-list { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; }
-.umrah-visa-requirement { display: flex; align-items: center; gap: 14px; background: #f2f6fb; border-radius: 6px; padding: 8px 12px; min-height: 52px; }
-.umrah-visa-requirement-icon { width: 28px; color: #174ca8; font-size: 1.6rem; text-align: center; flex: 0 0 28px; }
-.umrah-visa-requirement strong, .umrah-visa-requirement span { display: block; }
-.umrah-visa-requirement strong { color: #253a5b; font-size: 1rem; }
-.umrah-visa-requirement span { color: #536174; font-size: .875rem; line-height: 1.3; }
-.umrah-visa-note { border-radius: 6px; padding: 10px 14px; margin-top: 7px; font-size: 1rem; }
-.umrah-visa-note strong, .umrah-visa-note span { display: block; }
-.umrah-visa-note ul { margin: 4px 0 0; padding-left: 18px; color: #536174; line-height: 1.45; }
-.umrah-visa-note-important { background: #f1f5fa; color: #203b68; }
-.umrah-visa-note-red { background: #fff0f1; color: #e7192b; }
-.umrah-visa-note-green { background: #effbef; color: #159447; }
-.umrah-visa-note-red span, .umrah-visa-note-green span { color: #536174; margin-top: 2px; }
-.umrah-visa-form-panel { background: #fff; }
-.umrah-visa-form-panel > div:first-child { background: #073574; border-radius: 8px;
+.umrah-visa-section-heading p {
+  color: #526176;
+  font-size: .78rem;
+  margin: 0 0 10px;
+}
+
+.umrah-visa-requirements-list {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.umrah-visa-requirement {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #f2f6fb;
+  border-radius: 6px;
+  padding: 8px 12px;
+  min-height: 52px;
+}
+
+.umrah-visa-requirement-icon {
+  width: 28px;
+  color: #174ca8;
+  font-size: 1.6rem;
+  text-align: center;
+  flex: 0 0 28px;
+}
+
+.umrah-visa-requirement strong,
+.umrah-visa-requirement span {
+  display: block;
+}
+
+.umrah-visa-requirement strong {
+  color: #253a5b;
+  font-size: 1rem;
+}
+
+.umrah-visa-requirement span {
+  color: #536174;
+  font-size: .875rem;
+  line-height: 1.3;
+}
+
+.umrah-visa-note {
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-top: 7px;
+  font-size: 1rem;
+}
+
+.umrah-visa-note strong,
+.umrah-visa-note span {
+  display: block;
+}
+
+.umrah-visa-note ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+  color: #536174;
+  line-height: 1.45;
+}
+
+.umrah-visa-note-important {
+  background: #f1f5fa;
+  color: #203b68;
+}
+
+.umrah-visa-note-red {
+  background: #fff0f1;
+  color: #e7192b;
+}
+
+.umrah-visa-note-green {
+  background: #effbef;
+  color: #159447;
+}
+
+.umrah-visa-note-red span,
+.umrah-visa-note-green span {
+  color: #536174;
+  margin-top: 2px;
+}
+
+.umrah-visa-form-panel {
+  background: #fff;
+}
+
+.umrah-visa-form-panel>div:first-child {
+  background: #073574;
+  border-radius: 8px;
   /* padding: 14px; */
 }
-/* .umrah-visa-form-panel .form-heading, .umrah-visa-form-panel h2 { color: #fff; } */
-.umrah-visa-help { margin-top: 8px; padding: 14px; background: #f7fbff; border-radius: 8px; color: #23436e; }
-.umrah-visa-help strong, .umrah-visa-help span, .umrah-visa-help a { display: block; }
-.umrah-visa-help strong { font-size: 1rem; }
-.umrah-visa-help span { color: #536174; font-size: .76rem; margin: 4px 0; }
-.umrah-visa-help a { color: #1556bf; font-size: .75rem; font-weight: 700; }
 
-@media (max-width: 800px) {
-  .umrah-visa-application-grid { grid-template-columns: 1fr; }
+/* .umrah-visa-form-panel .form-heading, .umrah-visa-form-panel h2 { color: #fff; } */
+.umrah-visa-help {
+  margin-top: 8px;
+  padding: 14px;
+  background: #f7fbff;
+  border-radius: 8px;
+  color: #23436e;
 }
 
-.umrah-visa-services-overview { background: #f4f8fc; padding: 18px 20px 42px; }
-.umrah-visa-services-overview-inner { max-width: 1400px; margin: 0 auto; }
-.umrah-visa-overview-content { background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 8px 24px rgba(3, 31, 76, .06); }
-.umrah-visa-overview-content h2 { margin: 0; padding: 14px; color: #fff; background: #064180; font-size: clamp(1rem, 2vw, 1.35rem); text-align: center; font-weight: 800; }
-.umrah-visa-overview-subtitle { margin: 0; padding: 4px 12px 8px; color: #315276; text-align: center; font-size: .875rem; }
-.umrah-visa-overview-table { border: 1px solid #d9e1e9; overflow: hidden; margin:0 24px 24px;  }
-.umrah-visa-overview-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); border-top: 1px solid #d9e1e9; font-size: .875rem; line-height: 1.8; }
-.umrah-visa-overview-row:first-child { border-top: 0; }
-.umrah-visa-overview-row > div { padding: 6px 9px; color: #536174; }
-.umrah-visa-overview-row > div:first-child { color: #263c5b; font-weight: 700; border-right: 1px solid #d9e1e9; }
-.umrah-visa-overview-row:nth-child(even) { background: #f1f5f8; }
-@media (max-width: 800px) { .umrah-visa-overview-row { grid-template-columns: 1fr; } .umrah-visa-overview-row > div:first-child { border-right: 0; border-bottom: 1px solid #d9e1e9; } }
+.umrah-visa-help strong,
+.umrah-visa-help span,
+.umrah-visa-help a {
+  display: block;
+}
 
-.umrah-visa-document-guide { background: #f4f8fc; padding: 34px 20px 18px; }
-.umrah-visa-document-guide-inner { max-width: 1400px; margin: 0 auto; }
-.umrah-visa-document-guide h2 { margin: 0; color: #102f57; text-align: center; font-size: clamp(1.35rem, 3vw, 2rem); font-weight: 800; }
-.umrah-visa-document-guide h2 span { color: #e7192b; }
-.umrah-visa-document-guide > div > p { margin: 4px 0 18px; color: #536174; text-align: center; font-size: 1rem; }
-.umrah-visa-document-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
-.umrah-visa-document-card { background: #fff; border-radius: 10px; padding: 10px; box-shadow: 0 7px 20px rgba(3, 31, 76, .06); }
-.umrah-visa-document-image { height: 190px; position: relative; border-radius: 7px; background: #f3f7fb; overflow: hidden; }
-.umrah-visa-document-card h3 { margin: 9px 0 5px; font-size: .9rem; text-align: center; }
-.umrah-visa-document-card.is-good h3 { color: #159447; }
-.umrah-visa-document-card.is-bad h3 { color: #e7192b; }
-.umrah-visa-document-card ul { margin: 0; padding-left: 18px; color: #536174; font-size: .875rem; line-height: 1.45; }
-.umrah-visa-document-card.is-good li::marker { color: #159447; }
-.umrah-visa-document-card.is-bad li::marker { color: #e7192b; }
-@media (max-width: 900px) { .umrah-visa-document-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 520px) { .umrah-visa-document-cards { grid-template-columns: 1fr; } }
+.umrah-visa-help strong {
+  font-size: 1rem;
+}
 
-.guide-section { background: #fff; }
+.umrah-visa-help span {
+  color: #536174;
+  font-size: .76rem;
+  margin: 4px 0;
+}
+
+.umrah-visa-help a {
+  color: #1556bf;
+  font-size: .75rem;
+  font-weight: 700;
+}
+
+@media (max-width: 800px) {
+  .umrah-visa-application-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.umrah-visa-services-overview {
+  background: #f4f8fc;
+  padding: 18px 20px 42px;
+}
+
+.umrah-visa-services-overview-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.umrah-visa-overview-content {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(3, 31, 76, .06);
+}
+
+.umrah-visa-overview-content h2 {
+  margin: 0;
+  padding: 14px;
+  color: #fff;
+  background: #064180;
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  text-align: center;
+  font-weight: 800;
+}
+
+.umrah-visa-overview-subtitle {
+  margin: 0;
+  padding: 4px 12px 8px;
+  color: #315276;
+  text-align: center;
+  font-size: .875rem;
+}
+
+.umrah-visa-overview-table {
+  border: 1px solid #d9e1e9;
+  overflow: hidden;
+  margin: 0 24px 24px;
+}
+
+.umrah-visa-overview-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+  border-top: 1px solid #d9e1e9;
+  font-size: .875rem;
+  line-height: 1.8;
+}
+
+.umrah-visa-overview-row:first-child {
+  border-top: 0;
+}
+
+.umrah-visa-overview-row>div {
+  padding: 6px 9px;
+  color: #536174;
+}
+
+.umrah-visa-overview-row>div:first-child {
+  color: #263c5b;
+  font-weight: 700;
+  border-right: 1px solid #d9e1e9;
+}
+
+.umrah-visa-overview-row:nth-child(even) {
+  background: #f1f5f8;
+}
+
+@media (max-width: 800px) {
+  .umrah-visa-overview-row {
+    grid-template-columns: 1fr;
+  }
+
+  .umrah-visa-overview-row>div:first-child {
+    border-right: 0;
+    border-bottom: 1px solid #d9e1e9;
+  }
+}
+
+.umrah-visa-document-guide {
+  background: #f4f8fc;
+  padding: 34px 20px 18px;
+}
+
+.umrah-visa-document-guide-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.umrah-visa-document-guide h2 {
+  margin: 0;
+  color: #102f57;
+  text-align: center;
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  font-weight: 800;
+}
+
+.umrah-visa-document-guide h2 span {
+  color: #e7192b;
+}
+
+.umrah-visa-document-guide>div>p {
+  margin: 4px 0 18px;
+  color: #536174;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.umrah-visa-document-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.umrah-visa-document-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 7px 20px rgba(3, 31, 76, .06);
+}
+
+.umrah-visa-document-image {
+  height: 190px;
+  position: relative;
+  border-radius: 7px;
+  background: #f3f7fb;
+  overflow: hidden;
+}
+
+.umrah-visa-document-card h3 {
+  margin: 9px 0 5px;
+  font-size: .9rem;
+  text-align: center;
+}
+
+.umrah-visa-document-card.is-good h3 {
+  color: #159447;
+}
+
+.umrah-visa-document-card.is-bad h3 {
+  color: #e7192b;
+}
+
+.umrah-visa-document-card ul {
+  margin: 0;
+  padding-left: 18px;
+  color: #536174;
+  font-size: .875rem;
+  line-height: 1.45;
+}
+
+.umrah-visa-document-card.is-good li::marker {
+  color: #159447;
+}
+
+.umrah-visa-document-card.is-bad li::marker {
+  color: #e7192b;
+}
+
+@media (max-width: 900px) {
+  .umrah-visa-document-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .umrah-visa-document-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+.guide-section {
+  background: #fff;
+}
+
 .guide-section__card {
   min-height: 232px;
   display: flex;
@@ -3096,8 +3344,21 @@ hr {
   box-shadow: 0 5px 18px rgba(3, 31, 76, .04);
   transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
 }
-.guide-section__card:hover { transform: translateY(-3px); border-color: #c9141c; box-shadow: 0 12px 26px rgba(3, 31, 76, .14); }
-.guide-section__content { min-width: 0; flex: 1; min-height: 176px; display: flex; flex-direction: column; }
+
+.guide-section__card:hover {
+  transform: translateY(-3px);
+  border-color: #c9141c;
+  box-shadow: 0 12px 26px rgba(3, 31, 76, .14);
+}
+
+.guide-section__content {
+  min-width: 0;
+  flex: 1;
+  min-height: 176px;
+  display: flex;
+  flex-direction: column;
+}
+
 .guide-section__icon {
   width: 106px;
   height: 106px;
@@ -3108,10 +3369,39 @@ hr {
   background: #f0f5fb;
   color: #102f57;
 }
-.guide-section__icon svg { width: 64px; height: 64px; }
-.guide-section__step { margin: 0 0 4px; color: #c9141c; font-size: 1rem; font-weight: 800; }
-.guide-section__title { height: 2.5em; overflow: hidden; margin: 0; color: #102f57; font-size: clamp(1.1rem, 1.45vw, 1.45rem); font-weight: 800; line-height: 1.25; }
-.guide-section__detail { height: 4.35em; overflow: hidden; max-width: 290px; margin: 7px 0 16px; color: #536174; font-size: .98rem; line-height: 1.45; }
+
+.guide-section__icon svg {
+  width: 64px;
+  height: 64px;
+}
+
+.guide-section__step {
+  margin: 0 0 4px;
+  color: #c9141c;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.guide-section__title {
+  height: 2.5em;
+  overflow: hidden;
+  margin: 0;
+  color: #102f57;
+  font-size: clamp(1.1rem, 1.45vw, 1.45rem);
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.guide-section__detail {
+  height: 4.35em;
+  overflow: hidden;
+  max-width: 290px;
+  margin: 7px 0 16px;
+  color: #536174;
+  font-size: .98rem;
+  line-height: 1.45;
+}
+
 .guide-section__button {
   align-self: flex-start;
   display: inline-flex;
@@ -3126,58 +3416,278 @@ hr {
   box-shadow: 0 4px 10px rgba(201, 20, 28, .16);
   transition: background-color .2s ease, box-shadow .2s ease, transform .2s ease;
 }
-.guide-section__button:hover { background: #a80f16; box-shadow: 0 7px 15px rgba(201, 20, 28, .28); transform: translateY(-1px); }
-.guide-section__button span { font-size: 1.25rem; line-height: .8; transition: transform .2s ease; }
-.guide-section__button:hover span { transform: translateX(3px); }
-.guide-section__card:focus-visible { outline: 3px solid rgba(201, 20, 28, .35); outline-offset: 3px; }
-@media (max-width: 640px) {
-  .guide-section { padding-top: 28px; padding-bottom: 28px; }
-  .guide-section__card { min-height: 0; gap: 18px; padding: 20px; }
-  .guide-section__content { min-height: 0; }
-  .guide-section__title { height: auto; }
-  .guide-section__detail { height: auto; }
-  .guide-section__icon { width: 82px; height: 82px; flex-basis: 82px; }
-  .guide-section__icon svg { width: 50px; height: 50px; }
-}
-@media (max-width: 420px) {
-  .guide-section__card { gap: 14px; padding: 16px; }
-  .guide-section__icon { width: 68px; height: 68px; flex-basis: 68px; }
-  .guide-section__icon svg { width: 42px; height: 42px; }
-  .guide-section__step { font-size: .88rem; }
-  .guide-section__title { font-size: 1.05rem; }
-  .guide-section__detail { font-size: .88rem; }
-  .guide-section__button { padding: 9px 14px; font-size: .82rem; }
+
+.guide-section__button:hover {
+  background: #a80f16;
+  box-shadow: 0 7px 15px rgba(201, 20, 28, .28);
+  transform: translateY(-1px);
 }
 
-.flight-accommodation-section { background: #fff; padding: 32px 20px 48px; }
-.flight-accommodation-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
-.flight-accommodation-panel { overflow: hidden; border: 2px solid #0a2b69; border-radius: 12px; background: #fff; box-shadow: 0 8px 20px rgba(3, 31, 76, .08); }
-.flight-accommodation-header { min-height: 116px; display: flex; align-items: center; gap: 22px; padding: 22px 34px; color: #fff; background: #061d67; }
-.flight-accommodation-header svg { width: 58px; height: 58px; flex: 0 0 58px; color: #fff; }
-.flight-accommodation-header h2 { margin: 0; font-size: 1.5rem; font-weight: 800; }
-.flight-accommodation-header p { margin: 3px 0 0; font-size: .95rem; font-weight: 600; color: rgba(255,255,255,.85); }
-.flight-accommodation-body { display: flex; flex-direction: column; gap: 18px; padding: 20px; }
-.travel-detail-card { display: flex; align-items: flex-start; gap: 16px; padding: 17px; border: 1px solid #dfe7f1; border-radius: 11px; background: linear-gradient(110deg, #fff, #fbfdff); color: #0b2c68; }
-.travel-detail-card > svg { width: 29px; height: 29px; flex: 0 0 29px; color: #d1161d; }
-.travel-detail-card small { display: block; color: #6880a0; font-size: .8rem; font-weight: 700; }
-.travel-detail-card strong { display: block; margin-top: 3px; color: #102e68; font-size: 1rem; }
-.travel-detail-wide { min-width: 0; flex: 1; }
-.travel-date-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 10px; }
-.travel-date-grid span { padding: 10px 12px; border: 1px solid #dfe7f1; border-radius: 9px; background: #fbfdff; }
-.travel-date-grid strong { font-size: .85rem; }
-.travel-detail-stack { align-items: flex-start; }
-.hotel-location-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; padding: 10px 12px; border: 1px solid #dfe7f1; border-radius: 9px; background: #f7faff; }
-.hotel-location-row b { color: #d1161d; font-size: 1.8rem; line-height: .7; }
-@media (max-width: 800px) { .flight-accommodation-grid { grid-template-columns: 1fr; } }
+.guide-section__button span {
+  font-size: 1.25rem;
+  line-height: .8;
+  transition: transform .2s ease;
+}
+
+.guide-section__button:hover span {
+  transform: translateX(3px);
+}
+
+.guide-section__card:focus-visible {
+  outline: 3px solid rgba(201, 20, 28, .35);
+  outline-offset: 3px;
+}
+
+@media (max-width: 640px) {
+  .guide-section {
+    padding-top: 28px;
+    padding-bottom: 28px;
+  }
+
+  .guide-section__card {
+    min-height: 0;
+    gap: 18px;
+    padding: 20px;
+  }
+
+  .guide-section__content {
+    min-height: 0;
+  }
+
+  .guide-section__title {
+    height: auto;
+  }
+
+  .guide-section__detail {
+    height: auto;
+  }
+
+  .guide-section__icon {
+    width: 82px;
+    height: 82px;
+    flex-basis: 82px;
+  }
+
+  .guide-section__icon svg {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+@media (max-width: 420px) {
+  .guide-section__card {
+    gap: 14px;
+    padding: 16px;
+  }
+
+  .guide-section__icon {
+    width: 68px;
+    height: 68px;
+    flex-basis: 68px;
+  }
+
+  .guide-section__icon svg {
+    width: 42px;
+    height: 42px;
+  }
+
+  .guide-section__step {
+    font-size: .88rem;
+  }
+
+  .guide-section__title {
+    font-size: 1.05rem;
+  }
+
+  .guide-section__detail {
+    font-size: .88rem;
+  }
+
+  .guide-section__button {
+    padding: 9px 14px;
+    font-size: .82rem;
+  }
+}
+
+.flight-accommodation-section {
+  background: #fff;
+  padding: 32px 20px 48px;
+}
+
+.flight-accommodation-grid {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.flight-accommodation-panel {
+  overflow: hidden;
+  border: 2px solid #0a2b69;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 8px 20px rgba(3, 31, 76, .08);
+}
+
+.flight-accommodation-header {
+  min-height: 116px;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 22px 34px;
+  color: #fff;
+  background: #061d67;
+}
+
+.flight-accommodation-header svg {
+  width: 58px;
+  height: 58px;
+  flex: 0 0 58px;
+  color: #fff;
+}
+
+.flight-accommodation-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.flight-accommodation-header p {
+  margin: 3px 0 0;
+  font-size: .95rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, .85);
+}
+
+.flight-accommodation-body {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 20px;
+}
+
+.travel-detail-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 17px;
+  border: 1px solid #dfe7f1;
+  border-radius: 11px;
+  background: linear-gradient(110deg, #fff, #fbfdff);
+  color: #0b2c68;
+}
+
+.travel-detail-card>svg {
+  width: 29px;
+  height: 29px;
+  flex: 0 0 29px;
+  color: #d1161d;
+}
+
+.travel-detail-card small {
+  display: block;
+  color: #6880a0;
+  font-size: .8rem;
+  font-weight: 700;
+}
+
+.travel-detail-card strong {
+  display: block;
+  margin-top: 3px;
+  color: #102e68;
+  font-size: 1rem;
+}
+
+.travel-detail-wide {
+  min-width: 0;
+  flex: 1;
+}
+
+.travel-date-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.travel-date-grid span {
+  padding: 10px 12px;
+  border: 1px solid #dfe7f1;
+  border-radius: 9px;
+  background: #fbfdff;
+}
+
+.travel-date-grid strong {
+  font-size: .85rem;
+}
+
+.travel-detail-stack {
+  align-items: flex-start;
+}
+
+.hotel-location-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 1px solid #dfe7f1;
+  border-radius: 9px;
+  background: #f7faff;
+}
+
+.hotel-location-row b {
+  color: #d1161d;
+  font-size: 1.8rem;
+  line-height: .7;
+}
+
+@media (max-width: 800px) {
+  .flight-accommodation-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 480px) {
-  .flight-accommodation-section { padding: 22px 12px 32px; }
-  .flight-accommodation-header { min-height: 92px; gap: 14px; padding: 17px 20px; }
-  .flight-accommodation-header svg { width: 44px; height: 44px; flex-basis: 44px; }
-  .flight-accommodation-header h2 { font-size: 1.2rem; }
-  .flight-accommodation-header p { font-size: .8rem; }
-  .flight-accommodation-body { gap: 12px; padding: 12px; }
-  .travel-detail-card { gap: 11px; padding: 13px; }
-  .travel-detail-card strong { font-size: .88rem; }
+  .flight-accommodation-section {
+    padding: 22px 12px 32px;
+  }
+
+  .flight-accommodation-header {
+    min-height: 92px;
+    gap: 14px;
+    padding: 17px 20px;
+  }
+
+  .flight-accommodation-header svg {
+    width: 44px;
+    height: 44px;
+    flex-basis: 44px;
+  }
+
+  .flight-accommodation-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .flight-accommodation-header p {
+    font-size: .8rem;
+  }
+
+  .flight-accommodation-body {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .travel-detail-card {
+    gap: 11px;
+    padding: 13px;
+  }
+
+  .travel-detail-card strong {
+    font-size: .88rem;
+  }
 }
 
 /* ============================================================
@@ -3186,39 +3696,47 @@ hr {
    typography and image previews unchanged.
    ============================================================ */
 @media (max-width: 1024px) {
+
   /* Do not change the admin dashboard; the public header is its scope. */
   body:has(#bht-public-header) .bht-public-sections,
-  body:has(#bht-public-header) .bht-public-sections > * {
+  body:has(#bht-public-header) .bht-public-sections>* {
     min-width: 0;
     max-width: 100%;
   }
+
   body:has(#bht-public-header) .section-rich,
   body:has(#bht-public-header) .prose {
     min-width: 0;
     overflow-wrap: break-word;
   }
+
   body:has(#bht-public-header) .section-rich :is(img, video, iframe),
   body:has(#bht-public-header) .prose :is(img, video, iframe) {
     max-width: 100%;
   }
+
   body:has(#bht-public-header) .section-rich :is(table, pre),
   body:has(#bht-public-header) .prose :is(table, pre) {
     display: block;
     max-width: 100%;
     overflow-x: auto;
   }
+
   body:has(#bht-public-header) .bht-hero-side-panel :is(h3, p) {
     white-space: normal !important;
     overflow-wrap: anywhere;
   }
+
   body:has(#bht-public-header) .bht-blog-section {
     background-attachment: scroll;
   }
+
   body:has(#bht-public-header) .umrah-visa-overview-table {
     max-width: calc(100% - 24px);
     margin-inline: 12px;
   }
-  body:has(#bht-public-header) .umrah-visa-overview-row > div,
+
+  body:has(#bht-public-header) .umrah-visa-overview-row>div,
   body:has(#bht-public-header) .travel-detail-card,
   body:has(#bht-public-header) .hotel-details {
     min-width: 0;
@@ -3227,67 +3745,112 @@ hr {
 }
 
 @media (min-width: 641px) and (max-width: 1024px) {
-  #bht-public-header > div {
+  #bht-public-header>div {
     height: 74px;
     padding-inline: 20px;
   }
+
   body:has(#bht-public-header) .wrap {
     padding-inline: 24px;
   }
+
   body:has(#bht-public-header) .section-outer {
     padding: 38px 24px;
   }
+
   body:has(#bht-public-header) h2.section-heading {
     font-size: clamp(1.65rem, 3.3vw, 2.125rem);
     line-height: 1.2;
   }
+
   body:has(#bht-public-header) :is(.section-title, .sectionpr-title) {
     font-size: clamp(1.6rem, 3vw, 2rem);
     line-height: 1.2;
     margin-bottom: 16px;
   }
+
   body:has(#bht-public-header) .eyebrow {
     font-size: 0.875rem;
     letter-spacing: .15em;
     margin-bottom: 12px;
   }
+
   body:has(#bht-public-header) .page-header-title {
     font-size: clamp(1.75rem, 3.7vw, 2.75rem);
     line-height: 1.12;
     overflow-wrap: anywhere;
   }
+
   body:has(#bht-public-header) .page-header-leadtxt {
     font-size: clamp(.85rem, 1.5vw, 1rem);
     line-height: 1.5;
   }
+
   body:has(#bht-public-header) .cards-grid,
   body:has(#bht-public-header) .pkg-scroller {
     gap: 20px;
   }
-  body:has(#bht-public-header) .card-hero-img-wrap { height: 200px; }
-  body:has(#bht-public-header) .card-image-wrapper { height: 195px; }
-  body:has(#bht-public-header) :is(.card-body, .card-content) { padding: 18px; }
-  body:has(#bht-public-header) .about-image { height: 350px; }
-  body:has(#bht-public-header) .about-service-card { padding: 26px 20px; }
-  body:has(#bht-public-header) .hotel-thumb { width: 56px; height: 56px; }
-  body:has(#bht-public-header) .hotel-strip { gap: 10px; padding: 10px; }
-  body:has(#bht-public-header) .packages-grid-container { padding-block: 40px; }
-  body:has(#bht-public-header) #footer-place { padding: 48px 20px 28px; }
-  body:has(#bht-public-header) #footer-place > div { padding-inline: 10px; }
+
+  body:has(#bht-public-header) .card-hero-img-wrap {
+    height: 200px;
+  }
+
+  body:has(#bht-public-header) .card-image-wrapper {
+    height: 195px;
+  }
+
+  body:has(#bht-public-header) :is(.card-body, .card-content) {
+    padding: 18px;
+  }
+
+  body:has(#bht-public-header) .about-image {
+    height: 350px;
+  }
+
+  body:has(#bht-public-header) .about-service-card {
+    padding: 26px 20px;
+  }
+
+  body:has(#bht-public-header) .hotel-thumb {
+    width: 56px;
+    height: 56px;
+  }
+
+  body:has(#bht-public-header) .hotel-strip {
+    gap: 10px;
+    padding: 10px;
+  }
+
+  body:has(#bht-public-header) .packages-grid-container {
+    padding-block: 40px;
+  }
+
+  body:has(#bht-public-header) #footer-place {
+    padding: 48px 20px 28px;
+  }
+
+  body:has(#bht-public-header) #footer-place>div {
+    padding-inline: 10px;
+  }
 }
 
 @media (max-width: 640px) {
-  #bht-public-header > div {
+  #bht-public-header>div {
     height: 66px;
     gap: 8px;
     /* padding-inline: 12px; */
   }
-  #bht-public-header > div > div:first-child {
+
+  #bht-public-header>div>div:first-child {
     flex: 0 1 200px;
     min-width: 0;
     max-width: 200px;
   }
-  #bht-public-header > div > div:first-child img { max-height: 48px; }
+
+  #bht-public-header>div>div:first-child img {
+    max-height: 48px;
+  }
+
   #bht-public-header button[aria-controls="main-nav"] {
     display: inline-flex;
     align-items: center;
@@ -3296,30 +3859,47 @@ hr {
     height: 44px;
     flex: 0 0 44px;
   }
+
   #bht-public-header nav[aria-label="Main navigation"] {
     max-width: 100vw;
     padding: 16px;
   }
-  body:has(#bht-public-header) .wrap { padding-inline: 16px; }
-  body:has(#bht-public-header) .section-outer { padding: 28px 16px; }
+
+  body:has(#bht-public-header) .wrap {
+    padding-inline: 16px;
+  }
+
+  body:has(#bht-public-header) .section-outer {
+    padding: 28px 16px;
+  }
+
   body:has(#bht-public-header) :is(.section-title, .sectionpr-title) {
     font-size: clamp(1.45rem, 6vw, 1.9rem);
     line-height: 1.2;
     margin-bottom: 14px;
   }
+
   body:has(#bht-public-header) h2.section-heading {
     font-size: clamp(1.5rem, 6.1vw, 1.875rem);
     line-height: 1.2;
     overflow-wrap: anywhere;
   }
-  body:has(#bht-public-header) .section-head { margin-bottom: 24px; }
-  body:has(#bht-public-header) .section-head h2 { margin-top: 10px; }
+
+  body:has(#bht-public-header) .section-head {
+    margin-bottom: 24px;
+  }
+
+  body:has(#bht-public-header) .section-head h2 {
+    margin-top: 10px;
+  }
+
   body:has(#bht-public-header) :is(.eyebrow, .eyebrowht) {
     font-size: .76rem;
     letter-spacing: .12em;
     margin-bottom: 10px;
     overflow-wrap: anywhere;
   }
+
   body:has(#bht-public-header) .page-header-title {
     font-size: clamp(1.55rem, 6.6vw, 2.1rem);
     line-height: 1.16;
@@ -3327,75 +3907,275 @@ hr {
     overflow-wrap: anywhere;
     margin-bottom: 8px;
   }
+
   body:has(#bht-public-header) .page-header-leadtxt {
     font-size: .8125rem;
     line-height: 1.45;
   }
+
   body:has(#bht-public-header) .hero-media {
     min-height: 0;
     padding: 24px 16px 30px;
   }
-  body:has(#bht-public-header) .hero-content { padding: 16px 0 20px; }
-  body:has(#bht-public-header) .hero h1 { width: 100%; }
-  body:has(#bht-public-header) .hero p.lead { font-size: .9375rem; line-height: 1.6; }
-  body:has(#bht-public-header) .hero-cta { gap: 10px; }
-  body:has(#bht-public-header) .hero-cta :is(a, button) { max-width: 100%; }
+
+  body:has(#bht-public-header) .hero-content {
+    padding: 16px 0 20px;
+  }
+
+  body:has(#bht-public-header) .hero h1 {
+    width: 100%;
+  }
+
+  body:has(#bht-public-header) .hero p.lead {
+    font-size: .9375rem;
+    line-height: 1.6;
+  }
+
+  body:has(#bht-public-header) .hero-cta {
+    gap: 10px;
+  }
+
+  body:has(#bht-public-header) .hero-cta :is(a, button) {
+    max-width: 100%;
+  }
+
   body:has(#bht-public-header) .search-card {
     margin: 12px 12px 24px;
     padding: 20px 16px;
     border-radius: 16px;
   }
+
   body:has(#bht-public-header) .search-card h3 {
     font-size: 1.5rem;
     margin-bottom: 18px;
   }
-  body:has(#bht-public-header) .search-card .field { padding-inline: 0; }
+
+  body:has(#bht-public-header) .search-card .field {
+    padding-inline: 0;
+  }
+
   body:has(#bht-public-header) .search-card label {
     font-size: .75rem;
     letter-spacing: .04em;
   }
+
   body:has(#bht-public-header) .about-image {
     height: auto;
     aspect-ratio: 4 / 3;
     max-height: 360px;
   }
-  body:has(#bht-public-header) .about-service-card { padding: 20px 16px; }
-  body:has(#bht-public-header) .features-list { grid-template-columns: 1fr; gap: 10px; }
-  body:has(#bht-public-header) .packages-grid-container { padding-block: 28px; }
+
+  body:has(#bht-public-header) .about-service-card {
+    padding: 20px 16px;
+  }
+
+  body:has(#bht-public-header) .features-list {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  body:has(#bht-public-header) .packages-grid-container {
+    padding-block: 28px;
+  }
+
   body:has(#bht-public-header) .cards-grid,
-  body:has(#bht-public-header) .pkg-scroller { gap: 16px; }
-  body:has(#bht-public-header) .card-hero-img-wrap { height: 185px; }
-  body:has(#bht-public-header) .card-image-wrapper { height: 190px; }
-  body:has(#bht-public-header) :is(.card-body, .card-content) { padding: 16px; }
-  body:has(#bht-public-header) .card-main-title { font-size: 1.125rem; }
-  body:has(#bht-public-header) .card-title { font-size: 1.25rem; }
-  body:has(#bht-public-header) .hotel-strip { padding: 9px; gap: 10px; }
-  body:has(#bht-public-header) .hotel-thumb { width: 52px; height: 52px; }
-  body:has(#bht-public-header) .hotel-name { white-space: normal; overflow-wrap: anywhere; }
+  body:has(#bht-public-header) .pkg-scroller {
+    gap: 16px;
+  }
+
+  body:has(#bht-public-header) .card-hero-img-wrap {
+    height: 185px;
+  }
+
+  body:has(#bht-public-header) .card-image-wrapper {
+    height: 190px;
+  }
+
+  body:has(#bht-public-header) :is(.card-body, .card-content) {
+    padding: 16px;
+  }
+
+  body:has(#bht-public-header) .card-main-title {
+    font-size: 1.125rem;
+  }
+
+  body:has(#bht-public-header) .card-title {
+    font-size: 1.25rem;
+  }
+
+  body:has(#bht-public-header) .hotel-strip {
+    padding: 9px;
+    gap: 10px;
+  }
+
+  body:has(#bht-public-header) .hotel-thumb {
+    width: 52px;
+    height: 52px;
+  }
+
+  body:has(#bht-public-header) .hotel-name {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
   body:has(#bht-public-header) .normal-text,
   body:has(#bht-public-header) .section-rich :is(p, li) {
     font-size: .9375rem;
     line-height: 1.65;
   }
-  body:has(#bht-public-header) .section-rich :is(h2, h3) { overflow-wrap: anywhere; }
-  body:has(#bht-public-header) .umrah-visa-document-image { height: 180px; }
-  body:has(#bht-public-header) .umrah-visa-document-guide { padding: 26px 14px 16px; }
+
+  body:has(#bht-public-header) .section-rich :is(h2, h3) {
+    overflow-wrap: anywhere;
+  }
+
+  body:has(#bht-public-header) .umrah-visa-document-image {
+    height: 180px;
+  }
+
+  body:has(#bht-public-header) .umrah-visa-document-guide {
+    padding: 26px 14px 16px;
+  }
+
   body:has(#bht-public-header) .umrah-visa-overview-table {
     max-width: calc(100% - 20px);
     margin: 0 10px 12px;
   }
-  body:has(#bht-public-header) .travel-date-grid { grid-template-columns: 1fr; }
-  body:has(#bht-public-header) .travel-detail-card strong { overflow-wrap: anywhere; }
+
+  body:has(#bht-public-header) .travel-date-grid {
+    grid-template-columns: 1fr;
+  }
+
+  body:has(#bht-public-header) .travel-detail-card strong {
+    overflow-wrap: anywhere;
+  }
+
   body:has(#bht-public-header) #footer-place {
     padding: 36px 12px 24px;
     font-size: .875rem;
   }
-  body:has(#bht-public-header) #footer-place > div { padding-inline: 4px; }
-  body:has(#bht-public-header) #footer-place .grid { column-gap: 18px; row-gap: 26px; }
+
+  body:has(#bht-public-header) #footer-place>div {
+    padding-inline: 4px;
+  }
+
+  body:has(#bht-public-header) #footer-place .grid {
+    column-gap: 18px;
+    row-gap: 26px;
+  }
 }
 
 @media (max-width: 380px) {
-  body:has(#bht-public-header) .hero-cta { flex-direction: column; align-items: stretch; }
-  body:has(#bht-public-header) .hero-cta :is(a, button) { width: 100%; justify-content: center; }
-  body:has(#bht-public-header) .section-outer { padding-inline: 12px; }
+  body:has(#bht-public-header) .hero-cta {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  body:has(#bht-public-header) .hero-cta :is(a, button) {
+    width: 100%;
+    justify-content: center;
+  }
+
+  body:has(#bht-public-header) .section-outer {
+    padding-inline: 12px;
+  }
+}
+
+/* Umrah visa: continuous, seamless loop (mobile only, <= 576px).
+   Each duplicate group has identical right padding, so translating half
+   the track width lands at exactly the same point in the next group. */
+.bht-mobile-visa-carousel {
+  display: none;
+}
+
+@media (max-width: 576px) {
+  .bht-desktop-visa-cards {
+    display: none !important;
+  }
+
+  .bht-mobile-visa-carousel {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .bht-mobile-visa-carousel--loop:hover .bht-mobile-visa-track,
+  .bht-mobile-visa-carousel--loop:focus-within .bht-mobile-visa-track {
+    animation-play-state: paused;
+  }
+
+  .bht-mobile-visa-track {
+    display: flex;
+    width: max-content;
+    max-width: none;
+    padding-block: 3px 7px;
+  }
+
+  .bht-mobile-visa-track {
+    animation: bht-mobile-visa-marquee-scroll 28s linear infinite;
+  }
+
+  .bht-mobile-visa-carousel:not(.bht-mobile-visa-carousel--loop) .bht-mobile-visa-track {
+    animation: none;
+  }
+
+  .bht-mobile-visa-group {
+    display: flex;
+    flex: none;
+    gap: 16px;
+    /* gap-4 between cards */
+    padding-right: 16px;
+    /* identical group widths preserve the infinite loop */
+  }
+
+  .bht-mobile-visa-slide {
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    width: min(300px, 76vw);
+    min-width: 0;
+  }
+
+  /* Give keyboard users time to activate a card. */
+  .bht-mobile-visa-carousel:focus-within .bht-mobile-visa-track {
+    animation-play-state: paused;
+  }
+
+  .bht-mobile-visa-carousel:active .bht-mobile-visa-track {
+    animation-play-state: paused;
+  }
+}
+
+@media (max-width: 576px) and (hover: hover) {
+  .bht-mobile-visa-carousel:hover .bht-mobile-visa-track {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes bht-mobile-visa-marquee-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@media (max-width: 576px) and (prefers-reduced-motion: reduce) {
+  .bht-mobile-visa-carousel {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .bht-mobile-visa-carousel::-webkit-scrollbar {
+    display: none;
+  }
+
+  .bht-mobile-visa-track {
+    animation: none !important;
+  }
+
+  .bht-mobile-visa-group[aria-hidden="true"] {
+    display: none;
+  }
 }

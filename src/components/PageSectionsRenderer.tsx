@@ -21,6 +21,7 @@ import SoldOutPackagesSection from '@/components/SoldOutPackagesSection';
 import SoldOutHajjPackagesSection from '@/components/SoldOutHajjPackagesSection';
 import SoldOutUmrahPackagesSection from '@/components/SoldOutUmrahPackagesSection';
 import Banner4GridsSection from '@/components/Banner4GridsSection';
+import FeaturedTravelExperiencesSection from '@/components/FeaturedTravelExperiencesSection';
 import HajjRegistrationForm from '@/components/HajjRegistrationForm';
 import YosrAlMashaerHajjForm from '@/components/YosrAlMashaerHajjForm';
 import UmrahRegistrationForm from '@/components/UmrahRegistrationForm';
@@ -604,6 +605,10 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
 
         if (sec.type === "Hajj Packages" || sec.type === "Packages Grid") {
           return <div key={idx}><HajjPackagesSection data={sec.data} initialPackages={initialPackageData?.hajj} pageData={pageData} />{pageData?.slug === '/hajj-packages' && !sections.slice(0,idx).some((p:any)=>['Hajj Packages','Packages Grid'].includes(p.type) && p.hidden !== true) && <PackageCustomizationCTA journey='hajj' />}</div>;
+        }
+
+        if (sec.type === 'Featured Travel Experiences') {
+          return <FeaturedTravelExperiencesSection key={sec.id || idx} data={sec.data || {}} />;
         }
 
         if (sec.type === "Banner 4 Grids") {

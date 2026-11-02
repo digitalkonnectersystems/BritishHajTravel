@@ -86,10 +86,12 @@ function scrubHtml(html: string): string {
   return doc.body.innerHTML;
 }
 
-export default function SafeRichText({ html, className = '' }: { html: string; className?: string }) {
+export default function SafeRichText({ html, className = '', unstyled = false }: { html: string; className?: string; unstyled?: boolean }) {
   const [sanitized, setSanitized] = useState('');
   useEffect(() => { setSanitized(scrubHtml(html || '')); }, [html]);
+  // Components with a dedicated typographic system may opt out of the shared prose utility classes.
+  const proseClass = unstyled ? className : `${RICH_TEXT_PROSE_CLASS} ${className}`;
   // Render as plain text until the browser sanitizer has processed the HTML.
-  if (!sanitized) return <div className={`${RICH_TEXT_PROSE_CLASS} ${className}`}>{html && !/<\/?[a-z]/i.test(html) ? html : null}</div>;
-  return <div className={`${RICH_TEXT_PROSE_CLASS} ${className}`} dangerouslySetInnerHTML={{ __html: sanitized }} />;
+  if (!sanitized) return <div className={proseClass}>{html && !/<\/?[a-z]/i.test(html) ? html : null}</div>;
+  return <div className={proseClass} dangerouslySetInnerHTML={{ __html: sanitized }} />;
 }

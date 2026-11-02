@@ -20,7 +20,7 @@ type AirlineSectionData = {
   direction?: 'left' | 'right';
 };
 
-type AirlineSection = { type: string; data?: AirlineSectionData };
+type AirlineSection = { id?: string | number; type: string; data?: AirlineSectionData; hidden?: boolean; visible?: boolean };
 
 type AirlinePageData = {
   title?: string | null;
@@ -66,8 +66,6 @@ const handledTypes = new Set([
 export default function AirlinesPageClient({ initialPageData, sectionContext }: { initialPageData?: any; sectionContext?: any }) {
   const pageData: AirlinePageData | null = initialPageData || null;
   const sections = parseAirlineSections(pageData?.sections).filter((section: any) => section.hidden !== true && section.visible !== false);
-
-  const unhandledSections = sections.filter((section) => !handledTypes.has(section.type));
 
   return (
     <main className="min-h-screen bg-blue-lt">
@@ -141,9 +139,9 @@ export default function AirlinesPageClient({ initialPageData, sectionContext }: 
               );
             }
 
-            return null;
+            // Preserve the editor's position for every custom CMS section, including Featured Travel Experiences.
+            return <PageSectionsRenderer key={section.id || index} sections={[section]} pageData={pageData} {...(sectionContext || {})} />;
           })}
-          {unhandledSections.length > 0 ? <PageSectionsRenderer sections={unhandledSections} pageData={pageData} {...(sectionContext || {})} /> : null}
         </>
       )}
     </main>

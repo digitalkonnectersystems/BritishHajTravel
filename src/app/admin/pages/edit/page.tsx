@@ -41,6 +41,7 @@ import SeoSettingsForm, { SeoSettings } from '@/components/admin/SeoSettingsForm
 
 import ImageUploadWidget from '@/components/admin/ImageUploadWidget';
 import HomepageSideBannerFields, { DEFAULT_HOMEPAGE_SIDE_BANNERS, readHomepageSideBanners } from '@/components/admin/HomepageSideBannerFields';
+import { DEFAULT_FEATURED_TRAVEL_SECTION } from '@/lib/featuredTravelExperiences';
 
 import { formatTravelMonth } from '@/lib/packageHelpers';
 
@@ -183,6 +184,20 @@ const SECTION_CATALOG: SectionCategory[] = [
       { type: 'Airlines & Hotels', description: 'Combined section: Airlines carousel (left) + Hotels carousel (right) side-by-side in one block.', pages: ['Homepage', 'Any Page'] },
 
       { type: 'Contact', description: 'Animated Contact with dual notification (admin + user confirmation email).', pages: ['Homepage'] },
+
+    ],
+
+  },
+
+  {
+
+    category: 'Travel Promotions',
+
+    icon: '🌍',
+
+    items: [
+
+      { type: 'Featured Travel Experiences', description: 'Four editable promotional cards for Al Aqsa + Umrah, special airfares, halal cruises and worldwide holidays. Can be placed on any page.', pages: ['Any Page'] },
 
     ],
 
@@ -1374,7 +1389,10 @@ function PageBuilderContent() {
 
 
 
-    if (type === 'Makkah Hotels Directory' || type === 'Madinah Hotels Directory') {
+    if (type === 'Featured Travel Experiences') {
+      // Store the default copy in the section JSON, rather than hard-coding it on the frontend.
+      defaultData = JSON.parse(JSON.stringify(DEFAULT_FEATURED_TRAVEL_SECTION));
+    } else if (type === 'Makkah Hotels Directory' || type === 'Madinah Hotels Directory') {
       defaultData = {
         title: type === 'Makkah Hotels Directory' ? 'Hotels in Makkah' : 'Hotels in Madina',
         categoryId: 0,
@@ -1642,6 +1660,9 @@ function PageBuilderContent() {
         content: '',
         appearance: 'card',
         alignment: 'left',
+        image: '',
+        imageAlt: '',
+        imagePosition: 'right',
       };
     } else if (type === 'Text Block (Rich Text)' || type === 'Packages Content (Rich Text)') {
 
@@ -4853,6 +4874,89 @@ function PageBuilderContent() {
                         {editingSectionId === sec.id && (
 
                           <div className="pt-4 border-t border-slate-200 flex flex-col gap-3">
+
+                            {sec.type === 'Featured Travel Experiences' && (
+                              <div className="space-y-4 rounded-xl border border-slate-200 bg-white p-4 text-slate-900">
+                                <div>
+                                  <h4 className="m-0 text-sm font-extrabold text-primary">Featured Travel Experiences</h4>
+                                  <p className="mb-0 mt-1 text-xs text-slate-600">Edit all text and routes here. Reorder cards, hide individual cards, or upload images. Save the page to publish changes.</p>
+                                </div>
+                                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                  {([
+                                    ['eyebrow', 'Small heading'],
+                                    ['title', 'Section title'],
+                                  ] as const).map(([field, label]) => (
+                                    <label key={field} className="block text-xs font-bold text-slate-700">{label}
+                                      <input type="text" value={sec.data?.[field] || ''} onChange={e => updateSectionData(sec.id, field, e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 bg-white p-2.5 text-sm text-slate-900" />
+                                    </label>
+                                  ))}
+                                </div>
+                                <label className="block text-xs font-bold text-slate-700">Subtitle
+                                  <textarea rows={2} value={sec.data?.subtitle || ''} onChange={e => updateSectionData(sec.id, 'subtitle', e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 bg-white p-2.5 text-sm text-slate-900" />
+                                </label>
+                                <div className="flex items-center justify-between gap-3 border-t border-slate-200 pt-4">
+                                  <span className="text-xs font-bold text-primary">Travel cards ({Array.isArray(sec.data?.items) ? sec.data.items.length : 0})</span>
+                                  <button type="button" className="rounded-full bg-primary px-3 py-2 text-xs font-semibold text-white" onClick={() => {
+                                    const items = Array.isArray(sec.data?.items) ? sec.data.items : [];
+                                    updateSectionData(sec.id, 'items', [...items, { id: `travel-${Date.now()}`, icon: 'globe', title: 'New Travel Experience', description: '', details: '', buttonLabel: 'Enquire Now', buttonHref: '/contact', image: '', visible: true }]);
+                                  }}>+ Add Card</button>
+                                </div>
+                                {(Array.isArray(sec.data?.items) ? sec.data.items : []).map((card: any, cardIndex: number) => {
+                                  const items: any[] = Array.isArray(sec.data?.items) ? sec.data.items : [];
+                                  const changeCard = (key: string, value: any) => updateSectionData(sec.id, 'items', items.map((item: any, idx: number) => idx === cardIndex ? { ...item, [key]: value } : item));
+                                  const moveCard = (offset: number) => {
+                                    const next = [...items];
+                                    const target = cardIndex + offset;
+                                    if (target < 0 || target >= next.length) return;
+                                    [next[cardIndex], next[target]] = [next[target], next[cardIndex]];
+                                    updateSectionData(sec.id, 'items', next);
+                                  };
+                                  return (
+                                    <div key={card.id || cardIndex} className="rounded-xl border border-slate-200 bg-slate-50 p-3 space-y-3">
+                                      <div className="flex flex-wrap items-center justify-between gap-2">
+                                        <strong className="text-xs text-primary">CARD {cardIndex + 1}</strong>
+                                        <div className="flex items-center gap-2">
+                                          <label className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-700">
+                                            <input type="checkbox" checked={card.visible !== false} onChange={e => changeCard('visible', e.target.checked)} /> Show card
+                                          </label>
+                                          <button type="button" disabled={cardIndex === 0} onClick={() => moveCard(-1)} title="Move card up" aria-label="Move card up" className="rounded border bg-white p-1.5 disabled:opacity-30"><MoveUp className="h-4 w-4" /></button>
+                                          <button type="button" disabled={cardIndex === items.length - 1} onClick={() => moveCard(1)} title="Move card down" aria-label="Move card down" className="rounded border bg-white p-1.5 disabled:opacity-30"><MoveDown className="h-4 w-4" /></button>
+                                          <button type="button" onClick={() => updateSectionData(sec.id, 'items', items.filter((_: any, idx: number) => idx !== cardIndex))} title="Delete card" aria-label="Delete card" className="rounded border border-red-200 bg-red-50 p-1.5 text-red-700"><Trash2 className="h-4 w-4" /></button>
+                                        </div>
+                                      </div>
+                                      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                        <label className="block text-xs font-semibold text-slate-700">Card title
+                                          <input type="text" value={card.title || ''} onChange={e => changeCard('title', e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-sm" />
+                                        </label>
+                                        <label className="block text-xs font-semibold text-slate-700">Card icon
+                                          <select value={card.icon || 'globe'} onChange={e => changeCard('icon', e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-sm">
+                                            <option value="landmark">Mosque / Landmark</option><option value="plane">Flight</option><option value="ship">Cruise Ship</option><option value="globe">Worldwide / Globe</option>
+                                          </select>
+                                        </label>
+                                      </div>
+                                      <label className="block text-xs font-semibold text-slate-700">Short description
+                                        <textarea rows={2} value={card.description || ''} onChange={e => changeCard('description', e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-sm" />
+                                      </label>
+                                      <label className="block text-xs font-semibold text-slate-700">Destinations / highlights (one line per bullet)
+                                        <textarea rows={3} value={card.details || ''} onChange={e => changeCard('details', e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-sm" />
+                                      </label>
+                                      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                        <label className="block text-xs font-semibold text-slate-700">Button text
+                                          <input type="text" value={card.buttonLabel || ''} onChange={e => changeCard('buttonLabel', e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-sm" />
+                                        </label>
+                                        <label className="block text-xs font-semibold text-slate-700">Button URL (for example /contact)
+                                          <input type="text" value={card.buttonHref || ''} onChange={e => changeCard('buttonHref', e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-sm" />
+                                        </label>
+                                      </div>
+                                      <div>
+                                        <label className="mb-1 block text-xs font-semibold text-slate-700">Optional card image</label>
+                                        <ImageUploadWidget value={card.image || ''} onChange={url => changeCard('image', url)} compact />
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            )}
 
                             {(sec.type === 'Makkah Hotels Directory' || sec.type === 'Madinah Hotels Directory') && (() => {
                               const sectionCategoryId = Number(sec.data?.categoryId || 0);
@@ -8272,6 +8376,63 @@ function PageBuilderContent() {
                                       <option value="center">Centered</option>
                                     </select>
                                   </label>
+                                </div>
+
+                                {/* Section Image Block */}
+                                <div className="rounded-lg border border-slate-200 bg-slate-50/70 p-3.5 space-y-3">
+                                  <div className="flex items-center justify-between">
+                                    <div>
+                                      <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                                        <ImageIcon className="w-3.5 h-3.5 text-primary" /> Section Featured Image (Optional)
+                                      </span>
+                                      <p className="text-[11px] text-slate-500 m-0">Displays beside the upper text in the card layout.</p>
+                                    </div>
+                                    {sec.data?.image && (
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          updateSectionData(sec.id, 'image', '');
+                                          updateSectionData(sec.id, 'imageAlt', '');
+                                        }}
+                                        className="text-xs text-red hover:underline font-medium"
+                                      >
+                                        Remove Image
+                                      </button>
+                                    )}
+                                  </div>
+
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-start">
+                                    <div>
+                                      <ImageUploadWidget
+                                        value={sec.data?.image || ''}
+                                        onChange={url => updateSectionData(sec.id, 'image', url)}
+                                        subfolder="sections"
+                                      />
+                                    </div>
+                                    <div className="space-y-2">
+                                      <label className="block text-xs font-semibold text-slate-700">
+                                        Image Alt Text (SEO)
+                                        <input
+                                          type="text"
+                                          value={sec.data?.imageAlt || ''}
+                                          onChange={e => updateSectionData(sec.id, 'imageAlt', e.target.value)}
+                                          placeholder="e.g. Nusuk Platform Hajj Services"
+                                          className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white"
+                                        />
+                                      </label>
+                                      <label className="block text-xs font-semibold text-slate-700">
+                                        Image Placement
+                                        <select
+                                          value={sec.data?.imagePosition || 'right'}
+                                          onChange={e => updateSectionData(sec.id, 'imagePosition', e.target.value)}
+                                          className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white"
+                                        >
+                                          <option value="right">Right side (Recommended)</option>
+                                          <option value="left">Left side</option>
+                                        </select>
+                                      </label>
+                                    </div>
+                                  </div>
                                 </div>
                                 <label className="block text-xs font-semibold text-slate-700">Section text (Tiptap editor)</label>
                                 <TiptapEditor

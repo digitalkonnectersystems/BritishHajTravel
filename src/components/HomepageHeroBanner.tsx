@@ -244,6 +244,60 @@ function HeroSidePanel({
   );
 }
 
+/** An infinitely scrolling mobile-only visa marquee, like the travel partners section. */
+function VisaMobileLoopCarousel({ cards }: { cards: Array<{ card: any; href: string }> }) {
+  const total = cards.length;
+  if (!total) return null;
+
+  // Exactly two identically sized groups produce a seamless -50% marquee loop.
+  // If only one visa is published, keep it still rather than showing duplicates.
+  const canLoop = total > 1;
+  const animationDuration = `${Math.max(16, total * 3.5)}s`;
+
+  return (
+    <div
+      className={`bht-mobile-visa-carousel${canLoop ? ' bht-mobile-visa-carousel--loop' : ''}`}
+      aria-label="Available Umrah visas"
+    >
+      <div
+        className="bht-mobile-visa-track"
+        style={canLoop ? { animationDuration } : undefined}
+      >
+        {Array.from({ length: canLoop ? 2 : 1 }, (_, groupIndex) => (
+          <div
+            className="bht-mobile-visa-group gap-4"
+            key={groupIndex}
+            aria-hidden={groupIndex > 0 ? true : undefined}
+          >
+            {cards.map(({ card: visa, href: cardHref }, index) => (
+              <Link
+                key={`${index}-${visa.slug || visa.country}`}
+                href={cardHref}
+                tabIndex={groupIndex > 0 ? -1 : undefined}
+                className="bht-mobile-visa-slide group flex flex-col justify-between rounded-2xl border border-slate-100 bg-white p-3 shadow-[0_4px_16px_rgba(15,23,42,0.06)]"
+              >
+                <span className="flex items-center gap-2.5">
+                  <span className="flex h-6 w-9 shrink-0 items-center justify-center overflow-hidden rounded-[5px] border border-slate-200/80 bg-slate-50">
+                    <CountryFlag country={visa.country} flag={visa.flag} flagImage={visa.flagImage || visa.flagSvg} />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-[13px] font-bold leading-tight text-slate-900">{visa.country}</span>
+                    <span className="mt-0.5 block min-h-[14px] truncate text-[11px] font-medium leading-tight text-slate-400">{visa.passportLabel || '\u00a0'}</span>
+                  </span>
+                </span>
+                <span className="mt-4 flex items-center gap-2">
+                  <span className="flex-1 rounded-full bg-red px-2 py-1.5 text-center text-xs font-extrabold text-white">{visa.price}</span>
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#EDF2F7] text-primary"><ArrowRight className="h-3.5 w-3.5" /></span>
+                </span>
+              </Link>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function HomepageHeroBanner({ data, pageData, backgroundImage, publishedVisaCards = [], publishedSitePaths = [] }: { data: any; pageData?: any; backgroundImage?: string; publishedVisaCards?: PublicVisaPage[]; publishedSitePaths?: string[] }) {
   const heroData = {
     heroEyebrow: data?.heroEyebrow || "",
@@ -596,7 +650,7 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
               </div>
             </div>
 
-            <div className="flex snap-x snap-mandatory gap-2.5 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden min-[1140px]:flex-wrap min-[1140px]:justify-center min-[1140px]:overflow-visible min-[1140px]:pb-0 xl:flex-wrap xl:justify-center lg:gap-3">
+            <div className="bht-desktop-visa-cards flex snap-x snap-mandatory gap-2.5 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden min-[1140px]:flex-wrap min-[1140px]:justify-center min-[1140px]:overflow-visible min-[1140px]:pb-0 xl:flex-wrap xl:justify-center lg:gap-3">
               {visibleVisaCards.map(({ card: visa, href: cardHref }, index: number) => {
                 return (
                   <Link
@@ -630,6 +684,7 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                 );
               })}
             </div>
+            <VisaMobileLoopCarousel cards={visibleVisaCards} />
           </div>
         </div> : null}
       </section>
