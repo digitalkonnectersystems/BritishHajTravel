@@ -8,7 +8,7 @@ import SafeRichText from "@/components/SafeRichText";
 
 function SavedStats({ items }: { items: any[] }) {
   if (!items?.length) return null;
-  return <div className="max-w-7xl mx-auto px-4 -mt-12 relative z-20 mb-8">
+  return <div className="max-w-7xl mx-auto px-4 -mt-2 md:-mt-6 relative z-20 mb-8">
     <div className="bg-white rounded-2xl p-6 shadow-xl border border-slate-100 grid grid-cols-2 lg:grid-cols-4 gap-6 text-center divide-x-0 md:divide-x divide-slate-100">
       {items.filter(item => item?.label && item?.value !== undefined && item?.value !== '').map((item: any, i: number) => (
         <div key={i} className="flex flex-col items-center justify-center p-2">
