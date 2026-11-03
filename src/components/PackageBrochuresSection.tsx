@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import { X, ChevronLeft, ChevronRight, ExternalLink, Search } from 'lucide-react';
 
 interface PackageBrochureItem {
@@ -111,15 +112,20 @@ export default function PackageBrochuresSection({ data, pageData }: PackageBroch
   if (brochures.length === 0) return null;
 
   const isSingle = brochures.length === 1;
+  const pathname = usePathname();
+  const isHotelsPage = (typeof pageData?.slug === 'string' &&
+    `/${pageData.slug.split('/').filter(Boolean).join('/')}` === '/hotels') ||
+    pathname === '/hotels' ||
+    pathname?.startsWith('/hotels');
 
   return (
     <>
       <section className="pt-8 md:pt-10 md:pb-10 pb-0 bg-blue-lt">
         <div className="max-w-[1400px] mx-auto px-5">
           {(eyebrow || title || description) && (
-            <div className="flex flex-col items-center text-center mb-10 md:mb-12">
+            <div className="flex flex-col items-center text-center mb-6">
               {eyebrow && (
-                <span className="eyebrow mx-auto mb-2 text-primary font-bold text-xs uppercase tracking-widest">
+                <span className="eyebrow">
                   {eyebrow}
                 </span>
               )}
@@ -137,7 +143,7 @@ export default function PackageBrochuresSection({ data, pageData }: PackageBroch
             </div>
           )}
 
-          {isSingle ? (
+          {isSingle && !isHotelsPage ? (
             <div className="flex justify-center items-center w-full">
               <div
                 onClick={() => setPopupIdx(0)}
@@ -152,17 +158,21 @@ export default function PackageBrochuresSection({ data, pageData }: PackageBroch
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl mx-auto items-stretch">
+            <div className={`grid grid-cols-1 ${isHotelsPage ? 'md:grid-cols-3' : 'md:grid-cols-2 lg:grid-cols-3'} gap-5 items-stretch w-full`}>
               {brochures.map((item, idx) => (
                 <div
                   key={idx}
                   onClick={() => setPopupIdx(idx)}
-                  className="w-full bg-white rounded-2xl md:rounded-3xl overflow-hidden shadow-xl border border-slate-200/80 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 flex flex-col h-full group cursor-pointer"
+                  className={`w-full bg-white rounded-2xl md:rounded-3xl overflow-hidden shadow-xl border border-slate-200/80 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 flex flex-col h-full group cursor-pointer ${isSingle && isHotelsPage
+                      ? 'md:col-start-2 md:max-w-md md:mx-auto'
+                      : ''
+                    }`}
                 >
                   <img
                     src={item.src}
                     alt={item.alt}
-                    className="w-full h-full object-cover block select-none flex-1 transition-transform duration-500 group-hover:scale-[1.01]"
+                    className={`w-full block select-none transition-transform duration-500 group-hover:scale-[1.01] ${isSingle && isHotelsPage ? 'h-auto' : 'h-full object-cover flex-1'
+                      }`}
                     loading="lazy"
                   />
                 </div>
