@@ -242,7 +242,7 @@ h2.section-heading {
 .eyebrow {
   font-family: var(--sans);
   font-size: 18px;
-  letter-spacing: .28em;
+  letter-spacing: .2em;
   text-transform: uppercase;
   color: var(--red);
   font-weight: 600;
@@ -278,18 +278,6 @@ h2.section-heading {
 
 .\[\&_p\]\:text-slate-700 p {
   color: var(--ink) !important;
-}
-
-.eyebrow {
-  font-family: var(--sans);
-  font-size: 18px;
-  letter-spacing: .28em;
-  text-transform: uppercase;
-  color: var(--red);
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 10px;
 }
 
 .eyebrow.pill {

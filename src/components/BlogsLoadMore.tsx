@@ -67,7 +67,7 @@ export default function BlogsLoadMore({ blogs, initialCount = 11 }: { blogs: any
       </div>
 
       {hasMore && (
-        <div className="flex justify-center mt-10">
+        <div className="flex justify-center mt-6 md:mt-10">
           <button
             type="button"
             onClick={() => setVisibleCount((current) => Math.min(current + 12, blogs.length))}

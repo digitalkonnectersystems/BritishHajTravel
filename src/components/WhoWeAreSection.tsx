@@ -205,7 +205,7 @@ export default function WhoWeAreSection({ data }: { data: any }) {
     <section
       className="
         relative overflow-hidden
-        py-10 md:py-14
+        py-6 md:py-10
         bg-[#eef8ff]
         bg-cover bg-center
       "
@@ -221,7 +221,7 @@ export default function WhoWeAreSection({ data }: { data: any }) {
           className="
             grid grid-cols-1
             lg:grid-cols-[1.05fr_1.5fr_0.9fr]
-            gap-8 lg:gap-10
+            gap-6 lg:gap-10
             items-center
           "
         >
@@ -255,11 +255,7 @@ export default function WhoWeAreSection({ data }: { data: any }) {
           >
             <div
               className="
-                text-[#ef2024]
-                text-[11px] sm:text-xs
-                tracking-[0.28em]
-                uppercase
-                font-bold
+                eyebrow
                 mb-3
               "
             >
@@ -269,14 +265,7 @@ export default function WhoWeAreSection({ data }: { data: any }) {
             <h2
               className="
                 text-[#08245c]
-                font-serif
-                text-[28px]
-                sm:text-[32px]
-                md:text-[36px]
-                lg:text-[44px]
-                xl:text-[48px]
-                leading-[1.02]
-                font-bold
+                font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]
                 mb-4
               "
               dangerouslySetInnerHTML={{ __html: title }}
@@ -284,10 +273,7 @@ export default function WhoWeAreSection({ data }: { data: any }) {
 
             <p
               className="
-                text-[#294970]
-                text-[15px]
-                md:text-[17px]
-                leading-[1.6]
+                text-ink-soft text-sm leading-relaxed 
                 max-w-[820px]
               "
             >
@@ -358,9 +344,7 @@ export default function WhoWeAreSection({ data }: { data: any }) {
             <h3
               className="
                 text-[#08245c]
-                text-[22px]
-                md:text-[25px]
-                font-bold
+                text-xl md:text-[22px] font-serif
                 mb-7
               "
             >

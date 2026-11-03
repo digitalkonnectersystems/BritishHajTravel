@@ -251,7 +251,7 @@ export default function PackageBookingModal({
 
             {/* Modal Heading */}
             <div className="text-center mb-5 px-4 sm:px-6 pt-3">
-              <h3 className="text-xl md:text-2xl font-serif font-bold text-primary mb-1.5 leading-tight">
+              <h3 className="text-lg md:text-xl font-serif font-bold text-primary mb-1.5 leading-tight">
                 Book {pkg?.title || "Umrah Package"}
                 {pkg?.month ? ` - ${formatTravelMonth(pkg.month) || pkg.month}` : ""}
               </h3>

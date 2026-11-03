@@ -18,7 +18,7 @@ export default function FeaturedTravelExperiencesSection({ data }: { data?: Part
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
         <div className="mx-auto mb-6 max-w-3xl text-center">
           {data?.eyebrow && <p className="eyebrow justify-center">{data.eyebrow}</p>}
-          {data?.title && <h2 className="section-heading text-primary !justify-center">{data.title}</h2>}
+          {data?.title && <h2 className="font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98] !justify-center">{data.title}</h2>}
           {data?.subtitle && <p className="max-w-2xl text-center mx-auto text-sm leading-relaxed pt-4">{data.subtitle}</p>}
         </div>
 

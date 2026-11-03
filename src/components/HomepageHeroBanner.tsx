@@ -169,7 +169,7 @@ function HeroSidePanel({
   return (
     <div
       className={[
-        "bht-hero-side-panel relative flex h-full min-h-[300px] sm:min-h-[330px] lg:min-h-[360px] min-w-0 flex-col overflow-hidden px-5 py-6 pb-6 md:pb-[44px] text-white sm:px-6 sm:pb-[60px]",
+        "bht-hero-side-panel relative flex h-full min-h-[300px] sm:min-h-[330px] lg:min-h-[360px] min-w-0 flex-col overflow-hidden px-5 py-6 pb-6 text-white sm:px-6 sm:pb-[60px]",
         className,
         isRed
           ? "bg-red"

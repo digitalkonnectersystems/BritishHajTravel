@@ -392,7 +392,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
 
           const carouselType = sec.type === "Hotels" ? "hotel" : "airline";
           return (
-            <section key={idx} className="py-12 bg-blue-lt">
+            <section key={idx} className="py-6 md:py-10 bg-blue-lt">
               <div className="max-w-7xl mx-auto px-4">
                 <div className="text-center flex flex-col mb-8">
                   {sec.data?.eyebrow && (
@@ -400,7 +400,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                       {sec.data.eyebrow}
                     </span>
                   )}
-                  <h2 className="section-heading font-serif text-primary font-normal">
+                  <h2 className="font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">
                     {sec.data?.title || (sec.type === "Hotels" ? "Our Recommended Hotels" : "Airlines We Sourced Deals From")}
                   </h2>
                 </div>
@@ -438,7 +438,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
           }));
 
           return (
-            <section key={idx} className="py-12 bg-blue-lt">
+            <section key={idx} className="py-6 md:py-10 bg-blue-lt">
               <div className="max-w-[1400px] mx-auto px-5 md:px-8">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-stretch">
 
@@ -450,7 +450,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                           {sec.data.airlineEyebrow}
                         </span>
                       )}
-                      <h2 className="section-heading font-serif text-primary font-normal">
+                      <h2 className="font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">
                         {sec.data?.airlineTitle || "Airlines We Sourced Deals From"}
                       </h2>
                     </div>
@@ -488,7 +488,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                           {sec.data.hotelEyebrow}
                         </span>
                       )}
-                      <h2 className="section-heading font-serif text-primary font-normal">
+                      <h2 className="font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">
                         {sec.data?.hotelTitle || "Our Recommended Hotels"}
                       </h2>
                     </div>
@@ -532,7 +532,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
           }));
 
           return (
-            <section key={idx} className="py-6 md:py-12 bg-white pb-0">
+            <section key={idx} className="py-6 md:py-10 bg-white">
               <div className="w-full mx-auto px-0">
                 <div className="flex flex-col items-center text-center mb-6">
                   {sec.data?.eyebrow && (

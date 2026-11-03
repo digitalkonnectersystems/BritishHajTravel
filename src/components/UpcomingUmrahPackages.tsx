@@ -101,10 +101,11 @@ export default function UpcomingUmrahPackages({
   const sectionBgClass = isUmrahListingPage ? "bg-blue-lt" : isHomepage ? "bg-white" : (pathname === "/" ? "bg-white" : "bg-blue-lt");
 
   return (
-    <section className={`py-10 bg-[#f4f7fb]  ${sectionBgClass}`}>
+    // <section className={`py-10  ${sectionBgClass} bg-[#f4f7fb]`}>
+    <section className={`py-6 md:py-10 bg-[#f4f7fb]`}>
       <div className="max-w-[1400px] mx-auto px-5">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-6 gap-6 text-center md:text-left">
+        <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-6 md:mb-10 gap-3 md:gap-6 text-center md:text-left">
           <div className="flex flex-col items-center md:items-start">
             <h3 className="eyebrow">{eyebrow}</h3>
             <h2
@@ -112,7 +113,7 @@ export default function UpcomingUmrahPackages({
               dangerouslySetInnerHTML={{ __html: title }}
             />
           </div>
-          <div className="max-w-sm text-ink-soft text-sm leading-relaxed border-t-2 md:border-t-0 md:border-l-2 border-gray-200 pt-4 md:pt-0 pl-0 md:pl-4">
+          <div className="max-w-sm text-ink-soft text-sm leading-relaxed md:border-l-2 border-gray-200 pl-0 md:pl-4">
             {description}
           </div>
         </div>
@@ -147,7 +148,7 @@ export default function UpcomingUmrahPackages({
 
         {/* Packages Grid */}
         {!loading && visiblePkgs.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 items-stretch mb-6 md:mb-10">
             {displayedPkgs.map((pkg: any, idx: number) => {
               let cd = pkg.cardData || {};
               if (typeof cd === 'string') {
@@ -220,15 +221,15 @@ export default function UpcomingUmrahPackages({
                     >
                       {formatTravelMonth(month) || month}
                     </div>
-                    <h3 className={`text-xl md:text-2xl font-serif mb-2 ${isGold ? "text-white" : "text-primary"}`}>
+                    <h3 className={`text-lg md:text-xl font-serif mb-3 ${isGold ? "text-white" : "text-primary"}`}>
                       {pkg.title}
                     </h3>
-                    <span className={`text-xs font-medium ${isGold ? "text-white/85" : "text-ink-soft"}`}>
+                    <span className={`text-xs font-semibold ${isGold ? "text-white/85" : "text-ink-soft"}`}>
                       Starting From
                     </span>
                     <div
                       className={`${isGold ? "text-white" : "text-red"
-                        } font-black text-xl mb-6`}
+                        } mb-4 text-lg font-black`}
                     >
                       {price === "TBC" ? "" : currencySettings.symbol} {price}{" "}
                       <span
@@ -319,7 +320,7 @@ export default function UpcomingUmrahPackages({
         )}
 
         {!hideFooterLink && pathname !== "/umrah-packages" && (
-          <div className="flex justify-center mt-6 md:mt-12">
+          <div className="flex justify-center">
             <a
               href="/umrah-packages"
               className="px-8 py-3.5 border-2 border-red text-red font-bold text-xs uppercase tracking-widest rounded-md hover:bg-red hover:text-white transition-all flex items-center gap-3"

@@ -87,9 +87,9 @@ export default function SoldOutCategorySection({
         <div className="mb-7 grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,370px)] md:items-end md:gap-8">
           <div>
             <p className="mb-3 text-[12px] font-semibold uppercase tracking-[0.22em] sm:text-[15px]" style={{ color: '#b50007' }}>{eyebrow}</p>
-            <h2 className="max-w-[520px] font-serif text-[27px] leading-[1.14] sm:text-[32px] lg:text-[38px]" style={{ color: '#020e43' }}>{heading}</h2>
+            <h2 className="max-w-[520px] font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">{heading}</h2>
           </div>
-          {description && <p className="max-w-[460px] border-l-2 border-slate-200 pl-4 text-[13px] leading-[1.7] sm:text-[14px]" style={{ color: '#020e43' }}>{description}</p>}
+          {description && <p className="max-w-[460px] border-l-2 border-slate-200 pl-4 text-[13px] leading-[1.7] sm:text-[14px] text-ink">{description}</p>}
         </div>
         {loading && packages.length === 0 ? (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" aria-busy="true">

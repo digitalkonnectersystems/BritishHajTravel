@@ -60,7 +60,7 @@ export default function HajjLandscapeCard({
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-[#071a45] via-[#133877] to-[#27599a]" />
         )}
-        <span className="absolute left-4 top-4 inline-flex max-w-[calc(100%-2rem)] truncate rounded-md bg-primary px-3 py-1 text-[10px] font-black uppercase tracking-wider text-white shadow-sm">
+        <span className="absolute top-4 left-4 bg-white px-3 py-1 rounded-full uppercase text-[10px] font-black text-gray-800 tracking-wider">
           {badgeTag || "HAJJ 2027"}
         </span>
       </div>
@@ -69,14 +69,14 @@ export default function HajjLandscapeCard({
         <div className="text-gray-500 text-[11px] font-bold uppercase tracking-widest mb-2">
           {duration || "HAJJ 2027"}
         </div>
-        <h3 title={packageTitle} className="text-xl md:text-2xl font-serif mb-2">
+        <h3 title={packageTitle} className="text-lg md:text-xl font-serif mb-2">
           {packageTitle}
         </h3>
-        <div className="mt-4 md:mt-auto -mx-4 -mb-4 border-t border-[#e5ebf4] bg-[#f6f8fc] p-4">
-          <span className="text-xs font-medium text-ink-soft font-semibold">
+        <div className="mt-auto -mx-4 -mb-4 border-t border-[#e5ebf4] bg-[#f6f8fc] p-4">
+          <span className="text-xs font-semibold text-ink-soft">
             {priceSubtext || "Starting From"}
           </span>
-          <p className="mb-4 text-xl font-black text-red flex items-center gap-2" title={displayPrice || "Price on request"}>
+          <p className="mb-4 text-lg font-black text-red flex items-center gap-2" title={displayPrice || "Price on request"}>
             {displayPrice || "Price on request"}
             {price && <span className="ml-1 text-sm font-medium text-ink-soft">/ Person</span>}
           </p>

@@ -161,7 +161,7 @@ export default function SoldOutPackagesSection({ data, initialPackages }: { data
                     <span className="text-xs font-medium text-ink-soft">
                       Starting From
                     </span>
-                    <div className="text-red font-black text-xl mb-6 flex items-center gap-2">
+                    <div className="text-red text-md md:text-lg font-bold mb-6 flex items-center gap-2">
                       {price}{" "}
                       <span className="text-sm font-medium text-ink-soft">
                         {priceUnit}

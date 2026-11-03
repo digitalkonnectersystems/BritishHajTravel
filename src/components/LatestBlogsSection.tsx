@@ -24,7 +24,7 @@ export default function LatestBlogsSection({ data, blogs, isHomepage = false }: 
 
   return (
     <section
-      className="bht-blog-section bg-primary py-8 md:py-10 bg-center bg-cover bg-no-repeat bg-fixed"
+      className="bht-blog-section bg-primary py-6 md:py-10 bg-center bg-cover bg-no-repeat bg-fixed"
       style={
         bgImage
           ? {
@@ -38,7 +38,7 @@ export default function LatestBlogsSection({ data, blogs, isHomepage = false }: 
       <div className="max-w-[1150px] mx-auto px-4">
         <div className="text-center mb-8">
           {data?.eyebrow && <span className="eyebrow block w-fit mx-auto text-center">{data.eyebrow}</span>}
-          <h2 className="section-heading text-white">{data?.title || 'Articles, Tips & Spiritual Insights'}</h2>
+          <h2 className="font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98] text-white">{data?.title || 'Articles, Tips & Spiritual Insights'}</h2>
           {data?.description && <p className="normal-text max-w-2xl mx-auto mt-3">{data.description}</p>}
         </div>
 
@@ -80,7 +80,7 @@ export default function LatestBlogsSection({ data, blogs, isHomepage = false }: 
         )}
 
         {isHomepage && (
-          <div className="flex justify-center mt-10">
+          <div className="flex justify-center mt-6 md:mt-10">
             <Link
               href="/blogs"
               className="inline-flex items-center justify-center bg-red text-white hover:bg-red-lt hover:text-white px-6 py-3 rounded-full text-md font-bold no-underline transition-colors"

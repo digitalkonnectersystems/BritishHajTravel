@@ -37,7 +37,7 @@ export default function DestinationsPageSection({
         <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-6 gap-6 text-center md:text-left">
           <div className="flex flex-col items-center md:items-start">
             <h3 className="eyebrow">DESTINATION PACKAGES</h3>
-            <h2 className="section-heading text-primary">{title}</h2>
+            <h2 className="font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">{title}</h2>
           </div>
           <p className="max-w-sm text-primary text-sm leading-relaxed border-t-2 md:border-t-0 md:border-l-2 border-gray-200 pt-4 md:pt-0 pl-0 md:pl-4">
             {description}

@@ -136,7 +136,7 @@ export default function HajjRegistrationForm({sourcePage, branded = false, headi
       <div className="bg-white border border-[#d0d0d0] rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,.18)] p-5 md:p-7">
         {branded && <div className="text-center mb-6 flex flex-wrap items-center justify-center gap-2">
           <img src="https://britishhajtravel.com/wp-content/uploads/2019/02/bht-logo.png" alt="British Haj Travel Ltd" className={`object-contain h-auto ${variant === 'yosr' ? 'w-full max-w-[400px]' : 'max-w-[160px]'}`} />
-          <span className="font-bold text-xl md:text-2xl text-[#ee1b2b]">{heading}</span>
+          <span className="font-bold text-xl md:text-[22px] text-[#ee1b2b]">{heading}</span>
         </div>}
         <form onSubmit={submit} className="space-y-3" autoComplete="on">
           {fieldRows.map((row, index) => <div key={index} className={`grid grid-cols-1 sm:grid-cols-2 ${row.length===4?'lg:grid-cols-4':'lg:grid-cols-3'} gap-x-5 gap-y-3`}>{row.map(field)}</div>)}

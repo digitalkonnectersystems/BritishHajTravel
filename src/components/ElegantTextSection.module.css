@@ -1,14 +1,14 @@
 /* Elegant Text Content: premium editorial layout; brand colours are all solid. */
 .section {
   width: 100%;
-  padding: clamp(40px, 5.5vw, 80px) 20px;
+  padding: 40px 0px;
   background: #f4f7fb;
 }
 
 .container {
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
+  max-width: 1400px;
+  padding:0 20px;  margin: 0 auto;
 }
 
 .panel {
@@ -500,7 +500,7 @@
 
 @media (max-width: 640px) {
   .section {
-    padding: 30px 14px;
+    padding: 30px 20px;
   }
 
   .panel {

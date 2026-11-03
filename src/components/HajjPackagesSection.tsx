@@ -153,18 +153,18 @@ export default function HajjPackagesSection({
   };
 
   const sectionClass = isHomepage
-    ? "pb-12 md:pb-16 bg-white"
-    : "pt-12 md:pb-16 bg-white";
+    ? "py-6 md:py-10 bg-white"
+    : "py-6 md:py-10 bg-white";
   return (
     <section className={sectionClass}>
       <div className="max-w-[1400px] mx-auto px-5">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-6 gap-6 text-center md:text-left">
+        <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-6 md:mb-10 gap-3 md:gap-6 text-center md:text-left">
           <div className="flex flex-col items-center md:items-start">
             <h3 className="eyebrow">{eyebrow}</h3>
-            <h2 className="section-heading text-primary">{title}</h2>
+            <h2 className="font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">{title}</h2>
           </div>
-          <div className="max-w-sm text-primary text-sm leading-relaxed border-t-2 md:border-t-0 md:border-l-2 border-gray-300 pt-4 md:pt-0 pl-0 md:pl-4">
+          <div className="max-w-sm text-primary text-sm leading-relaxed md:border-l-2 border-gray-300 pl-0 md:pl-4">
             {description}
           </div>
         </div>
