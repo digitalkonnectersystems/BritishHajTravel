@@ -47,7 +47,7 @@ function safeUrl(url: string, image: boolean): boolean {
   return /^(https?:\/\/|mailto:|tel:|#)/i.test(clean);
 }
 
-function scrubHtml(html: string): string {
+function scrubHtml(html: string, stripInlineTypography = false): string {
   const doc = new DOMParser().parseFromString(normalizeEditorHtml(html), 'text/html');
   const visit = (root: Element) => {
     for (const child of Array.from(root.children)) {
@@ -71,6 +71,7 @@ function scrubHtml(html: string): string {
             if (colon < 0) return '';
             const property = part.slice(0, colon).trim().toLowerCase();
             const setting = part.slice(colon + 1).trim();
+            if (stripInlineTypography && (property === 'font-size' || property === 'font-family')) return '';
             if (!STYLES.has(property) || !setting || /[<>{};\\]|url\s*\(|expression\s*\(|@import/i.test(setting)) return '';
             if (!/^[-\w\s.,#()%\/+\"']{1,100}$/.test(setting)) return '';
             return `${property}: ${setting}`;
@@ -86,9 +87,9 @@ function scrubHtml(html: string): string {
   return doc.body.innerHTML;
 }
 
-export default function SafeRichText({ html, className = '', unstyled = false }: { html: string; className?: string; unstyled?: boolean }) {
+export default function SafeRichText({ html, className = '', unstyled = false, stripInlineTypography = false }: { html: string; className?: string; unstyled?: boolean; stripInlineTypography?: boolean }) {
   const [sanitized, setSanitized] = useState('');
-  useEffect(() => { setSanitized(scrubHtml(html || '')); }, [html]);
+  useEffect(() => { setSanitized(scrubHtml(html || '', stripInlineTypography)); }, [html, stripInlineTypography]);
   // Components with a dedicated typographic system may opt out of the shared prose utility classes.
   const proseClass = unstyled ? className : `${RICH_TEXT_PROSE_CLASS} ${className}`;
   // Render as plain text until the browser sanitizer has processed the HTML.
