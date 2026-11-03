@@ -265,7 +265,7 @@ export default function WhoWeAreSection({ data }: { data: any }) {
             <h2
               className="
                 text-[#08245c]
-                font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]
+                font-serif text-primary text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]
                 mb-4
               "
               dangerouslySetInnerHTML={{ __html: title }}

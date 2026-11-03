@@ -462,7 +462,7 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                   <div className="flex min-w-0 flex-col justify-center">
                     <div className="hero">
                       {heroData.heroEyebrow ? <div className="mb-3 text-[11px] md:text-[13px] font-extrabold uppercase tracking-[0.18em] text-ink">{heroData.heroEyebrow}</div> : null}
-                      {heroData.title ? <h1 className="font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]" dangerouslySetInnerHTML={{ __html: heroData.title }} /> : null}
+                      {heroData.title ? <h1 className="font-serif text-primary text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]" dangerouslySetInnerHTML={{ __html: heroData.title }} /> : null}
                       {heroData.description ? <p className="mt-4 max-w-[36rem] text-[14px] sm:text-[16px] leading-6 sm:leading-7 text-ink lg:leading-8">{heroData.description}</p> : null}
 
                       {heroData.primaryBtnLink && heroData.primaryBtnLabel || heroData.secondaryBtnLink && heroData.secondaryBtnLabel ? (
@@ -657,7 +657,7 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
 
               <div className="flex flex-col items-center text-center lg:w-2/4">
                 <div className="flex items-center gap-2.5">
-                  <h2 className="font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">
+                  <h2 className="font-serif text-primary text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">
                     {heroData.visaTitle}
                   </h2>
                 </div>

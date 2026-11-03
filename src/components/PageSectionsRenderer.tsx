@@ -400,7 +400,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                       {sec.data.eyebrow}
                     </span>
                   )}
-                  <h2 className="font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">
+                  <h2 className="font-serif text-primary text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">
                     {sec.data?.title || (sec.type === "Hotels" ? "Our Recommended Hotels" : "Airlines We Sourced Deals From")}
                   </h2>
                 </div>
@@ -450,7 +450,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                           {sec.data.airlineEyebrow}
                         </span>
                       )}
-                      <h2 className="font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">
+                      <h2 className="font-serif text-primary text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">
                         {sec.data?.airlineTitle || "Airlines We Sourced Deals From"}
                       </h2>
                     </div>
@@ -488,7 +488,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                           {sec.data.hotelEyebrow}
                         </span>
                       )}
-                      <h2 className="font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">
+                      <h2 className="font-serif text-primary text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">
                         {sec.data?.hotelTitle || "Our Recommended Hotels"}
                       </h2>
                     </div>
@@ -540,7 +540,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                       {sec.data.eyebrow}
                     </span>
                   )}
-                  <h2 className="font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">
+                  <h2 className="font-serif text-primary text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">
                     {sec.data?.title || "Trusted Travel Organizations"}
                   </h2>
                 </div>

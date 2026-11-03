@@ -69,7 +69,7 @@ export default function HajjLandscapeCard({
         <div className="text-gray-500 text-[11px] font-bold uppercase tracking-widest mb-2">
           {duration || "HAJJ 2027"}
         </div>
-        <h3 title={packageTitle} className="text-lg md:text-xl font-serif mb-2">
+        <h3 title={packageTitle} className="text-lg md:text-xl text-primary font-serif mb-2">
           {packageTitle}
         </h3>
         <div className="mt-auto -mx-4 -mb-4 border-t border-[#e5ebf4] bg-[#f6f8fc] p-4">

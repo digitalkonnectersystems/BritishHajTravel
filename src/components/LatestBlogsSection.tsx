@@ -38,7 +38,7 @@ export default function LatestBlogsSection({ data, blogs, isHomepage = false }: 
       <div className="max-w-[1150px] mx-auto px-4">
         <div className="text-center mb-8">
           {data?.eyebrow && <span className="eyebrow block w-fit mx-auto text-center">{data.eyebrow}</span>}
-          <h2 className="font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98] text-white">{data?.title || 'Articles, Tips & Spiritual Insights'}</h2>
+          <h2 className="font-serif text-primary text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98] text-white">{data?.title || 'Articles, Tips & Spiritual Insights'}</h2>
           {data?.description && <p className="normal-text max-w-2xl mx-auto mt-3">{data.description}</p>}
         </div>
 
