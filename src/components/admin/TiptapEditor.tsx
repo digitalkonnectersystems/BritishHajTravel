@@ -95,6 +95,7 @@ const HEADING_FONT_STYLES: Record<string, { fontSize: string; fontWeight: string
 
 const COLOR_OPTIONS = [
   { id: 'default', label: 'Default Ink', value: '', previewBg: '#132723' },
+  { id: 'White', label: 'White', value: '#ffffff', previewBg: '#020e43' },
   { id: 'primary', label: 'Primary', value: '#020e43', previewBg: '#020e43' },
   { id: 'red', label: 'Red', value: '#b50007', previewBg: '#b50007' },
   { id: 'red-lt', label: 'Red Light', value: '#910006', previewBg: '#910006' },

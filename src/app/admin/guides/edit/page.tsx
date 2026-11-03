@@ -169,7 +169,7 @@ function GuideEditorContent() {
           <div className="min-w-0">
             <Link href="/admin/guides" className="mb-2 inline-flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-primary"><ArrowLeft className="h-3.5 w-3.5" /> Back to Guides</Link>
             <h1 className="text-2xl font-extrabold text-slate-900">{id ? 'Edit Guide' : 'Add Guide'}</h1>
-            <p className="mt-1 text-xs text-slate-400">Manage the guide page, card content, and sections without leaving Guides.</p>
+            <p className="mt-1 text-xs text-soft-ink">Manage the guide page, card content, and sections without leaving Guides.</p>
           </div>
           <button type="button" onClick={save} disabled={saving} className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-xs font-bold text-white disabled:opacity-60"><Save className="h-4 w-4" /> {saving ? 'Saving...' : 'Save Guide'}</button>
         </div>
@@ -311,7 +311,7 @@ function GuideEditorContent() {
                     )}
                   </div>
                 ))}
-                {sections.length === 0 && <p className="rounded-xl border border-dashed border-slate-300 py-8 text-center text-xs text-slate-400">No sections added yet.</p>}
+                {sections.length === 0 && <p className="rounded-xl border border-dashed border-slate-300 py-8 text-center text-xs text-soft-ink">No sections added yet.</p>}
               </div>
             </div>
           </div>

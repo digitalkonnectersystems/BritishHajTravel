@@ -4566,7 +4566,7 @@ function PageBuilderContent() {
 
                       <h3 className="text-base font-extrabold m-0 text-slate-900">Page Sections</h3>
 
-                      <p className="text-xs text-slate-400 mt-1 m-0">Build page layout with reorderable sections</p>
+                      <p className="text-xs text-soft-ink mt-1 m-0">Build page layout with reorderable sections</p>
 
                     </div>
 
@@ -4652,7 +4652,7 @@ function PageBuilderContent() {
 
                                 return results.length === 0 ? (
 
-                                  <div className="px-3 py-4 text-xs text-slate-400 font-medium text-center">
+                                  <div className="px-3 py-4 text-xs text-soft-ink font-medium text-center">
 
                                     No sections match &quot;{sectionSearch}&quot;
 
@@ -9623,7 +9623,7 @@ function PageBuilderContent() {
 
                                             }}
 
-                                            className="text-xs text-slate-400 text-center w-20 border-b border-transparent hover:border-slate-300 focus:border-primary outline-none bg-transparent mt-0.5 p-0"
+                                            className="text-xs text-soft-ink text-center w-20 border-b border-transparent hover:border-slate-300 focus:border-primary outline-none bg-transparent mt-0.5 p-0"
 
                                             placeholder="London"
 
@@ -9691,7 +9691,7 @@ function PageBuilderContent() {
 
                                             }}
 
-                                            className="text-xs text-slate-400 text-center w-20 border-b border-transparent hover:border-slate-300 focus:border-primary outline-none bg-transparent mt-0.5 p-0"
+                                            className="text-xs text-soft-ink text-center w-20 border-b border-transparent hover:border-slate-300 focus:border-primary outline-none bg-transparent mt-0.5 p-0"
 
                                             placeholder="Jeddah"
 
@@ -10565,7 +10565,7 @@ function PageBuilderContent() {
 
                                       ) : (
 
-                                        <span className="text-xs text-slate-400">No Image</span>
+                                        <span className="text-xs text-soft-ink">No Image</span>
 
                                       )}
 

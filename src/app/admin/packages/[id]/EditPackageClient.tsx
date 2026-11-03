@@ -357,7 +357,7 @@ export function HajjCardFields({ pkgData, setPkgData, includePackageMeta = false
             </div>
           ))}
           {inclusions.length === 0 && (
-            <p className="text-xs text-slate-400 italic">No inclusions configured. Default inclusions will be shown.</p>
+            <p className="text-xs text-soft-ink italic">No inclusions configured. Default inclusions will be shown.</p>
           )}
         </div>
       </div>
@@ -624,7 +624,7 @@ function UmrahCardFields({ pkgData, setPkgData }: { pkgData: any; setPkgData: (v
             </div>
           ))}
           {includes.length === 0 && (
-            <p className="text-xs text-slate-400 italic">No inclusions added yet. Click "+ Add Item".</p>
+            <p className="text-xs text-soft-ink italic">No inclusions added yet. Click "+ Add Item".</p>
           )}
         </div>
       </div>
@@ -976,7 +976,7 @@ export default function EditPackageClient({ packageData }: EditPackageClientProp
                     </div>
                   ))}
                   {(editingPkg.packagePrices || []).length === 0 && (
-                    <p className="text-xs text-slate-400 italic py-2">
+                    <p className="text-xs text-soft-ink italic py-2">
                       No package types added. Click "+ Add Package Type".
                     </p>
                   )}

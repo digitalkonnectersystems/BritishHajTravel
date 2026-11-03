@@ -347,7 +347,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
                   </div>
                 ))}
                 {(newPkg.packagePrices || []).length === 0 && (
-                  <p className="text-xs text-slate-400 italic py-2">
+                  <p className="text-xs text-soft-ink italic py-2">
                     No package types added. Click "+ Add Package Type".
                   </p>
                 )}
