@@ -164,7 +164,7 @@ export default function HajjPackagesSection({
             <h3 className="eyebrow">{eyebrow}</h3>
             <h2 className="font-serif text-primary text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">{title}</h2>
           </div>
-          <div className="max-w-sm text-primary text-sm leading-relaxed md:border-l-2 border-gray-300 pl-0 md:pl-4">
+          <div className="max-w-sm text-ink-soft font-medium text-sm leading-relaxed md:border-l-2 border-gray-300 pl-0 md:pl-4">
             {description}
           </div>
         </div>

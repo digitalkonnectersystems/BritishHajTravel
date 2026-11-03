@@ -113,7 +113,7 @@ export default function UpcomingUmrahPackages({
               dangerouslySetInnerHTML={{ __html: title }}
             />
           </div>
-          <div className="max-w-sm text-ink-soft text-sm leading-relaxed md:border-l-2 border-gray-200 pl-0 md:pl-4">
+          <div className="max-w-sm text-ink-soft font-medium text-sm leading-relaxed md:border-l-2 border-gray-300 pl-0 md:pl-4">
             {description}
           </div>
         </div>
@@ -217,7 +217,7 @@ export default function UpcomingUmrahPackages({
                   <div className="p-4 flex-1 flex flex-col">
                     <div
                       className={`${isGold ? "text-white/90" : "text-gray-500"
-                        } text-[11px] font-bold uppercase tracking-widest mb-2`}
+                        } text-xs font-bold uppercase tracking-widest mb-2`}
                     >
                       {formatTravelMonth(month) || month}
                     </div>
@@ -229,7 +229,7 @@ export default function UpcomingUmrahPackages({
                     </span>
                     <div
                       className={`${isGold ? "text-white" : "text-red"
-                        } mb-4 text-lg font-black`}
+                        } flex items-center gap-2 mb-4 text-lg font-black`}
                     >
                       {price === "TBC" ? "" : currencySettings.symbol} {price}{" "}
                       <span

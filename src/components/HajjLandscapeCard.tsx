@@ -66,19 +66,19 @@ export default function HajjLandscapeCard({
       </div>
 
       <div className="flex flex-1 flex-col p-4">
-        <div className="text-gray-500 text-[11px] font-bold uppercase tracking-widest mb-2">
+        <div className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-2">
           {duration || "HAJJ 2027"}
         </div>
         <h3 title={packageTitle} className="text-lg md:text-xl text-primary font-serif mb-2">
           {packageTitle}
         </h3>
         <div className="mt-auto -mx-4 -mb-4 border-t border-[#e5ebf4] bg-[#f6f8fc] p-4">
-          <span className="text-xs font-semibold text-ink-soft">
+          <span className="text-xs font-semibold text-ink-soft font-semibold">
             {priceSubtext || "Starting From"}
           </span>
           <p className="mb-4 text-lg font-black text-red flex items-center gap-2" title={displayPrice || "Price on request"}>
             {displayPrice || "Price on request"}
-            {price && <span className="ml-1 text-sm font-medium text-ink-soft">/ Person</span>}
+            {price && <span className="text-sm font-medium text-ink-soft">/ Person</span>}
           </p>
           <div className="flex gap-2">
             <button

@@ -148,7 +148,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                           {item.number}
                         </a>
                         {item.label && (
-                          <span className="text-xs font-normal text-slate-500 whitespace-nowrap"> - {item.label}</span>
+                          <span className="text-xs font-medium text-gray-500 whitespace-nowrap"> - {item.label}</span>
                         )}
                       </div>
                     ))}
@@ -168,7 +168,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                           {item.number}
                         </a>
                         {item.label && (
-                          <span className="text-xs font-normal text-slate-500 whitespace-nowrap"> - {item.label}</span>
+                          <span className="text-xs font-medium text-gray-500 whitespace-nowrap"> - {item.label}</span>
                         )}
                       </div>
                     ))}

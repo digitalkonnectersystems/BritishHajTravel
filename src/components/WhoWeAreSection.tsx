@@ -357,15 +357,15 @@ export default function WhoWeAreSection({ data }: { data: any }) {
                   <div
                     key={idx}
                     className="
-                      flex items-start
+                      flex items-center
                       gap-4
                       group
                     "
                   >
                     <div
                       className="
-                        w-[58px]
-                        h-[58px]
+                        w-[52px]
+                        h-[52px]
                         shrink-0
                         rounded-full
                         bg-primary
@@ -398,8 +398,9 @@ export default function WhoWeAreSection({ data }: { data: any }) {
 
                       <p
                         className="
-                          text-[#486586]
-                          text-[13px]
+                          text-gray-500
+                          text-xs
+                          font-medium
                           md:text-[14px]
                           leading-5
                           mt-1
