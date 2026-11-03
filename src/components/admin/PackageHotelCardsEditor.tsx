@@ -42,7 +42,7 @@ export default function PackageHotelCardsEditor({
             <button type="button" disabled={index === hotels.length - 1} onClick={() => move(index, 1)} title="Move hotel down" className="disabled:opacity-30">↓</button>
             <button type="button" onClick={() => {
               if (window.confirm(`Remove ${hotel.name || hotel.label || 'this hotel'} from this section?`)) onChange(hotels.filter((_, i) => index !== i));
-            }} title="Delete hotel" className="text-red-600"><Trash2 className="w-4 h-4" /></button>
+            }} title="Delete hotel" className="text-red"><Trash2 className="w-4 h-4" /></button>
           </div>
         </div>
         {([['label', 'Accommodation label'], ['name', 'Hotel name'], ['location', 'Location / distance'], ['description', 'Additional hotel details']] as const).map(([field, caption]) =>

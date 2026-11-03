@@ -49,7 +49,7 @@ export default function SeoSettingsForm({ data, onChange }: Props) {
             type="checkbox"
             checked={data.noIndex || false}
             onChange={(e) => update('noIndex', e.target.checked)}
-            className="w-4 h-4 text-red-600 rounded border-slate-300"
+            className="w-4 h-4 text-red rounded border-slate-300"
           />
           <div>
             <span className="block text-sm font-bold text-slate-800">NoIndex</span>

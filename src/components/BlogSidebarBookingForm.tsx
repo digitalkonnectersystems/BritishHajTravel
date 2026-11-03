@@ -202,39 +202,39 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
     const packageName = `${basePackageName}${travelMonthSuffix}`;
 
     try {
-    const res = await submitPackageBookingEnquiryAction({
-      packageId: Number(selectedPackageId),
-      packageName,
-      packageType: effectivePackageType || undefined,
-      fullName,
-      phone,
-      email,
-      adults: parseInt(adults, 10),
-      children: parseInt(childrenCount, 10),
-      infants: parseInt(infantsCount, 10),
-      startDate: selectedDate,
-      totalPrice: formattedTotalPrice,
-      sourceFormName: 'Blog Detail Page',
-    });
+      const res = await submitPackageBookingEnquiryAction({
+        packageId: Number(selectedPackageId),
+        packageName,
+        packageType: effectivePackageType || undefined,
+        fullName,
+        phone,
+        email,
+        adults: parseInt(adults, 10),
+        children: parseInt(childrenCount, 10),
+        infants: parseInt(infantsCount, 10),
+        startDate: selectedDate,
+        totalPrice: formattedTotalPrice,
+        sourceFormName: 'Blog Detail Page',
+      });
 
-    if (res.success) {
-      setBookingStatus("");
-      setFullName("");
-      setPhone("");
-      setEmail("");
-      setAdults("1");
-      setChildrenCount("0");
-      setInfantsCount("0");
-      setSelectedPackageId("");
-      setSelectedPackageType("");
-      setSelectedDate("");
+      if (res.success) {
+        setBookingStatus("");
+        setFullName("");
+        setPhone("");
+        setEmail("");
+        setAdults("1");
+        setChildrenCount("0");
+        setInfantsCount("0");
+        setSelectedPackageId("");
+        setSelectedPackageType("");
+        setSelectedDate("");
 
-      setModalMsg(`${FORM_SUCCESS_MESSAGE}${res.emailWarning ? ` ${res.emailWarning}` : ""}`);
-      setModalRef(res.bookingNumber || "");
-      setModalOpen(true);
-    } else {
-      setBookingStatus(res.error || "Something went wrong. Please try again.");
-    }
+        setModalMsg(`${FORM_SUCCESS_MESSAGE}${res.emailWarning ? ` ${res.emailWarning}` : ""}`);
+        setModalRef(res.bookingNumber || "");
+        setModalOpen(true);
+      } else {
+        setBookingStatus(res.error || "Something went wrong. Please try again.");
+      }
     } catch (error) {
       setBookingStatus(error instanceof Error ? error.message : 'Unable to submit your enquiry. Please try again.');
     }
@@ -268,7 +268,7 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
               }`}
           />
           {errors.fullName && (
-            <span className="text-[10px] font-bold text-red-600 mt-1 block">Please fill out this field.</span>
+            <span className="text-[10px] font-bold text-red mt-1 block">Please fill out this field.</span>
           )}
         </div>
 
@@ -293,7 +293,7 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
                 }`}
             />
             {errors.phone && (
-              <span className="text-[10px] font-bold text-red-600 mt-1 block">Please fill out this field.</span>
+              <span className="text-[10px] font-bold text-red mt-1 block">Please fill out this field.</span>
             )}
           </div>
           <div>
@@ -312,7 +312,7 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
                 }`}
             />
             {errors.email && (
-              <span className="text-[10px] font-bold text-red-600 mt-1 block">Please fill out this field.</span>
+              <span className="text-[10px] font-bold text-red mt-1 block">Please fill out this field.</span>
             )}
           </div>
         </div>
@@ -404,7 +404,7 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
             </select>
 
             {errors.selectedPackage && (
-              <span className="text-[10px] font-bold text-red-600 mt-1 block">
+              <span className="text-[10px] font-bold text-red mt-1 block">
                 Please select a package.
               </span>
             )}
@@ -504,7 +504,7 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
             />
           </div>
           {errors.selectedDate && (
-            <span className="text-[10px] font-bold text-red-600 mt-1 block">Please select a valid start date.</span>
+            <span className="text-[10px] font-bold text-red mt-1 block">Please select a valid start date.</span>
           )}
         </div>
 
@@ -521,9 +521,8 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
                   setSelectedPackageType(e.target.value);
                   if (errors.selectedPackageType) setErrors((prev) => ({ ...prev, selectedPackageType: false }));
                 }}
-                className={`cursor-pointer w-full border border-line p-3 pr-9 rounded-sm bg-white outline-none focus:border-red transition-colors text-ink text-sm font-medium appearance-none ${
-                  errors.selectedPackageType ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"
-                }`}
+                className={`cursor-pointer w-full border border-line p-3 pr-9 rounded-sm bg-white outline-none focus:border-red transition-colors text-ink text-sm font-medium appearance-none ${errors.selectedPackageType ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"
+                  }`}
               >
                 {packagePrices.map((item, idx) => (
                   <option key={idx} value={item.packageType} className="bg-white text-ink">
@@ -538,7 +537,7 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
               </div>
             </div>
             {errors.selectedPackageType && (
-              <span className="text-[10px] font-bold text-red-600 mt-1 block">Please select a package type.</span>
+              <span className="text-[10px] font-bold text-red mt-1 block">Please select a package type.</span>
             )}
           </div>
         )}

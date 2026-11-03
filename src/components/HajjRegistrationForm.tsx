@@ -33,7 +33,7 @@ const fieldRows: FieldKey[][] = [
   ['days', 'room', 'budget'],
 ];
 
-export default function HajjRegistrationForm({sourcePage, branded = false, heading = 'Register for Hajj 2027', variant = 'standard'}: { sourcePage: string; branded?: boolean; heading?: string; variant?: 'standard' | 'yosr' }) {
+export default function HajjRegistrationForm({ sourcePage, branded = false, heading = 'Register for Hajj 2027', variant = 'standard' }: { sourcePage: string; branded?: boolean; heading?: string; variant?: 'standard' | 'yosr' }) {
   const formKey = variant === 'yosr' ? 'yosrHajjForm' : 'hajjRegistrationForm';
   const instanceId = useId();
   const [config, setConfig] = useState<Record<FieldKey, FieldConfig>>(defaultFields);
@@ -76,7 +76,7 @@ export default function HajjRegistrationForm({sourcePage, branded = false, headi
           return next;
         });
       }
-    }).catch(() => {});
+    }).catch(() => { });
     return () => { live = false; };
   }, [formKey]);
 
@@ -117,7 +117,7 @@ export default function HajjRegistrationForm({sourcePage, branded = false, headi
     const opts = choices[key];
     return <div key={key} className="min-w-0">
       <label htmlFor={id} className="block text-[15px] leading-[21px] font-bold text-[#121212] mb-3">
-        {f.label}{f.required && <span className="text-red-600"> *</span>}
+        {f.label}{f.required && <span className="text-red"> *</span>}
       </label>
       {opts ? <select id={id} name={key} className={standard} value={values[key]} required={f.required} onChange={event => change(key, event.target.value)}>
         {opts.map(value => <option key={value} value={value}>{value}</option>)}
@@ -139,7 +139,7 @@ export default function HajjRegistrationForm({sourcePage, branded = false, headi
           <span className="font-bold text-xl md:text-[22px] text-[#ee1b2b]">{heading}</span>
         </div>}
         <form onSubmit={submit} className="space-y-3" autoComplete="on">
-          {fieldRows.map((row, index) => <div key={index} className={`grid grid-cols-1 sm:grid-cols-2 ${row.length===4?'lg:grid-cols-4':'lg:grid-cols-3'} gap-x-5 gap-y-3`}>{row.map(field)}</div>)}
+          {fieldRows.map((row, index) => <div key={index} className={`grid grid-cols-1 sm:grid-cols-2 ${row.length === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-3'} gap-x-5 gap-y-3`}>{row.map(field)}</div>)}
           <div className="pt-3"><button type="submit" disabled={busy} className="bg-[#030d48] text-white font-medium text-[15px] rounded-sm px-4 py-2.5 hover:bg-[#152b74] disabled:opacity-50">{busy ? 'Submitting...' : buttonText}</button></div>
           {error && <p role="alert" className="text-red-700 text-sm">{error}</p>}
           {success && <p role="status" className="text-green-800 text-sm">{success}</p>}

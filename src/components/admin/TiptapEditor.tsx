@@ -366,11 +366,11 @@ export default function TiptapEditor({
     const rawColor = (editor.getAttributes('textStyle').color as string)?.toLowerCase() || '';
     if (!rawColor) return 'default';
     if (rawColor === '#020e43' || rawColor.includes('var(--primary)') || rawColor === 'rgb(2, 14, 67)') return 'primary';
-    if (rawColor === '#b50007' || rawColor.includes('var(--red)') || rawColor === 'rgb(181, 0, 7)') 
-    return 'red';
-    if (rawColor === '#e7be6e' || rawColor.includes('var(--red-lt)') || rawColor === 'rgb(231, 190, 110)')     return 'red-lt';
-    if (rawColor === '#132723' || rawColor.includes('var(--ink)') || rawColor === 'rgb(19, 39, 35)') 
-    return 'ink';
+    if (rawColor === '#b50007' || rawColor.includes('var(--red)') || rawColor === 'rgb(181, 0, 7)')
+      return 'red';
+    if (rawColor === '#e7be6e' || rawColor.includes('var(--red-lt)') || rawColor === 'rgb(231, 190, 110)') return 'red-lt';
+    if (rawColor === '#132723' || rawColor.includes('var(--ink)') || rawColor === 'rgb(19, 39, 35)')
+      return 'ink';
     if (rawColor === '#899391' || rawColor.includes('var(--ink-light)') || rawColor.includes('var(--ink-lt)')) return 'ink-lt';
     return rawColor;
   };
@@ -638,7 +638,7 @@ export default function TiptapEditor({
                 editor.chain().focus().unsetHighlight().run();
               }}
               title="Remove highlight"
-              className="inline-flex items-center justify-center w-4 h-4 rounded-full text-[9px] bg-slate-200 hover:bg-red-100 hover:text-red-600 text-slate-600 cursor-pointer border-none"
+              className="inline-flex items-center justify-center w-4 h-4 rounded-full text-[9px] bg-slate-200 hover:bg-red-100 hover:text-red text-slate-600 cursor-pointer border-none"
             >
               ✕
             </button>

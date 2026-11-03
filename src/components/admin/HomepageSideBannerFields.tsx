@@ -283,7 +283,7 @@ export default function HomepageSideBannerFields({ value, onChange }: {
           {imagePreview === "flights" && value.flightsImage ? <img src={value.flightsImage} alt="Flights banner image preview" className="max-h-48 w-full rounded-lg border border-slate-200 bg-slate-50 object-contain" /> : null}
         </div>
       </div>
-      {uploadError ? <p role="alert" className="mt-2 text-xs font-semibold text-red-600">{uploadError}</p> : null}
+      {uploadError ? <p role="alert" className="mt-2 text-xs font-semibold text-red">{uploadError}</p> : null}
       <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-4">
         <h4 className="mb-1 text-xs font-extrabold uppercase tracking-wider text-slate-800">Live Side Banner Preview</h4>
         <p className="mb-4 text-[11px] text-slate-500">Updates as you type. Click Update above to save changes to the live homepage.</p>

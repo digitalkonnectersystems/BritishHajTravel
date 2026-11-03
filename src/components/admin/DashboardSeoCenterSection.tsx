@@ -27,9 +27,9 @@ function MetricWave({ value, label }: { value: number; label: string }) {
   const id = `metric-${label.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
   const end = 4 + pct * 1.92;
   return <svg className="h-7 w-full" viewBox="0 0 200 28" role="img" aria-label={`${label}: ${pct} percent complete`}>
-    <defs><linearGradient id={`${id}-stroke`} x1="0" y1="0" x2="1" y2="0"><stop stopColor="#14b8a6"/><stop offset=".36" stopColor="#3b82f6"/><stop offset=".7" stopColor="#8b5cf6"/><stop offset="1" stopColor="#f59e0b"/></linearGradient><linearGradient id={`${id}-shade`} x1="0" y1="0" x2="0" y2="1"><stop stopColor="#14b8a6" stopOpacity=".18"/><stop offset="1" stopColor="#14b8a6" stopOpacity="0"/></linearGradient></defs>
+    <defs><linearGradient id={`${id}-stroke`} x1="0" y1="0" x2="1" y2="0"><stop stopColor="#14b8a6" /><stop offset=".36" stopColor="#3b82f6" /><stop offset=".7" stopColor="#8b5cf6" /><stop offset="1" stopColor="#f59e0b" /></linearGradient><linearGradient id={`${id}-shade`} x1="0" y1="0" x2="0" y2="1"><stop stopColor="#14b8a6" stopOpacity=".18" /><stop offset="1" stopColor="#14b8a6" stopOpacity="0" /></linearGradient></defs>
     <path d="M 4 15 L 196 15" stroke="#cbd5e1" strokeWidth="2" strokeLinecap="round" strokeDasharray="2 5" />
-    {pct > 0 && <><path d={`M 4 15 Q ${4+pct*.48} 9 ${end} 15 L ${end} 27 L 4 27 Z`} fill={`url(#${id}-shade)`}/><path d={`M 4 15 Q ${4+pct*.48} 9 ${end} 15`} stroke={`url(#${id}-stroke)`} strokeWidth="4" fill="none" strokeLinecap="round"/><circle cx={end} cy="15" r="3" fill="#059669" stroke="white" strokeWidth="1" /></>}
+    {pct > 0 && <><path d={`M 4 15 Q ${4 + pct * .48} 9 ${end} 15 L ${end} 27 L 4 27 Z`} fill={`url(#${id}-shade)`} /><path d={`M 4 15 Q ${4 + pct * .48} 9 ${end} 15`} stroke={`url(#${id}-stroke)`} strokeWidth="4" fill="none" strokeLinecap="round" /><circle cx={end} cy="15" r="3" fill="#059669" stroke="white" strokeWidth="1" /></>}
   </svg>;
 }
 
@@ -40,7 +40,7 @@ export default function DashboardSeoCenterSection({ pages, audit = [] }: Dashboa
   const totalPages = audit.length;
   const passedPagesCount = audit.filter(item => !item.issues.some(issue => issue.severity === 'error')).length;
   const needingFixesCount = totalPages - passedPagesCount;
-  const healthRating = totalPages ? Math.round(audit.reduce((sum,item)=>sum+item.score,0)/totalPages) : 0;
+  const healthRating = totalPages ? Math.round(audit.reduce((sum, item) => sum + item.score, 0) / totalPages) : 0;
   // Measured configuration coverage, not Google's rankings or AI crawler verification.
   const ratio = (test: (item: SeoAuditItem) => boolean) => totalPages
     ? Math.round(audit.filter(test).length * 100 / totalPages) : 0;
@@ -206,7 +206,7 @@ export default function DashboardSeoCenterSection({ pages, audit = [] }: Dashboa
 
           <div className="grid grid-cols-2 gap-2">
             <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-center">
-              <div className="text-xl font-black text-red-600">{needingFixesCount}</div>
+              <div className="text-xl font-black text-red">{needingFixesCount}</div>
               <div className="text-[9px] font-bold text-red-700 uppercase">Pages Needing Fixes</div>
             </div>
             <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-center">
@@ -276,7 +276,7 @@ export default function DashboardSeoCenterSection({ pages, audit = [] }: Dashboa
                   <span
                     className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full border ${p.score === 100
                       ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                      : 'bg-red-50 text-red-600 border-red-200'
+                      : 'bg-red-50 text-red border-red-200'
                       }`}
                   >
                     {p.score}% Score
@@ -287,7 +287,7 @@ export default function DashboardSeoCenterSection({ pages, audit = [] }: Dashboa
                   {p.actionItems.map((item: string, i: number) => {
                     const isPassed = item.startsWith('✓');
                     return (
-                      <li key={i} className={`text-[11px] font-semibold flex items-center gap-1.5 ${isPassed ? 'text-emerald-700' : 'text-red-600'}`}>
+                      <li key={i} className={`text-[11px] font-semibold flex items-center gap-1.5 ${isPassed ? 'text-emerald-700' : 'text-red'}`}>
                         <span className={`w-1.5 h-1.5 rounded-full ${isPassed ? 'bg-emerald-500' : 'bg-red-500'}`}></span> {item}
                       </li>
                     );

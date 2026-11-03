@@ -13,27 +13,27 @@ function ContactInfoCardsSection({ data }: { data?: any }) {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
         {/* Card 1: Locations */}
         <div className="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-slate-100/80 flex flex-col items-center text-center h-full">
-  <div className="w-12 h-12 rounded-2xl bg-red-soft text-red flex items-center justify-center text-xl mb-4">
-    <i className="fa-solid fa-location-dot"></i>
-  </div>
-  <h3 className="text-md font-extrabold uppercase tracking-widest text-primary mb-4">
-    {data?.card1Title || "OUR LOCATIONS"}
-  </h3>
+          <div className="w-12 h-12 rounded-2xl bg-red-soft text-red flex items-center justify-center text-xl mb-4">
+            <i className="fa-solid fa-location-dot"></i>
+          </div>
+          <h3 className="text-md font-extrabold uppercase tracking-widest text-primary mb-4">
+            {data?.card1Title || "OUR LOCATIONS"}
+          </h3>
 
-  {/* Divider line and centered content directly underneath */}
-  <div className="w-full border-t border-slate-100 pt-4 text-center">
-    {/* Head Office */}
-    <div className="flex flex-col items-center text-center">
-      <span className="text-[12px] font-extrabold text-primary uppercase tracking-wide mb-1">HEAD OFFICE</span>
-      <a
-        className="text-xs font-medium leading-relaxed text-ink hover:text-red transition no-underline"
-        href="https://maps.app.goo.gl/aNVLgyrMrEMYT1X46?g_st=ac"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {data?.headAddress || "1325 Eglinton Ave E Suite Number 218, Mississauga, ON L4W 4L9, UK"}
-      </a>
-    </div>
+          {/* Divider line and centered content directly underneath */}
+          <div className="w-full border-t border-slate-100 pt-4 text-center">
+            {/* Head Office */}
+            <div className="flex flex-col items-center text-center">
+              <span className="text-[12px] font-extrabold text-primary uppercase tracking-wide mb-1">HEAD OFFICE</span>
+              <a
+                className="text-xs font-medium leading-relaxed text-ink hover:text-red transition no-underline"
+                href="https://maps.app.goo.gl/aNVLgyrMrEMYT1X46?g_st=ac"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {data?.headAddress || "1325 Eglinton Ave E Suite Number 218, Mississauga, ON L4W 4L9, UK"}
+              </a>
+            </div>
 
             {/* Branch Office */}
             {/* <div className="flex flex-col items-center sm:items-start border-t sm:border-t-0 sm:border-l border-slate-100 pt-3 sm:pt-0 sm:pl-4">
@@ -273,11 +273,11 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
                 />
                 <label
                   htmlFor="name"
-                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.name ? "text-red-600 peer-focus:text-red-600" : "text-slate-400 peer-focus:text-red"}`}
+                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.name ? "text-red peer-focus:text-red" : "text-slate-400 peer-focus:text-red"}`}
                 >
                   Name
                 </label>
-                {errors.name && <span className="text-red-600 text-xs font-semibold mt-1 block">{errors.name}</span>}
+                {errors.name && <span className="text-red text-xs font-semibold mt-1 block">{errors.name}</span>}
               </div>
 
               <div className="relative">
@@ -294,11 +294,11 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
                 />
                 <label
                   htmlFor="email"
-                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.email ? "text-red-600 peer-focus:text-red-600" : "text-slate-400 peer-focus:text-red"}`}
+                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.email ? "text-red peer-focus:text-red" : "text-slate-400 peer-focus:text-red"}`}
                 >
                   Email Address
                 </label>
-                {errors.email && <span className="text-red-600 text-xs font-semibold mt-1 block">{errors.email}</span>}
+                {errors.email && <span className="text-red text-xs font-semibold mt-1 block">{errors.email}</span>}
               </div>
 
               <div className="relative">
@@ -320,7 +320,7 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
                 />
                 <label
                   htmlFor="phone"
-                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.phone ? "text-red-600 peer-focus:text-red-600" : "text-slate-400 peer-focus:text-red"}`}
+                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.phone ? "text-red peer-focus:text-red" : "text-slate-400 peer-focus:text-red"}`}
                 >
                   Phone Number
                 </label>
@@ -365,13 +365,13 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
 
               <label
                 htmlFor="message"
-                className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.message ? "text-red-600 peer-focus:text-red-600" : "text-slate-400 peer-focus:text-red"}`}
+                className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.message ? "text-red peer-focus:text-red" : "text-slate-400 peer-focus:text-red"}`}
               >
                 How can we help you?
               </label>
 
               {errors.message && (
-                <span className="text-red-600 text-xs font-semibold mt-1 block">
+                <span className="text-red text-xs font-semibold mt-1 block">
                   {errors.message}
                 </span>
               )}
@@ -478,9 +478,9 @@ export default function ContactPageClient({ initialPageData, initialFormConfig, 
       /></div>
 
       {/* ================= ALWAYS RELIABLE SECTIONS ================= */}
-      <div style={{ order: position(['Contact Info Cards','Contact Bar'], 10) }}><ContactInfoCardsSection data={sections.find(s => s.type === "Contact Info Cards" || s.type === "Contact Bar")?.data} /></div>
+      <div style={{ order: position(['Contact Info Cards', 'Contact Bar'], 10) }}><ContactInfoCardsSection data={sections.find(s => s.type === "Contact Info Cards" || s.type === "Contact Bar")?.data} /></div>
 
-      <section className="max-w-7xl w-full py-12 mx-auto px-5" style={{ order: position(['Contact Form','Contact Form + Maps','Contact Maps','Google Maps'], 20) }}>
+      <section className="max-w-7xl w-full py-12 mx-auto px-5" style={{ order: position(['Contact Form', 'Contact Form + Maps', 'Contact Maps', 'Google Maps'], 20) }}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
           <ContactFormSection data={formSec?.data} initialFormConfig={initialFormConfig} />
           <ContactMapsSection data={sections.find((s: any) => s.type === "Contact Maps" || s.type === "Google Maps" || s.type === "Contact Form + Maps")?.data} />
