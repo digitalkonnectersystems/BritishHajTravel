@@ -357,7 +357,7 @@ export default function WhatWeProvideSection({ data }: { data: any }) {
                     "
                   />
 
-                  <span className="absolute inset-0 bg-[#08245c]/0 transition-colors duration-300 group-hover:bg-[#08245c]/10" />
+                  <span className="absolute inset-0 bg-primary/0 transition-colors duration-300 group-hover:bg-primary/10" />
 
                   {/* VIDEO STYLE BADGE / PLAY CONTROL */}
                   <span
@@ -403,7 +403,7 @@ export default function WhatWeProvideSection({ data }: { data: any }) {
                     </span>
 
                     <span className="block">
-                      <span className="block text-[#08245c] font-bold text-[15px]">
+                      <span className="block text-primary font-bold text-[15px]">
                         {badgeTitle}
                       </span>
 
@@ -468,7 +468,7 @@ export default function WhatWeProvideSection({ data }: { data: any }) {
                     </div>
 
                     <div>
-                      <div className="text-[#08245c] font-bold text-[15px]">
+                      <div className="text-primary font-bold text-[15px]">
                         {badgeTitle}
                       </div>
 
@@ -494,7 +494,7 @@ export default function WhatWeProvideSection({ data }: { data: any }) {
 
             <h2
               className="
-                text-[#08245c]
+                text-primary
                 font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]
                 mb-4
               "
@@ -555,7 +555,7 @@ export default function WhatWeProvideSection({ data }: { data: any }) {
                     <div>
                       <h4
                         className="
-                          text-[#08245c]
+                          text-primary
                           font-bold
                           text-[17px]
                           md:text-[18px]
@@ -596,7 +596,7 @@ export default function WhatWeProvideSection({ data }: { data: any }) {
           >
             <div
               className="
-                text-[#08245c]
+                text-primary
                 text-center
                 rotate-[-6deg]
                 font-serif
