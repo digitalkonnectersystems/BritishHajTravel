@@ -65,7 +65,7 @@ export default function SoldOutPackagesSection({ data, initialPackages }: { data
 
         {/* Loading skeleton */}
         {loading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 items-stretch">
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
@@ -89,7 +89,7 @@ export default function SoldOutPackagesSection({ data, initialPackages }: { data
 
         {/* Cards Grid */}
         {!loading && pkgs.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 items-stretch">
             {pkgs.map((pkg: any, idx: number) => {
               let cd = pkg.cardData || {};
               if (typeof cd === 'string') {

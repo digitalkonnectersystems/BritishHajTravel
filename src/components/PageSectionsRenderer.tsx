@@ -67,7 +67,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         if (sec.hidden === true || sec.visible === false) return null;
         // Legacy custom-builder data is intentionally not rendered after removal.
         if (sec.type === 'Custom Layout Builder') return null;
-        if (['Stats Grid','Intro','Image+Text','Intro (Text + Image)','Why Choose Us','Services Grid','Accreditations Bar','Badges Cards'].includes(sec.type)) {
+        if (['Stats Grid', 'Intro', 'Image+Text', 'Intro (Text + Image)', 'Why Choose Us', 'Services Grid', 'Accreditations Bar', 'Badges Cards'].includes(sec.type)) {
           return <CmsBasicSection key={sec.id || idx} type={sec.type} data={sec.data || {}} />;
         }
         if (sec.type === 'Plan Your Own Package Form' || sec.type === 'Flight Enquiry Form') {
@@ -534,7 +534,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
           return (
             <section key={idx} className="py-6 md:py-12 bg-white pb-0">
               <div className="w-full mx-auto px-0">
-                <div className="flex flex-col items-center text-center mb-6 md:mb-8">
+                <div className="flex flex-col items-center text-center mb-6">
                   {sec.data?.eyebrow && (
                     <span className="eyebrow mx-auto">
                       {sec.data.eyebrow}
@@ -592,7 +592,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         }
 
         if (sec.type === "Upcoming Umrah Packages" || sec.type === "Umrah Packages" || sec.type === "Umrah Packages Grid") {
-          return <div key={idx}><UpcomingUmrahPackages data={sec.data} initialPackages={initialPackageData?.umrah} pageData={pageData} />{pageData?.slug === '/umrah-packages' && !sections.slice(0,idx).some((p:any)=>['Upcoming Umrah Packages','Umrah Packages','Umrah Packages Grid'].includes(p.type) && p.hidden !== true) && <PackageCustomizationCTA journey='umrah' />}</div>;
+          return <div key={idx}><UpcomingUmrahPackages data={sec.data} initialPackages={initialPackageData?.umrah} pageData={pageData} />{pageData?.slug === '/umrah-packages' && !sections.slice(0, idx).some((p: any) => ['Upcoming Umrah Packages', 'Umrah Packages', 'Umrah Packages Grid'].includes(p.type) && p.hidden !== true) && <PackageCustomizationCTA journey='umrah' />}</div>;
         }
 
         if (sec.type === "Travel Services" || sec.type === "Umrah Services Grid" || sec.type === "Hajj Services Grid") {
@@ -604,7 +604,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         }
 
         if (sec.type === "Hajj Packages" || sec.type === "Packages Grid") {
-          return <div key={idx}><HajjPackagesSection data={sec.data} initialPackages={initialPackageData?.hajj} pageData={pageData} />{pageData?.slug === '/hajj-packages' && !sections.slice(0,idx).some((p:any)=>['Hajj Packages','Packages Grid'].includes(p.type) && p.hidden !== true) && <PackageCustomizationCTA journey='hajj' />}</div>;
+          return <div key={idx}><HajjPackagesSection data={sec.data} initialPackages={initialPackageData?.hajj} pageData={pageData} />{pageData?.slug === '/hajj-packages' && !sections.slice(0, idx).some((p: any) => ['Hajj Packages', 'Packages Grid'].includes(p.type) && p.hidden !== true) && <PackageCustomizationCTA journey='hajj' />}</div>;
         }
 
         if (sec.type === 'Featured Travel Experiences') {

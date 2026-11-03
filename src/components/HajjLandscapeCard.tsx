@@ -76,7 +76,7 @@ export default function HajjLandscapeCard({
           <span className="text-xs font-medium text-ink-soft font-semibold">
             {priceSubtext || "Starting From"}
           </span>
-          <p className="mb-5 text-xl font-black text-red flex items-center gap-2" title={displayPrice || "Price on request"}>
+          <p className="mb-4 text-xl font-black text-red flex items-center gap-2" title={displayPrice || "Price on request"}>
             {displayPrice || "Price on request"}
             {price && <span className="ml-1 text-sm font-medium text-ink-soft">/ Person</span>}
           </p>

@@ -1,7 +1,7 @@
 "use client";
 import { useCurrency } from "@/components/CurrencyProvider";
 import { filterSectionPackages } from "@/lib/sectionPackageSelection";
- 
+
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import * as LucideIcons from "lucide-react";
@@ -30,14 +30,14 @@ export default function UpcomingUmrahPackages({
     data?.description ||
     data?.subtext ||
     "";
- 
+
   const isUmrahListingPage =
     pathname === "/umrah-packages" ||
     pathname === "/umrah" ||
     pathname?.startsWith("/umrah") ||
     pageData?.slug === "/umrah-packages" ||
     pageData?.slug === "umrah-packages";
- 
+
   const isHomepage =
     pathname === "/" ||
     pathname === "" ||
@@ -47,16 +47,16 @@ export default function UpcomingUmrahPackages({
     pageData?.slug === "/home" ||
     pageData?.slug === "home" ||
     (!isUmrahListingPage && (!pathname || pathname === "/"));
- 
+
   const currencySettings = useCurrency();
   const [pkgs, setPkgs] = useState<any[]>(initialPackages || []);
   const [loading, setLoading] = useState(!initialPackages);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [selectedPkgForBooking, setSelectedPkgForBooking] = useState<any>(null);
- 
+
   useEffect(() => {
     const packageIds = data?.packageIds || [];
- 
+
     // Load the full type data, then apply the admin-selected category and IDs.
     if (isUmrahListingPage) {
       if (initialPackages) {
@@ -64,7 +64,7 @@ export default function UpcomingUmrahPackages({
         setLoading(false);
         return;
       }
- 
+
       setLoading(true);
       getPackagesByType("umrah")
         .then((rows) => setPkgs(rows))
@@ -72,16 +72,16 @@ export default function UpcomingUmrahPackages({
         .finally(() => setLoading(false));
       return;
     }
- 
+
     // On other pages, keep supporting manually selected packages.
     if (initialPackages && packageIds.length === 0) {
       setPkgs(initialPackages);
       setLoading(false);
       return;
     }
- 
+
     setLoading(true);
- 
+
     if (packageIds.length > 0) {
       getPackagesByIds(packageIds)
         .then((rows) => setPkgs(rows))
@@ -94,12 +94,12 @@ export default function UpcomingUmrahPackages({
         .finally(() => setLoading(false));
     }
   }, [data?.packageIds, initialPackages, pathname, isUmrahListingPage]);
- 
+
   // Use only packages selected through the page section and matching category.
   const visiblePkgs = filterSectionPackages(pkgs, data, "umrah");
   const displayedPkgs = isHomepage ? visiblePkgs.slice(0, 4) : visiblePkgs;
   const sectionBgClass = isUmrahListingPage ? "bg-blue-lt" : isHomepage ? "bg-white" : (pathname === "/" ? "bg-white" : "bg-blue-lt");
- 
+
   return (
     <section className={`py-10 bg-[#f4f7fb]  ${sectionBgClass}`}>
       <div className="max-w-[1400px] mx-auto px-5">
@@ -116,7 +116,7 @@ export default function UpcomingUmrahPackages({
             {description}
           </div>
         </div>
- 
+
         {/* Loading skeleton */}
         {loading && (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
@@ -137,17 +137,17 @@ export default function UpcomingUmrahPackages({
             ))}
           </div>
         )}
- 
+
         {/* No packages */}
         {!loading && visiblePkgs.length === 0 && (
           <p className="text-center text-ink-lt py-12">
             No Umrah packages added to this section yet.
           </p>
         )}
- 
+
         {/* Packages Grid */}
         {!loading && visiblePkgs.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 items-stretch md:pt-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 items-stretch">
             {displayedPkgs.map((pkg: any, idx: number) => {
               let cd = pkg.cardData || {};
               if (typeof cd === 'string') {
@@ -168,14 +168,14 @@ export default function UpcomingUmrahPackages({
               const price = (quadPrice?.priceStatus === "tbc" || String(pkg.startingPrice || "").toLowerCase() === "tbc")
                 ? "TBC"
                 : pkg.startingPrice
-                ? Number(pkg.startingPrice).toLocaleString("en-CA", {
-                  minimumFractionDigits: 0,
-                  maximumFractionDigits: 0,
-                })
-                : "";
+                  ? Number(pkg.startingPrice).toLocaleString("en-CA", {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                  })
+                  : "";
               const buttonUrl = `/${pkg.slug}`;
               const buttonText = cd.btnLabel || "BOOK NOW";
- 
+
               // Parse inclusions: stored as JSON string or array
               let includes: string[] = [];
               if (cd.includes && Array.isArray(cd.includes)) {
@@ -192,7 +192,7 @@ export default function UpcomingUmrahPackages({
                   includes = [];
                 }
               }
- 
+
               return (
                 <div
                   key={pkg.id || idx}
@@ -238,7 +238,7 @@ export default function UpcomingUmrahPackages({
                         / Person
                       </span>
                     </div>
- 
+
                     {/* <div className={`incl-label ${isGold ? "text-white" : "text-ink-soft"}`}>
                       PACKAGE INCLUDES
                     </div>
@@ -283,7 +283,7 @@ export default function UpcomingUmrahPackages({
                         );
                       })}
                     </ul> */}
- 
+
                     <div className="flex gap-2">
                       <a
                         href={`/${pkg.slug}`}
@@ -317,7 +317,7 @@ export default function UpcomingUmrahPackages({
             })}
           </div>
         )}
- 
+
         {!hideFooterLink && pathname !== "/umrah-packages" && (
           <div className="flex justify-center mt-6 md:mt-12">
             <a
@@ -329,7 +329,7 @@ export default function UpcomingUmrahPackages({
           </div>
         )}
       </div>
- 
+
       {!onBookNow && <PackageBookingModal
         isOpen={bookingModalOpen}
         onClose={() => setBookingModalOpen(false)}
@@ -338,4 +338,3 @@ export default function UpcomingUmrahPackages({
     </section>
   );
 }
- 

@@ -15,8 +15,8 @@ export default function FeaturedTravelExperiencesSection({ data }: { data?: Part
 
   return (
     <section className="bg-[#fafbfe] py-12 md:py-16" aria-label={data?.title || 'Featured travel experiences'}>
-      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto mb-9 max-w-3xl text-center md:mb-11">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
+        <div className="mx-auto mb-6 max-w-3xl text-center">
           {data?.eyebrow && <p className="eyebrow justify-center">{data.eyebrow}</p>}
           {data?.title && <h2 className="section-heading text-primary !justify-center">{data.title}</h2>}
           {data?.subtitle && <p className="max-w-2xl text-center mx-auto text-sm leading-relaxed pt-4">{data.subtitle}</p>}
