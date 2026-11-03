@@ -264,7 +264,7 @@ export default function WhoWeAreSection({ data }: { data: any }) {
 
             <h2
               className="
-                text-[#08245c]
+                text-primary
                 font-serif text-primary text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]
                 mb-4
               "
@@ -343,7 +343,7 @@ export default function WhoWeAreSection({ data }: { data: any }) {
           <div className="lg:pl-2">
             <h3
               className="
-                text-[#08245c]
+                text-primary
                 text-xl md:text-[22px] font-serif
                 mb-7
               "
@@ -368,7 +368,7 @@ export default function WhoWeAreSection({ data }: { data: any }) {
                         h-[58px]
                         shrink-0
                         rounded-full
-                        bg-[#062866]
+                        bg-primary
                         text-white
                         flex items-center
                         justify-center
@@ -386,9 +386,9 @@ export default function WhoWeAreSection({ data }: { data: any }) {
                     <div className="pt-1">
                       <h4
                         className="
-                          text-[#08245c]
-                          text-[16px]
-                          md:text-[17px]
+                          text-primary
+                          text-sm
+                          md:text-[16px]
                           font-bold
                           leading-tight
                         "
