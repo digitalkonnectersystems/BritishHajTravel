@@ -249,7 +249,7 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
       <div className={`p-6 md:p-8 flex flex-col justify-between transition-all duration-300 ${isDisabled ? "filter blur-[3px] opacity-40 pointer-events-none select-none" : ""}`}>
         <div>
           <div className="text-center mb-10">
-            <h2 className="text-2xl md:text-3xl font-serif font-bold text-slate-900 tracking-tight">
+            <h2 className="text-2xl md:text-3xl font-serif font-bold text-primary tracking-tight">
               {formConfig?.title ? formConfig.title : <>Drop Us A <span className="text-primary">Message</span></>}
             </h2>
             <p className="text-gray-500 text-sm mt-2">{formConfig?.subtitle || data?.subtitle || "Fill out the form below and we'll get back to you shortly."}</p>
