@@ -198,7 +198,7 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
     }
 
     setErrors({});
-    setContactStatus("Sending message to database...");
+    setContactStatus("Submitting...");
     try {
       const resData = await submitContactEnquiryAction({
         fullName: contactForm.name,
@@ -255,7 +255,7 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
             <p className="text-gray-500 text-sm mt-2">{formConfig?.subtitle || data?.subtitle || "Fill out the form below and we'll get back to you shortly."}</p>
           </div>
 
-          {contactStatus && <p className="text-center text-red font-semibold mb-6">{contactStatus}</p>}
+          {contactStatus && <p className="text-center text-primary font-semibold mb-6">{contactStatus}</p>}
 
           <form noValidate className="flex flex-col gap-4" onSubmit={handleContactSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
