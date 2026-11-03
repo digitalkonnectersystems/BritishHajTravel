@@ -13,7 +13,7 @@ import {
   ImageIcon,
   MoveRight,
 } from "lucide-react";
-import { submitQuoteEnquiryAction } from "@/actions/enquiryActions";
+import { submitQuoteEnquiryAction } from "@/lib/publicEnquiryClient";
 import SubmissionSuccessModal from "@/components/SubmissionSuccessModal";
 import { FORM_SUCCESS_MESSAGE } from "@/lib/formSuccess";
 import { resolveVisibleVisaCards, type PublicVisaPage } from "@/lib/publicPageVisibility";
@@ -490,7 +490,7 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
 
                   <div className="mx-auto w-full max-w-[400px] min-w-0 rounded-2xl bg-[#0B1672] p-5 shadow-[0_22px_40px_rgba(2,12,27,0.25)] sm:rounded-[28px] sm:p-6 md:p-7 2xl:max-w-[440px]">
                     {/* <h2 className="mb-6 text-center font-serif text-[26px] leading-none text-white md:text-[30px]">{heroData.quoteTitle}</h2> */}
-                    {quoteStatus ? <p className="mb-4 text-center text-sm font-semibold text-ink">{quoteStatus}</p> : null}
+                    {quoteStatus ? <p className="mb-4 text-center text-sm font-semibold text-white">{quoteStatus}</p> : null}
 
                     <form noValidate className="flex h-full flex-col gap-5" onSubmit={handleQuoteSubmit}>
                       <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2">
@@ -556,7 +556,7 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
 
                         <div>
                           <label htmlFor="quote-package" className="mb-2 block text-xs md:text-[13px] font-extrabold uppercase tracking-wide text-white">
-                            Package
+                            Select Your Package
                           </label>
                           <div className="relative">
                             <select

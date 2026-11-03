@@ -33,7 +33,7 @@ export async function submitCustomizedPackageAction(raw: CustomizedEnquiryInput)
     return { success: false, error: 'Enter a valid name, email and UK phone (+44 followed by 10 digits).' };
   }
   if (!departureAirport || !qty(raw.numberOfDays, 1, 90) || !qty(raw.adults, 1, 99) ||
-    !qty(raw.children, 0, 99) || !qty(raw.infants, 0, 99) || raw.infants > raw.adults) {
+    !qty(raw.children, 0, 99) || !qty(raw.infants, 0, 99)) {
     return { success: false, error: 'Check the departure airport, journey duration and passenger counts.' };
   }
   const date = raw.departureDate ? new Date(`${raw.departureDate}T12:00:00Z`) : null;

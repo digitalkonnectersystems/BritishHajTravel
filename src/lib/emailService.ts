@@ -50,6 +50,7 @@ export async function dispatchFormEmails(
   try {
     // 1. Fetch saved email settings from DB or defaults
     let adminRecipientEmail = '';
+    let globalAdminRecipientEmail = '';
     let adminCcEmail = '';
     let adminBccEmail = '';
     const smtpConfig = getSmtpRuntimeConfig();
@@ -79,6 +80,8 @@ export async function dispatchFormEmails(
         fromEmail = fromEmailEnv || (/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(savedFrom) ? savedFrom : '') || smtpUser || smtpConfig.senderEmail;
         replyTo = replyToEnv || String(saved.replyTo || '').trim();
         subjectPattern = String(saved.emailSubjectLine || '').trim() || '[form_name]';
+        // An explicit site-wide To address is a valid fallback when per-form routing is blank.
+        globalAdminRecipientEmail = String(saved.sendToEmail || '').trim();
 
         formTemplates = mergeFormEmailTemplates(config?.formEmailTemplates, saved.formRoutingRules, saved.replyTo);
         // Legacy routing remains available for forms outside the ten new templates.
@@ -144,30 +147,50 @@ export async function dispatchFormEmails(
     // For legacy forms, maintain existing routing and the former shared template.
     const adminTemplate = templatePair?.admin;
     const customerTemplate = templatePair?.customer;
-    const recipientChannels = adminTemplate
+    const templateAdminRecipients = adminTemplate
       ? resolvedEmailRecipients(adminTemplate, formName, submittedData)
       : dedupeRecipientChannels(adminRecipientEmail, adminCcEmail, adminBccEmail);
-    const customerChannels = customerTemplate
+    const hasTemplateAdminRecipients = Boolean(templateAdminRecipients.to.length || templateAdminRecipients.cc.length || templateAdminRecipients.bcc.length);
+    // A blank per-form template may inherit an explicitly configured routing rule.
+    // Never infer an administrator's mailbox from SMTP credentials or a submitter email.
+    const recipientChannels = hasTemplateAdminRecipients
+      ? templateAdminRecipients
+      : dedupeRecipientChannels(adminRecipientEmail || globalAdminRecipientEmail, adminCcEmail, adminBccEmail);
+    const configuredCustomerChannels = customerTemplate
       ? resolvedEmailRecipients(customerTemplate, formName, submittedData)
       : dedupeRecipientChannels(providedUserEmail || submittedData.email || submittedData.emailAddress || submittedData.userEmail || '', '', '');
-    const hasAdminRecipients = !!(recipientChannels.to.length || recipientChannels.cc.length || recipientChannels.bcc.length);
-    const hasCustomerRecipients = !!(customerChannels.to.length || customerChannels.cc.length || customerChannels.bcc.length);
+    const hasConfiguredCustomer = Boolean(configuredCustomerChannels.to.length || configuredCustomerChannels.cc.length || configuredCustomerChannels.bcc.length);
+    const suppliedCustomer = String(providedUserEmail || submittedData.email || submittedData.emailAddress || submittedData.userEmail || '').trim();
+    const customerChannels = hasConfiguredCustomer
+      ? configuredCustomerChannels
+      : dedupeRecipientChannels(isValidMailAddress(suppliedCustomer) ? suppliedCustomer : '', '', '');
+    const hasAdminRecipients = Boolean(recipientChannels.to.length || recipientChannels.cc.length || recipientChannels.bcc.length);
+    const hasCustomerRecipients = Boolean(customerChannels.to.length || customerChannels.cc.length || customerChannels.bcc.length);
+    if (!hasAdminRecipients) {
+      console.error(`[Email Dispatcher] No admin recipients configured for form: ${formName}`);
+      await writeBackendLog({ severity: 'warning', category: 'Email Delivery', source: 'emailService', message: 'Admin notification recipients are missing for a form. Check form email templates and routing.' });
+    }
     if (!hasAdminRecipients && !hasCustomerRecipients) {
-      return { adminSent: false, userSent: false, error: 'No recipients configured for this form.' };
+      return { adminSent: false, userSent: false, error: 'Email delivery is not configured for this form.' };
     }
     const logRecipients = [...recipientChannels.to, ...recipientChannels.cc, ...recipientChannels.bcc].join(', ').slice(0, 255);
     const customerLogRecipients = [...customerChannels.to, ...customerChannels.cc, ...customerChannels.bcc].join(', ').slice(0, 255);
     const primaryCustomerEmail = String(providedUserEmail || submittedData.email || submittedData.emailAddress || submittedData.userEmail || '');
     const sharedTemplate = getSharedEmailTemplateHtml(savedFormsConfig?.emailTemplateHtml);
-    const adminHtml = adminTemplate
+    const initialAdminHtml = adminTemplate
       ? renderFormEmailBody(adminTemplate.body, formName, submittedData, 'admin')
       : renderSharedEmailTemplateHtml(sharedTemplate, formName, submittedData, false)!;
+    const adminHtml = addSubmittedSubject(initialAdminHtml, submittedData.subject);
     const userHtml = customerTemplate
       ? renderFormEmailBody(customerTemplate.body, formName, submittedData, 'customer')
       : renderSharedEmailTemplateHtml(sharedTemplate, formName, submittedData, true)!;
-    const adminSubject = adminTemplate
+    const configuredAdminSubject = adminTemplate
       ? renderFormEmailSubject(adminTemplate.subject, formName, submittedData)
       : resolveSubmissionSubject(subjectPattern, formName, submittedData);
+    const submittedSubject = typeof submittedData.subject === 'string' ? submittedData.subject.replace(/[\r\n]+/g, ' ').trim().slice(0, 180) : '';
+    const adminSubject = submittedSubject && !configuredAdminSubject.toLowerCase().includes(submittedSubject.toLowerCase())
+      ? `${configuredAdminSubject} | ${submittedSubject}`.slice(0, 240)
+      : configuredAdminSubject;
     const userSubject = customerTemplate
       ? renderFormEmailSubject(customerTemplate.subject, formName, submittedData)
       : `We received your ${formName} submission | British Hajj Travel UK`;
@@ -256,6 +279,7 @@ export async function dispatchFormEmails(
 
     // Dispatch both emails in parallel simultaneously
     const [adminResult, userResult] = await Promise.allSettled([adminPromise, userPromise]);
+    transporter.close();
 
     let adminSent = false;
     let userSent = false;
@@ -315,15 +339,17 @@ export async function dispatchFormEmails(
       console.log('[Email Dispatcher] No customer recipients configured; customer email skipped.');
     }
 
-    const finalAudit: FormEmailAudit = { ...emailAuditBase, status: adminSent ? 'Delivered' : 'Failed' };
+    const finalAudit: FormEmailAudit = { ...emailAuditBase, status: adminSent && (!hasCustomerRecipients || userSent) ? 'Delivered' : 'Failed' };
     await persistAuditSnapshot(finalAudit);
 
     return {
       adminSent,
       userSent,
-      error: (hasAdminRecipients && !adminSent) || (hasCustomerRecipients && !userSent)
-        ? getEmailDeliveryError(adminResult, userResult)
-        : undefined,
+      error: !hasAdminRecipients
+        ? 'Admin notification recipients are not configured. The enquiry was saved.'
+        : (hasAdminRecipients && !adminSent) || (hasCustomerRecipients && !userSent)
+          ? getEmailDeliveryError(adminResult, userResult)
+          : undefined,
       audit: finalAudit,
     };
   } catch (err: any) {
@@ -369,6 +395,16 @@ function getEmailDeliveryError(
   }
 
   return 'Email delivery failed. Check the email delivery logs for details.';
+}
+
+/** Explicit subject is preserved even when an admin's custom HTML omits [subject]. */
+function addSubmittedSubject(html: string, value: unknown): string {
+  const subject = typeof value === 'string' ? value.replace(/[\r\n]+/g, ' ').trim().slice(0, 240) : '';
+  if (!subject) return html;
+  const escaped = subject.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  if (html.includes(escaped)) return html;
+  const addition = `<p style="margin:12px 0;color:#002d67"><strong>Subject:</strong> ${escaped}</p>`;
+  return /<\/body>/i.test(html) ? html.replace(/<\/body>/i, `${addition}</body>`) : `${html}${addition}`;
 }
 
 function isValidMailAddress(value: unknown): value is string {

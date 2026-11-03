@@ -2,7 +2,7 @@
 
 import { normalizeUkPhoneInput } from '@/lib/ukPhone';
 import React, { useState } from 'react';
-import { submitQuoteEnquiryAction } from '@/actions/enquiryActions';
+import { submitQuoteEnquiryAction } from '@/lib/publicEnquiryClient';
 import SubmissionSuccessModal from '@/components/SubmissionSuccessModal';
 
 export default function CustomizeHajjPage() {
@@ -18,11 +18,13 @@ export default function CustomizeHajjPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMsg, setModalMsg] = useState('');
   const [modalRef, setModalRef] = useState('');
+  const [submitError, setSubmitError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.fullName || !formData.email || !formData.phone) return;
 
+    setSubmitError('');
     setLoading(true);
     try {
       const res = await submitQuoteEnquiryAction({
@@ -47,8 +49,11 @@ export default function CustomizeHajjPage() {
           occupancy: 'Quad Occupancy',
           message: '',
         });
+      } else {
+        setSubmitError(res.error || 'Unable to submit your request.');
       }
-    } catch {
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'Unable to submit your request.');
       setLoading(false);
     }
   };
@@ -68,6 +73,7 @@ export default function CustomizeHajjPage() {
 
         <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 max-w-3xl mx-auto">
           <form className="space-y-6" onSubmit={handleSubmit}>
+            {submitError && <p role="alert" className="text-sm text-red-700">{submitError}</p>}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="field">
                 <label className="block text-xs font-bold text-slate-700 mb-1">Full Name</label>

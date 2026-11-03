@@ -18,6 +18,12 @@ const validEmail = (email: unknown) => typeof email === 'string' && email.length
 const validName = (name: unknown) => typeof name === 'string' && name.trim().length >= 2 && name.trim().length <= 255;
 const countOk = (count: unknown, min=0) => typeof count === 'number' && Number.isSafeInteger(count) && count >= min && count <= 99;
 const enquiryReference = (prefix: string) => `${prefix}-${randomUUID().replace(/-/g,'').slice(0,20).toUpperCase()}`;
+
+/** Public callers cannot choose arbitrary email templates or recipient routes. */
+function allowedFormName(requested: unknown, allowed: readonly string[], fallback: string): string {
+  return typeof requested === 'string' && allowed.includes(requested) ? requested : fallback;
+}
+
 async function recordSubmissionFailure(source:string, error:unknown) {
  await writeBackendLog({severity:'error',category:'Form Submissions',source,message:`Database submission failed (${databaseErrorCode(error)})`});
 }
@@ -348,7 +354,7 @@ export async function submitQuoteEnquiryAction(data: {
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
     const emailResult = await dispatchAndStoreEnquiryEmail(enquiryNumber, 
-      sourceFormName || 'Get a Free Quote Form',
+      allowedFormName(sourceFormName, ['Get a Free Quote Form', 'Hajj Customize Form'], 'Get a Free Quote Form'),
       {
         enquiryNumber,
         fullName,
@@ -412,7 +418,12 @@ export async function submitPackageBookingEnquiryAction(data: {
       return { success: false, error: 'Full Name, Email, and Phone number are required.' };
     }
 
-    if (!countOk(adults,1) || !countOk(children) || !countOk(infants) || infants > adults || (message||'').length > 5000) return {success:false,error:'Check traveller counts or message length.'};
+    if (!countOk(adults, 1) || !countOk(children) || !countOk(infants)) {
+      return { success: false, error: 'Enter valid adult, child and infant counts (0 to 99, with at least one adult).' };
+    }
+    if (typeof message !== 'string' || message.length > 5000) {
+      return { success: false, error: 'Your additional message must be 5,000 characters or fewer.' };
+    }
     const bookingNumber = enquiryReference('BK');
 
     // 1. Insert into dedicated package_booking_enquiries table.
@@ -454,7 +465,7 @@ export async function submitPackageBookingEnquiryAction(data: {
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
     const emailResult = await dispatchAndStoreEnquiryEmail(bookingNumber, 
-      sourceFormName || 'Package Detail Page Booking Form',
+      allowedFormName(sourceFormName, ['Package Detail Page Booking Form', 'Umrah Package Booking Form', 'Hajj Package Booking Form', 'Package Inquiry Form', 'Blog Detail Page', 'Destination Form'], 'Package Detail Page Booking Form'),
       {
         bookingNumber,
         packageName,
@@ -539,7 +550,7 @@ export async function submitContactEnquiryAction(data: {
     await recordPublicEnquiry('Contact Form',ticketNumber);
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
-    const emailResult = await dispatchAndStoreEnquiryEmail(ticketNumber, sourceFormName || 'Contact Us Form', {
+    const emailResult = await dispatchAndStoreEnquiryEmail(ticketNumber, allowedFormName(sourceFormName, ['Contact Us Form', 'Contact Form', 'Get In Touch Form', 'Drop Us A Message Form', 'Contact Inquiry Form'], 'Contact Us Form'), {
       ticketNumber,
       fullName,
       email,
@@ -630,7 +641,7 @@ export async function submitVisaEnquiryAction(data: {
     await recordPublicEnquiry('Visa Enquiry',enquiryNumber);
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
-    const emailResult = await dispatchAndStoreEnquiryEmail(enquiryNumber, sourceFormName || 'Visa Consultation Form', {
+    const emailResult = await dispatchAndStoreEnquiryEmail(enquiryNumber, allowedFormName(sourceFormName, ['Visa Consultation Form', 'Umrah Visa Order Form'], 'Visa Consultation Form'), {
       enquiryNumber,
       visaTitle,
       fullName,
@@ -786,7 +797,7 @@ export async function submitFlightInquiry(data: {
     await recordPublicEnquiry('Flight Enquiry',enquiryNumber);
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
-    const emailResult = await dispatchAndStoreEnquiryEmail(enquiryNumber, sourceFormName || 'Flight Booking Form', {
+    const emailResult = await dispatchAndStoreEnquiryEmail(enquiryNumber, allowedFormName(sourceFormName, ['Flight Booking Form', 'Flights Booking Inquiry Form'], 'Flight Booking Form'), {
       enquiryNumber,
       fullName,
       email,

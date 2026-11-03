@@ -64,7 +64,7 @@ export default function SubmissionSuccessModal({
           onClick={onClose}
           className="w-full mt-2 py-3.5 bg-primary hover:brightness-110 text-white rounded-2xl text-xs font-extrabold tracking-wider uppercase transition-all shadow-md hover:shadow-lg cursor-pointer border-none"
         >
-          Got it, Thanks!
+          Got it
         </button>
       </div>
     </div>

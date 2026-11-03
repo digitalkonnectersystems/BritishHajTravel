@@ -8,7 +8,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { X, Calendar, User, Check, Star, Plane, TicketPercent, AlertCircle, ChevronDown, ChevronUp, ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
-import { submitPackageBookingEnquiryAction } from "@/actions/enquiryActions";
+import { submitPackageBookingEnquiryAction } from "@/lib/publicEnquiryClient";
 import SubmissionSuccessModal from "@/components/SubmissionSuccessModal";
 import { isTbcPrice } from "@/lib/priceDisplay";
 import { useCurrency, usePriceFormatter } from '@/components/CurrencyProvider';
@@ -81,7 +81,7 @@ export default function PackageDetailPageClient({
 
       if (res.success) {
         const msg = res.message || "Thank you! Your package booking request has been received. Our team will contact you shortly.";
-        setModalMsg(msg);
+        setModalMsg(res.emailWarning ? `${msg} ${res.emailWarning}` : msg);
         if (res.bookingNumber) setModalRef(res.bookingNumber);
         setModalOpen(true);
         setBookingStatus(null);
@@ -92,8 +92,8 @@ export default function PackageDetailPageClient({
       } else {
         setBookingStatus(res.error || "Submission failed.");
       }
-    } catch {
-      setBookingStatus("Failed to submit booking.");
+    } catch (error) {
+      setBookingStatus(error instanceof Error ? error.message : "Failed to submit booking. Please try again.");
     }
   };
 

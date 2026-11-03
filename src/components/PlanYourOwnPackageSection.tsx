@@ -1,7 +1,7 @@
 'use client';
 
 import { useId, useState, type FormEvent } from 'react';
-import { submitPlanYourOwnPackageSectionAction } from '@/actions/enquiryActions';
+import { submitPlanYourOwnPackageSectionAction } from '@/lib/publicEnquiryClient';
 import { normalizeUkPhoneInput } from '@/lib/ukPhone';
 
 type SectionData = { title?: string; buttonText?: string; dayOptions?: string; maxWidth?: string };
@@ -59,7 +59,7 @@ export default function PlanYourOwnPackageSection({ data = {}, sourcePage }: { d
             </select>
           </label>
           <div className="flex items-end">
-            <button type="submit" disabled={sending} className="h-[50px] w-full bg-red-600 rounded-lg px-5 text-[17px] font-semibold text-white transition-colors hover:bg-red-700 disabled:opacity-60">{sending ? 'SENDING...' : buttonText}</button>
+            <button type="submit" disabled={sending} className="h-[50px] w-full bg-[#ff0808] px-5 text-[17px] font-semibold text-white transition-colors hover:bg-[#cc0000] disabled:opacity-60">{sending ? 'Submitting...' : buttonText}</button>
           </div>
           <div aria-hidden="true" className="hidden md:block" />
           {error && <p role="alert" className="md:col-span-2 min-[1025px]:col-span-3 text-sm text-red-700">{error}</p>}

@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useState, type FormEvent } from 'react';
 import { getFormsSettings } from '@/actions/pageActions';
-import { submitHajjRegistrationEnquiryAction, submitYosrHajjRegistrationEnquiryAction } from '@/actions/enquiryActions';
+import { submitHajjRegistrationEnquiryAction, submitYosrHajjRegistrationEnquiryAction } from '@/lib/publicEnquiryClient';
 import { normalizeUkPhoneInput } from '@/lib/ukPhone';
 import { defaultBaanContent } from '@/lib/baanContent';
 

@@ -9,7 +9,7 @@ import {
   submitPackageBookingEnquiryAction,
   submitContactEnquiryAction,
   submitVisaEnquiryAction,
-} from "@/actions/enquiryActions";
+} from "@/lib/publicEnquiryClient";
 import { getFormsSettings } from "@/actions/pageActions";
 import { getPublicPackageOptions } from "@/actions/packageActions";
 import { CheckCircle, AlertTriangle } from "lucide-react";
@@ -246,6 +246,7 @@ export default function DynamicSiteForm({
           email,
           phone,
           website,
+          subject: getVal(formKey === 'contact' ? ['subject', 'subjectLine', 'subject_line', '4'] : ['subject', 'subjectLine', 'subject_line']),
           packageType,
           message,
           sourceFormName: formKey === 'dropUsMessage' ? 'Drop Us A Message Form' : 'Contact Inquiry Form',

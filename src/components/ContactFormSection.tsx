@@ -2,7 +2,7 @@
 import { normalizeUkPhoneInput } from '@/lib/ukPhone';
 
 import { useState } from "react";
-import { submitContactEnquiryAction } from "@/actions/enquiryActions";
+import { submitContactEnquiryAction } from "@/lib/publicEnquiryClient";
 import SubmissionSuccessModal from "@/components/SubmissionSuccessModal";
 import { FORM_SUCCESS_MESSAGE } from "@/lib/formSuccess";
 
@@ -76,7 +76,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
     }
 
     setErrors({});
-    setStatus("Sending...");
+    setStatus("Submitting...");
     try {
       const res = await submitContactEnquiryAction({
         fullName: form.fullName,

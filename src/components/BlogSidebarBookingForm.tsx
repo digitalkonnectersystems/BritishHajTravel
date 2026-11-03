@@ -3,7 +3,7 @@ import { normalizeUkPhoneInput } from '@/lib/ukPhone';
 
 import { useEffect, useState } from "react";
 import { TicketPercent, Calendar } from "lucide-react";
-import { submitPackageBookingEnquiryAction } from "@/actions/enquiryActions";
+import { submitPackageBookingEnquiryAction } from "@/lib/publicEnquiryClient";
 import { getPackagesByType } from "@/actions/packageActions";
 import SubmissionSuccessModal from "@/components/SubmissionSuccessModal";
 import { FORM_SUCCESS_MESSAGE } from "@/lib/formSuccess";
@@ -201,6 +201,7 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
       : "";
     const packageName = `${basePackageName}${travelMonthSuffix}`;
 
+    try {
     const res = await submitPackageBookingEnquiryAction({
       packageId: Number(selectedPackageId),
       packageName,
@@ -233,6 +234,9 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
       setModalOpen(true);
     } else {
       setBookingStatus(res.error || "Something went wrong. Please try again.");
+    }
+    } catch (error) {
+      setBookingStatus(error instanceof Error ? error.message : 'Unable to submit your enquiry. Please try again.');
     }
   };
 

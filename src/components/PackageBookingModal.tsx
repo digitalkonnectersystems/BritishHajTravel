@@ -4,7 +4,7 @@ import { normalizeUkPhoneInput } from '@/lib/ukPhone';
 
 import { useState, useEffect } from "react";
 import { Calendar, TicketPercent, X } from "lucide-react";
-import { submitPackageBookingEnquiryAction } from "@/actions/enquiryActions";
+import { submitPackageBookingEnquiryAction } from "@/lib/publicEnquiryClient";
 import { formatTravelMonth } from "@/lib/packageHelpers";
 import { useCurrency, usePriceFormatter } from '@/components/CurrencyProvider';
 
@@ -213,10 +213,8 @@ export default function PackageBookingModal({
           res.error || "Submission failed."
         );
       }
-    } catch {
-      setBookingStatus(
-        "Failed to submit booking."
-      );
+    } catch (error) {
+      setBookingStatus(error instanceof Error ? error.message : "Failed to submit booking. Please try again.");
     }
   };
 
@@ -662,7 +660,7 @@ export default function PackageBookingModal({
         <div className="bg-white w-full max-w-[420px] rounded-3xl shadow-2xl flex flex-col items-center justify-center p-8 text-center animate-in fade-in zoom-in duration-300 my-auto shrink-0">
 
           {/* Success Check Icon */}
-          <div className="w-16 h-16 bg-emerald-100 text-primary rounded-full flex items-center justify-center mb-4">
+          <div className="w-16 h-16 bg-blue-100 text-primary rounded-full flex items-center justify-center mb-4">
             <svg
               className="w-8 h-8"
               fill="none"

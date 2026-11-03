@@ -4,6 +4,8 @@ import { enquiries } from '@/db/schema';
 import { randomUUID } from 'node:crypto';
 import { writeBackendLog, databaseErrorCode } from '@/lib/backendLogger';
 import { recordPublicEnquiry } from '@/lib/publicEnquiryAudit';
+import { dispatchFormEmails } from '@/lib/emailService';
+import { eq } from 'drizzle-orm';
 
 export async function POST(request: Request) {
   try {
@@ -38,9 +40,20 @@ export async function POST(request: Request) {
     }
 
     await recordPublicEnquiry('API Quote Request',enquiryNumber);
+    const delivery = await dispatchFormEmails('Get a Free Quote Form', {
+      enquiryNumber, fullName, email, phone, packageType: packageType || '',
+      departureDate: departureDate || '', numberOfPilgrims: adults ? Number(adults) : 1,
+    }, email, async audit => {
+      await db.update(enquiries).set({
+        sourceForm: audit.formName, emailTo: audit.to.join(', '), emailCc: audit.cc.join(', '),
+        emailBcc: audit.bcc.join(', '), emailSubject: audit.subject,
+        emailHtml: audit.html, emailDeliveryStatus: audit.status, updatedAt: new Date(),
+      }).where(eq(enquiries.enquiryNumber, enquiryNumber));
+    });
     return NextResponse.json({
       success: true,
       enquiryNumber,
+      emailWarning: delivery.error,
       message: 'Quote request submitted successfully!',
     });
   } catch (error) {

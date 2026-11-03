@@ -4,7 +4,7 @@ import { normalizeUkPhoneInput } from '@/lib/ukPhone';
 import { useState } from "react";
 import PageBanner from "@/components/PageBanner";
 import PageSectionsRenderer from "@/components/PageSectionsRenderer";
-import { submitContactEnquiryAction } from "@/actions/enquiryActions";
+import { submitContactEnquiryAction } from "@/lib/publicEnquiryClient";
 import SubmissionSuccessModal from "@/components/SubmissionSuccessModal";
 
 function ContactInfoCardsSection({ data }: { data?: any }) {
@@ -211,7 +211,7 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
 
       if (resData.success) {
         const finalMsg = formConfig?.successMessage || resData.message || "Thank you! Your message has been received. Our team will contact you shortly.";
-        setSuccessMsg(finalMsg);
+        setSuccessMsg(resData.emailWarning ? `${finalMsg} Your enquiry was saved, but email delivery needs attention.` : finalMsg);
         if (resData.ticketNumber) setTicketRef(resData.ticketNumber);
         setModalOpen(true);
         setContactStatus(null);

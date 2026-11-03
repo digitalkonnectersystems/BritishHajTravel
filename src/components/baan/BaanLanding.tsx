@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { ArrowRight, CheckCircle2, Compass, Headphones, ShieldCheck, Sparkles, X, Building2, CalendarDays, ClipboardCheck, Plane } from 'lucide-react';
 import type { BaanContent } from '@/lib/baanContent';
 import type { ReactNode } from 'react';
-import { submitBaanInterest } from '@/actions/baanActions';
+import { submitBaanInterest } from '@/lib/publicEnquiryClient';
 import styles from './baan.module.css';
 import { normalizeUkPhoneInput } from '@/lib/ukPhone';
 export default function BaanLanding({ content: c, pageSections }: { content: BaanContent; pageSections?: ReactNode }) {
@@ -14,8 +14,11 @@ export default function BaanLanding({ content: c, pageSections }: { content: Baa
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault(); setBusy(true); setError('');
     const form = new FormData(e.currentTarget);
+    try {
     const result = await submitBaanInterest({ name: String(form.get('name') || ''), email: String(form.get('email') || ''), phone: String(form.get('phone') || ''), postcode: String(form.get('postcode') || ''), airport: String(form.get('airport') || ''), packageTier: String(form.get('packageTier') || ''), passengers: Number(form.get('passengers')), days: String(form.get('days') || ''), room: String(form.get('room') || ''), budget: String(form.get('budget') || '') });
-    setBusy(false); if (!result.success) setError(result.error || 'Please try again.'); else { setDone(true); if (result.emailWarning) setError('Your enquiry was saved, but email delivery may be delayed.'); }
+    if (!result.success) setError(result.error || 'Please try again.'); else { setDone(true); if (result.emailWarning) setError('Your enquiry was saved, but email delivery may be delayed.'); }
+    } catch (error) { setError(error instanceof Error ? error.message : 'Unable to submit. Please try again.'); }
+    finally { setBusy(false); }
   }
   return <main className={styles.page}>
     <section className={styles.hero}>
