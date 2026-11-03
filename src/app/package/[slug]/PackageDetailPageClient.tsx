@@ -462,12 +462,12 @@ export default function PackageDetailPageClient({
             <p className="text-xs sm:text-sm font-semibold tracking-wider text-white/90 uppercase mb-5">
               DURATION: {durationText}
             </p>
-            <div className="flex flex-wrap items-center gap-4 text-xs font-bold text-red">
+            <div className="flex flex-wrap items-center gap-4 text-xs font-bold text-white">
               <span className="flex items-center gap-1.5 bg-white/10 px-3.5 py-2 rounded-xl border border-white/20">
-                <Plane className="w-4 h-4 text-red" /> DEPARTURE: <strong className="text-white">{departure}</strong>
+                <Plane className="w-4 h-4 text-white" /> DEPARTURE: <strong className="text-white">{departure}</strong>
               </span>
               <span className="flex items-center gap-1.5 bg-white/10 px-3.5 py-2 rounded-xl border border-white/20">
-                <Plane className="w-4 h-4 text-red" /> DESTINATION: <strong className="text-white">{destination}</strong>
+                <Plane className="w-4 h-4 text-white" /> DESTINATION: <strong className="text-white">{destination}</strong>
               </span>
             </div>
           </div>
