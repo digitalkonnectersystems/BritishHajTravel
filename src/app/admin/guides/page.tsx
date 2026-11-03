@@ -47,7 +47,7 @@ export default function AdminGuidesPage() {
 
   const handleDelete = (guide: Guide) => {
     setConfirmConfig({
-      icon: <Trash2 className="w-3 h-3 text-red-600" />,
+      icon: <Trash2 className="w-3 h-3 text-red" />,
       title: 'Delete Guide',
       message: `Permanently delete "${guide.title}"? This cannot be undone.`,
       confirmText: 'Delete guide',
@@ -149,7 +149,7 @@ export default function AdminGuidesPage() {
                   <td className="py-4 px-5 text-right"><div className="inline-flex items-center gap-2">
                     <button type="button" onClick={() => handleTogglePublication(guide)} aria-label={guide.status === 'published' ? 'Hide guide from public website' : 'Show guide on public website'} title={guide.status === 'published' ? 'Hide guide from public website' : 'Show guide on public website'} className="p-2 rounded-lg bg-slate-100 text-slate-600">{guide.status === 'published' ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}</button>
                     <button type="button" onClick={() => handleDuplicate(guide)} aria-label="Duplicate guide" title="Duplicate guide" className="p-2 rounded-lg bg-violet-50 text-violet-700"><Copy className="w-3.5 h-3.5" /></button>
-                    <Link href={`/admin/guides/edit?id=${guide.id}&category=${category}`} className="p-2 rounded-lg bg-slate-100 text-slate-600" title="Edit guide"><Pencil className="w-3.5 h-3.5" /></Link><button type="button" onClick={() => handleMoveToPages(guide)} className="p-2 rounded-lg bg-blue-50 text-primary" title="Move to Admin Pages"><FileText className="w-3.5 h-3.5" /></button><button type="button" onClick={() => handleDelete(guide)} className="p-2 rounded-lg bg-red-50 text-red-600" title="Delete guide"><Trash2 className="w-3.5 h-3.5" /></button></div></td>
+                    <Link href={`/admin/guides/edit?id=${guide.id}&category=${category}`} className="p-2 rounded-lg bg-slate-100 text-slate-600" title="Edit guide"><Pencil className="w-3.5 h-3.5" /></Link><button type="button" onClick={() => handleMoveToPages(guide)} className="p-2 rounded-lg bg-blue-50 text-primary" title="Move to Admin Pages"><FileText className="w-3.5 h-3.5" /></button><button type="button" onClick={() => handleDelete(guide)} className="p-2 rounded-lg bg-red-50 text-red" title="Delete guide"><Trash2 className="w-3.5 h-3.5" /></button></div></td>
                 </tr>
               ))}
               {filteredGuides.length === 0 && <tr><td colSpan={4} className="py-12 text-center text-slate-400">No {category} guides found.</td></tr>}

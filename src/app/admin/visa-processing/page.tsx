@@ -7,7 +7,7 @@ import { ArrowUpRight, FileCheck2, Plus } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 export default async function VisaProcessingAdminPage() {
-  await requireAdmin(['admin','content_editor','seo_manager']);
+  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
   const pages = await getVisaProcessingList();
   return (
     <AdminLayout>
@@ -20,7 +20,7 @@ export default async function VisaProcessingAdminPage() {
                 <FileCheck2 className="h-6 w-6 text-primary" />
               </span>
               <div>
-                <div className="mb-1 text-[10px] font-extrabold uppercase tracking-[0.2em] text-red-600">Content management</div>
+                <div className="mb-1 text-[10px] font-extrabold uppercase tracking-[0.2em] text-red">Content management</div>
                 <h1 className="m-0 text-2xl font-extrabold text-primary sm:text-3xl">Visa Processing Pages</h1>
                 <p className="mb-0 mt-2 max-w-2xl text-sm leading-6 text-slate-400">
                   Manage country-specific visa pages, edit their public URLs, and control what visitors can see.

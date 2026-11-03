@@ -140,7 +140,7 @@ export default function SoldOutPackagesSection({ data, initialPackages }: { data
                   className="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 flex flex-col group transition-shadow hover:shadow-md relative"
                 >
                   {/* SOLD OUT BADGE OVERLAY */}
-                  <div className="absolute top-4 right-4 z-10 bg-red-600 text-white px-3 py-1 rounded-full text-[10px] font-black uppercase">SOLD OUT</div>
+                  <div className="absolute top-4 right-4 z-10 bg-red text-white px-3 py-1 rounded-full text-[10px] font-black uppercase">SOLD OUT</div>
 
                   {heroImage && (
                     <div className="relative h-[220px] w-full overflow-hidden shrink-0">

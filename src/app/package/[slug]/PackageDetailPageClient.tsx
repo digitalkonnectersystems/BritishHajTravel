@@ -723,7 +723,7 @@ export default function PackageDetailPageClient({
                       }`}
                   />
                   {errors.fullName && (
-                    <span className="text-[10px] font-bold text-red-600 mt-1 block">Please fill out this field.</span>
+                    <span className="text-[10px] font-bold text-red mt-1 block">Please fill out this field.</span>
                   )}
                 </div>
 
@@ -751,7 +751,7 @@ export default function PackageDetailPageClient({
                         }`}
                     />
                     {errors.phone && (
-                      <span className="text-[10px] font-bold text-red-600 mt-1 block">Please fill out this field.</span>
+                      <span className="text-[10px] font-bold text-red mt-1 block">Please fill out this field.</span>
                     )}
                   </div>
                   <div>
@@ -770,7 +770,7 @@ export default function PackageDetailPageClient({
                         }`}
                     />
                     {errors.email && (
-                      <span className="text-[10px] font-bold text-red-600 mt-1 block">Please fill out this field.</span>
+                      <span className="text-[10px] font-bold text-red mt-1 block">Please fill out this field.</span>
                     )}
                   </div>
                 </div>
@@ -866,7 +866,7 @@ export default function PackageDetailPageClient({
                       />
                     </div>
                     {errors.selectedDate && (
-                      <span className="text-[10px] font-bold text-red-600 mt-1 block">Please select a valid start date.</span>
+                      <span className="text-[10px] font-bold text-red mt-1 block">Please select a valid start date.</span>
                     )}
                   </div>
                 )}
@@ -900,7 +900,7 @@ export default function PackageDetailPageClient({
                       </div>
                     </div>
                     {errors.selectedPackageType && (
-                      <span className="text-[10px] font-bold text-red-600 mt-1 block">Please select a package type.</span>
+                      <span className="text-[10px] font-bold text-red mt-1 block">Please select a package type.</span>
                     )}
                   </div>
                 )}
@@ -943,7 +943,7 @@ export default function PackageDetailPageClient({
           <button
             type="button"
             onClick={() => setGalleryOpenIndex(null)}
-            className="absolute top-4 right-4 sm:top-6 sm:right-6 w-11 h-11 rounded-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center cursor-pointer z-20"
+            className="absolute top-4 right-4 sm:top-6 sm:right-6 w-11 h-11 rounded-full bg-red hover:bg-red-700 text-white flex items-center justify-center cursor-pointer z-20"
             aria-label="Close gallery"
           >
             <X className="w-6 h-6" />

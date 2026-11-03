@@ -296,10 +296,10 @@ export default function WhatWeProvideSection({ data }: { data: any }) {
                       style={
                         videoFit === "cover"
                           ? {
-                              aspectRatio: "16 / 9",
-                              minWidth: "100%",
-                              minHeight: "100%",
-                            }
+                            aspectRatio: "16 / 9",
+                            minWidth: "100%",
+                            minHeight: "100%",
+                          }
                           : { aspectRatio: "16 / 9", width: "100%" }
                       }
                     >
@@ -385,7 +385,7 @@ export default function WhatWeProvideSection({ data }: { data: any }) {
                         w-12
                         h-12
                         rounded-full
-                        bg-[#ef171c]
+                        bg-red
                         text-white
                         flex
                         items-center
@@ -418,7 +418,7 @@ export default function WhatWeProvideSection({ data }: { data: any }) {
                   <img
                     src={image.replace(/\\/g, "/")}
                     alt="Hajj and Umrah Journey"
-                className="
+                    className="
                   w-full
                   h-full
                   object-cover
@@ -426,11 +426,11 @@ export default function WhatWeProvideSection({ data }: { data: any }) {
                   duration-700
                   hover:scale-[1.03]
                 "
-              />
+                  />
 
-              {/* OPTIONAL VIDEO STYLE BADGE */}
-              <div
-                className="
+                  {/* OPTIONAL VIDEO STYLE BADGE */}
+                  <div
+                    className="
                   absolute
                   bottom-5
                   left-5
@@ -444,39 +444,39 @@ export default function WhatWeProvideSection({ data }: { data: any }) {
                   gap-4
                   max-w-[310px]
                 "
-              >
-                <div
-                  className="
+                  >
+                    <div
+                      className="
                     w-12
                     h-12
                     rounded-full
-                    bg-[#ef171c]
+                    bg-red
                     text-white
                     flex
                     items-center
                     justify-center
                     shrink-0
                   "
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-5 h-5 ml-0.5"
-                  >
-                    <path d="M8 5v14l11-7L8 5Z" />
-                  </svg>
-                </div>
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className="w-5 h-5 ml-0.5"
+                      >
+                        <path d="M8 5v14l11-7L8 5Z" />
+                      </svg>
+                    </div>
 
-                <div>
-                  <div className="text-[#08245c] font-bold text-[15px]">
-                    {badgeTitle}
-                  </div>
+                    <div>
+                      <div className="text-[#08245c] font-bold text-[15px]">
+                        {badgeTitle}
+                      </div>
 
-                  <div className="text-[#5c708d] text-[13px]">
-                    {badgeSubtitle}
+                      <div className="text-[#5c708d] text-[13px]">
+                        {badgeSubtitle}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
                 </>
               )}
             </div>
@@ -486,7 +486,7 @@ export default function WhatWeProvideSection({ data }: { data: any }) {
           <div>
             <div
               className="
-                text-[#ef2024]
+                text-red
                 text-[11px]
                 sm:text-xs
                 tracking-[0.28em]
@@ -546,7 +546,7 @@ export default function WhatWeProvideSection({ data }: { data: any }) {
                         w-[52px]
                         h-[52px]
                         rounded-full
-                        bg-[#ef171c]
+                        bg-red
                         text-white
                         flex
                         items-center
@@ -560,7 +560,7 @@ export default function WhatWeProvideSection({ data }: { data: any }) {
                     >
                       {renderIcon(
                         item.icon ||
-                          ["plane", "users", "shield"][i]
+                        ["plane", "users", "shield"][i]
                       )}
                     </div>
 
@@ -629,7 +629,7 @@ export default function WhatWeProvideSection({ data }: { data: any }) {
                 className="
                   w-[115px]
                   h-[4px]
-                  bg-[#ef171c]
+                  bg-red
                   ml-auto
                   mt-3
                   rotate-[-8deg]

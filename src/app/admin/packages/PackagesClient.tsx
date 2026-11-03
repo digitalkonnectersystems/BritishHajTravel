@@ -142,7 +142,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
 
   const handleDeleteInitiate = (id: number, title: string) => {
     setConfirmConfig({
-      icon: <Trash2 className="w-4 h-4 text-red-600" />,
+      icon: <Trash2 className="w-4 h-4 text-red" />,
       title: `Delete ${title}?`,
       message: `Are you sure you want to permanently delete "${title}"? This cannot be undone.`,
       confirmText: 'Yes, Delete Package',
@@ -176,7 +176,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
         const str = numKeys.map(k => cd[k]).join('');
         const inner = JSON.parse(str);
         if (inner?.packageCode) return String(inner.packageCode).trim().toUpperCase();
-      } catch {}
+      } catch { }
     }
     let dp = pkg.detailPageData;
     if (typeof dp === 'string') {
@@ -420,82 +420,82 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
                 packagesList.map((pkg) => {
                   const pkgCode = getPackageCode(pkg);
                   return (
-                  <tr key={pkg.id} className="hover:bg-slate-50/60 transition-colors">
-                    <td className="py-3.5 px-4 font-bold text-slate-900">
-                      <div>{pkg.title}</div>
-                      <div className="text-[10px] font-mono text-slate-400">{pkg.slug}</div>
-                    </td>
-                    <td className="py-3.5 px-4">
-                      {pkgCode ? (
-                        <span
-                          title={`Package Code: ${pkgCode}`}
-                          className="inline-flex items-center px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold tracking-wider uppercase bg-slate-100 text-slate-800 border border-slate-300 shadow-2xs select-all"
-                        >
-                          {pkgCode}
+                    <tr key={pkg.id} className="hover:bg-slate-50/60 transition-colors">
+                      <td className="py-3.5 px-4 font-bold text-slate-900">
+                        <div>{pkg.title}</div>
+                        <div className="text-[10px] font-mono text-slate-400">{pkg.slug}</div>
+                      </td>
+                      <td className="py-3.5 px-4">
+                        {pkgCode ? (
+                          <span
+                            title={`Package Code: ${pkgCode}`}
+                            className="inline-flex items-center px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold tracking-wider uppercase bg-slate-100 text-slate-800 border border-slate-300 shadow-2xs select-all"
+                          >
+                            {pkgCode}
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] text-slate-400 bg-slate-50 border border-dashed border-slate-200">
+                            No Code
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase border ${pkg.type === 'hajj'
+                          ? 'bg-amber-50 text-amber-800 border-amber-200'
+                          : 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                          }`}>
+                          {pkg.type === 'hajj' ? '🕌 Hajj' : '🕋 Umrah'}
                         </span>
-                      ) : (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] text-slate-400 bg-slate-50 border border-dashed border-slate-200">
-                          No Code
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase border ${pkg.type === 'hajj'
-                        ? 'bg-amber-50 text-amber-800 border-amber-200'
-                        : 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                        }`}>
-                        {pkg.type === 'hajj' ? '🕌 Hajj' : '🕋 Umrah'}
-                      </span>
-                    </td>
-                    <td className="py-3.5 px-4 font-medium text-slate-600">
-                      {formatTravelMonth(pkg.month) || 'Flexible'}
-                    </td>
-                    <td className="py-3.5 px-4 font-black text-slate-900">
-                      £ ${Number(pkg.startingPrice).toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <button
-                        type="button"
-                        onClick={() => handleStatusToggle(pkg.id, pkg.status)}
-                        className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold capitalize border cursor-pointer ${pkg.status === 'available'
-                          ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                          : 'bg-red-50 text-red-800 border-red-200'
-                          }`}
-                      >
-                        ● {pkg.status || 'available'}
-                      </button>
-                    </td>
-                    <td className="py-3.5 px-4 text-right">
-                      <div className="flex items-center justify-end gap-1.5">
+                      </td>
+                      <td className="py-3.5 px-4 font-medium text-slate-600">
+                        {formatTravelMonth(pkg.month) || 'Flexible'}
+                      </td>
+                      <td className="py-3.5 px-4 font-black text-slate-900">
+                        £ ${Number(pkg.startingPrice).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                      </td>
+                      <td className="py-3.5 px-4">
                         <button
                           type="button"
-                          onClick={() => setSelectedSeoPkg(pkg)}
-                          title="Package SEO Center"
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-primary border border-emerald-200 text-[10px] font-extrabold hover:bg-primary hover:text-white transition-all cursor-pointer shadow-2xs"
+                          onClick={() => handleStatusToggle(pkg.id, pkg.status)}
+                          className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold capitalize border cursor-pointer ${pkg.status === 'available'
+                            ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                            : 'bg-red-50 text-red-800 border-red-200'
+                            }`}
                         >
-                          <Sliders className="w-3 h-3" />
-                          <span>SEO</span>
+                          ● {pkg.status || 'available'}
                         </button>
-                        <Link
-                          href={`/admin/packages/${pkg.id}`}
-                          title="Edit Package"
-                          className="w-7 h-7 rounded-full bg-slate-100 hover:bg-primary text-slate-600 hover:text-white flex items-center justify-center border-none cursor-pointer transition-all"
-                        >
-                          <Edit2 className="w-3.5 h-3.5" />
-                        </Link>
-                        <button
-                          type="button"
-                          onClick={() => handleDeleteInitiate(pkg.id, pkg.title)}
-                          title="Delete Package"
-                          className="w-7 h-7 rounded-full bg-red-50 hover:bg-red-600 text-red-600 hover:text-white flex items-center justify-center border-none cursor-pointer transition-all"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })
+                      </td>
+                      <td className="py-3.5 px-4 text-right">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => setSelectedSeoPkg(pkg)}
+                            title="Package SEO Center"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-primary border border-emerald-200 text-[10px] font-extrabold hover:bg-primary hover:text-white transition-all cursor-pointer shadow-2xs"
+                          >
+                            <Sliders className="w-3 h-3" />
+                            <span>SEO</span>
+                          </button>
+                          <Link
+                            href={`/admin/packages/${pkg.id}`}
+                            title="Edit Package"
+                            className="w-7 h-7 rounded-full bg-slate-100 hover:bg-primary text-slate-600 hover:text-white flex items-center justify-center border-none cursor-pointer transition-all"
+                          >
+                            <Edit2 className="w-3.5 h-3.5" />
+                          </Link>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteInitiate(pkg.id, pkg.title)}
+                            title="Delete Package"
+                            className="w-7 h-7 rounded-full bg-red-50 hover:bg-red text-red hover:text-white flex items-center justify-center border-none cursor-pointer transition-all"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>

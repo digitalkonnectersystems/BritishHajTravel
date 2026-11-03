@@ -518,7 +518,7 @@ export default function SeoCenterModal({
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 rounded-full text-white bg-red-600 hover:bg-red-700 transition-colors cursor-pointer border-none ml-1"
+              className="p-1.5 rounded-full text-white bg-red hover:bg-red-700 transition-colors cursor-pointer border-none ml-1"
               title="Close SEO Center"
             >
               <X className="w-5 h-5" />
@@ -1147,7 +1147,7 @@ export default function SeoCenterModal({
               <div className="space-y-3 pt-2 border-t border-slate-100">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-extrabold text-red-600 bg-red-50 border border-red-200 px-2.5 py-0.5 rounded-full">
+                    <span className="text-xs font-extrabold text-red bg-red-50 border border-red-200 px-2.5 py-0.5 rounded-full">
                       🔴 0 Critical Fixes
                     </span>
                     <span className="text-xs font-extrabold text-amber-600 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full">

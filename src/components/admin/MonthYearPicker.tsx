@@ -116,7 +116,7 @@ export default function MonthYearPicker({
             <span
               role="button"
               onClick={handleClear}
-              className="p-1 bg-red-600 hover:bg-red-700 rounded-full text-white hover:text-white transition-colors"
+              className="p-1 bg-red hover:bg-red-700 rounded-full text-white hover:text-white transition-colors"
               title="Clear travel month"
             >
               <X className="w-3.5 h-3.5" />

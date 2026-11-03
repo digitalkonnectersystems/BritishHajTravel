@@ -715,7 +715,7 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
 
   const handleDeleteInitiate = (id: number, title: string) => {
     setConfirmConfig({
-      icon: <Trash2 className="w-4 h-4 text-red-600" />,
+      icon: <Trash2 className="w-4 h-4 text-red" />,
       title: `Delete ${title}?`,
       message: `Are you sure you want to permanently delete "${title}"? This cannot be undone.`,
       confirmText: 'Yes, Delete Package',
@@ -802,7 +802,7 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
 
   const handleDeleteCategory = (id: number, name: string, count: number) => {
     setConfirmConfig({
-      icon: <Trash2 className="w-4 h-4 text-red-600" />,
+      icon: <Trash2 className="w-4 h-4 text-red" />,
       title: `Delete category "${name}"?`,
       message: count > 0
         ? `${count} package(s) are assigned to this category. They will become uncategorised — the packages themselves are NOT deleted.`
@@ -851,11 +851,11 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
     if (cd && typeof cd === 'object' && cd['0'] !== undefined) {
       if (cd.packageCode) return String(cd.packageCode).trim().toUpperCase();
       try {
-        const numKeys = Object.keys(cd).filter(k => /^\d+$/.test(k)).sort((a,b) => Number(a)-Number(b));
+        const numKeys = Object.keys(cd).filter(k => /^\d+$/.test(k)).sort((a, b) => Number(a) - Number(b));
         const str = numKeys.map(k => cd[k]).join('');
         const inner = JSON.parse(str);
         if (inner?.packageCode) return String(inner.packageCode).trim().toUpperCase();
-      } catch {}
+      } catch { }
     }
     let dp = pkg.detailPageData;
     if (typeof dp === 'string') {
@@ -1201,7 +1201,7 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
                       type="button"
                       onClick={() => handleDeleteCategory(cat.id, cat.name, cat.packageCount)}
                       title="Delete category"
-                      className="w-7 h-7 rounded-full bg-red-50 hover:bg-red-600 text-red-600 hover:text-white flex items-center justify-center border-none cursor-pointer transition-all shrink-0"
+                      className="w-7 h-7 rounded-full bg-red-50 hover:bg-red text-red hover:text-white flex items-center justify-center border-none cursor-pointer transition-all shrink-0"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -1398,7 +1398,7 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
                             type="button"
                             onClick={() => handleDeleteInitiate(pkg.id, pkg.title)}
                             title="Delete Package"
-                            className="w-7 h-7 rounded-full bg-red-50 hover:bg-red-600 text-red-600 hover:text-white flex items-center justify-center border-none cursor-pointer transition-all"
+                            className="w-7 h-7 rounded-full bg-red-50 hover:bg-red text-red hover:text-white flex items-center justify-center border-none cursor-pointer transition-all"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>

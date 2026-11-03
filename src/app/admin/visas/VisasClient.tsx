@@ -81,7 +81,7 @@ export default function VisasClient({ initialVisas }: VisasClientProps) {
 
   const handleDeleteInitiate = (id: number, title: string) => {
     setConfirmConfig({
-      icon: <Trash2 className="w-4 h-4 text-red-600" />,
+      icon: <Trash2 className="w-4 h-4 text-red" />,
       title: `Delete ${title}?`,
       message: `Are you sure you want to delete "${title}"? This will permanently remove it from the database.`,
       confirmText: 'Yes, Delete Category',
@@ -335,7 +335,7 @@ export default function VisasClient({ initialVisas }: VisasClientProps) {
                       type="button"
                       onClick={() => handleDeleteInitiate(v.id, v.title)}
                       title="Delete Category"
-                      className="w-7 h-7 rounded-full bg-red-50 hover:bg-red-600 text-red-600 hover:text-white flex items-center justify-center border-none cursor-pointer transition-all"
+                      className="w-7 h-7 rounded-full bg-red-50 hover:bg-red text-red hover:text-white flex items-center justify-center border-none cursor-pointer transition-all"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>

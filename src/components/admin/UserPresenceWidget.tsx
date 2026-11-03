@@ -94,7 +94,7 @@ export default function UserPresenceWidget({ currentUser }: UserPresenceWidgetPr
           {offlineUsers.length > 0 && (
             <>
               <span className="text-slate-300"> | </span>
-              <span className="text-red-600">{offlineUsers.length} Offline</span>
+              <span className="text-red">{offlineUsers.length} Offline</span>
             </>
           )}
         </span>
@@ -187,8 +187,8 @@ export default function UserPresenceWidget({ currentUser }: UserPresenceWidgetPr
                         </span>
                       ) : (
                         <div className="flex flex-col items-end">
-                          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded-full leading-normal">
-                            <span className="w-1.5 h-1.5 rounded-full bg-red-600"></span>
+                          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-red bg-red-100 px-2 py-0.5 rounded-full leading-normal">
+                            <span className="w-1.5 h-1.5 rounded-full bg-red"></span>
                             Offline
                           </span>
                           <span className="text-[8px] text-slate-400 mt-0.5">

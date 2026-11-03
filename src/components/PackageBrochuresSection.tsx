@@ -164,8 +164,8 @@ export default function PackageBrochuresSection({ data, pageData }: PackageBroch
                   key={idx}
                   onClick={() => setPopupIdx(idx)}
                   className={`w-full bg-white rounded-2xl md:rounded-3xl overflow-hidden shadow-xl border border-slate-200/80 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 flex flex-col h-full group cursor-pointer ${isSingle && isHotelsPage
-                      ? 'md:col-start-2 md:max-w-md md:mx-auto'
-                      : ''
+                    ? 'md:col-start-2 md:max-w-md md:mx-auto'
+                    : ''
                     }`}
                 >
                   <img
@@ -250,7 +250,7 @@ export default function PackageBrochuresSection({ data, pageData }: PackageBroch
               <button
                 type="button"
                 onClick={closePopup}
-                className="w-9 h-9 rounded-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center transition-colors cursor-pointer"
+                className="w-9 h-9 rounded-full bg-red hover:bg-red-700 text-white flex items-center justify-center transition-colors cursor-pointer"
                 title="Close (Esc)"
               >
                 <X className="w-5 h-5" />

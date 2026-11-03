@@ -79,7 +79,7 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
 
   const handleDelete = (id: number, refNum: string) => {
     setConfirmConfig({
-      icon: <Trash2 className="w-4 h-4 text-red-600" />,
+      icon: <Trash2 className="w-4 h-4 text-red" />,
       title: `Delete Query ${refNum}?`,
       message: `Are you sure you want to delete form query "${refNum}"? This will remove it permanently from the database.`,
       confirmText: 'Yes, Delete Query',
@@ -267,7 +267,7 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
                             type="button"
                             onClick={() => handleDelete(item.id, item.enquiryNumber || `QT-${item.id}`)}
                             title="Delete Query"
-                            className="w-7 h-7 rounded-full bg-red-50 hover:bg-red-600 text-red-600 hover:text-white flex items-center justify-center border-none cursor-pointer transition-all"
+                            className="w-7 h-7 rounded-full bg-red-50 hover:bg-red text-red hover:text-white flex items-center justify-center border-none cursor-pointer transition-all"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -293,7 +293,7 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
                 </div>
                 <p className="mt-1 mb-0 text-xs text-slate-500">{selectedEnquiry.enquiryNumber} · {selectedEnquiry.sourceForm || 'Form source not recorded'}</p>
               </div>
-              <button type="button" onClick={() => setSelectedEnquiry(null)} className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 text-white bg-red-600 hover:bg-red-700 cursor-pointer" title="Close">
+              <button type="button" onClick={() => setSelectedEnquiry(null)} className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 text-white bg-red hover:bg-red-700 cursor-pointer" title="Close">
                 <X className="h-4 w-4" />
               </button>
             </div>

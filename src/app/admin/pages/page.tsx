@@ -52,7 +52,7 @@ export default function AdminPagesListPage() {
 
   const handleDelete = (id: number, title: string) => {
     setConfirmConfig({
-      icon: <Trash2 className="w-3 h-3 text-red-600" />,
+      icon: <Trash2 className="w-3 h-3 text-red" />,
       title: 'Delete Page',
       message: `Would you like to permanently delete the page "${title}"? This cannot be undone.`,
       confirmText: 'Delete page',
@@ -273,7 +273,7 @@ export default function AdminPagesListPage() {
                       <button
                         onClick={() => handleDelete(p.id, p.title)}
                         disabled={deletingId === p.id}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-50 text-red-600 hover:text-white hover:bg-red border border-red-200 text-[11px] font-bold cursor-pointer disabled:opacity-50"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-50 text-red hover:text-white hover:bg-red border border-red-200 text-[11px] font-bold cursor-pointer disabled:opacity-50"
                       >
                         {deletingId === p.id ? 'Deleting...' : <><Trash2 className="w-3 h-3" /></>}
                       </button>

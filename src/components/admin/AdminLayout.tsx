@@ -247,7 +247,7 @@ export default function AdminLayout({ children, activeNavHref }: AdminLayoutProp
                   ? 'text-white font-bold bg-linear-to-r from-[#020e43] via-[#041e8f] to-[#5d7afa] shadow-[0_8px_22px_-10px_rgba(4,30,143,0.65)]'
                   : 'text-slate-600 font-semibold group hover:bg-blue-100 hover:text-[#020E43]'
                   }`}
-                  onClick={() => setSidebarOpen(false)}
+                onClick={() => setSidebarOpen(false)}
               >
                 <span className={`shrink-0 ${isActive ? 'text-white' : 'text-slate-500 group-hover:text-[#020E43]'}`}>
                   {item.icon}
@@ -414,7 +414,7 @@ export default function AdminLayout({ children, activeNavHref }: AdminLayoutProp
                     <form action={adminLogout}>
                       <button
                         type="submit"
-                        className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-red-600 hover:bg-red-100/70 border border-red-200 transition-colors cursor-pointer"
+                        className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-red hover:bg-red-100/70 border border-red-200 transition-colors cursor-pointer"
                       >
                         <LogOut className="w-3.5 h-3.5" />
                         <span>Sign Out</span>
@@ -428,7 +428,7 @@ export default function AdminLayout({ children, activeNavHref }: AdminLayoutProp
             <form action={adminLogout}>
               <button
                 type="submit"
-                className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-md text-xs font-semibold text-white hover:bg-red-700 bg-red-600 transition-colors cursor-pointer text-left border border-red-500/30"
+                className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-md text-xs font-semibold text-white hover:bg-red-700 bg-red transition-colors cursor-pointer text-left border border-red-500/30"
               >
                 <LogOut className="w-4 h-4 shrink-0 text-white" />
                 Log Out

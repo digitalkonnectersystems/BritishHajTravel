@@ -153,9 +153,9 @@ export default function DetailPageDataFields({
                 <strong className="text-xs text-primary">{hotel.label || `Hotel ${index + 1}`}</strong>
                 <div className="flex items-center gap-2">
                   <button type="button" onClick={() => changeHotel('isVisible', hotel.isVisible === false)} className="text-xs text-primary underline">{hotel.isVisible === false ? 'Show' : 'Hide'}</button>
-                  <button type="button" disabled={index === 0} onClick={() => { const next = [...hotels]; [next[index - 1], next[index]] = [next[index], next[index - 1]]; update('hotelCards', next); }} className="text-xs disabled:opacity-40" title="Move up">↑</button>
-                  <button type="button" disabled={index === hotels.length - 1} onClick={() => { const next = [...hotels]; [next[index + 1], next[index]] = [next[index], next[index + 1]]; update('hotelCards', next); }} className="text-xs disabled:opacity-40" title="Move down">↓</button>
-                  <button type="button" onClick={() => { if (window.confirm(`Remove ${hotel.name || hotel.label || 'this hotel'} from this package?`)) update('hotelCards', hotels.filter((_, i) => i !== index)); }} className="text-red-600" title="Remove hotel"><Trash2 className="w-4 h-4" /></button>
+                  <button type="button" disabled={index === 0} onClick={() => { const next = [...hotels];[next[index - 1], next[index]] = [next[index], next[index - 1]]; update('hotelCards', next); }} className="text-xs disabled:opacity-40" title="Move up">↑</button>
+                  <button type="button" disabled={index === hotels.length - 1} onClick={() => { const next = [...hotels];[next[index + 1], next[index]] = [next[index], next[index + 1]]; update('hotelCards', next); }} className="text-xs disabled:opacity-40" title="Move down">↓</button>
+                  <button type="button" onClick={() => { if (window.confirm(`Remove ${hotel.name || hotel.label || 'this hotel'} from this package?`)) update('hotelCards', hotels.filter((_, i) => i !== index)); }} className="text-red" title="Remove hotel"><Trash2 className="w-4 h-4" /></button>
                 </div>
               </div>
               {([['label', 'Accommodation label'], ['name', 'Hotel name'], ['location', 'Location / distance'], ['description', 'Additional hotel details']] as const).map(([field, label]) => (
@@ -263,7 +263,7 @@ export default function DetailPageDataFields({
                   const newH = [...d.highlights];
                   newH.splice(i, 1);
                   update('highlights', newH);
-                }} className="text-red-400 hover:text-red-600 px-1 shrink-0">
+                }} className="text-red-400 hover:text-red px-1 shrink-0">
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -295,7 +295,7 @@ export default function DetailPageDataFields({
                   const newE = [...d.eligibility];
                   newE.splice(i, 1);
                   update('eligibility', newE);
-                }} className="text-red-400 hover:text-red-600 px-2 shrink-0">
+                }} className="text-red-400 hover:text-red px-2 shrink-0">
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -381,7 +381,7 @@ export default function DetailPageDataFields({
                   const next = packagesGallery.filter((_, idx) => idx !== galleryIdx);
                   onGalleryChange?.(next);
                 }}
-                className="absolute top-2 right-2 w-7 h-7 rounded-full bg-red-500 hover:bg-red-600 text-white flex items-center justify-center border-none cursor-pointer shadow"
+                className="absolute top-2 right-2 w-7 h-7 rounded-full bg-red-500 hover:bg-red text-white flex items-center justify-center border-none cursor-pointer shadow"
                 title="Remove gallery image"
               >
                 <Trash2 className="w-3.5 h-3.5" />

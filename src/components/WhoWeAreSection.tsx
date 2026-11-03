@@ -34,37 +34,37 @@ export default function WhoWeAreSection({ data }: { data: any }) {
     Array.isArray(data?.items)
       ? data.items
       : [
-          { value: "25+", label: "Years of Service" },
-          { value: "10K+", label: "Happy Pilgrims" },
-          { value: "5★", label: "Service Rating" },
-          { value: "24/7", label: "Customer Support" },
-        ];
+        { value: "25+", label: "Years of Service" },
+        { value: "10K+", label: "Happy Pilgrims" },
+        { value: "5★", label: "Service Rating" },
+        { value: "24/7", label: "Customer Support" },
+      ];
 
   const features =
     Array.isArray(data?.features)
       ? data.features
       : [
-          {
-            title: "Fully ATOL Protected",
-            description: "Your financial security is our priority",
-            icon: "shield",
-          },
-          {
-            title: "Islamic Guidance",
-            description: "With authentic scholarly support",
-            icon: "book",
-          },
-          {
-            title: "UK Based & Trusted",
-            description: "A family-run travel company",
-            icon: "building",
-          },
-          {
-            title: "Group & Family Packages",
-            description: "Special arrangements for families",
-            icon: "users",
-          },
-        ];
+        {
+          title: "Fully ATOL Protected",
+          description: "Your financial security is our priority",
+          icon: "shield",
+        },
+        {
+          title: "Islamic Guidance",
+          description: "With authentic scholarly support",
+          icon: "book",
+        },
+        {
+          title: "UK Based & Trusted",
+          description: "A family-run travel company",
+          icon: "building",
+        },
+        {
+          title: "Group & Family Packages",
+          description: "Special arrangements for families",
+          icon: "users",
+        },
+      ];
 
   const [progress, setProgress] = useState(0);
 
@@ -170,20 +170,20 @@ export default function WhoWeAreSection({ data }: { data: any }) {
         );
 
       case "plane":
-      return (
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          className="w-6 h-6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M22 2L11 13" />
-          <path d="M22 2L15 22L11 13L2 9L22 2Z" />
-        </svg>
-      );
+        return (
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            className="w-6 h-6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M22 2L11 13" />
+            <path d="M22 2L15 22L11 13L2 9L22 2Z" />
+          </svg>
+        );
 
       default:
         return (
@@ -311,7 +311,7 @@ export default function WhoWeAreSection({ data }: { data: any }) {
                   >
                     <div
                       className="
-                        text-[#ef2024]
+                        text-red
                         font-bold
                         text-[27px]
                         sm:text-[30px]

@@ -75,7 +75,7 @@ function GuideEditorContent() {
         ? { id: `video-${Date.now()}`, type, title: 'Video', data: { source: 'embed', url: '', title: '', caption: '' } }
         : type === 'FAQ'
           ? { id: `faq-${Date.now()}`, type, title: 'Frequently Asked Questions', data: { eyebrow: '', heading: '', description: '', items: [{ question: '', answerBlocks: [{ type: 'text', content: '' }] }] } }
-        : { id: `text-${Date.now()}`, type, title: 'Content Section', data: { content: '' } };
+          : { id: `text-${Date.now()}`, type, title: 'Content Section', data: { content: '' } };
     setSections((current) => [...current, section]);
   };
 
@@ -203,7 +203,7 @@ function GuideEditorContent() {
                       <div className="flex shrink-0 items-center gap-1">
                         <button type="button" onClick={() => moveSection(index, -1)} disabled={index === 0} className="rounded-lg bg-white p-2 text-slate-500 disabled:opacity-30" title="Move section up"><ArrowUp className="h-3.5 w-3.5" /></button>
                         <button type="button" onClick={() => moveSection(index, 1)} disabled={index === sections.length - 1} className="rounded-lg bg-white p-2 text-slate-500 disabled:opacity-30" title="Move section down"><ArrowDown className="h-3.5 w-3.5" /></button>
-                        <button type="button" onClick={() => setSections((current) => current.filter((_, sectionIndex) => sectionIndex !== index))} className="rounded-lg bg-red-50 p-2 text-red-600"><Trash2 className="h-3.5 w-3.5" /></button>
+                        <button type="button" onClick={() => setSections((current) => current.filter((_, sectionIndex) => sectionIndex !== index))} className="rounded-lg bg-red-50 p-2 text-red"><Trash2 className="h-3.5 w-3.5" /></button>
                       </div>
                     </div>
                     {section.type === 'Text Block (Rich Text)' ? (
@@ -229,7 +229,7 @@ function GuideEditorContent() {
                                 <input value={item.question || ''} onChange={(event) => {
                                   const items = [...section.data.items]; items[itemIndex] = { ...items[itemIndex], question: event.target.value }; updateSection(index, { data: { ...section.data, items } });
                                 }} placeholder="Question" className="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-bold" />
-                                <button type="button" onClick={() => updateSection(index, { data: { ...section.data, items: section.data.items.filter((_: any, currentIndex: number) => currentIndex !== itemIndex) } })} aria-label="Remove FAQ" title="Remove FAQ" className="rounded-lg bg-red-50 p-2 text-red-600"><Trash2 className="h-4 w-4" /></button>
+                                <button type="button" onClick={() => updateSection(index, { data: { ...section.data, items: section.data.items.filter((_: any, currentIndex: number) => currentIndex !== itemIndex) } })} aria-label="Remove FAQ" title="Remove FAQ" className="rounded-lg bg-red-50 p-2 text-red"><Trash2 className="h-4 w-4" /></button>
                               </div>
                               <div className="grid gap-2">
                                 {(item.answerBlocks || []).map((block: any, blockIndex: number) => (
@@ -254,7 +254,7 @@ function GuideEditorContent() {
                                     )}
                                     <button type="button" onClick={() => {
                                       const items = [...section.data.items]; const answerBlocks = (items[itemIndex].answerBlocks || []).filter((_: any, currentIndex: number) => currentIndex !== blockIndex); items[itemIndex] = { ...items[itemIndex], answerBlocks }; updateSection(index, { data: { ...section.data, items } });
-                                    }} aria-label="Remove media or text block" title="Remove media or text block" className="mt-2 rounded-lg bg-red-50 p-2 text-red-600"><Trash2 className="h-4 w-4" /></button>
+                                    }} aria-label="Remove media or text block" title="Remove media or text block" className="mt-2 rounded-lg bg-red-50 p-2 text-red"><Trash2 className="h-4 w-4" /></button>
                                   </div>
                                 ))}
                                 <div className="flex flex-wrap gap-2">

@@ -556,7 +556,7 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
 
                         <div>
                           <label htmlFor="quote-package" className="mb-2 block text-xs md:text-[13px] font-extrabold uppercase tracking-wide text-white">
-                            Select Your Package
+                            Package
                           </label>
                           <div className="relative">
                             <select

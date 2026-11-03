@@ -52,7 +52,7 @@ export default function ConfirmModal({ config, onClose }: ConfirmModalProps) {
           glow: 'shadow-[0_0_60px_rgba(239,68,68,0.35)]',
           iconBg: 'bg-red-500/20 border-red-400/40 text-red-400',
           defaultIcon: <Trash2 className="w-8 h-8 text-red-400 animate-pulse" />,
-          buttonBg: 'bg-red-600 hover:bg-red-500 text-white',
+          buttonBg: 'bg-red hover:bg-red-500 text-white',
           titleColor: 'text-red-300',
         };
       case 'warning':
@@ -106,7 +106,7 @@ export default function ConfirmModal({ config, onClose }: ConfirmModalProps) {
 
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-white p-2 rounded-full bg-red-600 hover:bg-red-700 transition-colors cursor-pointer border-none"
+          className="absolute top-4 right-4 text-white p-2 rounded-full bg-red hover:bg-red-700 transition-colors cursor-pointer border-none"
         >
           <X className="w-4 h-4" />
         </button>

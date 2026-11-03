@@ -102,7 +102,7 @@ export default function MediaLibrary({ onSelect, multiple = false, onClose, acce
         <button type="button" disabled={!!busy} onClick={() => action('optimize')} className="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-xs font-semibold text-emerald-800 hover:bg-emerald-100 disabled:opacity-60"><WandSparkles className="h-4 w-4" />Media Optimizer</button>
         <button type="button" disabled={!!busy} onClick={() => action('rescan')} className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-3 py-2.5 text-xs font-semibold text-[#082a34] hover:bg-amber-400 disabled:opacity-60"><RefreshCcw className="h-4 w-4" />Rescan Media</button>
         <button type="button" disabled={!!busy} onClick={() => inputRef.current?.click()} className="inline-flex items-center gap-2 rounded-xl bg-[#020E43] px-3 py-2.5 text-xs font-semibold text-white disabled:opacity-60"><CloudUpload className="h-4 w-4" />Upload Media</button>
-        {onClose && <button type="button" onClick={onClose} aria-label="Close library" className="rounded-full p-3 bg-red-600 text-white hover:bg-red-700"><X className="h-4 w-4" /></button>}
+        {onClose && <button type="button" onClick={onClose} aria-label="Close library" className="rounded-full p-3 bg-red text-white hover:bg-red-700"><X className="h-4 w-4" /></button>}
         <input ref={inputRef} data-no-media-picker="true" type="file" multiple accept="image/png,image/jpeg,image/webp,image/gif,image/avif,image/x-icon,.ico,.pdf,video/mp4,video/webm,video/quicktime" className="hidden" onChange={e => void upload(e.target.files)} />
       </div>
     </div>

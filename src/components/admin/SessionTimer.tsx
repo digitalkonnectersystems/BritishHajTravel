@@ -111,12 +111,12 @@ export default function SessionTimer({ loginTime }: SessionTimerProps) {
       {/* ── Top Bar Center Session Timer Display Badge ── */}
       <div
         className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-extrabold transition-all shadow-xs border cursor-help ${isWarningState
-          ? 'bg-red-50 text-red-600 border-red-300 animate-pulse'
+          ? 'bg-red-50 text-red border-red-300 animate-pulse'
           : 'bg-slate-100 text-slate-700 border-slate-200/80 hover:bg-slate-200/60'
           }`}
         title={`Max 8-Hour Session. Expires in ${formattedTime}`}
       >
-        <Clock className={`w-3.5 h-3.5 ${isWarningState ? 'text-red-600' : 'text-emerald-700'}`} />
+        <Clock className={`w-3.5 h-3.5 ${isWarningState ? 'text-red' : 'text-emerald-700'}`} />
         <span>
           <span className="text-slate-600 font-medium hidden sm:inline">Session: </span>
           <span className="font-sans font-bold tracking-wider text-primary">{formattedTime}</span>
@@ -129,7 +129,7 @@ export default function SessionTimer({ loginTime }: SessionTimerProps) {
           <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
             <div className="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl border border-red-200 flex flex-col items-center text-center space-y-4 animate-in zoom-in-95 duration-200">
               {/* Warning Icon Badge */}
-              <div className="w-16 h-16 rounded-3xl bg-red-50 border border-red-200 flex items-center justify-center text-red-600 shadow-md">
+              <div className="w-16 h-16 rounded-3xl bg-red-50 border border-red-200 flex items-center justify-center text-red shadow-md">
                 <ShieldAlert className="w-8 h-8 animate-bounce" />
               </div>
 
@@ -145,11 +145,11 @@ export default function SessionTimer({ loginTime }: SessionTimerProps) {
               <div className="w-full bg-red-50 p-4 rounded-2xl border border-red-200 space-y-2">
                 <div className="flex justify-between items-center text-xs font-black">
                   <span className="text-red-700 uppercase tracking-wider text-[10px]">Time Remaining</span>
-                  <span className="font-mono text-base text-red-600">{formattedTime}</span>
+                  <span className="font-mono text-base text-red">{formattedTime}</span>
                 </div>
                 <div className="w-full bg-red-200 rounded-full h-2 overflow-hidden">
                   <div
-                    className="bg-red-600 h-full rounded-full transition-all duration-1000"
+                    className="bg-red h-full rounded-full transition-all duration-1000"
                     style={{ width: `${Math.min(100, Math.max(0, (remainingSeconds / FIVE_MINUTES_SEC) * 100))}%` }}
                   />
                 </div>
@@ -171,7 +171,7 @@ export default function SessionTimer({ loginTime }: SessionTimerProps) {
                 <button
                   type="button"
                   onClick={handleAutoLogout}
-                  className="flex-1 py-2.5 rounded-xl bg-red-600 text-white text-xs font-extrabold hover:bg-red-700 transition-colors cursor-pointer shadow-md flex items-center justify-center gap-1.5"
+                  className="flex-1 py-2.5 rounded-xl bg-red text-white text-xs font-extrabold hover:bg-red-700 transition-colors cursor-pointer shadow-md flex items-center justify-center gap-1.5"
                 >
                   <LogOut className="w-3.5 h-3.5" /> Sign Out Now
                 </button>

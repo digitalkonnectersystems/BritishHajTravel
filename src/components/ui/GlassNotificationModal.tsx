@@ -137,7 +137,7 @@ export default function GlassNotificationModal({
           type="button"
           onClick={onClose}
           aria-label="Close notification"
-          className="absolute top-4 right-4 text-white p-2 rounded-full bg-red-600 hover:bg-red-700 transition-colors cursor-pointer border-none"
+          className="absolute top-4 right-4 text-white p-2 rounded-full bg-red hover:bg-red-700 transition-colors cursor-pointer border-none"
         >
           <X className="w-4 h-4" />
         </button>

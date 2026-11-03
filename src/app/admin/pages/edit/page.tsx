@@ -1400,7 +1400,8 @@ function PageBuilderContent() {
       };
     } else if (['Package Detail Blocks', 'Package Flight Details', 'Package Hotel Details', 'Package Occupancy Prices', 'Package Inclusions', 'Package Detail Gallery'].includes(type)) {
       const all = type === 'Package Detail Blocks';
-      defaultData = { eyebrow: 'PACKAGE DETAILS', title: '', packageId: 0,
+      defaultData = {
+        eyebrow: 'PACKAGE DETAILS', title: '', packageId: 0,
         showFlight: all || type === 'Package Flight Details',
         showHotels: all || type === 'Package Hotel Details',
         showPrices: all || type === 'Package Occupancy Prices',
@@ -2147,7 +2148,7 @@ function PageBuilderContent() {
 
     setConfirmConfig({
 
-      icon: <Trash2 className="w-3 h-3 text-red-600" />,
+      icon: <Trash2 className="w-3 h-3 text-red" />,
 
       title: '',
 
@@ -2399,7 +2400,7 @@ function PageBuilderContent() {
 
           {message && (
 
-            <span className={`text-xs font-bold px-3 py-1 rounded-full border ${message.startsWith('✅') ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-red-50 text-red-600 border-red-200'}`}>
+            <span className={`text-xs font-bold px-3 py-1 rounded-full border ${message.startsWith('✅') ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-red-50 text-red border-red-200'}`}>
 
               {message}
 
@@ -3405,7 +3406,7 @@ function PageBuilderContent() {
 
                         onClick={() => setVisaIconUrl('')}
 
-                        className="text-[10px] text-red-600 hover:text-red-800 font-bold cursor-pointer border-none bg-transparent"
+                        className="text-[10px] text-red hover:text-red-800 font-bold cursor-pointer border-none bg-transparent"
 
                       >
 
@@ -3493,7 +3494,7 @@ function PageBuilderContent() {
 
                         onClick={() => setJourneyIllustrationUrl('')}
 
-                        className="text-[10px] text-red-600 hover:text-red-800 font-bold cursor-pointer border-none bg-transparent"
+                        className="text-[10px] text-red hover:text-red-800 font-bold cursor-pointer border-none bg-transparent"
 
                       >
 
@@ -3659,7 +3660,7 @@ function PageBuilderContent() {
 
                         title="Delete Card"
 
-                        className="p-1 rounded hover:bg-red-50 text-red-600 hover:text-red-700 cursor-pointer border-none bg-transparent ml-1"
+                        className="p-1 rounded hover:bg-red-50 text-red hover:text-red-700 cursor-pointer border-none bg-transparent ml-1"
 
                       >
 
@@ -3769,7 +3770,7 @@ function PageBuilderContent() {
 
                           }}
 
-                          className="text-[10px] text-red-600 hover:text-red-800 font-bold mt-1.5 cursor-pointer border-none bg-transparent"
+                          className="text-[10px] text-red hover:text-red-800 font-bold mt-1.5 cursor-pointer border-none bg-transparent"
 
                         >
 
@@ -4853,7 +4854,7 @@ function PageBuilderContent() {
 
                               onClick={() => removeSection(sec.id)}
 
-                              className="border border-red-300 bg-red-100 text-red-600 rounded-lg px-2.5 py-1 cursor-pointer text-xs font-bold hover:bg-red-200 transition-colors flex items-center gap-1.5"
+                              className="border border-red-300 bg-red-100 text-red rounded-lg px-2.5 py-1 cursor-pointer text-xs font-bold hover:bg-red-200 transition-colors flex items-center gap-1.5"
 
                               title="Delete entire section"
 
@@ -5004,9 +5005,9 @@ function PageBuilderContent() {
                                     {selectedHotels.map((hotel: any, index: number) => <div key={hotel.id} className="flex items-center gap-2 rounded border border-slate-200 bg-slate-50 p-2 text-xs">
                                       {hotel.imageUrl && <img src={hotel.imageUrl} alt="" className="h-10 w-12 rounded object-cover" />}
                                       <span className="min-w-0 flex-1 font-semibold text-slate-800">{hotel.name}</span>
-                                      <button type="button" title="Move up" disabled={index === 0} onClick={() => { const ids = [...chosenIds]; [ids[index-1], ids[index]] = [ids[index], ids[index-1]]; updateSectionData(sec.id, 'hotelIds', ids); }} className="rounded border px-2 py-1 disabled:opacity-30">↑</button>
-                                      <button type="button" title="Move down" disabled={index === selectedHotels.length - 1} onClick={() => { const ids = [...chosenIds]; [ids[index+1], ids[index]] = [ids[index], ids[index+1]]; updateSectionData(sec.id, 'hotelIds', ids); }} className="rounded border px-2 py-1 disabled:opacity-30">↓</button>
-                                      <button type="button" title="Remove hotel" onClick={() => updateSectionData(sec.id, 'hotelIds', chosenIds.filter(id => id !== Number(hotel.id)))} className="rounded border border-red-300 px-2 py-1 font-bold text-red-600">Remove</button>
+                                      <button type="button" title="Move up" disabled={index === 0} onClick={() => { const ids = [...chosenIds];[ids[index - 1], ids[index]] = [ids[index], ids[index - 1]]; updateSectionData(sec.id, 'hotelIds', ids); }} className="rounded border px-2 py-1 disabled:opacity-30">↑</button>
+                                      <button type="button" title="Move down" disabled={index === selectedHotels.length - 1} onClick={() => { const ids = [...chosenIds];[ids[index + 1], ids[index]] = [ids[index], ids[index + 1]]; updateSectionData(sec.id, 'hotelIds', ids); }} className="rounded border px-2 py-1 disabled:opacity-30">↓</button>
+                                      <button type="button" title="Remove hotel" onClick={() => updateSectionData(sec.id, 'hotelIds', chosenIds.filter(id => id !== Number(hotel.id)))} className="rounded border border-red-300 px-2 py-1 font-bold text-red">Remove</button>
                                     </div>)}
                                   </div>
                                 </>}
@@ -5640,7 +5641,7 @@ function PageBuilderContent() {
 
                                         updateSectionData(sec.id, 'items', allItems.filter((_: any, itemIndex: number) => itemIndex !== sIdx));
 
-                                      }} className="p-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg border border-red-200 cursor-pointer flex items-center justify-center shrink-0" title="Remove KPI">
+                                      }} className="p-1.5 bg-red-50 hover:bg-red-100 text-red rounded-lg border border-red-200 cursor-pointer flex items-center justify-center shrink-0" title="Remove KPI">
 
                                         <Trash2 className="w-3.5 h-3.5" />
 
@@ -5725,7 +5726,7 @@ function PageBuilderContent() {
 
                                       </div>
 
-                                      <button type="button" onClick={() => updateSectionData(sec.id, 'items', allItems.filter((_: any, itemIndex: number) => itemIndex !== sIdx))} className="p-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg border border-red-200 cursor-pointer flex items-center justify-center shrink-0" title="Remove grid item"><Trash2 className="w-3.5 h-3.5" /></button>
+                                      <button type="button" onClick={() => updateSectionData(sec.id, 'items', allItems.filter((_: any, itemIndex: number) => itemIndex !== sIdx))} className="p-1.5 bg-red-50 hover:bg-red-100 text-red rounded-lg border border-red-200 cursor-pointer flex items-center justify-center shrink-0" title="Remove grid item"><Trash2 className="w-3.5 h-3.5" /></button>
 
                                     </div>
 
@@ -6139,7 +6140,7 @@ function PageBuilderContent() {
 
                                             }}
 
-                                            className="p-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg border border-red-200 cursor-pointer flex items-center justify-center transition-colors shrink-0"
+                                            className="p-1.5 bg-red-50 hover:bg-red-100 text-red rounded-lg border border-red-200 cursor-pointer flex items-center justify-center transition-colors shrink-0"
 
                                             title="Remove KPI"
 
@@ -6265,7 +6266,7 @@ function PageBuilderContent() {
 
                                         onClick={() => updateSectionData(sec.id, 'features', arr.filter((_, index) => index !== fIdx))}
 
-                                        className="p-1.5 bg-red-50 text-red-600 rounded border border-red-200 cursor-pointer"
+                                        className="p-1.5 bg-red-50 text-red rounded border border-red-200 cursor-pointer"
 
                                         title="Remove feature"
 
@@ -7012,7 +7013,7 @@ function PageBuilderContent() {
 
                                           }}
 
-                                          className="flex-shrink-0 bg-red-50 text-red-600 hover:bg-red-100 p-1.5 rounded-md transition-colors"
+                                          className="flex-shrink-0 bg-red-50 text-red hover:bg-red-100 p-1.5 rounded-md transition-colors"
 
                                           title="Remove Package"
 
@@ -7120,7 +7121,7 @@ function PageBuilderContent() {
                                   if (!pkg) return null;
                                   return <div key={String(id)} className="flex items-center justify-between text-black rounded-lg border border-red-100 bg-white px-3 py-2 text-xs">
                                     <span className="font-semibold">{pkg.title}</span>
-                                    <button type="button" className="rounded-lg bg-red-50 p-2 text-red-600" aria-label="Remove selected package" title="Remove selected package" onClick={() => updateSectionData(sec.id, 'packageIds', (sec.data?.packageIds || []).filter((value: string | number) => String(value) !== String(id)))}><Trash2 className="h-4 w-4" /></button>
+                                    <button type="button" className="rounded-lg bg-red-50 p-2 text-red" aria-label="Remove selected package" title="Remove selected package" onClick={() => updateSectionData(sec.id, 'packageIds', (sec.data?.packageIds || []).filter((value: string | number) => String(value) !== String(id)))}><Trash2 className="h-4 w-4" /></button>
                                   </div>;
                                 })}
                               </div>
@@ -7181,7 +7182,7 @@ function PageBuilderContent() {
 
                                         }}
 
-                                        className="border-0 bg-red-100 text-red-600 rounded p-2 text-xs cursor-pointer hover:bg-red-200 transition-colors flex items-center gap-1 font-semibold"
+                                        className="border-0 bg-red-100 text-red rounded p-2 text-xs cursor-pointer hover:bg-red-200 transition-colors flex items-center gap-1 font-semibold"
 
                                         title="Remove Card"
 
@@ -7459,7 +7460,7 @@ function PageBuilderContent() {
 
                                         }}
 
-                                        className="border-0 bg-red-100 text-red-600 rounded p-2 text-xs cursor-pointer hover:bg-red-200 transition-colors flex items-center gap-1 font-semibold"
+                                        className="border-0 bg-red-100 text-red rounded p-2 text-xs cursor-pointer hover:bg-red-200 transition-colors flex items-center gap-1 font-semibold"
 
                                         title="Remove card"
 
@@ -7941,7 +7942,7 @@ function PageBuilderContent() {
 
                                                 }}
 
-                                                className="border-0 bg-red-100 text-red-600 rounded p-1.5 text-[11px] cursor-pointer hover:bg-red-200 transition-colors flex items-center gap-1 font-bold ml-1"
+                                                className="border-0 bg-red-100 text-red rounded p-1.5 text-[11px] cursor-pointer hover:bg-red-200 transition-colors flex items-center gap-1 font-bold ml-1"
 
                                                 title="Remove brochure"
 
@@ -8279,7 +8280,7 @@ function PageBuilderContent() {
 
                                         onClick={() => updateSectionData(sec.id, 'items', (sec.data?.items || []).filter((_: any, index: number) => index !== itemIndex))}
 
-                                        className="text-[10px] font-bold text-red-600"
+                                        className="text-[10px] font-bold text-red"
 
                                       >
 
@@ -8635,7 +8636,7 @@ function PageBuilderContent() {
 
                                         }}
 
-                                        className="border-0 bg-red-100 text-red-600 rounded-md p-1.5 cursor-pointer hover:bg-red-200 transition-colors flex items-center justify-center"
+                                        className="border-0 bg-red-100 text-red rounded-md p-1.5 cursor-pointer hover:bg-red-200 transition-colors flex items-center justify-center"
 
                                         title="Remove badge"
 
@@ -8735,7 +8736,7 @@ function PageBuilderContent() {
 
                                         }}
 
-                                        className="border-0 bg-red-100 text-red-600 rounded p-2 text-xs cursor-pointer hover:bg-red-200 transition-colors flex items-center gap-1 font-semibold"
+                                        className="border-0 bg-red-100 text-red rounded p-2 text-xs cursor-pointer hover:bg-red-200 transition-colors flex items-center gap-1 font-semibold"
 
                                         title="Remove Card"
 
@@ -8912,7 +8913,7 @@ function PageBuilderContent() {
                                           </div>
                                           <label className="block text-[9px] font-bold text-slate-500">TITLE<input type="text" value={item.title || ''} onChange={(e) => { const items = [...(sec.data?.requirements || DEFAULT_UMRAH_VISA_REQUIREMENTS)]; items[itemIndex] = { ...(items[itemIndex] || item), title: e.target.value }; updateSectionData(sec.id, 'requirements', items); }} className="mt-1 w-full rounded-md border border-slate-300 bg-white px-2 py-1.5 text-[11px] font-normal" /></label>
                                           <label className="block text-[9px] font-bold text-slate-500">DESCRIPTION<textarea rows={2} value={item.description || ''} onChange={(e) => { const items = [...(sec.data?.requirements || DEFAULT_UMRAH_VISA_REQUIREMENTS)]; items[itemIndex] = { ...(items[itemIndex] || item), description: e.target.value }; updateSectionData(sec.id, 'requirements', items); }} className="mt-1 w-full rounded-md border border-slate-300 bg-white px-2 py-1.5 text-[11px] font-normal" /></label>
-                                          <button type="button" aria-label={`Remove requirement ${itemIndex + 1}`} onClick={() => { const items = [...(sec.data?.requirements || DEFAULT_UMRAH_VISA_REQUIREMENTS)]; items.splice(itemIndex, 1); updateSectionData(sec.id, 'requirements', items); }} className="mt-5 flex h-7 w-7 items-center justify-center rounded-md bg-red-50 text-red-600"><Trash2 className="h-3.5 w-3.5" /></button>
+                                          <button type="button" aria-label={`Remove requirement ${itemIndex + 1}`} onClick={() => { const items = [...(sec.data?.requirements || DEFAULT_UMRAH_VISA_REQUIREMENTS)]; items.splice(itemIndex, 1); updateSectionData(sec.id, 'requirements', items); }} className="mt-5 flex h-7 w-7 items-center justify-center rounded-md bg-red-50 text-red"><Trash2 className="h-3.5 w-3.5" /></button>
                                         </div>
                                       );
                                     })}
@@ -8959,7 +8960,7 @@ function PageBuilderContent() {
                                       <div key={rowIndex} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_28px] gap-2">
                                         <input type="text" value={row[0] || ''} placeholder="Service label" onChange={(e) => { const rows = [...(sec.data?.rows || [])]; rows[rowIndex] = [e.target.value, rows[rowIndex]?.[1] || '']; updateSectionData(sec.id, 'rows', rows); }} className="w-full rounded-md border border-slate-300 px-2.5 py-1.5 text-[11px]" />
                                         <input type="text" value={row[1] || ''} placeholder="Service details" onChange={(e) => { const rows = [...(sec.data?.rows || [])]; rows[rowIndex] = [rows[rowIndex]?.[0] || '', e.target.value]; updateSectionData(sec.id, 'rows', rows); }} className="w-full rounded-md border border-slate-300 px-2.5 py-1.5 text-[11px]" />
-                                        <button type="button" aria-label={`Remove service row ${rowIndex + 1}`} onClick={() => { const rows = [...(sec.data?.rows || [])]; rows.splice(rowIndex, 1); updateSectionData(sec.id, 'rows', rows); }} className="flex h-7 w-7 items-center justify-center rounded-md bg-red-50 text-red-600"><Trash2 className="h-3.5 w-3.5" /></button>
+                                        <button type="button" aria-label={`Remove service row ${rowIndex + 1}`} onClick={() => { const rows = [...(sec.data?.rows || [])]; rows.splice(rowIndex, 1); updateSectionData(sec.id, 'rows', rows); }} className="flex h-7 w-7 items-center justify-center rounded-md bg-red-50 text-red"><Trash2 className="h-3.5 w-3.5" /></button>
                                       </div>
                                     ))}
                                   </div>
@@ -9014,7 +9015,7 @@ function PageBuilderContent() {
                                 <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
                                   {(Array.isArray(sec.data?.steps) ? sec.data.steps : DEFAULT_GUIDE_STEPS).map((step: any, stepIndex: number, allSteps: any[]) => (
                                     <div key={stepIndex} className="relative rounded-lg border border-slate-200 bg-slate-50 p-3">
-                                      <button type="button" onClick={() => updateSectionData(sec.id, 'steps', allSteps.filter((_, index) => index !== stepIndex))} className="absolute right-2 top-2 rounded bg-red-50 p-1 text-red-600" title="Remove guide step"><Trash2 className="h-3.5 w-3.5" /></button>
+                                      <button type="button" onClick={() => updateSectionData(sec.id, 'steps', allSteps.filter((_, index) => index !== stepIndex))} className="absolute right-2 top-2 rounded bg-red-50 p-1 text-red" title="Remove guide step"><Trash2 className="h-3.5 w-3.5" /></button>
                                       <div className="grid grid-cols-[80px_1fr] gap-2 pr-8">
                                         <label className="block text-[9px] font-bold text-slate-500">STEP NO.
                                           <input type="number" min="1" value={step.number || stepIndex + 1} onChange={(e) => { const steps = [...allSteps]; steps[stepIndex] = { ...steps[stepIndex], number: e.target.value }; updateSectionData(sec.id, 'steps', steps); }} className="mt-1 w-full rounded-md border border-slate-300 px-2 py-1.5 text-[11px]" />
@@ -9067,7 +9068,7 @@ function PageBuilderContent() {
                                       <select value={card.tone || 'bad'} onChange={(e) => { const cards = [...(sec.data?.cards || DEFAULT_UMRAH_VISA_DOCUMENT_CARDS)]; cards[cardIndex] = { ...(cards[cardIndex] || card), tone: e.target.value }; updateSectionData(sec.id, 'cards', cards); }} className="rounded-md border border-slate-300 px-2 py-1.5 text-[10px]"><option value="good">Good</option><option value="bad">Warning</option></select>
                                       <input type="text" value={card.title || ''} placeholder="Card title" onChange={(e) => { const cards = [...(sec.data?.cards || DEFAULT_UMRAH_VISA_DOCUMENT_CARDS)]; cards[cardIndex] = { ...(cards[cardIndex] || card), title: e.target.value }; updateSectionData(sec.id, 'cards', cards); }} className="rounded-md border border-slate-300 px-2 py-1.5 text-[11px]" />
                                       <textarea rows={2} value={(card.bullets || []).join('\n')} placeholder="One bullet per line" onChange={(e) => { const cards = [...(sec.data?.cards || DEFAULT_UMRAH_VISA_DOCUMENT_CARDS)]; cards[cardIndex] = { ...(cards[cardIndex] || card), bullets: e.target.value.split('\n').filter(Boolean) }; updateSectionData(sec.id, 'cards', cards); }} className="rounded-md border border-slate-300 px-2 py-1.5 text-[11px]" />
-                                      <button type="button" aria-label={`Remove example card ${cardIndex + 1}`} onClick={() => { const cards = [...(sec.data?.cards || DEFAULT_UMRAH_VISA_DOCUMENT_CARDS)]; cards.splice(cardIndex, 1); updateSectionData(sec.id, 'cards', cards); }} className="flex h-7 w-7 items-center justify-center rounded-md bg-red-50 text-red-600"><Trash2 className="h-3.5 w-3.5" /></button>
+                                      <button type="button" aria-label={`Remove example card ${cardIndex + 1}`} onClick={() => { const cards = [...(sec.data?.cards || DEFAULT_UMRAH_VISA_DOCUMENT_CARDS)]; cards.splice(cardIndex, 1); updateSectionData(sec.id, 'cards', cards); }} className="flex h-7 w-7 items-center justify-center rounded-md bg-red-50 text-red"><Trash2 className="h-3.5 w-3.5" /></button>
                                     </div>
                                   ))}
                                 </div>
@@ -9208,7 +9209,7 @@ function PageBuilderContent() {
 
                                         }}
 
-                                        className="border-0 bg-red-100 text-red-600 rounded p-2 text-xs cursor-pointer hover:bg-red-200 transition-colors flex items-center gap-1 font-semibold"
+                                        className="border-0 bg-red-100 text-red rounded p-2 text-xs cursor-pointer hover:bg-red-200 transition-colors flex items-center gap-1 font-semibold"
 
                                         title="Remove Step"
 
@@ -9332,7 +9333,7 @@ function PageBuilderContent() {
                                 <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
                                   {(Array.isArray(sec.data?.items) ? sec.data.items : []).map((item: any, itemIndex: number, allItems: any[]) => (
                                     <div key={itemIndex} className="relative rounded-lg border border-slate-200 bg-slate-50 p-3">
-                                      <button type="button" onClick={() => updateSectionData(sec.id, 'items', allItems.filter((_, index) => index !== itemIndex))} className="absolute right-2 top-2 rounded bg-red-50 p-1 text-red-600" title="Remove seat card"><Trash2 className="h-3.5 w-3.5" /></button>
+                                      <button type="button" onClick={() => updateSectionData(sec.id, 'items', allItems.filter((_, index) => index !== itemIndex))} className="absolute right-2 top-2 rounded bg-red-50 p-1 text-red" title="Remove seat card"><Trash2 className="h-3.5 w-3.5" /></button>
                                       <div className="mb-2 flex items-center gap-3 pr-8">
                                         <ImageUploadWidget value={item.logo || ''} onChange={(url) => { const updated = [...allItems]; updated[itemIndex] = { ...updated[itemIndex], logo: url }; updateSectionData(sec.id, 'items', updated); }} subfolder="flights" compact hideManualUrl />
                                         <span className="text-xs font-extrabold uppercase text-slate-700">Seat card #{itemIndex + 1}</span>
@@ -9452,7 +9453,7 @@ function PageBuilderContent() {
 
                                         }}
 
-                                        className="border-0 bg-red-100/50 text-red-600 hover:text-red-500 rounded p-1.5 cursor-pointer transition-colors flex items-center"
+                                        className="border-0 bg-red-100/50 text-red hover:text-red-500 rounded p-1.5 cursor-pointer transition-colors flex items-center"
 
                                         title="Remove Flight"
 
@@ -11236,7 +11237,7 @@ function PageBuilderContent() {
 
                                                       }}
 
-                                                      className="text-white hover:bg-red-700 bg-red-600 border-none rounded-md p-1 cursor-pointer flex items-center justify-center transition-colors"
+                                                      className="text-white hover:bg-red-700 bg-red border-none rounded-md p-1 cursor-pointer flex items-center justify-center transition-colors"
 
                                                       title="Remove row"
 
@@ -11578,7 +11579,7 @@ function PageBuilderContent() {
 
                                                 }}
 
-                                                className="text-white hover:bg-red-700 bg-red-600 border-none rounded-lg p-1.5 cursor-pointer flex items-center justify-center transition-colors"
+                                                className="text-white hover:bg-red-700 bg-red border-none rounded-lg p-1.5 cursor-pointer flex items-center justify-center transition-colors"
 
                                                 title="Remove icon"
 
@@ -12298,7 +12299,7 @@ function PageBuilderContent() {
 
                                                         }}
 
-                                                        className="text-white hover:bg-red-700 bg-red-600 border-none rounded p-1 cursor-pointer flex items-center justify-center transition-colors"
+                                                        className="text-white hover:bg-red-700 bg-red border-none rounded p-1 cursor-pointer flex items-center justify-center transition-colors"
 
                                                         title="Remove Landline"
 
@@ -12494,7 +12495,7 @@ function PageBuilderContent() {
 
                                                         }}
 
-                                                        className="text-white hover:bg-red-700 bg-red-600 border-none rounded p-1 cursor-pointer flex items-center justify-center transition-colors"
+                                                        className="text-white hover:bg-red-700 bg-red border-none rounded p-1 cursor-pointer flex items-center justify-center transition-colors"
 
                                                         title="Remove WhatsApp"
 
@@ -12815,7 +12816,7 @@ function PageBuilderContent() {
 
                                         }}
 
-                                        className="border-0 bg-red-100 text-red-600 rounded p-2 text-xs cursor-pointer hover:bg-red-200 transition-colors flex items-center gap-1 font-semibold"
+                                        className="border-0 bg-red-100 text-red rounded p-2 text-xs cursor-pointer hover:bg-red-200 transition-colors flex items-center gap-1 font-semibold"
 
                                         title="Remove Review"
 

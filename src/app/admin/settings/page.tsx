@@ -979,7 +979,7 @@ export default function AdminSettingsPage() {
 
   const handleDeleteUser = (id: number, name: string) => {
     setConfirmConfig({
-      icon: <Trash2 className="w-3 h-3 text-red-600" />,
+      icon: <Trash2 className="w-3 h-3 text-red" />,
       title: 'Delete User Account',
       message: `Are you sure you want to delete user "${name}"? This action cannot be undone.`,
       confirmText: 'Delete User',
@@ -1471,7 +1471,7 @@ export default function AdminSettingsPage() {
                               const newTree = navTree.filter(t => t.id !== item.id);
                               handleSaveNav(newTree);
                             }}
-                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-50 text-red-600 hover:text-white hover:bg-red-600 border border-red-200 text-[11px] font-bold cursor-pointer disabled:opacity-50"
+                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-50 text-red hover:text-white hover:bg-red border border-red-200 text-[11px] font-bold cursor-pointer disabled:opacity-50"
                           >
                             <Trash2 className="w-3 h-3" />
                           </button>
@@ -1563,7 +1563,7 @@ export default function AdminSettingsPage() {
                                     });
                                     handleSaveNav(newTree);
                                   }}
-                                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-50 text-red-600 hover:text-white hover:bg-red-600 border border-red-200 text-[11px] font-bold cursor-pointer disabled:opacity-50"
+                                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-50 text-red hover:text-white hover:bg-red border border-red-200 text-[11px] font-bold cursor-pointer disabled:opacity-50"
                                 >
                                   <Trash2 className="w-3 h-3" />
                                 </button>
@@ -1753,7 +1753,7 @@ export default function AdminSettingsPage() {
                             const updated = (footerData.socialLinks || []).filter((_: any, i: number) => i !== sIdx);
                             setFooterData({ ...footerData, socialLinks: updated });
                           }}
-                          className="text-white hover:bg-red-700 bg-red-600 border-none rounded-lg p-1.5 cursor-pointer flex items-center justify-center transition-colors"
+                          className="text-white hover:bg-red-700 bg-red border-none rounded-lg p-1.5 cursor-pointer flex items-center justify-center transition-colors"
                           title="Remove item"
                         >
                           <Trash2 className="w-3 h-3" />
@@ -1903,7 +1903,7 @@ export default function AdminSettingsPage() {
                             const updated = (footerData.trustBadges || []).filter((_: any, i: number) => i !== bIdx);
                             setFooterData({ ...footerData, trustBadges: updated });
                           }}
-                          className="text-white hover:bg-red-700 text-xs bg-red-600 border-none rounded-lg p-1.5 cursor-pointer font-bold flex items-center justify-center transition-colors"
+                          className="text-white hover:bg-red-700 text-xs bg-red border-none rounded-lg p-1.5 cursor-pointer font-bold flex items-center justify-center transition-colors"
                           title="Remove badge"
                         >
                           <Trash2 className="w-3 h-3" />
@@ -2009,7 +2009,7 @@ export default function AdminSettingsPage() {
                               const updated = (footerData.servicesLinks || []).filter((_: any, i: number) => i !== lIdx);
                               setFooterData({ ...footerData, servicesLinks: updated });
                             }}
-                            className="text-white hover:bg-red-700 text-xs bg-red-600 border-none rounded-lg p-1.5 cursor-pointer font-bold flex items-center justify-center transition-colors shrink-0"
+                            className="text-white hover:bg-red-700 text-xs bg-red border-none rounded-lg p-1.5 cursor-pointer font-bold flex items-center justify-center transition-colors shrink-0"
                             title="Remove link"
                           >
                             <Trash2 className="w-3 h-3" />
@@ -2113,7 +2113,7 @@ export default function AdminSettingsPage() {
                               const updated = (footerData.sitemapLinks || []).filter((_: any, i: number) => i !== lIdx);
                               setFooterData({ ...footerData, sitemapLinks: updated });
                             }}
-                            className="text-white hover:bg-red-700 text-xs bg-red-600 border-none rounded-lg p-1.5 cursor-pointer font-bold flex items-center justify-center transition-colors shrink-0"
+                            className="text-white hover:bg-red-700 text-xs bg-red border-none rounded-lg p-1.5 cursor-pointer font-bold flex items-center justify-center transition-colors shrink-0"
                             title="Remove link"
                           >
                             <Trash2 className="w-3 h-3" />
@@ -2274,7 +2274,7 @@ export default function AdminSettingsPage() {
                               const updated = (footerData.supportItems || []).filter((_: any, i: number) => i !== cIdx);
                               setFooterData({ ...footerData, supportItems: updated });
                             }}
-                            className="text-white hover:bg-red-700 bg-red-600 border-none rounded-lg p-1.5 cursor-pointer flex items-center justify-center transition-colors"
+                            className="text-white hover:bg-red-700 bg-red border-none rounded-lg p-1.5 cursor-pointer flex items-center justify-center transition-colors"
                             title="Remove item"
                           >
                             <Trash2 className="w-3 h-3" />
@@ -2366,7 +2366,7 @@ export default function AdminSettingsPage() {
                 <div className="flex items-start gap-3.5">
                   <div className={`p-2.5 rounded-xl shrink-0 ${seoIndexingActive
                     ? 'bg-primary text-white shadow-sm'
-                    : 'bg-red-600 text-white shadow-sm'
+                    : 'bg-red text-white shadow-sm'
                     }`}>
                     {seoIndexingActive ? (
                       <ShieldCheck className="w-5 h-5" />
@@ -2609,7 +2609,7 @@ export default function AdminSettingsPage() {
                       <div className="space-y-1 text-red-800 font-bold">
                         <div>User-agent: *</div>
                         <div className="text-red-700">Disallow: /</div>
-                        <div className="text-[10px] text-red-600 font-normal"># Search engine indexing disabled by admin</div>
+                        <div className="text-[10px] text-red font-normal"># Search engine indexing disabled by admin</div>
                       </div>
                     )}
                   </div>
@@ -2671,7 +2671,7 @@ export default function AdminSettingsPage() {
                                   additionalDisallowPaths: seoData.additionalDisallowPaths.filter((item: string) => item !== p),
                                 });
                               }}
-                              className="text-ink-lt hover:text-red-600 cursor-pointer"
+                              className="text-ink-lt hover:text-red cursor-pointer"
                             >
                               <X className="w-3 h-3" />
                             </button>
@@ -3650,7 +3650,7 @@ export default function AdminSettingsPage() {
                               <button
                                 type="button"
                                 onClick={() => handleDeleteUser(u.id, u.name)}
-                                className="p-1.5 rounded-lg border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 transition-colors cursor-pointer"
+                                className="p-1.5 rounded-lg border border-red-200 bg-red-50 text-red hover:bg-red-100 transition-colors cursor-pointer"
                                 title="Delete User"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
@@ -3874,7 +3874,7 @@ export default function AdminSettingsPage() {
                         <button
                           type="button"
                           onClick={() => setUserModalOpen(false)}
-                          className="px-4 py-2 rounded-full border border-red-300 text-red-600 text-xs font-bold hover:bg-red-50 cursor-pointer"
+                          className="px-4 py-2 rounded-full border border-red-300 text-red text-xs font-bold hover:bg-red-50 cursor-pointer"
                         >
                           Cancel
                         </button>
@@ -3951,7 +3951,7 @@ export default function AdminSettingsPage() {
                             type="button"
                             onClick={() => setLoginAuthData({ ...loginAuthData, backgroundImage: '' })}
                             title="Remove background image" aria-label="Remove background image"
-                            className="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold border-none cursor-pointer flex items-center gap-1.5 transition-colors shadow-xs"
+                            className="bg-red hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold border-none cursor-pointer flex items-center gap-1.5 transition-colors shadow-xs"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>
@@ -4073,7 +4073,7 @@ export default function AdminSettingsPage() {
                             type="button"
                             onClick={() => setDisclaimerData({ ...disclaimerData, image: '' })}
                             title="Remove disclaimer image" aria-label="Remove disclaimer image"
-                            className="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold border-none cursor-pointer flex items-center gap-1.5 transition-colors shadow-xs"
+                            className="bg-red hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold border-none cursor-pointer flex items-center gap-1.5 transition-colors shadow-xs"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>
@@ -4334,7 +4334,7 @@ export default function AdminSettingsPage() {
                                   type="button"
                                   onClick={() => handleInitiateRemoveForm(f.key, f.title)}
                                   title={`Remove ${f.title}`}
-                                  className="w-7 h-7 rounded-full bg-red-600 hover:bg-red-200 text-white hover:text-red-600 flex items-center justify-center transition-all cursor-pointer shadow-xs shrink-0"
+                                  className="w-7 h-7 rounded-full bg-red hover:bg-red-200 text-white hover:text-red flex items-center justify-center transition-all cursor-pointer shadow-xs shrink-0"
                                 >
                                   <X className="w-3.5 h-3.5" />
                                 </button>
@@ -4516,7 +4516,7 @@ export default function AdminSettingsPage() {
                                           const updated = fieldsList.filter((_, i) => i !== idx);
                                           setFormFieldsState((prev) => ({ ...prev, [f.key]: updated }));
                                         }}
-                                        className="w-8 h-8 rounded-full bg-red-50 hover:bg-red-600 text-red-600 hover:text-white flex items-center justify-center border-none cursor-pointer transition-all shrink-0"
+                                        className="w-8 h-8 rounded-full bg-red-50 hover:bg-red text-red hover:text-white flex items-center justify-center border-none cursor-pointer transition-all shrink-0"
                                         title="Delete Field Input"
                                       >
                                         <Trash2 className="w-3.5 h-3.5" />
@@ -4814,7 +4814,7 @@ export default function AdminSettingsPage() {
                         <button
                           onClick={handleDeleteSelectedInbox}
                           disabled={isDeletingInboxItems}
-                          className="text-xs font-extrabold text-red-600 hover:bg-red-50 px-3 py-1 rounded-lg cursor-pointer bg-transparent border-none flex items-center gap-1 transition-colors"
+                          className="text-xs font-extrabold text-red hover:bg-red-50 px-3 py-1 rounded-lg cursor-pointer bg-transparent border-none flex items-center gap-1 transition-colors"
                         >
                           {isDeletingInboxItems ? 'DELETING...' : `DELETE (${selectedInboxItems.length})`}
                         </button>

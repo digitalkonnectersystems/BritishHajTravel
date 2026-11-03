@@ -54,7 +54,7 @@ export default function AdminBlogsPage() {
 
   const handleDelete = (id: number, title: string) => {
     setConfirmConfig({
-      icon: <Trash2 className="w-3 h-3 text-red-600" />,
+      icon: <Trash2 className="w-3 h-3 text-red" />,
       title: 'Delete Blog Post',
       message: `Permanently delete "${title}"? This cannot be undone.`,
       confirmText: 'Delete Blog',
@@ -272,7 +272,7 @@ export default function AdminBlogsPage() {
                           type="button"
                           onClick={() => handleDelete(b.id, b.title)}
                           disabled={deletingId === b.id}
-                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-soft hover:bg-red hover:text-white text-red-600 border border-red-200 text-[11px] font-bold cursor-pointer disabled:opacity-50"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-soft hover:bg-red hover:text-white text-red border border-red-200 text-[11px] font-bold cursor-pointer disabled:opacity-50"
                         >
                           <Trash2 className="w-3 h-3" />
                         </button>

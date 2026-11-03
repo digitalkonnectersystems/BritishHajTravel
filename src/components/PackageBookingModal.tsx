@@ -237,7 +237,7 @@ export default function PackageBookingModal({
           <button
             type="button"
             onClick={onClose}
-            className="absolute top-4 right-4 z-20 w-8 h-8 flex items-center justify-center bg-red-600 hover:bg-red-700 text-white rounded-full transition-all shadow-md cursor-pointer border-none"
+            className="absolute top-4 right-4 z-20 w-8 h-8 flex items-center justify-center bg-red hover:bg-red-700 text-white rounded-full transition-all shadow-md cursor-pointer border-none"
             aria-label="Close booking modal"
           >
             <X className="w-4 h-4" />
@@ -304,7 +304,7 @@ export default function PackageBookingModal({
                 />
 
                 {errors.fullName && (
-                  <span className="text-[10px] font-bold text-red-600 mt-1 block">
+                  <span className="text-[10px] font-bold text-red mt-1 block">
                     Please fill out this field.
                   </span>
                 )}
@@ -345,7 +345,7 @@ export default function PackageBookingModal({
                   />
 
                   {errors.phone && (
-                    <span className="text-[10px] font-bold text-red-600 mt-1 block">
+                    <span className="text-[10px] font-bold text-red mt-1 block">
                       Please fill out this field.
                     </span>
                   )}
@@ -377,7 +377,7 @@ export default function PackageBookingModal({
                   />
 
                   {errors.email && (
-                    <span className="text-[10px] font-bold text-red-600 mt-1 block">
+                    <span className="text-[10px] font-bold text-red mt-1 block">
                       Please fill out this field.
                     </span>
                   )}
@@ -544,7 +544,7 @@ export default function PackageBookingModal({
                   </div>
 
                   {errors.selectedDate && (
-                    <span className="text-[10px] font-bold text-red-600 mt-1 block">
+                    <span className="text-[10px] font-bold text-red mt-1 block">
                       Please select a valid start date.
                     </span>
                   )}
@@ -593,7 +593,7 @@ export default function PackageBookingModal({
                   </div>
 
                   {errors.selectedPackageType && (
-                    <span className="text-[10px] font-bold text-red-600 mt-1 block">
+                    <span className="text-[10px] font-bold text-red mt-1 block">
                       Please select a package type.
                     </span>
                   )}

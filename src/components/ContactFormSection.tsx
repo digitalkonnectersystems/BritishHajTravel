@@ -249,7 +249,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                     className={`w-full border !border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium ${errors.fullName ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-primary"
                       }`}
                   />
-                  {errors.fullName && <span className="text-red-600 text-xs font-semibold mt-1 block">{errors.fullName}</span>}
+                  {errors.fullName && <span className="text-red text-xs font-semibold mt-1 block">{errors.fullName}</span>}
                 </div>
 
                 <div className="relative">
@@ -265,7 +265,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                     className={`w-full border border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium ${errors.email ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-primary"
                       }`}
                   />
-                  {errors.email && <span className="text-red-600 text-xs font-semibold mt-1 block">{errors.email}</span>}
+                  {errors.email && <span className="text-red text-xs font-semibold mt-1 block">{errors.email}</span>}
                 </div>
 
                 <div className="relative">
@@ -305,7 +305,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                     <option value="Saudi Visa" className="text-[#111111]">Saudi Visa</option>
                     <option value="Other" className="text-[#111111]">Other</option>
                   </select>
-                  {errors.packageType && <span id="packageType-error" className="text-red-600 text-xs font-semibold mt-1 block">{errors.packageType}</span>}
+                  {errors.packageType && <span id="packageType-error" className="text-red text-xs font-semibold mt-1 block">{errors.packageType}</span>}
                 </div>
               </div>
 
@@ -324,7 +324,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
                   className={`w-full border border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium ${errors.message ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-primary"
                     }`}
                 />
-                {errors.message && <span className="text-red-600 text-xs font-semibold mt-1 block">{errors.message}</span>}
+                {errors.message && <span className="text-red text-xs font-semibold mt-1 block">{errors.message}</span>}
               </div>
 
               <div>

@@ -1008,7 +1008,7 @@ export default function EditPackageClient({ packageData }: EditPackageClientProp
                       <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${editingPkg.status === 'sold_out' ? 'translate-x-5' : 'translate-x-0'
                         }`} />
                     </div>
-                    <span className={`text-xs font-extrabold uppercase tracking-wider ${editingPkg.status === 'sold_out' ? 'text-red-600' : 'text-slate-500'
+                    <span className={`text-xs font-extrabold uppercase tracking-wider ${editingPkg.status === 'sold_out' ? 'text-red' : 'text-slate-500'
                       }`}>
                       {editingPkg.status === 'sold_out' ? '🔴 Sold Out' : 'Mark as Sold Out'}
                     </span>

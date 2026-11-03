@@ -177,7 +177,7 @@ export default function IconPicker({
             <span
               role="button"
               onClick={handleClear}
-              className="p-1 bg-red-600 hover:bg-red-700 rounded-full text-white hover:text-white transition-colors"
+              className="p-1 bg-red hover:bg-red-700 rounded-full text-white hover:text-white transition-colors"
               title="Clear icon"
             >
               <X className="w-3 h-3" />

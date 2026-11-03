@@ -83,7 +83,7 @@ export default function UmrahRegistrationForm({
           return next;
         });
       }
-    }).catch(() => {});
+    }).catch(() => { });
     return () => { active = false; };
   }, []);
 
@@ -125,7 +125,7 @@ export default function UmrahRegistrationForm({
     const options = choices[key];
     return <div key={key} className="min-w-0">
       <label htmlFor={id} className="block text-[15px] leading-[21px] font-bold text-[#121212] mb-3">
-        {settings.label}{settings.required && <span className="text-red-600"> *</span>}
+        {settings.label}{settings.required && <span className="text-red"> *</span>}
       </label>
       {options ? (
         <select id={id} name={key} className={inputClass} value={values[key]} required={settings.required}

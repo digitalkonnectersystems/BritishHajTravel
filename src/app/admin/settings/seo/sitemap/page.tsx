@@ -297,7 +297,7 @@ export default function SitemapSettingsPage() {
                   <td className="p-4">
                     {log.status === 'success' && <span className="inline-flex items-center gap-1 text-green-600"><CheckCircle size={14} /> Success</span>}
                     {log.status === 'warning' && <span className="inline-flex items-center gap-1 text-yellow-600"><AlertTriangle size={14} /> Warning</span>}
-                    {log.status === 'error' && <span className="inline-flex items-center gap-1 text-red-600"><XCircle size={14} /> Error</span>}
+                    {log.status === 'error' && <span className="inline-flex items-center gap-1 text-red"><XCircle size={14} /> Error</span>}
                   </td>
                   <td className="p-4 text-slate-500 text-xs max-w-md truncate">
                     {JSON.stringify(log.details)}

@@ -103,7 +103,7 @@ export default function GallerySection({ data }: { data?: any }) {
 
       {activeIndex !== null && images[activeIndex] && (
         <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/90 p-4" role="dialog" aria-modal="true" aria-label="Gallery image viewer" onClick={close}>
-          <button type="button" onClick={close} aria-label="Close image viewer" className="absolute right-4 top-4 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-red-600 text-white transition hover:bg-red-700"><X className="h-6 w-6" /></button>
+          <button type="button" onClick={close} aria-label="Close image viewer" className="absolute right-4 top-4 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-red text-white transition hover:bg-red-700"><X className="h-6 w-6" /></button>
           {images.length > 1 && <button type="button" onClick={(event) => { event.stopPropagation(); previous(); }} aria-label="Previous image" className="absolute left-3 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-white hover:text-primary md:left-8"><ChevronLeft className="h-7 w-7" /></button>}
           <img src={images[activeIndex].src} alt={images[activeIndex].alt} className="max-h-[90vh] max-w-[92vw] object-contain" onClick={(event) => event.stopPropagation()} />
           {images.length > 1 && <button type="button" onClick={(event) => { event.stopPropagation(); next(); }} aria-label="Next image" className="absolute right-3 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-white hover:text-primary md:right-8"><ChevronRight className="h-7 w-7" /></button>}
