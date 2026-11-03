@@ -32,7 +32,7 @@ export default function DestinationsPageSection({
   const description = data?.description || "Explore our carefully selected travel packages for this destination.";
 
   return (
-    <section className="pt-12 pb-16 bg-blue-lt">
+    <section className="py-6 md:py-10 bg-blue-lt">
       <div className="max-w-[1400px] mx-auto px-5">
         <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-6 gap-6 text-center md:text-left">
           <div className="flex flex-col items-center md:items-start">

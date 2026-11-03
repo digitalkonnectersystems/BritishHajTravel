@@ -139,7 +139,7 @@ function SideBannerPreview({ theme, value }: { theme: "hotel" | "flights"; value
                 <span className="mx-3 flex-1 border-t border-dashed border-white/40" />
                 <span>{value.flightsRouteTo}</span>
               </div>
-              <div className="inline-flex min-h-[58px] w-full items-center justify-center rounded-full bg-white px-6 text-center text-[15px] font-extrabold uppercase tracking-[0.12em] text-red">
+              <div className="inline-flex min-h-[48px] sm:min-h-[56px] w-full items-center justify-center rounded-full bg-white px-6 text-center text-[15px] font-extrabold uppercase tracking-[0.12em] text-red">
                 {buttonLabel} <MoveRight className="ml-2 h-5 w-5" />
               </div>
             </div>
@@ -152,7 +152,7 @@ function SideBannerPreview({ theme, value }: { theme: "hotel" | "flights"; value
                   ))}
                 </div>
               ) : null}
-              <div className="mt-5 inline-flex min-h-[48px] sm:min-h-[56px] w-full items-center justify-center rounded-full bg-white px-6 text-center text-[15px] font-extrabold uppercase tracking-[0.12em] text-primary">
+              <div className="mt-5 inline-flex min-h-[48px] sm:min-h-[56px] w-full items-center justify-center rounded-full bg-white px-6 text-center text-sm font-extrabold uppercase tracking-[0.12em] text-primary">
                 {buttonLabel} <MoveRight className="ml-2 h-5 w-5" />
               </div>
             </>

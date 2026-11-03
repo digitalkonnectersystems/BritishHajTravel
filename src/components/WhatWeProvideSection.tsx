@@ -486,13 +486,7 @@ export default function WhatWeProvideSection({ data }: { data: any }) {
           <div>
             <div
               className="
-                text-red
-                text-[11px]
-                sm:text-xs
-                tracking-[0.28em]
-                uppercase
-                font-bold
-                mb-3
+                eyebrow 
               "
             >
               {eyebrow}
@@ -501,13 +495,7 @@ export default function WhatWeProvideSection({ data }: { data: any }) {
             <h2
               className="
                 text-[#08245c]
-                font-serif
-                text-[36px]
-                sm:text-[42px]
-                lg:text-[48px]
-                xl:text-[54px]
-                font-bold
-                leading-[1.02]
+                font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]
                 mb-4
               "
               dangerouslySetInnerHTML={{

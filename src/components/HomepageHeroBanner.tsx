@@ -213,7 +213,7 @@ function HeroSidePanel({
             {buttonLink && buttonLabel ? (
               <Link
                 href={buttonLink}
-                className="inline-flex min-h-[58px] w-full items-center justify-center rounded-full bg-white px-6 text-center text-sm md:text-[16px] font-extrabold uppercase tracking-[0.1em] text-red transition hover:translate-y-[-1px] hover:shadow-lg"
+                className="inline-flex min-h-[48px] sm:min-h-[56px] w-full items-center justify-center rounded-full bg-white px-6 text-center text-sm font-extrabold uppercase tracking-[0.1em] text-red transition hover:translate-y-[-1px] hover:shadow-lg"
               >
                 {buttonLabel} <MoveRight className="ml-2 h-5 w-5" />
               </Link>
@@ -234,7 +234,7 @@ function HeroSidePanel({
             {buttonLink && buttonLabel ? (
               <Link
                 href={buttonLink}
-                className="mt-5 inline-flex min-h-[48px] sm:min-h-[56px] w-full items-center justify-center rounded-full bg-white px-6 text-center text-sm md:text-[16px] font-extrabold uppercase tracking-[0.1em] text-primary transition hover:translate-y-[-1px] hover:shadow-lg"
+                className="mt-5 inline-flex min-h-[48px] sm:min-h-[56px] w-full items-center justify-center rounded-full bg-white px-6 text-center text-sm font-extrabold uppercase tracking-[0.1em] text-primary transition hover:translate-y-[-1px] hover:shadow-lg"
               >
                 {buttonLabel} <MoveRight className="ml-2 h-5 w-5" />
               </Link>
@@ -462,15 +462,15 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                   <div className="flex min-w-0 flex-col justify-center">
                     <div className="hero">
                       {heroData.heroEyebrow ? <div className="mb-3 text-[11px] md:text-[13px] font-extrabold uppercase tracking-[0.18em] text-ink">{heroData.heroEyebrow}</div> : null}
-                      {heroData.title ? <h1 className="font-serif text-primary text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]" dangerouslySetInnerHTML={{ __html: heroData.title }} /> : null}
-                      {heroData.description ? <p className="mt-4 max-w-[36rem] text-[14px] sm:text-[16px] leading-6 sm:leading-7 text-ink lg:leading-8">{heroData.description}</p> : null}
+                      {heroData.title ? <h1 className="font-serif text-[clamp(1.75rem,2.2vw,2.625rem)] leading-[0.98] text-primary" dangerouslySetInnerHTML={{ __html: heroData.title }} /> : null}
+                      {heroData.description ? <p className="mt-4 max-w-[36rem] text-[14px] sm:text-[16px] leading-6 sm:leading-7 text-ink lg:leading-8 font-medium">{heroData.description}</p> : null}
 
                       {heroData.primaryBtnLink && heroData.primaryBtnLabel || heroData.secondaryBtnLink && heroData.secondaryBtnLabel ? (
-                        <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:gap-4">
+                        <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:gap-4">
                           {heroData.primaryBtnLink && heroData.primaryBtnLabel ? (
                             <Link
                               href={heroData.primaryBtnLink}
-                              className="inline-flex min-h-[48px] sm:min-h-[56px]  max-w-full items-center justify-center rounded-full bg-red px-6 text-center md:text-[16px] text-[14px] font-extrabold uppercase tracking-[0.1em] text-white transition hover:translate-y-[-1px] hover:bg-red/90 hover:shadow-lg sm:px-7"
+                              className="inline-flex min-h-[48px] sm:min-h-[56px]  max-w-full items-center justify-center rounded-full bg-red px-6 text-center text-sm font-extrabold uppercase tracking-[0.1em] text-white transition hover:translate-y-[-1px] hover:bg-red/90 hover:shadow-lg sm:px-7"
                             >
                               {heroData.primaryBtnLabel}
                             </Link>
@@ -478,7 +478,7 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                           {heroData.secondaryBtnLink && heroData.secondaryBtnLabel ? (
                             <Link
                               href={heroData.secondaryBtnLink}
-                              className="inline-flex min-h-[48px] sm:min-h-[56px] max-w-full items-center justify-center rounded-full bg-white px-6 text-center md:text-[16px] text-[14px] font-extrabold uppercase tracking-[0.1em] text-primary transition hover:translate-y-[-1px] hover:bg-slate-100 hover:shadow-lg sm:px-7"
+                              className="inline-flex min-h-[48px] sm:min-h-[56px] max-w-full items-center justify-center rounded-full bg-white px-6 text-center text-sm font-extrabold uppercase tracking-[0.1em] text-primary transition hover:translate-y-[-1px] hover:bg-slate-100 hover:shadow-lg sm:px-7"
                             >
                               {heroData.secondaryBtnLabel}
                             </Link>
@@ -614,7 +614,7 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                       <div className="pt-2">
                         <button
                           type="submit"
-                          className="inline-flex min-h-[48px] sm:min-h-[56px] w-full items-center justify-center bg-red px-6 text-center text-sm md:text-[16px] rounded-full font-extrabold uppercase tracking-[0.1em] text-white transition hover:bg-red/90"
+                          className="inline-flex min-h-[48px] sm:min-h-[56px] w-full items-center justify-center bg-red px-6 text-center text-sm rounded-full font-extrabold uppercase tracking-[0.1em] text-white transition hover:bg-red/90"
                         >
                           Submit
                         </button>

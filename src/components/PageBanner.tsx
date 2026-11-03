@@ -85,7 +85,7 @@ export default function PageBanner({
     >
       <div className={`w-full z-10 mx-auto ${isInnerBanner ? 'max-w-[1400px] px-5' : ''}`}>
         <h1
-          className={isInnerBanner ? 'page-header-title saudi-visa-banner-title' : 'page-header-title'}
+          className={isInnerBanner ? 'page-header-title' : 'page-header-title'}
           dangerouslySetInnerHTML={{ __html: title }}
         />
         {description && (

@@ -25,7 +25,8 @@
   --white: #ffffff;
 
   /* Functional Color Aliases */
-  --primary: #020e43;
+  /* --primary: #020e43; */
+  --primary:#0B1672;
   /* --primary: #2f2f8f; */
   /* --primary-light: #125c40; */
   --primary-light: color-mix(in srgb, var(--primary) 77%, #ffffff);

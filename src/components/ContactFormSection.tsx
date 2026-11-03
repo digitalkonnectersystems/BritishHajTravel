@@ -118,8 +118,8 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
 
   return (
     <section className="py-8 md:py-10 bg-blue-lt">
-      <div className="max-w-[1400px] mx-auto px-5">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+      <div className="max-w-7xl mx-auto px-5">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_minmax(0,440px)] gap-12 lg:gap-20 items-center">
 
           {/* Left Column: Contact Details */}
           <div className="contact-info">
