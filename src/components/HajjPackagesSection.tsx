@@ -162,7 +162,7 @@ export default function HajjPackagesSection({
         <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-6 md:mb-10 gap-3 md:gap-6 text-center md:text-left">
           <div className="flex flex-col items-center md:items-start">
             <h3 className="eyebrow">{eyebrow}</h3>
-            <h2 className="font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">{title}</h2>
+            <h2 className="font-serif text-primary text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">{title}</h2>
           </div>
           <div className="max-w-sm text-primary text-sm leading-relaxed md:border-l-2 border-gray-300 pl-0 md:pl-4">
             {description}

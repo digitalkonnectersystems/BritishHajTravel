@@ -109,7 +109,7 @@ export default function UpcomingUmrahPackages({
           <div className="flex flex-col items-center md:items-start">
             <h3 className="eyebrow">{eyebrow}</h3>
             <h2
-              className="font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]"
+              className="font-serif text-primary text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]"
               dangerouslySetInnerHTML={{ __html: title }}
             />
           </div>
