@@ -511,7 +511,7 @@ export default function PackageBookingModal({
                               }
                             );
                           })()
-                          : "e.g. March 25, 2025"}
+                          : "e.g. Nov 17, 2026"}
                       </span>
 
                       <Calendar className="w-4 h-4 text-slate-400" />

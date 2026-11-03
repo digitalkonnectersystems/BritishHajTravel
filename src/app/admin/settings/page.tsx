@@ -484,7 +484,7 @@ export default function AdminSettingsPage() {
       { id: '4', label: 'Adults', type: 'select', placeholder: '1', required: true },
       { id: '5', label: 'Children', type: 'select', placeholder: '0', required: false },
       { id: '6', label: 'Infants', type: 'select', placeholder: '0', required: false },
-      { id: '7', label: 'Select Start Date', type: 'date', placeholder: 'e.g. March 25, 2025', required: true },
+      { id: '7', label: 'Select Start Date', type: 'date', placeholder: 'e.g. Nov 17, 2026', required: true },
       { id: '8', label: 'Package Type', type: 'select', placeholder: '£ 2,695 - Quad Occupancy', required: true },
     ],
     // ── Merged Hajj Package Form (Detail Page + Popup Modal) ──

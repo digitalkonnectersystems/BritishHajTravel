@@ -479,7 +479,7 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
                     const [year, month, day] = selectedDate.split('-');
                     return new Date(Number(year), Number(month) - 1, Number(day)).toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' });
                   })()
-                  : "e.g. March 25, 2025"}
+                  : "e.g. Nov 17, 2026"}
               </span>
               <Calendar className="w-4 h-4 text-slate-400" />
             </div>
