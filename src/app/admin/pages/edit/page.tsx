@@ -396,7 +396,7 @@ const SECTION_CATALOG: SectionCategory[] = [
 
       { type: 'Text Block (Rich Text)', description: 'Free-form rich text editor block for long-form content.', pages: ['Any Page'] },
 
-      { type: 'Elegant Text Content', description: 'New styled content section: paste text in Tiptap, choose card or clean layout, and get polished typography.', pages: ['Any Page'] },
+      { type: 'Elegant Text Content', description: 'Two-column section with text on the left, an image on the right, and an optional button.', pages: ['Any Page'] },
 
     ],
 
@@ -1659,11 +1659,10 @@ function PageBuilderContent() {
         eyebrow: '',
         title: '',
         content: '',
-        appearance: 'card',
-        alignment: 'left',
         image: '',
         imageAlt: '',
-        imagePosition: 'right',
+        buttonText: '',
+        buttonUrl: '',
       };
     } else if (type === 'Text Block (Rich Text)' || type === 'Packages Content (Rich Text)') {
 
@@ -4566,7 +4565,7 @@ function PageBuilderContent() {
 
                       <h3 className="text-base font-extrabold m-0 text-slate-900">Page Sections</h3>
 
-                      <p className="text-xs text-slate-400 mt-1 m-0">Build page layout with reorderable sections</p>
+                      <p className="text-xs text-soft-ink mt-1 m-0">Build page layout with reorderable sections</p>
 
                     </div>
 
@@ -4652,7 +4651,7 @@ function PageBuilderContent() {
 
                                 return results.length === 0 ? (
 
-                                  <div className="px-3 py-4 text-xs text-slate-400 font-medium text-center">
+                                  <div className="px-3 py-4 text-xs text-soft-ink font-medium text-center">
 
                                     No sections match &quot;{sectionSearch}&quot;
 
@@ -8342,7 +8341,7 @@ function PageBuilderContent() {
                               <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-4 mt-1">
                                 <div>
                                   <h4 className="text-sm font-extrabold text-primary m-0">Elegant Text Content</h4>
-                                  <p className="text-xs text-slate-500 mt-1 mb-0">A separate styled section. Add headings and paragraphs below; the frontend handles typography and spacing.</p>
+                                  <p className="text-xs text-slate-500 mt-1 mb-0">Text stays on the left, with the image on the right. On mobile, the image appears beneath the text.</p>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                   <label className="block text-xs font-semibold text-slate-700">
@@ -8359,24 +8358,6 @@ function PageBuilderContent() {
                                       placeholder="Leave empty to use headings in your content"
                                       className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
                                   </label>
-                                  <label className="block text-xs font-semibold text-slate-700">
-                                    Layout
-                                    <select value={sec.data?.appearance === 'clean' ? 'clean' : 'card'}
-                                      onChange={e => updateSectionData(sec.id, 'appearance', e.target.value)}
-                                      className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm">
-                                      <option value="card">Soft background + white content card</option>
-                                      <option value="clean">Clean editorial text with accent line</option>
-                                    </select>
-                                  </label>
-                                  <label className="block text-xs font-semibold text-slate-700">
-                                    Text alignment
-                                    <select value={sec.data?.alignment === 'center' ? 'center' : 'left'}
-                                      onChange={e => updateSectionData(sec.id, 'alignment', e.target.value)}
-                                      className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm">
-                                      <option value="left">Left aligned (recommended)</option>
-                                      <option value="center">Centered</option>
-                                    </select>
-                                  </label>
                                 </div>
 
                                 {/* Section Image Block */}
@@ -8386,7 +8367,7 @@ function PageBuilderContent() {
                                       <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
                                         <ImageIcon className="w-3.5 h-3.5 text-primary" /> Section Featured Image (Optional)
                                       </span>
-                                      <p className="text-[11px] text-slate-500 m-0">Displays beside the upper text in the card layout.</p>
+                                      <p className="text-[11px] text-slate-500 m-0">Displays to the right of the text, with no card or overlay.</p>
                                     </div>
                                     {sec.data?.image && (
                                       <button
@@ -8421,19 +8402,24 @@ function PageBuilderContent() {
                                           className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white"
                                         />
                                       </label>
-                                      <label className="block text-xs font-semibold text-slate-700">
-                                        Image Placement
-                                        <select
-                                          value={sec.data?.imagePosition || 'right'}
-                                          onChange={e => updateSectionData(sec.id, 'imagePosition', e.target.value)}
-                                          className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white"
-                                        >
-                                          <option value="right">Right side (Recommended)</option>
-                                          <option value="left">Left side</option>
-                                        </select>
-                                      </label>
                                     </div>
                                   </div>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                  <label className="block text-xs font-semibold text-slate-700">
+                                    Optional button text
+                                    <input type="text" maxLength={90} value={sec.data?.buttonText || ''}
+                                      onChange={e => updateSectionData(sec.id, 'buttonText', e.target.value)}
+                                      placeholder="e.g. Learn More"
+                                      className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                                  </label>
+                                  <label className="block text-xs font-semibold text-slate-700">
+                                    Optional button URL
+                                    <input type="text" value={sec.data?.buttonUrl || ''}
+                                      onChange={e => updateSectionData(sec.id, 'buttonUrl', e.target.value)}
+                                      placeholder="e.g. /contact"
+                                      className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                                  </label>
                                 </div>
                                 <label className="block text-xs font-semibold text-slate-700">Section text (Tiptap editor)</label>
                                 <TiptapEditor
@@ -9623,7 +9609,7 @@ function PageBuilderContent() {
 
                                             }}
 
-                                            className="text-xs text-slate-400 text-center w-20 border-b border-transparent hover:border-slate-300 focus:border-primary outline-none bg-transparent mt-0.5 p-0"
+                                            className="text-xs text-soft-ink text-center w-20 border-b border-transparent hover:border-slate-300 focus:border-primary outline-none bg-transparent mt-0.5 p-0"
 
                                             placeholder="London"
 
@@ -9691,7 +9677,7 @@ function PageBuilderContent() {
 
                                             }}
 
-                                            className="text-xs text-slate-400 text-center w-20 border-b border-transparent hover:border-slate-300 focus:border-primary outline-none bg-transparent mt-0.5 p-0"
+                                            className="text-xs text-soft-ink text-center w-20 border-b border-transparent hover:border-slate-300 focus:border-primary outline-none bg-transparent mt-0.5 p-0"
 
                                             placeholder="Jeddah"
 
@@ -10565,7 +10551,7 @@ function PageBuilderContent() {
 
                                       ) : (
 
-                                        <span className="text-xs text-slate-400">No Image</span>
+                                        <span className="text-xs text-soft-ink">No Image</span>
 
                                       )}
 

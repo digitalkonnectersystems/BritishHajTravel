@@ -90,8 +90,8 @@ function DistributionWaveCard({
       </div>
       <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
         {slices.map(slice => <div key={slice.label} className="flex items-center justify-between gap-2 rounded-xl bg-slate-50/80 border border-slate-100 px-3 py-2.5">
-          <span className="flex min-w-0 items-center gap-2 text-xs font-semibold text-slate-600"><span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{backgroundColor:slice.gradientColors[0]}} />{slice.label}</span>
-          <span className="shrink-0 text-sm font-extrabold text-slate-900 tabular-nums">{slice.count} <small className="text-[10px] font-medium text-slate-400">({Math.round(slice.count*100/total)}%)</small></span>
+          <span className="flex min-w-0 items-center gap-2 text-xs font-semibold text-slate-600"><span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: slice.gradientColors[0] }} />{slice.label}</span>
+          <span className="shrink-0 text-sm font-extrabold text-slate-900 tabular-nums">{slice.count} <small className="text-[10px] font-medium text-slate-400">({Math.round(slice.count * 100 / total)}%)</small></span>
         </div>)}
       </div>
     </section>
@@ -154,9 +154,9 @@ export default function DashboardClient({
   const visaQueryCount = enquiryTypes.visa_enquiry ?? 0;
   const flightQueryCount = enquiryTypes.flight_enquiry ?? 0;
   const totalOfferings = umrahCount + hajjCount + visaCount;
-  const umrahPct = Math.round(umrahCount * 100 / Math.max(1,totalOfferings));
-  const hajjPct = Math.round(hajjCount * 100 / Math.max(1,totalOfferings));
-  const visaPct = Math.round(visaCount * 100 / Math.max(1,totalOfferings));
+  const umrahPct = Math.round(umrahCount * 100 / Math.max(1, totalOfferings));
+  const hajjPct = Math.round(hajjCount * 100 / Math.max(1, totalOfferings));
+  const visaPct = Math.round(visaCount * 100 / Math.max(1, totalOfferings));
 
   return (
     <div className="max-w-[1600px] mx-auto flex flex-col gap-5 font-sans">
@@ -298,7 +298,7 @@ export default function DashboardClient({
             <div className="flex justify-between items-center mb-4">
               <div>
                 <h3 className="text-base font-extrabold text-slate-900 m-0">Recent Forms Queries</h3>
-                <p className="text-xs text-slate-400 mt-0.5 mb-0">Latest enquiry records from the unified CRM table</p>
+                <p className="text-xs text-soft-ink mt-0.5 mb-0">Latest enquiry records from the unified CRM table</p>
               </div>
               <Link
                 href="/admin/enquiries"
@@ -403,7 +403,7 @@ export default function DashboardClient({
             {/* Activity List */}
             <div className="flex flex-col gap-3 max-h-[300px] overflow-y-auto pr-1">
               {recentActivities.length === 0 ? (
-                <div className="p-6 text-center text-xs text-slate-400 bg-white/70 rounded-2xl border border-slate-200/60">
+                <div className="p-6 text-center text-xs text-soft-ink bg-white/70 rounded-2xl border border-slate-200/60">
                   No activity log entries yet. Administrative actions will appear here in real-time.
                 </div>
               ) : (

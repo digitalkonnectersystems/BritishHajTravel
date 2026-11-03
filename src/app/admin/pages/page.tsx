@@ -130,7 +130,7 @@ export default function AdminPagesListPage() {
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
             <h1 className="text-2xl font-extrabold text-slate-900 m-0">Pages</h1>
-            <p className="text-xs text-slate-400 mt-0.5 mb-0">Manage live website pages, titles, slugs, dynamic page sections &amp; order</p>
+            <p className="text-xs text-soft-ink mt-0.5 mb-0">Manage live website pages, titles, slugs, dynamic page sections &amp; order</p>
           </div>
           <Link
             href="/admin/pages/edit"

@@ -471,21 +471,21 @@ export default function SeoCenterModal({
         {/* ── Sleek Dark Top Header Bar ── */}
         <header className="bg-[#0F172A] text-white border-b border-slate-800 px-6 py-3.5 flex items-center justify-between gap-4 shrink-0 shadow-md">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-[#DB9E30] flex items-center justify-center text-white shadow-md shadow-primary/30 shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white shadow-md shadow-primary/30 shrink-0">
               <Sliders className="w-4 h-4" />
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <h2 className="text-sm font-black text-white m-0 tracking-tight">SEO Center</h2>
+                <h2 className="text-sm font-black text-black m-0 tracking-tight">SEO Center</h2>
                 <span className="text-slate-400 text-xs font-medium">— Editing:</span>
-                <span className="text-xs font-bold text-emerald-300 bg-emerald-950/80 border border-emerald-700/60 px-2.5 py-0.5 rounded-full">
+                <span className="text-xs font-bold text-amber-300 bg-amber-950/80 border border-emerald-700/60 px-2.5 py-0.5 rounded-full">
                   {pageData.title}
                 </span>
                 <span className="text-[9px] font-black uppercase tracking-wider text-red bg-red/20 border border-[#DB9E30]/40 px-2 py-0.5 rounded-md">
                   Next-Gen Intelligence
                 </span>
               </div>
-              <p className="text-[10px] text-slate-400 m-0 mt-0.5">
+              <p className="text-[10px] text-soft-ink m-0 mt-0.5">
                 Real-time automated diagnostic health &amp; AI search engine indexability suite
               </p>
             </div>

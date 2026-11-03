@@ -197,7 +197,7 @@ export default function HotelsClient() {
                   </div>
                 </div>
               ))}
-              {!categories.length && <p className="text-xs text-slate-400">Create a city or place category first.</p>}
+              {!categories.length && <p className="text-xs text-soft-ink">Create a city or place category first.</p>}
             </div>
           </section>
 

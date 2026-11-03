@@ -108,7 +108,7 @@ export default function AdminGuidesPage() {
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
             <h1 className="text-2xl font-extrabold text-slate-900">Guides</h1>
-            <p className="text-xs text-slate-400 mt-0.5">Manage Hajj and Umrah guide pages and their content sections.</p>
+            <p className="text-xs text-soft-ink mt-0.5">Manage Hajj and Umrah guide pages and their content sections.</p>
           </div>
           <Link href={`/admin/guides/edit?category=${category}`} className="bg-primary text-white px-5 py-2.5 rounded-xl font-bold text-xs inline-flex items-center gap-2 shadow-lg">
             <Plus className="w-4 h-4" /> Add {category === 'hajj' ? 'Hajj' : 'Umrah'} Guide

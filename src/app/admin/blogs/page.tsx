@@ -115,7 +115,7 @@ export default function AdminBlogsPage() {
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
             <h1 className="text-2xl font-extrabold text-slate-900 m-0">Blog Posts</h1>
-            <p className="text-xs text-slate-400 mt-0.5 mb-0">Drag and reorder blogs — the 1st/top blog is highlighted as the Featured article on the live website</p>
+            <p className="text-xs text-soft-ink mt-0.5 mb-0">Drag and reorder blogs — the 1st/top blog is highlighted as the Featured article on the live website</p>
           </div>
           <Link
             href="/admin/blogs/edit"

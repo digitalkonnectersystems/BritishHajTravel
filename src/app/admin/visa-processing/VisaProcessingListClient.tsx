@@ -189,7 +189,7 @@ export default function VisaProcessingListClient({ initialPages }: { initialPage
                   <tr key={page.id} className="transition-colors hover:bg-slate-50/80">
                     <td className="px-5 py-4">
                       <div className="font-bold text-slate-900">{page.title}</div>
-                      <div className="mt-1 text-xs text-slate-400">Visa processing landing page</div>
+                      <div className="mt-1 text-xs text-soft-ink">Visa processing landing page</div>
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-2">
