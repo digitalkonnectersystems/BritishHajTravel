@@ -1353,7 +1353,7 @@ const DEFAULT_FORM_FIELDS_STATE: Record<string, Array<{ id: string; label: strin
     { id: '1', label: 'Your Name', type: 'text', placeholder: 'Full Name', required: true },
     { id: '2', label: 'Phone Number', type: 'tel', placeholder: '+44 177 2252 996', required: true },
     { id: '3', label: 'Email Address', type: 'email', placeholder: 'Email', required: true },
-    { id: '4', label: 'Select Your Package', type: 'select', placeholder: 'Select your package choice', required: true },
+    { id: '4', label: 'Package', type: 'select', placeholder: 'Package choice', required: true },
     { id: '5', label: 'Departure Date', type: 'date', placeholder: 'mm/dd/yyyy', required: true },
     { id: '6', label: 'Number of Adults', type: 'number', placeholder: '1', required: true },
   ],

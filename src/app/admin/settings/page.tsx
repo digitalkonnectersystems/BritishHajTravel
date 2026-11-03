@@ -99,7 +99,7 @@ export default function AdminSettingsPage() {
   const [currencyData, setCurrencyData] = useState<CurrencySettings>(DEFAULT_CURRENCY);
   const [currencySaving, setCurrencySaving] = useState(false);
   const [currencyMessage, setCurrencyMessage] = useState('');
-  useEffect(() => { getCurrencySettingsAction().then(setCurrencyData).catch(() => {}); }, []);
+  useEffect(() => { getCurrencySettingsAction().then(setCurrencyData).catch(() => { }); }, []);
   const [subTab, setSubTab] = useState<'header' | 'footer'>('header');
 
   // 3D Glassmorphism Notification State
@@ -422,39 +422,39 @@ export default function AdminSettingsPage() {
 
   const [formFieldsState, setFormFieldsState] = useState<Record<string, Array<{ id: string; label: string; type: string; placeholder: string; required: boolean }>>>({
     umrahRegistrationForm: [
-    { id: 'name', label: 'Name', type: 'text', placeholder: 'Name', required: true },
-    { id: 'email', label: 'Email', type: 'email', placeholder: 'Email', required: true },
-    { id: 'phone', label: 'Phone', type: 'tel', placeholder: 'xxxx-xxxx xxx', required: true },
-    { id: 'airport', label: 'Airport', type: 'select', placeholder: 'London (LON)', required: true },
-    { id: 'packageTier', label: 'Umrah Package', type: 'select', placeholder: '5-Star', required: true },
-    { id: 'travelDate', label: 'Estimated Date of Travel', type: 'date', placeholder: 'Select Date', required: true },
-    { id: 'passengers', label: 'Number of Passengers', type: 'number', placeholder: 'Number of Passengers', required: true },
-    { id: 'makkahDays', label: 'Number of Days in Makkah', type: 'select', placeholder: '10', required: true },
-    { id: 'madinahDays', label: 'Number of Days in Madinah', type: 'select', placeholder: '8', required: true },
-  ],
-  hajjRegistrationForm: [
-    { id: 'name', label: 'Name', type: 'text', placeholder: 'Name', required: true },
-    { id: 'email', label: 'Email', type: 'email', placeholder: 'Email', required: true },
-    { id: 'phone', label: 'Phone', type: 'tel', placeholder: 'xxxx-xxxx xxx', required: true },
-    { id: 'postcode', label: 'Postcode', type: 'text', placeholder: 'Postcode', required: true },
-    { id: 'airport', label: 'Airport', type: 'select', placeholder: 'London (LON)', required: true },
-    { id: 'packageTier', label: 'Hajj Package', type: 'select', placeholder: '5-Star', required: true },
-    { id: 'passengers', label: 'Number of Passengers', type: 'number', placeholder: 'Number of Passengers', required: true },
-    { id: 'days', label: 'Number of Days', type: 'select', placeholder: '12 Days Packages', required: true },
-    { id: 'room', label: 'Room Size', type: 'select', placeholder: 'Double Room', required: true },
-    { id: 'budget', label: 'Budget per person', type: 'select', placeholder: '5K - 7K', required: true },
+      { id: 'name', label: 'Name', type: 'text', placeholder: 'Name', required: true },
+      { id: 'email', label: 'Email', type: 'email', placeholder: 'Email', required: true },
+      { id: 'phone', label: 'Phone', type: 'tel', placeholder: 'xxxx-xxxx xxx', required: true },
+      { id: 'airport', label: 'Airport', type: 'select', placeholder: 'London (LON)', required: true },
+      { id: 'packageTier', label: 'Umrah Package', type: 'select', placeholder: '5-Star', required: true },
+      { id: 'travelDate', label: 'Estimated Date of Travel', type: 'date', placeholder: 'Select Date', required: true },
+      { id: 'passengers', label: 'Number of Passengers', type: 'number', placeholder: 'Number of Passengers', required: true },
+      { id: 'makkahDays', label: 'Number of Days in Makkah', type: 'select', placeholder: '10', required: true },
+      { id: 'madinahDays', label: 'Number of Days in Madinah', type: 'select', placeholder: '8', required: true },
     ],
-  yosrHajjForm: [
-    { id: 'name', label: 'Name', type: 'text', placeholder: 'Name', required: true },
-    { id: 'email', label: 'Email', type: 'email', placeholder: 'Email', required: true },
-    { id: 'phone', label: 'Phone', type: 'tel', placeholder: 'xxxx-xxxx xxx', required: true },
-    { id: 'postcode', label: 'Postcode', type: 'text', placeholder: 'Postcode', required: true },
-    { id: 'airport', label: 'Airport', type: 'select', placeholder: 'London (LON)', required: true },
-    { id: 'packageTier', label: 'Hajj Package', type: 'select', placeholder: '5-Star', required: true },
-    { id: 'passengers', label: 'Number of Passengers', type: 'number', placeholder: 'Number of Passengers', required: true },
-    { id: 'days', label: 'Number of Days', type: 'select', placeholder: '12 Days Packages', required: true },
-    { id: 'room', label: 'Room Size', type: 'select', placeholder: 'Double Room', required: true },
-    { id: 'budget', label: 'Budget per person', type: 'select', placeholder: '5K - 7K', required: true },
+    hajjRegistrationForm: [
+      { id: 'name', label: 'Name', type: 'text', placeholder: 'Name', required: true },
+      { id: 'email', label: 'Email', type: 'email', placeholder: 'Email', required: true },
+      { id: 'phone', label: 'Phone', type: 'tel', placeholder: 'xxxx-xxxx xxx', required: true },
+      { id: 'postcode', label: 'Postcode', type: 'text', placeholder: 'Postcode', required: true },
+      { id: 'airport', label: 'Airport', type: 'select', placeholder: 'London (LON)', required: true },
+      { id: 'packageTier', label: 'Hajj Package', type: 'select', placeholder: '5-Star', required: true },
+      { id: 'passengers', label: 'Number of Passengers', type: 'number', placeholder: 'Number of Passengers', required: true },
+      { id: 'days', label: 'Number of Days', type: 'select', placeholder: '12 Days Packages', required: true },
+      { id: 'room', label: 'Room Size', type: 'select', placeholder: 'Double Room', required: true },
+      { id: 'budget', label: 'Budget per person', type: 'select', placeholder: '5K - 7K', required: true },
+    ],
+    yosrHajjForm: [
+      { id: 'name', label: 'Name', type: 'text', placeholder: 'Name', required: true },
+      { id: 'email', label: 'Email', type: 'email', placeholder: 'Email', required: true },
+      { id: 'phone', label: 'Phone', type: 'tel', placeholder: 'xxxx-xxxx xxx', required: true },
+      { id: 'postcode', label: 'Postcode', type: 'text', placeholder: 'Postcode', required: true },
+      { id: 'airport', label: 'Airport', type: 'select', placeholder: 'London (LON)', required: true },
+      { id: 'packageTier', label: 'Hajj Package', type: 'select', placeholder: '5-Star', required: true },
+      { id: 'passengers', label: 'Number of Passengers', type: 'number', placeholder: 'Number of Passengers', required: true },
+      { id: 'days', label: 'Number of Days', type: 'select', placeholder: '12 Days Packages', required: true },
+      { id: 'room', label: 'Room Size', type: 'select', placeholder: 'Double Room', required: true },
+      { id: 'budget', label: 'Budget per person', type: 'select', placeholder: '5K - 7K', required: true },
     ],
     baanHoldingHajjForm: [
       { id: 'name', label: 'Full Name', type: 'text', placeholder: 'Full name', required: true },
@@ -472,7 +472,7 @@ export default function AdminSettingsPage() {
       { id: '1', label: 'Your Name', type: 'text', placeholder: 'Full Name', required: true },
       { id: '2', label: 'Phone Number', type: 'tel', placeholder: '+44 177 2252 996', required: true },
       { id: '3', label: 'Email Address', type: 'email', placeholder: 'Email', required: true },
-      { id: '4', label: 'Select Your Package', type: 'select', placeholder: 'Select your package choice', required: true },
+      { id: '4', label: 'Package', type: 'select', placeholder: 'Package choice', required: true },
       { id: '5', label: 'Departure Date', type: 'date', placeholder: 'mm/dd/yyyy', required: true },
       { id: '6', label: 'Number of Adults', type: 'number', placeholder: '1', required: true },
     ],
@@ -4757,12 +4757,12 @@ export default function AdminSettingsPage() {
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <div><h4 className="m-0 text-sm font-extrabold text-slate-900">{selectedForm.name}</h4><p className="m-0 mt-1 text-xs text-slate-500">Configure both messages independently. Commas, semicolons, or line breaks separate email addresses.</p></div>
                         <div className="flex gap-2" role="tablist" aria-label="Email audience">
-                          {(['admin','customer'] as const).map(audience => <button key={audience} type="button" role="tab" aria-selected={selectedEmailAudience === audience} onClick={() => setSelectedEmailAudience(audience)} className={`rounded-xl px-4 py-2 text-xs font-bold ${selectedEmailAudience === audience ? 'bg-primary text-white' : 'bg-slate-100 text-slate-800'}`}>{audience === 'admin' ? 'Admin Notification' : 'Customer Confirmation'}</button>)}
+                          {(['admin', 'customer'] as const).map(audience => <button key={audience} type="button" role="tab" aria-selected={selectedEmailAudience === audience} onClick={() => setSelectedEmailAudience(audience)} className={`rounded-xl px-4 py-2 text-xs font-bold ${selectedEmailAudience === audience ? 'bg-primary text-white' : 'bg-slate-100 text-slate-800'}`}>{audience === 'admin' ? 'Admin Notification' : 'Customer Confirmation'}</button>)}
                         </div>
                       </div>
                       {activeTemplate && <>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {(['to','cc','bcc','replyTo'] as const).map(field => <label key={field} className="flex flex-col gap-1.5 text-xs font-bold uppercase text-slate-700">{field === 'replyTo' ? 'Reply-To' : field.toUpperCase()}
+                          {(['to', 'cc', 'bcc', 'replyTo'] as const).map(field => <label key={field} className="flex flex-col gap-1.5 text-xs font-bold uppercase text-slate-700">{field === 'replyTo' ? 'Reply-To' : field.toUpperCase()}
                             <textarea rows={2} value={activeTemplate[field]} onChange={e => updateFormTemplate(field, e.target.value)} placeholder={field === 'to' && selectedEmailAudience === 'customer' ? '[Customer Email]' : 'name@example.com, second@example.com'} className="w-full rounded-xl border border-slate-200 bg-white p-3 text-xs font-mono normal-case text-slate-800" />
                           </label>)}
                         </div>

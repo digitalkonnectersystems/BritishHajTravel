@@ -72,7 +72,7 @@ export default function HotelDirectorySection({
                     href={hotel.websiteUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border-2 border-transparent bg-red px-4 py-3 text-sm font-bold text-white shadow-[0_5px_12px_rgba(0,0,0,0.12)] transition-colors hover:border-red hover:bg-white hover:text-red focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red sm:w-auto sm:min-w-[155px] lg:w-full lg:min-w-0"
+                    className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border-2 border-transparent bg-red-600 px-4 py-3 text-sm font-bold text-white shadow-[0_5px_12px_rgba(0,0,0,0.12)] transition-colors hover:bg-white hover:text-red-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red sm:w-auto sm:min-w-[155px] lg:w-full lg:min-w-0"
                   >
                     See Details
                     <ChevronRight aria-hidden="true" className="h-4 w-4 shrink-0" />

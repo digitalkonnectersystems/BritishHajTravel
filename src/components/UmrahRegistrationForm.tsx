@@ -83,7 +83,7 @@ export default function UmrahRegistrationForm({
           return next;
         });
       }
-    }).catch(() => {});
+    }).catch(() => { });
     return () => { active = false; };
   }, []);
 
@@ -156,7 +156,7 @@ export default function UmrahRegistrationForm({
           </div>
         ))}
         <div className="pt-3">
-          <button type="submit" disabled={busy} className="bg-[#0875b8] text-white font-semibold text-[15px] rounded-sm px-4 py-2.5 hover:bg-[#075d95] disabled:opacity-50">
+          <button type="submit" disabled={busy} className="bg-red-600 hover:bg-red-700 text-white font-semibold text-[15px] rounded-lg px-4 py-2.5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
             {busy ? 'Submitting...' : buttonText}
           </button>
         </div>

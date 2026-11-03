@@ -556,22 +556,22 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
 
                         <div>
                           <label htmlFor="quote-package" className="mb-2 block text-xs md:text-[13px] font-extrabold uppercase tracking-wide text-white">
-                            Select Your Package
+                            Package
                           </label>
                           <div className="relative">
-                          <select
-                            id="quote-package"
-                            value={quoteForm.packageType}
-                            onChange={(e) => setQuoteForm({ ...quoteForm, packageType: e.target.value })}
-                            className="h-12 w-full font-medium cursor-pointer appearance-none rounded-sm border border-slate-200 bg-white pl-3 pr-10 text-sm text-ink outline-none transition focus:border-red"
-                          >
-                            <option>Select Package</option>
-                            <option>Umrah Package</option>
-                            <option>Hajj Package</option>
-                            <option>Flight Only</option>
-                            <option>Saudi Visa</option>
-                          </select>
-                          <ChevronDown aria-hidden="true" className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-700" />
+                            <select
+                              id="quote-package"
+                              value={quoteForm.packageType}
+                              onChange={(e) => setQuoteForm({ ...quoteForm, packageType: e.target.value })}
+                              className="h-12 w-full font-medium cursor-pointer appearance-none rounded-sm border border-slate-200 bg-white pl-3 pr-10 text-sm text-ink outline-none transition focus:border-red"
+                            >
+                              <option>Select Package</option>
+                              <option>Umrah Package</option>
+                              <option>Hajj Package</option>
+                              <option>Flight Only</option>
+                              <option>Saudi Visa</option>
+                            </select>
+                            <ChevronDown aria-hidden="true" className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-700" />
                           </div>
                         </div>
                       </div>
@@ -581,33 +581,33 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                           Number of Pilgrims
                         </label>
                         <div className="relative">
-                        <input
-                          id="quote-pilgrims"
-                          type="number"
-                          min="1"
-                          value={quoteForm.adults}
-                          onChange={(e) => setQuoteForm({ ...quoteForm, adults: parseInt(e.target.value, 10) || 1 })}
-                          className="h-12 w-full font-medium appearance-none rounded-sm border border-slate-200 bg-white pl-3 pr-12 text-sm text-ink outline-none transition focus:border-red [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                        />
-                        <div className="absolute inset-y-1 right-1 flex w-8 flex-col">
-                          <button
-                            type="button"
-                            aria-label="Increase number of pilgrims"
-                            onClick={() => setQuoteForm((prev) => ({ ...prev, adults: prev.adults + 1 }))}
-                            className="flex flex-1 items-center justify-center rounded-sm text-slate-700 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-red"
-                          >
-                            <ChevronUp aria-hidden="true" className="h-4 w-4" />
-                          </button>
-                          <button
-                            type="button"
-                            aria-label="Decrease number of pilgrims"
-                            disabled={quoteForm.adults <= 1}
-                            onClick={() => setQuoteForm((prev) => ({ ...prev, adults: Math.max(1, prev.adults - 1) }))}
-                            className="flex flex-1 items-center justify-center rounded-sm text-slate-700 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-red disabled:cursor-not-allowed disabled:opacity-40"
-                          >
-                            <ChevronDown aria-hidden="true" className="h-4 w-4" />
-                          </button>
-                        </div>
+                          <input
+                            id="quote-pilgrims"
+                            type="number"
+                            min="1"
+                            value={quoteForm.adults}
+                            onChange={(e) => setQuoteForm({ ...quoteForm, adults: parseInt(e.target.value, 10) || 1 })}
+                            className="h-12 w-full font-medium appearance-none rounded-sm border border-slate-200 bg-white pl-3 pr-12 text-sm text-ink outline-none transition focus:border-red [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                          />
+                          <div className="absolute inset-y-1 right-1 flex w-8 flex-col">
+                            <button
+                              type="button"
+                              aria-label="Increase number of pilgrims"
+                              onClick={() => setQuoteForm((prev) => ({ ...prev, adults: prev.adults + 1 }))}
+                              className="flex flex-1 items-center justify-center rounded-sm text-slate-700 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-red"
+                            >
+                              <ChevronUp aria-hidden="true" className="h-4 w-4" />
+                            </button>
+                            <button
+                              type="button"
+                              aria-label="Decrease number of pilgrims"
+                              disabled={quoteForm.adults <= 1}
+                              onClick={() => setQuoteForm((prev) => ({ ...prev, adults: Math.max(1, prev.adults - 1) }))}
+                              className="flex flex-1 items-center justify-center rounded-sm text-slate-700 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-red disabled:cursor-not-allowed disabled:opacity-40"
+                            >
+                              <ChevronDown aria-hidden="true" className="h-4 w-4" />
+                            </button>
+                          </div>
                         </div>
                       </div>
 

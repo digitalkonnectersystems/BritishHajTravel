@@ -48,7 +48,7 @@ export default function PackageCustomizationCTA({ journey }: { journey: 'hajj' |
     } catch { setResult('Connection error. Please try again.'); }
     finally { setSending(false); }
   };
-  const inputClass = 'block w-full min-h-11 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-950 focus:border-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-100';
+  const inputClass = 'block w-full min-h-11 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-950 focus:border-primary/70 focus:outline-none focus:ring-1 focus:ring-blue-100';
   return <section className="bg-blue-lt px-4 py-12" aria-label={`Customized ${name} Package`}>
     <div className="mx-auto flex max-w-[1240px] flex-col gap-6 rounded-2xl bg-primary p-6 text-white shadow-sm md:flex-row md:items-center md:justify-between md:p-10">
       <div className="flex-1">
@@ -69,7 +69,7 @@ export default function PackageCustomizationCTA({ journey }: { journey: 'hajj' |
             <label className="block text-xs font-bold">Approximate Budget (GBP)<input className={`${inputClass} mt-1.5`} type="number" min="1" step="0.01" value={form.budgetGbp || ''} onChange={e => update('budgetGbp', e.target.value)} placeholder="Total budget in £" /></label>
             <label className="block text-xs font-bold sm:col-span-2">Additional Notes<textarea className={`${inputClass} mt-1.5`} maxLength={4000} rows={3} value={form.notes || ''} onChange={e => update('notes', e.target.value)} /></label>
             {result && <p role="alert" className="text-sm text-red-700 sm:col-span-2">{result}</p>}
-            <button className="rounded-xl bg-primary hover:bg-red-600 px-6 py-3 font-bold text-white sm:col-span-2" disabled={sending} type="submit">{sending ? 'Submitting...' : `Send Customized ${name} Enquiry`}</button>
+            <button className="rounded-lg bg-red-600 hover:bg-red-700 px-6 py-3 font-bold text-white sm:col-span-2" disabled={sending} type="submit">{sending ? 'Submitting...' : `Send Customized ${name} Enquiry`}</button>
           </form>}
         </div>
       </div>
