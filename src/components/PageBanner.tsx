@@ -74,7 +74,7 @@ export default function PageBanner({
     <section
       style={{
         backgroundImage: isInnerBanner
-          ? `linear-gradient(90deg, rgba(3, 19, 65, 0.98) 0%, rgba(3, 19, 65, 0.9) 38%, rgba(3, 19, 65, 0.22) 78%, rgba(3, 19, 65, 0.1) 100%)${cleanBg ? `, url("${cleanBg}")` : ""}`
+          ? `linear-gradient(90deg, rgba(3, 19, 65, 0.98) 0%, rgb(2 14 67) 100%)${cleanBg ? `, url("${cleanBg}")` : ""}`
           : `linear-gradient(rgba(2, 14, 67, 0.45), rgba(2, 14, 67, 1)), url("${cleanBg}")`,
         backgroundPosition: activePos,
         backgroundSize: activeSize,
