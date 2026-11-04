@@ -504,7 +504,7 @@ export default function WhatWeProvideSection({ data }: { data: any }) {
 
             <p
               className="
-                text-[#405b7e]
+                text-ink-soft
                 text-[15px]
                 md:text-[16px]
                 leading-[1.6]
@@ -566,8 +566,9 @@ export default function WhatWeProvideSection({ data }: { data: any }) {
 
                       <p
                         className="
-                          text-[#526d8e]
-                          text-[13px]
+                          text-gray-500
+                          text-xs
+                          font-medium
                           md:text-[14px]
                           leading-5
                           mt-1

@@ -446,11 +446,11 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                   <div className="min-w-0 overflow-hidden rounded-3xl bg-white border border-slate-200/80 shadow-sm p-6 md:p-8 flex flex-col">
                     <div className="text-center flex flex-col mb-6">
                       {sec.data?.airlineEyebrow && (
-                        <span className="eyebrow mx-auto">
+                        <span className="eyebrow mx-auto !text-xs md:!text-sm !mb-2 md:!mb-3">
                           {sec.data.airlineEyebrow}
                         </span>
                       )}
-                      <h2 className="font-serif text-primary text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">
+                      <h2 className="font-serif text-primary text-xl md:text-[26px] leading-[0.98]">
                         {sec.data?.airlineTitle || "Airlines We Sourced Deals From"}
                       </h2>
                     </div>
@@ -472,8 +472,8 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                     </div>
 
                     {sec.data?.airlineViewAllSlug && (
-                      <div className="text-center">
-                        <Link href={normalizeFlightUrl(sec.data.airlineViewAllSlug)} className="inline-flex rounded-full bg-red px-5 py-2.5 text-md font-bold text-white hover:text-white transition-colors hover:bg-red-lt mt-7 text-center">
+                      <div className="text-center mt-3 md:mt-7">
+                        <Link href={normalizeFlightUrl(sec.data.airlineViewAllSlug)} className="inline-flex rounded-full bg-red px-5 py-2.5 cursor-pointer rounded-md border-2 border-transparent bg-red py-3 text-center text-xs font-black uppercase tracking-widest text-white transition-colors hover:border-red hover:bg-white hover:text-red focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red transition-colors hover:bg-red-lt text-center">
                           {sec.data.airlineViewAllLabel || "View All Flights"}
                         </Link>
                       </div>
@@ -484,11 +484,11 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                   <div className="min-w-0 overflow-hidden rounded-3xl bg-white border border-slate-200/80 shadow-sm p-6 md:p-8 flex flex-col">
                     <div className="text-center flex flex-col mb-6">
                       {sec.data?.hotelEyebrow && (
-                        <span className="eyebrow mx-auto">
+                        <span className="eyebrow mx-auto !text-xs md:!text-sm !mb-3">
                           {sec.data.hotelEyebrow}
                         </span>
                       )}
-                      <h2 className="font-serif text-primary text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">
+                      <h2 className="font-serif text-primary text-xl md:text-[26px] leading-[0.98]">
                         {sec.data?.hotelTitle || "Our Recommended Hotels"}
                       </h2>
                     </div>
@@ -510,8 +510,8 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                     </div>
 
                     {sec.data?.hotelViewAllSlug && (
-                      <div className="text-center">
-                        <Link href={sec.data.hotelViewAllSlug} className="inline-flex rounded-full bg-red px-5 py-2.5 text-md font-bold text-white hover:text-white transition-colors hover:bg-red-lt mt-7 text-center">
+                      <div className="flex justify-center mt-3 md:mt-7">
+                        <Link href={sec.data.hotelViewAllSlug} className="inline-flex rounded-full bg-red px-5 py-2.5 cursor-pointer rounded-md border-2 border-transparent bg-red py-3 text-center text-xs font-black uppercase tracking-widest text-white transition-colors hover:border-red hover:bg-white hover:text-red focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red transition-colors hover:bg-red-lt text-center">
                           {sec.data.hotelViewAllLabel || "View All Hotels"}
                         </Link>
                       </div>
