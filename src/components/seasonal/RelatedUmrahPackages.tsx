@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { ArrowRight, CalendarDays } from 'lucide-react';
 import { relatedUmrahPages } from '@/lib/seasonalUmrah';
-import styles from './seasonalUmrah.module.css';
 
 /** Crawlable links to existing Umrah landing pages; no duplicate page content. */
 export default function RelatedUmrahPackages({
@@ -22,25 +21,33 @@ export default function RelatedUmrahPackages({
   });
 
   return (
-    <section className={styles.relatedSection} aria-labelledby="other-umrah-packages-heading">
-      <div className={styles.sectionHeading}>
-        <div>
-          <p className={styles.kicker}>EXPLORE MORE</p>
-          <h2 id="other-umrah-packages-heading">Explore Other Umrah Packages</h2>
-        </div>
-        <Link href="/umrah-packages/">
-          VIEW ALL UMRAH PACKAGES <ArrowRight size={16} />
-        </Link>
-      </div>
-      <div className={styles.relatedGrid}>
-        {related.map((item) => (
-          <Link key={item.href} href={item.href} className={styles.relatedCard}>
-            <CalendarDays size={24} aria-hidden="true" />
-            <h3>{item.label}</h3>
-            <p>{item.detail || 'Explore Umrah travel information and packages'}</p>
-            <span>VIEW PAGE <ArrowRight size={14} aria-hidden="true" /></span>
+    <section className="bg-white py-10 md:py-16" aria-labelledby="other-umrah-packages-heading">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
+        <div className="mb-7 flex flex-col items-start justify-between gap-5 md:flex-row md:items-end">
+          <div>
+            <p className="eyebrow">EXPLORE MORE</p>
+            <h2 id="other-umrah-packages-heading" className="font-serif text-primary text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">Explore Other Umrah Packages</h2>
+          </div>
+          <Link href="/umrah-packages/" className="inline-flex shrink-0 items-center gap-2 text-xs font-extrabold text-red transition-colors hover:text-[#ed1b24]">
+            VIEW ALL UMRAH PACKAGES <ArrowRight size={16} aria-hidden="true" />
           </Link>
-        ))}
+        </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {related.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="group flex min-h-[180px] min-w-0 flex-col rounded-2xl border border-slate-200 bg-white p-6 transition-all duration-200 hover:-translate-y-0.5 hover:border-red hover:shadow-[0_10px_28px_rgba(2,14,67,0.09)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red"
+            >
+              <CalendarDays size={24} aria-hidden="true" className="text-red" />
+              <h3 className="mt-4 font-serif text-lg leading-tight text-primary">{item.label}</h3>
+              <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-600">{item.detail || 'Explore Umrah travel information and packages'}</p>
+              <span className="mt-5 inline-flex items-center gap-2 text-xs font-extrabold text-red transition-all group-hover:gap-3">
+                VIEW PAGE <ArrowRight size={14} aria-hidden="true" />
+              </span>
+            </Link>
+          ))}
+        </div>
       </div>
     </section>
   );
