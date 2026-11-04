@@ -3902,7 +3902,7 @@ hr {
   }
 
   body:has(#bht-public-header) .page-header-leadtxt {
-    font-size: .8125rem;
+    font-size: .875rem;
     line-height: 1.45;
   }
 

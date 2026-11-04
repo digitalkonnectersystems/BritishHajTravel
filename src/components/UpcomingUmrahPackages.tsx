@@ -148,7 +148,7 @@ export default function UpcomingUmrahPackages({
 
         {/* Packages Grid */}
         {!loading && visiblePkgs.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 items-stretch mb-6 md:mb-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5 items-stretch mb-6 md:mb-10">
             {displayedPkgs.map((pkg: any, idx: number) => {
               let cd = pkg.cardData || {};
               if (typeof cd === 'string') {
@@ -200,7 +200,7 @@ export default function UpcomingUmrahPackages({
                   className={`${isGold
                     ? "bg-primary hover:bg-primary/90 transition duration-400 shadow-[0_8px_30px_rgb(0,0,0,0.12)] mt-0"
                     : "hover:bg-[#ebefff] transition-[transform,box-shadow] duration-400 border-1 border-[#ccc] transition duration-400 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)]"
-                    } rounded-3xl overflow-hidden flex flex-col`}
+                    } rounded-2xl md:rounded-3xl overflow-hidden flex flex-col`}
                 >
                   <div className="relative h-48 w-full">
                     {heroImage && (

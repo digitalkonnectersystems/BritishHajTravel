@@ -14,7 +14,7 @@ export default function FeaturedTravelExperiencesSection({ data }: { data?: Part
   if (!cards.length) return null;
 
   return (
-    <section className="bg-[#fafbfe] py-12 md:py-16" aria-label={data?.title || 'Featured travel experiences'}>
+    <section className="bg-[#f4f7fb] py-6 md:py-10" aria-label={data?.title || 'Featured travel experiences'}>
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
         <div className="mx-auto mb-6 max-w-3xl text-center">
           {data?.eyebrow && <p className="eyebrow justify-center">{data.eyebrow}</p>}

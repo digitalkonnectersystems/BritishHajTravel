@@ -32,7 +32,7 @@ export default function ElegantTextSection({ data }: { data?: ElegantTextData })
   if (!hasText && !image) return null;
 
   return (
-    <section className="w-full bg-white py-6 md:py-10" aria-label={title || eyebrow || 'Page information'}>
+    <section className="w-full py-6 md:py-10 w-full bg-white py-6 md:py-10" aria-label={title || eyebrow || 'Page information'}>
       <div className="max-w-[1400px] mx-auto px-5">
         <div
           className={`grid grid-cols-1 items-center gap-6 md:gap-10 lg:gap-14 ${hasText && image ? 'lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]' : ''}`}

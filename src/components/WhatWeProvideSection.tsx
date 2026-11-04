@@ -235,9 +235,8 @@ export default function WhatWeProvideSection({ data }: { data: any }) {
         bg-[#f3f9ff]
         bg-cover
         bg-center
-        py-10
-        md:py-14
-        lg:py-16
+        py-6
+        md:py-10
       "
       style={{
         backgroundImage: `url("${backgroundImage.replace(/\\/g, "/").replace(/"/g, '\\"')}")`,

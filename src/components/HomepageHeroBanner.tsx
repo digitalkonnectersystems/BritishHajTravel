@@ -458,12 +458,12 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                   </>
                 ) : null}
 
-                <div className="relative z-10 grid h-full grid-cols-1 items-center gap-6 px-5 py-6 sm:px-8 md:px-10 min-[1025px]:grid-cols-[minmax(0,1fr)_minmax(0,400px)] lg:gap-8 lg:px-8 2xl:grid-cols-[minmax(0,1fr)_minmax(0,440px)] 2xl:gap-10 2xl:px-10 2xl:py-12">
+                <div className="relative z-10 grid h-full grid-cols-1 items-center gap-6 px-5 py-6 sm:px-8 md:px-10 min-[1025px]:grid-cols-[minmax(0,1fr)_minmax(0,400px)] lg:gap-8 lg:px-5 2xl:grid-cols-[minmax(0,1fr)_minmax(0,440px)] 2xl:gap-10 2xl:px-10 2xl:py-12 mx-auto max-w-[1400px]">
                   <div className="flex min-w-0 flex-col justify-center">
                     <div className="hero">
                       {heroData.heroEyebrow ? <div className="mb-3 text-[11px] md:text-[13px] font-extrabold uppercase tracking-[0.18em] text-ink">{heroData.heroEyebrow}</div> : null}
                       {heroData.title ? <h1 className="font-serif text-[clamp(1.75rem,2.2vw,2.625rem)] leading-[0.98] text-primary" dangerouslySetInnerHTML={{ __html: heroData.title }} /> : null}
-                      {heroData.description ? <p className="mt-4 max-w-[36rem] text-[14px] sm:text-[16px] leading-6 sm:leading-7 text-ink lg:leading-8 font-medium">{heroData.description}</p> : null}
+                      {heroData.description ? <p className="mt-4 max-w-[36rem] text-sm sm:text-base leading-6 sm:leading-7 text-ink lg:leading-8 font-medium">{heroData.description}</p> : null}
 
                       {heroData.primaryBtnLink && heroData.primaryBtnLabel || heroData.secondaryBtnLink && heroData.secondaryBtnLabel ? (
                         <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:gap-4">
@@ -488,7 +488,7 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                     </div>
                   </div>
 
-                  <div className="mx-auto w-full max-w-[400px] min-w-0 rounded-2xl bg-[#0B1672] p-5 shadow-[0_22px_40px_rgba(2,12,27,0.25)] sm:rounded-[28px] sm:p-6 md:p-7 2xl:max-w-[440px]">
+                  <div className="mx-auto w-full md:max-w-[400px] sm:max-w-full min-w-0 rounded-2xl bg-[#0B1672] p-5 shadow-[0_22px_40px_rgba(2,12,27,0.25)] sm:rounded-[28px] sm:p-6 md:p-7 2xl:max-w-[440px]">
                     {/* <h2 className="mb-6 text-center font-serif text-[26px] leading-none text-white md:text-[30px]">{heroData.quoteTitle}</h2> */}
                     {quoteStatus ? <p className="mb-4 text-center text-sm font-semibold text-white">{quoteStatus}</p> : null}
 
