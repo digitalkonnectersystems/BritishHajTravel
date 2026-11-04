@@ -130,7 +130,7 @@ export default function HajjRegistrationForm({ sourcePage, branded = false, head
     </div>;
   }
 
-  return <section aria-label={variant === 'yosr' ? 'YOSR Al Mashaer Hajj registration enquiry' : 'Hajj 2027 registration enquiry'} className="bg-white w-full px-4 py-9 md:py-12">
+  return <section aria-label={variant === 'yosr' ? 'YOSR Al Mashaer Hajj registration enquiry' : 'Hajj 2027 registration enquiry'} className="bg-white w-full px-4 py-6 md:py-10">
     <div className="max-w-[1140px] mx-auto">
       {!branded && <h2 className="font-semibold text-center text-[#062a65] text-[28px] md:text-[32px] leading-tight mb-8">{heading}</h2>}
       <div className="bg-white border border-[#d0d0d0] rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,.18)] p-5 md:p-7">

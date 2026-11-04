@@ -131,7 +131,7 @@ export default function PackageBrochuresSection({ data, pageData }: PackageBroch
               )}
               {title && (
                 <h2
-                  className="section-heading text-2xl md:text-4xl font-extrabold uppercase text-primary tracking-tight"
+                  className="font-serif text-primary text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]"
                   dangerouslySetInnerHTML={{ __html: title }}
                 />
               )}

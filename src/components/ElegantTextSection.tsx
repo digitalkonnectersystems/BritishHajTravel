@@ -32,15 +32,17 @@ export default function ElegantTextSection({ data }: { data?: ElegantTextData })
   if (!hasText && !image) return null;
 
   return (
-    <section className="w-full bg-white py-8 md:py-12 lg:py-[72px]" aria-label={title || eyebrow || 'Page information'}>
-      <div className="mx-auto w-full max-w-[1400px] px-5 md:px-8 xl:px-12">
+    <section className="w-full bg-white py-6 md:py-10" aria-label={title || eyebrow || 'Page information'}>
+      <div className="max-w-[1400px] mx-auto px-5">
         <div
           className={`grid grid-cols-1 items-center gap-6 md:gap-10 lg:gap-14 ${hasText && image ? 'lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]' : ''}`}
         >
           {hasText && (
             <div className={`min-w-0 ${image ? '' : 'max-w-3xl'}`}>
               {eyebrow && <span className="eyebrow font-sans">{eyebrow}</span>}
-              {title && <h2 className="section-title font-serif">{title}</h2>}
+              {title && <h2 className="text-primary
+                font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]
+                mb-4">{title}</h2>}
               {hasContent && (
                 <SafeRichText
                   html={content}

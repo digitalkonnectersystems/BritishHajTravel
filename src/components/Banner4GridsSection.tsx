@@ -32,7 +32,7 @@ export default function Banner4GridsSection({
   return (
     <div className="w-full bg-blue-lt">
       <section className={inline
-        ? 'relative z-10 w-full max-w-[1400px] mx-auto !px-5 !py-6'
+        ? 'relative z-10 w-full max-w-[1400px] mx-auto !p-4'
         : 'relative -mt-6 sm:-mt-10 md:-mt-16 lg:-mt-21 z-10 max-w-4xl w-[calc(100%-3rem)] md:w-full mx-auto !pb-0'}>
         <div className={`grid grid-cols-2 lg:grid-cols-4 ${inline ? 'gap-3 sm:gap-4' : 'gap-6 md:gap-8'}`}>
           {items.map((item, idx) => (
