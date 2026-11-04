@@ -230,7 +230,7 @@ export default function ContactFormSection({ data }: { data: ContactSectionData 
           </div>
 
           {/* Right Column: Contact Form */}
-          <div className="bg-primary rounded-3xl p-8 lg:p-10 shadow-xl relative">
+          <div className="bg-primary rounded-2xl p-5 sm:p-6 md:p-7 lg:p-10 shadow-xl relative">
             {status && (
               <p className="text-center text-primary font-semibold mb-6 text-sm">{status}</p>
             )}

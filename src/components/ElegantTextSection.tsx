@@ -35,7 +35,7 @@ export default function ElegantTextSection({ data }: { data?: ElegantTextData })
     <section className="w-full py-6 md:py-10 w-full bg-white py-6 md:py-10" aria-label={title || eyebrow || 'Page information'}>
       <div className="max-w-[1400px] mx-auto px-5">
         <div
-          className={`grid grid-cols-1 items-center gap-6 md:gap-10 lg:gap-14 ${hasText && image ? 'lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]' : ''}`}
+          className={`grid grid-cols-1 items-center gap-3 md:gap-10 lg:gap-14 ${hasText && image ? 'lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]' : ''}`}
         >
           {hasText && (
             <div className={`min-w-0 ${image ? '' : 'max-w-3xl'}`}>
