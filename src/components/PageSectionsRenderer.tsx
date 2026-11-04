@@ -173,7 +173,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
 
           if (isPackagesPage) {
             return (
-              <section key={idx} className="pb-12 md:pt-16 md:pb-16 bg-blue-lt px-4">
+              <section key={idx} className="pb-6 md:pt-10 md:pb-10 bg-blue-lt px-4">
                 <div className="section-rich bg-white rounded-3xl p-4 md:p-8 max-w-[1360px] mx-auto w-full">
                   <SafeRichText html={content} className="max-w-none text-sm leading-relaxed" />
                 </div>

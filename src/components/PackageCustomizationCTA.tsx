@@ -55,10 +55,10 @@ export default function PackageCustomizationCTA({ journey }: { journey: 'hajj' |
       <div className="mx-auto flex max-w-[1440px] flex-col gap-6 rounded-2xl bg-primary p-6 text-white shadow-sm md:flex-row md:items-center md:justify-between md:p-10">
         <div className="flex-1">
           <div className="flex items-center gap-3"><span className="rounded-full bg-red-50 p-3 text-red"><Settings2 size={23} /></span><div><p className="text-xs font-semibold uppercase tracking-[.2em] text-red">Design your journey</p><h2 className="font-serif text-2xl font-bold md:text-3xl">Need a Customized {name} Package?</h2></div></div>
-          <p className="mt-3 max-w-3xl text-sm leading-6">Choose the number of days, flights, Makkah and Madinah hotels, transportation and additional services. We will arrange a personalized {name} itinerary around your requirements.</p>
+          <p className="mt-3 max-w-3xl text-[base] leading-6">Choose the number of days, flights, Makkah and Madinah hotels, transportation and additional services. We will arrange a personalized {name} itinerary around your requirements.</p>
           <div className="mt-6 flex flex-wrap gap-5 text-xs font-semibold"><span className="flex items-center gap-2"><CalendarDays size={17} className="text-red" />Choose your duration</span><span className="flex items-center gap-2"><Hotel size={17} className="text-red" />Select hotels</span><span className="flex items-center gap-2"><Plane size={17} className="text-red" />Add flights & transport</span></div>
         </div>
-        <div className="flex flex-col items-center gap-3"><span className="rounded-full bg-amber-50 px-4 py-1 text-xs font-bold uppercase text-amber-800">{name} only</span><button type="button" onClick={() => { setForm(initialForm(journey)); setSaved(false); setResult(''); setOpen(true); }} className="rounded-xl bg-red px-7 py-3.5 text-sm font-bold text-white hover:bg-red-500">Customize Your Package →</button></div>
+        <div className="flex flex-col items-center gap-3"><span className="rounded-full bg-amber-50 px-4 py-1 text-xs font-bold uppercase text-amber-800">{name} only</span><button type="button" onClick={() => { setForm(initialForm(journey)); setSaved(false); setResult(''); setOpen(true); }} className="rounded-md bg-red px-7 py-3.5 text-sm font-bold text-white hover:border-red hover:bg-white hover:text-red focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red">Customize Your Package →</button></div>
       </div>
     </div>
     

@@ -34,12 +34,12 @@ export default function FaqSection({ data = {} }: FaqSectionProps) {
   if (items.length === 0) return null;
 
   return (
-    <section className="bg-white px-4 py-12 md:px-6 md:py-16">
+    <section className="bg-white px-4 py-6 md:py-10">
       <div className="mx-auto max-w-[1068px]">
         {(data.eyebrow || data.title || data.description) && (
           <div className="mx-auto mb-9 max-w-3xl text-center">
             {data.eyebrow && (
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-[#b50007]">
+              <p className="mb-2 eyebrow">
                 {data.eyebrow}
               </p>
             )}
@@ -49,7 +49,7 @@ export default function FaqSection({ data = {} }: FaqSectionProps) {
               </h2>
             )}
             {data.description && (
-              <p className="mt-4 text-sm leading-relaxed text-slate-600 md:text-base">
+              <p className="mt-4 leading-relaxed text-ink-soft md:text-base">
                 {data.description}
               </p>
             )}
@@ -69,7 +69,7 @@ export default function FaqSection({ data = {} }: FaqSectionProps) {
                   type="button"
                   aria-expanded={isOpen}
                   onClick={() => setOpenIndex(isOpen ? -1 : index)}
-                  className={`flex w-full items-center justify-between gap-4 px-5 py-4 text-left text-sm font-semibold text-[#020e43] transition-colors md:px-5 md:py-4 md:text-[15px] ${isOpen ? "border-b-2 border-[#ed1c24]" : "hover:bg-slate-50"}`}
+                  className={`flex w-full items-center justify-between gap-4 px-5 py-4 text-left text-sm font-semibold text-[#020e43] transition-colors md:px-5 md:py-4 md:text-base ${isOpen ? "border-b-2 border-[#ed1c24]" : "hover:bg-slate-50"}`}
                 >
                   <span>{item.question}</span>
                   <span

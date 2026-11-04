@@ -72,7 +72,7 @@ export default function HajjLandscapeCard({
         <h3 title={packageTitle} className="text-lg md:text-xl text-primary font-serif mb-2">
           {packageTitle}
         </h3>
-        <div className="mt-auto -mx-4 -mb-4 border-t border-[#e5ebf4] bg-[#f6f8fc] p-4">
+        <div className="mt-auto -mx-4 -mb-4 border-t border-[#e5ebf4] bg-[#f4f7fb] p-4">
           <span className="text-xs font-semibold text-ink-soft font-semibold">
             {priceSubtext || "Starting From"}
           </span>
