@@ -50,15 +50,18 @@ export default function PackageCustomizationCTA({ journey }: { journey: 'hajj' |
     finally { setSending(false); }
   };
   const inputClass = 'block w-full min-h-11 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-950 focus:border-primary focus:outline-none focus:ring-2 focus:ring-blue-100';
-  return <section className="max-w-[1400px] mx-auto px-5 py-10" aria-label={`Customized ${name} Package`}>
-    <div className="mx-auto flex max-w-[1440px] flex-col gap-6 rounded-2xl bg-primary p-6 text-white shadow-sm md:flex-row md:items-center md:justify-between md:p-10">
-      <div className="flex-1">
-        <div className="flex items-center gap-3"><span className="rounded-full bg-red-50 p-3 text-red"><Settings2 size={23} /></span><div><p className="text-xs font-semibold uppercase tracking-[.2em] text-red">Design your journey</p><h2 className="font-serif text-2xl font-bold md:text-3xl">Need a Customized {name} Package?</h2></div></div>
-        <p className="mt-3 max-w-3xl text-sm leading-6">Choose the number of days, flights, Makkah and Madinah hotels, transportation and additional services. We will arrange a personalized {name} itinerary around your requirements.</p>
-        <div className="mt-6 flex flex-wrap gap-5 text-xs font-semibold"><span className="flex items-center gap-2"><CalendarDays size={17} className="text-red" />Choose your duration</span><span className="flex items-center gap-2"><Hotel size={17} className="text-red" />Select hotels</span><span className="flex items-center gap-2"><Plane size={17} className="text-red" />Add flights & transport</span></div>
+  return <section className="py-6 md:py-10 bg-[#f4f7fb]" aria-label={`Customized ${name} Package`}>
+    <div className="max-w-[1400px] mx-auto px-5">
+      <div className="mx-auto flex max-w-[1440px] flex-col gap-6 rounded-2xl bg-primary p-6 text-white shadow-sm md:flex-row md:items-center md:justify-between md:p-10">
+        <div className="flex-1">
+          <div className="flex items-center gap-3"><span className="rounded-full bg-red-50 p-3 text-red"><Settings2 size={23} /></span><div><p className="text-xs font-semibold uppercase tracking-[.2em] text-red">Design your journey</p><h2 className="font-serif text-2xl font-bold md:text-3xl">Need a Customized {name} Package?</h2></div></div>
+          <p className="mt-3 max-w-3xl text-sm leading-6">Choose the number of days, flights, Makkah and Madinah hotels, transportation and additional services. We will arrange a personalized {name} itinerary around your requirements.</p>
+          <div className="mt-6 flex flex-wrap gap-5 text-xs font-semibold"><span className="flex items-center gap-2"><CalendarDays size={17} className="text-red" />Choose your duration</span><span className="flex items-center gap-2"><Hotel size={17} className="text-red" />Select hotels</span><span className="flex items-center gap-2"><Plane size={17} className="text-red" />Add flights & transport</span></div>
+        </div>
+        <div className="flex flex-col items-center gap-3"><span className="rounded-full bg-amber-50 px-4 py-1 text-xs font-bold uppercase text-amber-800">{name} only</span><button type="button" onClick={() => { setForm(initialForm(journey)); setSaved(false); setResult(''); setOpen(true); }} className="rounded-xl bg-red px-7 py-3.5 text-sm font-bold text-white hover:bg-red-500">Customize Your Package →</button></div>
       </div>
-      <div className="flex flex-col items-center gap-3"><span className="rounded-full bg-amber-50 px-4 py-1 text-xs font-bold uppercase text-amber-800">{name} only</span><button type="button" onClick={() => { setForm(initialForm(journey)); setSaved(false); setResult(''); setOpen(true); }} className="rounded-xl bg-red px-7 py-3.5 text-sm font-bold text-white hover:bg-red-500">Customize Your Package →</button></div>
     </div>
+    
     {open && <div className="fixed inset-0 z-[1100] flex items-center justify-center bg-slate-950/70 p-3 sm:p-6" onMouseDown={e => { if (e.target === e.currentTarget && !sending) setOpen(false); }}>
       <div role="dialog" aria-modal="true" aria-label={`Customized ${name} Package Form`} className="relative flex max-h-[94vh] w-full max-w-3xl flex-col overflow-hidden rounded-3xl bg-white text-slate-900 shadow-2xl">
         <div className="flex items-start justify-between border-b border-slate-100 p-5 sm:p-7"><div><p className="text-xs font-bold uppercase tracking-widest text-red mb-2">Design your journey</p><h2 className="font-serif text-2xl font-bold">Customized {name} Package Form</h2><p className="mt-1 text-sm text-slate-500">Choose your preferred flights, hotels and transportation. Your details are saved as an enquiry, not a confirmed booking.</p></div><button type="button" onClick={() => setOpen(false)} aria-label="Close customized package form" className="rounded-full bg-red p-2 text-white"><X size={18} /></button></div>
