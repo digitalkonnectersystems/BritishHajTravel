@@ -35,7 +35,7 @@ export default function LatestBlogsSection({ data, blogs, isHomepage = false }: 
           : undefined
       }
     >
-      <div className="max-w-[1150px] mx-auto px-4">
+      <div className="max-w-[1400px] mx-auto px-5">
         <div className="text-center mb-8">
           {data?.eyebrow && <span className="eyebrow block w-fit mx-auto text-center">{data.eyebrow}</span>}
           <h2 className="font-serif text-primary text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98] text-white">{data?.title || 'Articles, Tips & Spiritual Insights'}</h2>
@@ -83,7 +83,7 @@ export default function LatestBlogsSection({ data, blogs, isHomepage = false }: 
           <div className="flex justify-center mt-6 md:mt-10">
             <Link
               href="/blogs"
-              className="inline-flex items-center justify-center bg-red text-white hover:bg-red-lt hover:text-white px-6 py-3 rounded-full text-md font-bold no-underline transition-colors"
+              className="px-8 py-3.5 border-2 border-white text-white font-bold text-xs uppercase tracking-widest rounded-md hover:bg-white hover:text-primary transition-all flex items-center gap-3"
             >
               Read More
             </Link>

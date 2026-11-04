@@ -19,7 +19,7 @@ export default function FeaturedTravelExperiencesSection({ data }: { data?: Part
         <div className="mx-auto mb-6 max-w-3xl text-center">
           {data?.eyebrow && <p className="eyebrow justify-center">{data.eyebrow}</p>}
           {data?.title && <h2 className="font-serif text-primary text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98] !justify-center">{data.title}</h2>}
-          {data?.subtitle && <p className="max-w-2xl text-center mx-auto text-sm leading-relaxed pt-4">{data.subtitle}</p>}
+          {data?.subtitle && <p className="max-w-2xl text-center mx-auto text-sm text-ink-soft font-medium leading-relaxed pt-3">{data.subtitle}</p>}
         </div>
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
@@ -38,7 +38,7 @@ export default function FeaturedTravelExperiencesSection({ data }: { data?: Part
                   {/* <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border border-red/15 bg-red/5 text-red">
                     <Icon size={27} strokeWidth={1.7} aria-hidden="true" />
                   </div> */}
-                  <h3 className="m-0 font-serif text-2xl leading-snug text-primary">{card.title}</h3>
+                  <h3 className="m-0 font-serif text-lg md:text-xl text-2xl leading-snug text-primary">{card.title}</h3>
                   {card.description && <p className="mb-0 mt-3 text-sm leading-5 text-ink-soft">{card.description}</p>}
                   {lines.length > 0 && (
                     <ul className="mb-6 mt-5 space-y-2 border-t border-slate-100 pt-4 text-sm leading-6 text-ink-soft">
@@ -48,7 +48,7 @@ export default function FeaturedTravelExperiencesSection({ data }: { data?: Part
                     </ul>
                   )}
                   {href && card.buttonLabel && (
-                    <Link href={href} className="mt-auto inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-primary px-5 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-red hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red">
+                    <Link href={href} className="mt-auto inline-flex min-h-11 shrink-0 items-center justify-center gap-2 cursor-pointer rounded-md border-2 border-transparent bg-red py-3 text-center text-xs font-black uppercase tracking-widest text-white transition-colors hover:border-red hover:bg-white hover:text-red focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red">
                       {card.buttonLabel}<ArrowUpRight size={17} aria-hidden="true" />
                     </Link>
                   )}

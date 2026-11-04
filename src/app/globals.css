@@ -181,7 +181,7 @@ input[type="date"]:not(.opacity-0):not([class*="opacity-0"])::-webkit-calendar-p
 }
 
 .contact-info h4 {
-  font-weight: 600;
+  font-weight: 800;
   color: var(--red);
   font-size: 14px;
   letter-spacing: .14em;
