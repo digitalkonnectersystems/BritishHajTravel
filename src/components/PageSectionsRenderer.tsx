@@ -61,7 +61,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
     : "";
 
   return (
-    <div className="bht-public-sections w-full">
+    <div className="bht-public-sections w-full bg-blue-lt">
       {sections.map((sec: any, idx: number) => {
         if (!sec || !sec.type) return null;
         if (sec.hidden === true || sec.visible === false) return null;

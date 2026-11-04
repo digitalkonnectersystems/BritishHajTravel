@@ -2902,7 +2902,7 @@ select {
   max-width: 900px;
   margin-left: 0;
   text-align: left;
-  font-size: clamp(0.75rem, 1.2vw, 0.9375rem);
+  font-size: clamp(0.75rem, 1.2vw, 1rem);
   line-height: 1.4;
 }
 
