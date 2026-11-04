@@ -39,8 +39,8 @@ export default function PlanYourOwnPackageSection({ data = {}, sourcePage }: { d
   const inputClass = 'mt-1.5 block w-full min-w-0 h-[48px] border border-[#ededed] bg-[#f5f5f5] px-4 text-[15px] text-slate-900 outline-none focus:border-[#e30000] focus:ring-1 focus:ring-[#e30000]';
   const labelClass = 'block min-w-0 text-[15px] font-normal text-[#343434]';
   return <section aria-labelledby={`${instanceId}-title`} className="w-full bg-white px-3 py-6 sm:px-4 sm:py-7 min-[1025px]:py-10">
-    <div className="mx-auto w-full" style={{ maxWidth: /^\d{3,4}px$/.test(data.maxWidth || '') ? data.maxWidth : '1440px' }}>
-      <h2 id={`${instanceId}-title`} className="mb-5 text-[28px] md:text-[38px] font-normal leading-tight text-[#333]">{title}</h2>
+    <div className="max-w-[1400px] mx-auto px-5" style={{ maxWidth: /^\d{3,4}px$/.test(data.maxWidth || '') ? data.maxWidth : '1440px' }}>
+      <h2 id={`${instanceId}-title`} className="mb-5 text-[28px] md:text-[38px] font-normal leading-tight text-primary">{title}</h2>
       <div className="border border-[#c7c7c7] bg-white p-3 sm:p-4 min-[1025px]:p-5 shadow-[0_1px_5px_rgba(0,0,0,0.12)]">
         <form onSubmit={submit} className="grid grid-cols-1 gap-x-8 gap-y-4 md:grid-cols-2 min-[1025px]:grid-cols-3" autoComplete="on">
           <label className={labelClass} htmlFor={`${instanceId}-name`}>Your Name <span className="text-red">*</span>
