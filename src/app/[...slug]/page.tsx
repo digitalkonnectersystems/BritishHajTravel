@@ -130,7 +130,7 @@ export default async function DynamicPage({
   }
 
   return (
-    <main className={`${isFlightBooking ? "bg-blue-lt" : "bg-primary-light"} min-h-screen`}>
+    <main className={`${isFlightBooking ? "bg-blue-lt" : "bg-white"} min-h-screen`}>
       {pageJsonLd && (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: pageJsonLd }} />
       )}
