@@ -144,7 +144,7 @@ export default function PackageBrochuresSection({ data, pageData }: PackageBroch
           )}
 
           {isSingle && !isHotelsPage ? (
-            <div className="flex justify-center items-center w-full">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch w-full">
               <div
                 onClick={() => setPopupIdx(0)}
                 className="w-full max-w-2xl bg-white rounded-2xl md:rounded-3xl overflow-hidden shadow-xl border border-slate-200/80 transition-all duration-300 hover:shadow-2xl group cursor-pointer"
