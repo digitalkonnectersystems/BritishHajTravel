@@ -8,6 +8,17 @@ import { and, asc, eq } from 'drizzle-orm';
 import { revalidatePath, updateTag } from 'next/cache';
 import { logAdminActivityAction } from '@/actions/activityActions';
 
+function parseJsonObject(value: unknown): Record<string, any> | null {
+  if (value && typeof value === 'object' && !Array.isArray(value)) return value as Record<string, any>;
+  if (typeof value === 'string') {
+    try {
+      const parsed = JSON.parse(value);
+      return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : null;
+    } catch { return null; }
+  }
+  return null;
+}
+
 function parseJson(value: unknown, fallback: any[] = []) {
   if (Array.isArray(value)) return value;
   if (typeof value !== 'string') return fallback;
@@ -31,7 +42,7 @@ export async function getDestinations(includeDrafts = false) {
       bannerImages: parseJson(row.bannerImages),
       packageIds: parseJson(row.packageIds).map(Number).filter(Boolean),
       packagesData: parseJson(row.packagesData, []),
-      packageData: row.packageData || (parseJson(row.packagesData, [])[0] || null),
+      packageData: parseJsonObject(row.packageData) || (parseJson(row.packagesData, [])[0] || null),
     }));
   } catch (error) {
     console.error('getDestinations DB error:', error);
@@ -51,7 +62,7 @@ export async function getDestinationBySlug(slug: string) {
       bannerImages: parseJson(row.bannerImages),
       packageIds: parseJson(row.packageIds).map(Number).filter(Boolean),
       packagesData: parseJson(row.packagesData, []),
-      packageData: row.packageData || (parseJson(row.packagesData, [])[0] || null),
+      packageData: parseJsonObject(row.packageData) || (parseJson(row.packagesData, [])[0] || null),
     };
   } catch (error) {
     console.error('getDestinationBySlug DB error:', error);
@@ -75,9 +86,11 @@ export async function saveDestinationAction(data: {
   await requireAdmin(['admin', 'content_editor', 'seo_manager']);
 
   try {
-    const title = data.title.trim();
-    const slug = data.slug.toLowerCase().trim().replace(/^\/+|\/+$/g, '').replace(/[^a-z0-9-]+/g, '-');
+    const title = String(data?.title || '').trim();
+    const slug = String(data?.slug || '').toLowerCase().trim().replace(/^\/+|\/+$/g, '').replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '');
     if (!title || !slug) return { success: false, error: 'Title and slug are required.' };
+    if (title.length > 255 || slug.length > 128) return { success: false, error: 'Title or slug is too long.' };
+    if (data.status && data.status !== 'published' && data.status !== 'draft') return { success: false, error: 'Invalid publication status.' };
 
     const packageIds = (data.packageIds || [])
       .map(Number)
@@ -85,8 +98,20 @@ export async function saveDestinationAction(data: {
     const bannerImages = (data.bannerImages || [])
       .map((image) => String(image || '').trim())
       .filter(Boolean);
-    const packagesData = Array.isArray(data.packagesData) ? data.packagesData : [];
-    const packageData = data.packageData || packagesData[0] || null;
+    const submittedPackagesData = Array.isArray(data.packagesData) ? data.packagesData : null;
+    const packageData = parseJsonObject(data.packageData) || parseJsonObject(submittedPackagesData?.[0]);
+    if (!packageData) return { success: false, error: 'Destination package details are required.' };
+    const displayOrder = Number(data.displayOrder ?? 0);
+    if (!Number.isInteger(displayOrder) || displayOrder < 0) return { success: false, error: 'Invalid display order.' };
+    if (data.sectionTitle && String(data.sectionTitle).length > 255) return { success: false, error: 'Package section title is too long.' };
+
+    const previousEntry = data.id
+      ? (await db.select().from(destinations).where(eq(destinations.id, data.id)).limit(1))[0] || null
+      : null;
+    if (data.id && !previousEntry) return { success: false, error: 'Destination not found. Refresh the page.' };
+
+    // Do not erase historical packages_data when the single-package editor omits it.
+    const packagesData = submittedPackagesData ?? parseJson(previousEntry?.packagesData, []);
 
     const values = {
       title,
@@ -98,13 +123,9 @@ export async function saveDestinationAction(data: {
       packagesData,
       packageData,
       status: data.status || 'published',
-      displayOrder: Number(data.displayOrder || 0),
+      displayOrder,
       updatedAt: new Date(),
     } as any;
-
-    const previousEntry = data.id
-      ? (await db.select().from(destinations).where(eq(destinations.id, data.id)).limit(1))[0] || null
-      : null;
 
     let savedId = data.id;
     if (data.id) {
@@ -127,6 +148,8 @@ export async function saveDestinationAction(data: {
     });
     revalidatePath('/destinations');
     revalidatePath(`/destinations/${slug}`);
+    if (previousEntry?.slug && previousEntry.slug !== slug) revalidatePath(`/destinations/${previousEntry.slug}`);
+    revalidatePath('/admin/destinations');
     revalidatePath('/', 'layout');
     updateTag('nav-items');
     return { success: true };
@@ -147,6 +170,7 @@ export async function updateDestinationStatusAction(id: number, status: 'publish
   await requireAdmin(['admin', 'content_editor', 'seo_manager']);
 
   try {
+    if (status !== 'published' && status !== 'draft') return { success: false, error: 'Invalid publication status.' };
     const previousEntry = (await db.select().from(destinations).where(eq(destinations.id, id)).limit(1))[0];
     if (!previousEntry) return { success: false, error: 'Destination not found.' };
 
@@ -190,6 +214,16 @@ export async function duplicateDestinationAction(id: number) {
     const title = `${source.title.slice(0, 255 - copySuffix.length)}${copySuffix}`;
     const content = { ...source };
     delete (content as { id?: number }).id;
+    // A destination duplicate is a separate package; give its embedded card a
+    // distinct identity so duplicate React keys do not survive future edits.
+    const originalPackage = parseJsonObject(source.packageData);
+    if (originalPackage) {
+      content.packageData = {
+        ...originalPackage,
+        id: `destination-package-copy-${id}-${Date.now()}`,
+        title: originalPackage.title === source.title ? title : originalPackage.title,
+      };
+    }
     const inserted = await db.insert(destinations).values({
       ...content,
       title,
@@ -226,6 +260,7 @@ export async function deleteDestinationAction(id: number) {
 
   try {
     const previousEntry = (await db.select().from(destinations).where(eq(destinations.id, id)).limit(1))[0] || null;
+    if (!previousEntry) return { success: false, error: 'Destination not found.' };
     await db.delete(destinations).where(eq(destinations.id, id));
     await logAdminActivityAction({
       type: 'destinations',
@@ -235,6 +270,8 @@ export async function deleteDestinationAction(id: number) {
       newEntry: null,
     });
     revalidatePath('/destinations');
+    revalidatePath(`/destinations/${previousEntry.slug}`);
+    revalidatePath('/admin/destinations');
     revalidatePath('/', 'layout');
     updateTag('nav-items');
     return { success: true };

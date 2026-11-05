@@ -22,6 +22,9 @@ export default async function DestinationsPage() {
     .map(({ destination, pkg }: any) => {
       return {
         ...pkg,
+        // Embedded package IDs can be identical after a destination is duplicated.
+        // Use the database destination ID as the unique frontend card identity.
+        id: `destination-${destination.id}`,
         destinationTitle: destination.title,
         destinationSlug: destination.slug,
         cardData: typeof pkg.cardData === 'string' ? pkg.cardData : {

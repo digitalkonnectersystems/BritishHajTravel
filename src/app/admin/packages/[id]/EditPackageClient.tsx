@@ -69,12 +69,15 @@ type IncludeItem = {
   text: string;
 };
 
-export function HajjCardFields({ pkgData, setPkgData, includePackageMeta = false, hideBadge = false }: { pkgData: any; setPkgData: (v: any) => void; includePackageMeta?: boolean; hideBadge?: boolean }) {
+export function HajjCardFields({ pkgData, setPkgData, includePackageMeta = false, hideBadge = false, destinationAccommodationControls = false }: { pkgData: any; setPkgData: (v: any) => void; includePackageMeta?: boolean; hideBadge?: boolean; destinationAccommodationControls?: boolean }) {
   const cd = pkgData.cardData || defaultHajjCardData;
   const updateCD = (f: string, v: any) => setPkgData({ ...pkgData, cardData: { ...cd, [f]: v } });
 
   const updateHotel = (hotelKey: string, field: string, value: any) => {
     const updatedHotel = { ...(cd[hotelKey] || {}), [field]: value };
+    // The destination editor writes both duration flags in one state update.
+    // Two consecutive writes with a stale cardData snapshot lose the first one.
+    if (destinationAccommodationControls && field === 'durationEnabled') updatedHotel.enabled = value;
     setPkgData({
       ...pkgData,
       cardData: { ...cd, [hotelKey]: updatedHotel },
@@ -221,20 +224,37 @@ export function HajjCardFields({ pkgData, setPkgData, includePackageMeta = false
           const hotelObj = cd[h.key] || {};
           return (
             <div key={h.key} className="bg-white p-4 rounded-xl border border-slate-200">
-              <h5 className="text-[10px] font-extrabold text-slate-700 mb-3 flex items-center gap-1.5">
-                <Hotel className="w-3 h-3 text-primary" /> {h.label}
-              </h5>
-              <button type="button" aria-pressed={hotelObj.isVisible !== false}
+              <div className="mb-3 flex items-center gap-2">
+                <Hotel className="h-3.5 w-3.5 shrink-0 text-primary" />
+                {destinationAccommodationControls ? (
+                  <input type="text" value={hotelObj.label ?? ''} placeholder={h.label}
+                    onChange={(e) => updateHotel(h.key, 'label', e.target.value)}
+                    aria-label={`Edit ${h.label} accommodation card title`} title="Edit frontend accommodation card title"
+                    className="min-w-0 flex-1 rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-extrabold text-primary" />
+                ) : (
+                  <h5 className="text-[10px] font-extrabold text-slate-700">{h.label}</h5>
+                )}
+                {destinationAccommodationControls && (
+                  <button type="button" aria-pressed={hotelObj.isVisible !== false}
+                    aria-label={hotelObj.isVisible !== false ? `Hide ${hotelObj.label || h.label} card` : `Show ${hotelObj.label || h.label} card`}
+                    title={hotelObj.isVisible !== false ? 'Hide whole accommodation card' : 'Show whole accommodation card'}
+                    onClick={() => updateHotel(h.key, 'isVisible', hotelObj.isVisible === false)}
+                    className={`shrink-0 rounded-lg border p-2 ${hotelObj.isVisible !== false ? 'border-primary bg-blue-50 text-primary' : 'border-slate-300 bg-slate-100 text-slate-600'}`}>
+                    {hotelObj.isVisible !== false ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                  </button>
+                )}
+              </div>
+              {!destinationAccommodationControls && <button type="button" aria-pressed={hotelObj.isVisible !== false}
                 onClick={() => updateHotel(h.key, 'isVisible', hotelObj.isVisible === false)}
                 className={`mb-3 rounded-full border px-3 py-1.5 text-[10px] font-bold ${hotelObj.isVisible !== false ? 'border-primary bg-blue-50 text-primary' : 'border-slate-300 bg-slate-100 text-slate-600'}`}>
                 {hotelObj.isVisible !== false ? 'Hide whole hotel card' : 'Show whole hotel card'}
-              </button>
+              </button>}
               <div className="space-y-2.5">
                 <ImageUploadWidget value={hotelObj.image || ''} onChange={(url) => updateHotel(h.key, 'image', url)} subfolder="packages" />
-                <div>
+                {!destinationAccommodationControls && <div>
                   <label className="text-[9px] font-bold text-ink-lt mb-0.5 block">ACCOMMODATION LABEL</label>
                   <input type="text" value={hotelObj.label || ''} onChange={e => updateHotel(h.key, 'label', e.target.value)} placeholder={h.label} className="w-full px-2 py-1.5 rounded-lg border border-slate-200 text-xs" />
-                </div>
+                </div>}
                 <div>
                   <label className="text-[9px] font-bold text-ink-lt mb-0.5 block">HOTEL NAME</label>
                   <input
@@ -304,7 +324,7 @@ export function HajjCardFields({ pkgData, setPkgData, includePackageMeta = false
                       enabled={hotelObj.durationEnabled !== undefined ? hotelObj.durationEnabled : (hotelObj.enabled !== false)}
                       onToggleChange={(val) => {
                         updateHotel(h.key, 'durationEnabled', val);
-                        updateHotel(h.key, 'enabled', val);
+                        if (!destinationAccommodationControls) updateHotel(h.key, 'enabled', val);
                       }}
                     />
                   </div>

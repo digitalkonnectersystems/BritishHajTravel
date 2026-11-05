@@ -8,12 +8,19 @@ import { deleteDestinationAction, duplicateDestinationAction, saveDestinationAct
 import ImageUploadWidget from '@/components/admin/ImageUploadWidget';
 import { HajjCardFields } from '@/app/admin/packages/[id]/EditPackageClient';
 import DetailPageDataFields, { defaultDetailPageData } from '@/components/admin/DetailPageDataFields';
+import { destinationRecord, mergeDestinationHotelSlots, DESTINATION_HOTEL_KEYS } from '@/lib/destinationAccommodation';
 
 const emptyPackage = { id: '', title: '', description: '', startingPrice: '', status: 'available', cardData: {} };
 const emptyDestination = { title: '', slug: '', description: '', sectionTitle: 'Destination Packages', bannerImages: [''], packageIds: [] as number[], packageData: emptyPackage, status: 'published' as 'published' | 'draft', displayOrder: 0 };
 
 function getPackage(destination: any) {
-  return destination.packageData || destination.packagesData?.[0] || { ...emptyPackage, title: destination.title };
+  const pkg = destinationRecord(destination.packageData || destination.packagesData?.[0]);
+  return {
+    ...emptyPackage, ...pkg,
+    title: pkg.title || destination.title || '',
+    cardData: destinationRecord(pkg.cardData),
+    detailPageData: destinationRecord(pkg.detailPageData),
+  };
 }
 
 function DestinationPackagePrices({ packageData, setPackageData }: { packageData: any; setPackageData: (value: any) => void }) {
@@ -51,6 +58,7 @@ export default function DestinationsClient({ initialDestinations }: { initialDes
   const [form, setForm] = useState<any>(emptyDestination);
   const [editing, setEditing] = useState(false);
   const [message, setMessage] = useState('');
+  const [saving, setSaving] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [editorTab, setEditorTab] = useState<'basic' | 'detail'>('basic');
 
@@ -66,31 +74,87 @@ export default function DestinationsClient({ initialDestinations }: { initialDes
 
   const save = async (event: React.FormEvent) => {
     event.preventDefault();
-    const result = await saveDestinationAction({ ...form, packagesData: [], packageData: form.packageData });
-    if (!result.success) { setMessage(result.error || 'Could not save destination.'); return; }
-    window.location.reload();
+    if (saving) return;
+    setSaving(true);
+    setMessage('');
+    try {
+      // Do not re-submit ORM metadata, dates or unrelated fields loaded for editing.
+      const result = await saveDestinationAction({
+        id: form.id,
+        title: String(form.title || '').trim(),
+        slug: String(form.slug || '').trim(),
+        description: String(form.description || ''),
+        sectionTitle: String(form.sectionTitle || ''),
+        bannerImages: form.bannerImages,
+        packageIds: Array.isArray(form.packageIds) ? form.packageIds : [],
+        packageData: form.packageData,
+        status: form.status,
+        displayOrder: Number(form.displayOrder || 0),
+      });
+      if (!result.success) { setMessage(result.error || 'Could not save destination.'); return; }
+      window.location.reload();
+    } catch (error) {
+      console.error('Destination save request failed:', error);
+      setMessage('The save request could not be completed. Check your connection and server logs before trying again.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const remove = async (id: number) => {
     if (!window.confirm('Delete this destination package?')) return;
-    const result = await deleteDestinationAction(id);
-    if (result.success) setItems((current) => current.filter((item) => item.id !== id));
-    else setMessage(result.error || 'Could not delete destination.');
+    try {
+      const result = await deleteDestinationAction(id);
+      if (result.success) setItems((current) => current.filter((item) => item.id !== id));
+      else setMessage(result.error || 'Could not delete destination.');
+    } catch (error) {
+      console.error('Delete destination request failed:', error);
+      setMessage('Could not confirm deletion. Refresh the list before trying again.');
+    }
   };
 
   const togglePublication = async (destination: { id: number; status: 'published' | 'draft' }) => {
     const status = destination.status === 'published' ? 'draft' : 'published';
-    const result = await updateDestinationStatusAction(destination.id, status);
-    if (!result.success) { setMessage(result.error || 'Could not update destination visibility.'); return; }
-    setItems((current) => current.map((item) => item.id === destination.id ? { ...item, status } : item));
-    setMessage(status === 'published' ? 'Destination shown on the public website.' : 'Destination hidden from the public website.');
+    try {
+      const result = await updateDestinationStatusAction(destination.id, status);
+      if (!result.success) { setMessage(result.error || 'Could not update destination visibility.'); return; }
+      setItems((current) => current.map((item) => item.id === destination.id ? { ...item, status } : item));
+      setMessage(status === 'published' ? 'Destination shown on the public website.' : 'Destination hidden from the public website.');
+    } catch (error) {
+      console.error('Destination publication request failed:', error);
+      setMessage('Could not update destination visibility. Refresh and retry.');
+    }
   };
 
   const duplicate = async (destination: { id: number }) => {
-    const result = await duplicateDestinationAction(destination.id);
-    if (!result.success || !result.destination) { setMessage(result.error || 'Could not duplicate destination.'); return; }
-    setItems((current) => [result.destination, ...current]);
-    setMessage('Draft destination copy created.');
+    try {
+      const result = await duplicateDestinationAction(destination.id);
+      if (!result.success || !result.destination) { setMessage(result.error || 'Could not duplicate destination.'); return; }
+      setItems((current) => [result.destination, ...current]);
+      setMessage('Draft destination copy created.');
+    } catch (error) {
+      console.error('Duplicate destination request failed:', error);
+      setMessage('Could not confirm duplication. Refresh the list before trying again.');
+    }
+  };
+
+  // Changes in the legacy four-card editor must also update explicit hotelCards,
+  // otherwise that array would override newly edited names on the public site.
+  const updatePackageCard = (next: any) => {
+    const previous = form.packageData || {};
+    const previousHotels = previous.cardData || {};
+    const nextHotels = next.cardData || {};
+    const detailPageData = { ...(next.detailPageData || {}) };
+    if (Array.isArray(detailPageData.hotelCards)) {
+      const keys: readonly string[] = DESTINATION_HOTEL_KEYS;
+      detailPageData.hotelCards = detailPageData.hotelCards.map((item: any) => {
+        if (!keys.includes(item?.id)) return item;
+        const key = item.id;
+        if (previousHotels[key] === nextHotels[key]) return item;
+        return { ...item, ...(nextHotels[key] || {}) };
+      });
+    }
+    setForm((current: any) => ({ ...current, packageData: { ...next, detailPageData } }));
   };
 
   const updateBanner = (index: number, value: string) => {
@@ -107,8 +171,13 @@ export default function DestinationsClient({ initialDestinations }: { initialDes
 
   const handleDragEnd = async () => {
     setDraggedIndex(null);
-    const result = await updateDestinationOrderAction(items.map((item) => item.id));
-    if (!result.success) setMessage(result.error || 'Could not update destination order.');
+    try {
+      const result = await updateDestinationOrderAction(items.map((item) => item.id));
+      if (!result.success) setMessage(result.error || 'Could not update destination order.');
+    } catch (error) {
+      console.error('Destination ordering request failed:', error);
+      setMessage('Could not save the destination order. Refresh to check the current order.');
+    }
   };
 
   return (
@@ -131,10 +200,19 @@ export default function DestinationsClient({ initialDestinations }: { initialDes
           <label className="text-xs font-bold text-slate-600">Status<select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })} className="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-normal"><option value="published">Published</option><option value="draft">Draft</option></select></label>
           <div className="md:col-span-2"><div className="flex items-center justify-between text-xs font-bold text-slate-600 mb-1">Banner images <button type="button" onClick={() => setForm({ ...form, bannerImages: [...form.bannerImages, ''] })} className="text-primary">+ Add image</button></div>{form.bannerImages.map((image: string, index: number) => <div key={index} className="flex items-start gap-2 mb-3"><div className="flex-1"><ImageUploadWidget value={image} onChange={(value) => updateBanner(index, value)} subfolder="destinations" compact /></div>{form.bannerImages.length > 1 && <button type="button" onClick={() => setForm({ ...form, bannerImages: form.bannerImages.filter((_: string, itemIndex: number) => itemIndex !== index) })} className="text-red-500 mt-2"><X className="w-4 h-4" /></button>}</div>)}</div>
           <DestinationPackagePrices packageData={form.packageData} setPackageData={(packageData) => setForm({ ...form, packageData })} />
-          <div className="md:col-span-2 border-t border-slate-100 pt-4"><div className="mb-3 text-xs font-extrabold uppercase tracking-wider text-primary">Package card details</div><HajjCardFields pkgData={form.packageData} setPkgData={(packageData) => setForm({ ...form, packageData })} includePackageMeta hideBadge /></div>
+          <div className="md:col-span-2 border-t border-slate-100 pt-4"><div className="mb-3 text-xs font-extrabold uppercase tracking-wider text-primary">Package card details</div><HajjCardFields pkgData={form.packageData} setPkgData={updatePackageCard} includePackageMeta hideBadge destinationAccommodationControls /></div>
         </>}
-        {editorTab === 'detail' && <div className="md:col-span-2"><DetailPageDataFields data={{ ...defaultDetailPageData, ...(form.packageData?.detailPageData || {}) }} onChange={(detailPageData) => setForm({ ...form, packageData: { ...form.packageData, detailPageData } })} packagesGallery={form.packageData?.packagesGallery || []} onGalleryChange={(packagesGallery) => setForm({ ...form, packageData: { ...form.packageData, packagesGallery } })} /></div>}
-        <div className="md:col-span-2 flex items-center justify-end gap-3 border-t border-slate-100 pt-4"><button type="button" onClick={() => setEditing(false)} className="px-4 py-2 rounded-lg border border-slate-200 text-xs font-bold">Cancel</button><button type="submit" className="px-4 py-2 rounded-lg bg-red text-white text-xs font-bold">Save destination package</button></div>
+        {editorTab === 'detail' && <div className="md:col-span-2"><DetailPageDataFields data={{ ...defaultDetailPageData, ...mergeDestinationHotelSlots(form.packageData?.detailPageData, form.packageData?.cardData) }} cardData={form.packageData?.cardData || {}} destinationAccommodationControls onChange={(detailPageData) => {
+          // Keep the four legacy slots compatible with the editable detail cards.
+          const nextCardData = { ...(form.packageData?.cardData || {}) };
+          for (const hotel of detailPageData.hotelCards || []) {
+            if ((DESTINATION_HOTEL_KEYS as readonly string[]).includes(hotel.id)) {
+              nextCardData[hotel.id] = { ...(nextCardData[hotel.id] || {}), ...hotel };
+            }
+          }
+          setForm({ ...form, packageData: { ...form.packageData, cardData: nextCardData, detailPageData } });
+        }} packagesGallery={form.packageData?.packagesGallery || []} onGalleryChange={(packagesGallery) => setForm({ ...form, packageData: { ...form.packageData, packagesGallery } })} /></div>}
+        <div className="md:col-span-2 flex items-center justify-end gap-3 border-t border-slate-100 pt-4"><button type="button" onClick={() => setEditing(false)} className="px-4 py-2 rounded-lg border border-slate-200 text-xs font-bold">Cancel</button><button type="submit" disabled={saving} className="px-4 py-2 rounded-lg bg-red text-white text-xs font-bold disabled:opacity-60">{saving ? 'Saving…' : 'Save destination package'}</button></div>
       </form>}
 
       <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-xs">

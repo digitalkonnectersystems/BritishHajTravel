@@ -83,7 +83,8 @@ export default function DetailPageDataFields({
   onHotelSync,
   packagesGallery = [],
   onGalleryChange,
-  cardData
+  cardData,
+  destinationAccommodationControls = false
 }: {
   data: DetailPageData;
   onChange: (newData: DetailPageData) => void;
@@ -91,6 +92,7 @@ export default function DetailPageDataFields({
   packagesGallery?: string[];
   onGalleryChange?: (gallery: string[]) => void;
   cardData?: any;
+  destinationAccommodationControls?: boolean;
 }) {
   const d = data || defaultDetailPageData;
 
@@ -152,7 +154,12 @@ export default function DetailPageDataFields({
               <div className="flex items-center justify-between gap-2">
                 <strong className="text-xs text-primary">{hotel.label || `Hotel ${index + 1}`}</strong>
                 <div className="flex items-center gap-2">
-                  <button type="button" onClick={() => changeHotel('isVisible', hotel.isVisible === false)} className="text-xs text-primary underline">{hotel.isVisible === false ? 'Show' : 'Hide'}</button>
+                  <button type="button" onClick={() => changeHotel('isVisible', hotel.isVisible === false)}
+                    aria-label={hotel.isVisible === false ? 'Show accommodation card' : 'Hide accommodation card'}
+                    title={hotel.isVisible === false ? 'Show accommodation card' : 'Hide accommodation card'}
+                    className="rounded-lg p-1.5 text-primary hover:bg-blue-50">
+                    {destinationAccommodationControls ? (hotel.isVisible === false ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />) : (hotel.isVisible === false ? 'Show' : 'Hide')}
+                  </button>
                   <button type="button" disabled={index === 0} onClick={() => { const next = [...hotels];[next[index - 1], next[index]] = [next[index], next[index - 1]]; update('hotelCards', next); }} className="text-xs disabled:opacity-40" title="Move up">↑</button>
                   <button type="button" disabled={index === hotels.length - 1} onClick={() => { const next = [...hotels];[next[index + 1], next[index]] = [next[index], next[index + 1]]; update('hotelCards', next); }} className="text-xs disabled:opacity-40" title="Move down">↓</button>
                   <button type="button" onClick={() => { if (window.confirm(`Remove ${hotel.name || hotel.label || 'this hotel'} from this package?`)) update('hotelCards', hotels.filter((_, i) => i !== index)); }} className="text-red" title="Remove hotel"><Trash2 className="w-4 h-4" /></button>

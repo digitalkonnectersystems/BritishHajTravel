@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import * as LucideIcons from "lucide-react";
 import DynamicIcon from "@/components/ui/DynamicIcon";
 import { getDurationUnit } from "@/lib/packageHelpers";
+import { visiblePackageHotels } from "@/lib/packageHotelEntries";
+import { mergeDestinationHotelSlots } from "@/lib/destinationAccommodation";
 import { useCurrency } from "@/components/CurrencyProvider";
 import PackageBookingModal from "@/components/PackageBookingModal";
 import PackageDetailModal from "@/components/PackageDetailModal";
@@ -26,7 +28,7 @@ export default function DestinationsPageSection({
   const [bookingPackage, setBookingPackage] = useState<any>(null);
   const [detailPackage, setDetailPackage] = useState<any>(null);
 
-  useEffect(() => setPackages(initialPackages || destinationPackages), [initialPackages, data?.packagesData]);
+  useEffect(() => setPackages(initialPackages || destinationPackages), [initialPackages, data?.packagesData, data?.packageData]);
 
   const title = data?.title || "Packages for this destination";
   const description = data?.description || "Explore our carefully selected travel packages for this destination.";
@@ -72,12 +74,15 @@ export default function DestinationsPageSection({
                 try { cardData = JSON.parse(cardData); } catch { cardData = {}; }
               }
 
-              const accommodations = [
-                { city: "MAKKAH", ...cardData.makkahHotel },
-                { city: "MADINA", ...cardData.madinahHotel },
-                { city: "AZIZIYA", ...cardData.aziziyaHotel },
-                { city: "MINA", ...cardData.minaHotel },
-              ].filter((hotel) => hotel.name || hotel.location || hotel.image || hotel.nights || hotel.badge);
+              // The same saved accommodation data drives listing and detail cards.
+              // Older destinations use the four named slots; edited destinations may
+              // also carry an explicitly ordered detailPageData.hotelCards array.
+              const detailData = mergeDestinationHotelSlots(pkg.detailPageData, cardData);
+              const accommodations = visiblePackageHotels(detailData, cardData, pkg);
+              const defaultDestinationLabels: Record<string, string> = {
+                makkahHotel: 'MAKKAH', madinahHotel: 'MADINA',
+                aziziyaHotel: 'AZIZIYA', minaHotel: 'MINA',
+              };
 
               const inclusions = Array.isArray(cardData.inclusions) && cardData.inclusions.length > 0
                 ? cardData.inclusions
@@ -123,17 +128,17 @@ export default function DestinationsPageSection({
                         <div className="text-[11px] font-black text-primary uppercase tracking-widest mb-3">ACCOMMODATIONS</div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
                           {accommodations.map((hotel: any, hotelIndex: number) => (
-                            <div key={hotelIndex} className="flex gap-3 p-2.5 rounded-2xl border border-[#eef0e4] bg-[#fcfdf9] items-start">
+                            <div key={hotel.id || hotelIndex} className="flex gap-3 p-2.5 rounded-2xl border border-[#eef0e4] bg-[#fcfdf9] items-start">
                               <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 bg-slate-100 relative flex items-center justify-center">
-                                {hotel.image ? <img src={hotel.image} alt={hotel.city} className="w-full h-full object-cover" /> : <LucideIcons.Hotel className="w-6 h-6 text-slate-400" />}
+                                {hotel.image ? <img src={hotel.image} alt={hotel.name || hotel.label || 'Accommodation'} className="w-full h-full object-cover" /> : <LucideIcons.Hotel className="w-6 h-6 text-slate-400" />}
                               </div>
                               <div className="min-w-0 flex-1">
-                                <h4 className="text-primary font-black text-xs uppercase tracking-wider leading-none mb-1">{hotel.city}</h4>
+                                <h4 className="text-primary font-black text-xs uppercase tracking-wider leading-none mb-1">{defaultDestinationLabels[hotel.id] && !(cardData[hotel.id]?.label || detailData?.[hotel.id]?.label) ? defaultDestinationLabels[hotel.id] : (hotel.label || 'Accommodation')}</h4>
                                 <div className="text-red font-serif font-bold text-[10px] uppercase tracking-wide truncate">{hotel.name || "Accommodation"}</div>
                                 <div className="text-ink-soft text-[10px] flex items-center gap-1 mb-1.5 truncate"><LucideIcons.MapPin className="w-3 h-3 shrink-0" />{hotel.location || "Selected location"}</div>
                                 <div className="flex gap-1.5 flex-wrap">
-                                  {hotel.badge && <span className="bg-primary text-white text-[9px] px-1.5 py-0.5 rounded font-bold flex items-center gap-1"><DynamicIcon name={hotel.badgeIcon || "Utensils"} className="w-2.5 h-2.5" />{hotel.badge}</span>}
-                                  {hotel.nights && <span className="bg-red-lt text-white text-[9px] px-1.5 py-0.5 rounded font-bold flex items-center gap-1">{getDurationUnit(hotel.nights) === "days" ? <LucideIcons.Sun className="w-2.5 h-2.5" /> : <LucideIcons.MoonStar className="w-2.5 h-2.5" />}{hotel.nights}</span>}
+                                  {hotel.badgeEnabled !== false && hotel.badge && <span className="bg-primary text-white text-[9px] px-1.5 py-0.5 rounded font-bold flex items-center gap-1"><DynamicIcon name={hotel.badgeIcon || "Utensils"} className="w-2.5 h-2.5" />{hotel.badge}</span>}
+                                  {hotel.durationEnabled !== false && hotel.nights && <span className="bg-red-lt text-white text-[9px] px-1.5 py-0.5 rounded font-bold flex items-center gap-1">{getDurationUnit(hotel.nights) === "days" ? <LucideIcons.Sun className="w-2.5 h-2.5" /> : <LucideIcons.MoonStar className="w-2.5 h-2.5" />}{hotel.nights}</span>}
                                 </div>
                               </div>
                             </div>
