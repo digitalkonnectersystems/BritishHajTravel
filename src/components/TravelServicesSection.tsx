@@ -20,7 +20,7 @@ export default function TravelServicesSection({ data }: { data: any }) {
             dangerouslySetInnerHTML={{ __html: title }}
           />
           {subtitle && (
-            <p className="text-white/90 max-w-2xl mt-4 leading-relaxed">
+            <p className="text-white/90 max-w-2xl mt-2 leading-relaxed">
               {subtitle}
             </p>
           )}

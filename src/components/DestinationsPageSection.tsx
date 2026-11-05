@@ -133,7 +133,7 @@ export default function DestinationsPageSection({
                                 {hotel.image ? <img src={hotel.image} alt={hotel.name || hotel.label || 'Accommodation'} className="w-full h-full object-cover" /> : <LucideIcons.Hotel className="w-6 h-6 text-slate-400" />}
                               </div>
                               <div className="min-w-0 flex-1">
-                                <h4 className="text-primary font-black text-xs uppercase tracking-wider leading-none mb-1">{defaultDestinationLabels[hotel.id] && !(cardData[hotel.id]?.label || detailData?.[hotel.id]?.label) ? defaultDestinationLabels[hotel.id] : (hotel.label || 'Accommodation')}</h4>
+                                <b className="text-primary font-serif text-sm font-black uppercase tracking-wider leading-none mb-1">{defaultDestinationLabels[hotel.id] && !(cardData[hotel.id]?.label || detailData?.[hotel.id]?.label) ? defaultDestinationLabels[hotel.id] : (hotel.label || 'Accommodation')}</b>
                                 <div className="text-red font-serif font-bold text-[10px] uppercase tracking-wide truncate">{hotel.name || "Accommodation"}</div>
                                 <div className="text-ink-soft text-[10px] flex items-center gap-1 mb-1.5 truncate"><LucideIcons.MapPin className="w-3 h-3 shrink-0" />{hotel.location || "Selected location"}</div>
                                 <div className="flex gap-1.5 flex-wrap">
@@ -164,8 +164,8 @@ export default function DestinationsPageSection({
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-2.5 mt-auto">
-                      <button type="button" onClick={() => { if (pkg.destinationSlug) window.location.href = `/destinations/${pkg.destinationSlug}`; else setDetailPackage({ ...pkg, detailPageData: { ...(pkg.detailPageData || {}), overview: pkg.description || pkg.detailPageData?.overview } }); }} className="flex-1 py-3.5 border-2 border-primary text-primary hover:bg-primary hover:text-white text-xs font-black rounded-xl uppercase tracking-wider transition-colors flex justify-center items-center gap-2"><LucideIcons.Eye className="w-4 h-4" /> View Detail</button>
-                      <button type="button" onClick={() => setBookingPackage(pkg)} className="flex-1 py-3.5 bg-red hover:bg-white hover:border hover:border-red text-white hover:text-red text-xs font-black rounded-xl uppercase tracking-wider transition-colors flex justify-center items-center gap-2 shadow-sm"><LucideIcons.BookOpen className="w-4 h-4" /> Book Now</button>
+                      <button type="button" onClick={() => { if (pkg.destinationSlug) window.location.href = `/destinations/${pkg.destinationSlug}`; else setDetailPackage({ ...pkg, detailPageData: { ...(pkg.detailPageData || {}), overview: pkg.description || pkg.detailPageData?.overview } }); }} className="flex-1 py-3.5 border-2 border-primary text-primary hover:bg-primary hover:text-white text-xs font-black rounded-sm uppercase tracking-wider transition-colors flex justify-center items-center gap-2"><LucideIcons.Eye className="w-4 h-4" /> View Detail</button>
+                      <button type="button" onClick={() => setBookingPackage(pkg)} className="flex-1 py-3.5 bg-red hover:bg-white hover:border-2 border-2 border-red hover:border-red text-white hover:text-red text-xs font-black rounded-sm uppercase tracking-wider transition-colors flex justify-center items-center gap-2 shadow-sm"><LucideIcons.BookOpen className="w-4 h-4" /> Book Now</button>
                     </div>
                   </div>
                 </article>
