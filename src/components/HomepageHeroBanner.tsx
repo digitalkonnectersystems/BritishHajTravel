@@ -304,7 +304,7 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
   const heroData = {
     heroEyebrow: data?.heroEyebrow || "",
     title: pageData?.bannerTitle || data?.title || "",
-    description: pageData?.bannerDescription || data?.description || "",
+    description: data?.description || pageData?.bannerDescription || "",
     primaryBtnLabel: data?.primaryBtnLabel || "",
     primaryBtnLink: data?.primaryBtnLink || "",
     secondaryBtnLabel: data?.secondaryBtnLabel || "",
