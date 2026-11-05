@@ -4253,3 +4253,6 @@ hr {
     display: none;
   }
 }
+.border-line{
+  border-color:#d1d1d1;
+}

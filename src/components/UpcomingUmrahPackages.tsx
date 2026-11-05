@@ -102,7 +102,7 @@ export default function UpcomingUmrahPackages({
 
   return (
     // <section className={`py-10  ${sectionBgClass} bg-[#f4f7fb]`}>
-    <section className={`py-6 md:py-10 bg-[#f4f7fb]`}>
+    <section className={`py-6 md:py-10 bg-[#f4f7fb] md:pb-0 pb-0`}>
       <div className="max-w-[1400px] mx-auto px-5">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-6 md:mb-10 gap-3 md:gap-6 text-center md:text-left">

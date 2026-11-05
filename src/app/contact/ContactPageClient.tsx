@@ -10,7 +10,7 @@ import SubmissionSuccessModal from "@/components/SubmissionSuccessModal";
 function ContactInfoCardsSection({ data }: { data?: any }) {
   return (
     <div className="w-full max-w-7xl mx-auto px-5 relative z-20 -mt-2 md:-mt-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 items-stretch">
         {/* Card 1: Locations */}
         <div className="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-slate-100/80 flex flex-col items-center text-center h-full">
           <div className="w-12 h-12 rounded-2xl bg-red-soft text-red flex items-center justify-center text-xl mb-4">
@@ -248,17 +248,17 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
 
       <div className={`p-6 md:p-8 flex flex-col justify-between transition-all duration-300 ${isDisabled ? "filter blur-[3px] opacity-40 pointer-events-none select-none" : ""}`}>
         <div>
-          <div className="text-center mb-10">
+          <div className="text-center mb-4 md:mb-6">
             <h2 className="text-2xl md:text-3xl font-serif font-bold text-primary tracking-tight">
               {formConfig?.title ? formConfig.title : <>Drop Us A <span className="text-primary">Message</span></>}
             </h2>
-            <p className="text-gray-500 text-sm mt-2">{formConfig?.subtitle || data?.subtitle || "Fill out the form below and we'll get back to you shortly."}</p>
+            <p className="text-ink text-sm mt-2">{formConfig?.subtitle || data?.subtitle || "Fill out the form below and we'll get back to you shortly."}</p>
           </div>
 
           {contactStatus && <p className="text-center text-primary font-semibold mb-6">{contactStatus}</p>}
 
-          <form noValidate className="flex flex-col gap-4" onSubmit={handleContactSubmit}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form noValidate className="flex flex-col gap-6" onSubmit={handleContactSubmit}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="relative">
                 <input
                   type="text"
@@ -273,7 +273,7 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
                 />
                 <label
                   htmlFor="name"
-                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.name ? "text-red peer-focus:text-red" : "text-gray-500 peer-focus:text-red"}`}
+                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.name ? "text-red peer-focus:text-red" : "text-gray-500 peer-focus:text-red"}`}
                 >
                   Name
                 </label>
@@ -294,7 +294,7 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
                 />
                 <label
                   htmlFor="email"
-                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.email ? "text-red peer-focus:text-red" : "text-gray-500 peer-focus:text-red"}`}
+                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.email ? "text-red peer-focus:text-red" : "text-gray-500 peer-focus:text-red"}`}
                 >
                   Email Address
                 </label>
@@ -320,7 +320,7 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
                 />
                 <label
                   htmlFor="phone"
-                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.phone ? "text-red peer-focus:text-red" : "text-gray-500 peer-focus:text-red"}`}
+                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.phone ? "text-red peer-focus:text-red" : "text-gray-500 peer-focus:text-red"}`}
                 >
                   Phone Number
                 </label>
@@ -337,7 +337,7 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
                 />
                 <label
                   htmlFor="subject"
-                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs text-gray-500 peer-focus:text-red`}
+                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs text-gray-500 peer-focus:text-red`}
                 >
                   Subject
                 </label>
@@ -360,12 +360,12 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
                     }));
                   }
                 }}
-                className={`peer w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium appearance-none bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat ${errors.message ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-red min-h-[230px]"}`}
+                className={`peer w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium appearance-none bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat ${errors.message ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-red min-h-[150px] md: min-h-[230px]"}`}
               />
 
               <label
                 htmlFor="message"
-                className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.message ? "text-red peer-focus:text-red" : "text-gray-500 peer-focus:text-red"}`}
+                className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.message ? "text-red peer-focus:text-red" : "text-gray-500 peer-focus:text-red"}`}
               >
                 How can we help you?
               </label>
@@ -480,7 +480,7 @@ export default function ContactPageClient({ initialPageData, initialFormConfig, 
       {/* ================= ALWAYS RELIABLE SECTIONS ================= */}
       <div style={{ order: position(['Contact Info Cards', 'Contact Bar'], 10) }}><ContactInfoCardsSection data={sections.find(s => s.type === "Contact Info Cards" || s.type === "Contact Bar")?.data} /></div>
 
-      <section className="max-w-7xl w-full py-12 mx-auto px-5" style={{ order: position(['Contact Form', 'Contact Form + Maps', 'Contact Maps', 'Google Maps'], 20) }}>
+      <section className="max-w-7xl w-full py-6 md:py-10 mx-auto px-5" style={{ order: position(['Contact Form', 'Contact Form + Maps', 'Contact Maps', 'Google Maps'], 20) }}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
           <ContactFormSection data={formSec?.data} initialFormConfig={initialFormConfig} />
           <ContactMapsSection data={sections.find((s: any) => s.type === "Contact Maps" || s.type === "Google Maps" || s.type === "Contact Form + Maps")?.data} />
