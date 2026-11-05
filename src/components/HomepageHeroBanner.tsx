@@ -551,7 +551,7 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
 
                     <div className="mx-auto w-full md:max-w-[400px] sm:max-w-full min-w-0 rounded-2xl bg-[#0B1672] p-5 shadow-[0_22px_40px_rgba(2,12,27,0.25)] sm:rounded-[28px] sm:p-6 md:p-7 2xl:max-w-[440px]">
                       {heroData.quoteTitle?.trim() ? (
-                        <h2 className="mb-6 text-center font-serif text-[clamp(1.5rem,2.2vw,2rem)] leading-[1.1] text-white">{heroData.quoteTitle}</h2>
+                        <h2 className="mb-6 text-center font-serif text-[clamp(1.5rem,2.2vw,2rem)] leading-[1.1] text-white">Call Back Request</h2>
                       ) : null}
                     {quoteStatus ? <p className="mb-4 text-center text-sm font-semibold text-white">{quoteStatus}</p> : null}
 
