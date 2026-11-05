@@ -43,13 +43,14 @@ import ProcessStepsSection from '@/components/ProcessStepsSection';
 import GuideVideoSection from '@/components/GuideVideoSection';
 import SafeRichText from '@/components/SafeRichText';
 import ElegantTextSection from '@/components/ElegantTextSection';
+import PilgrimageOffersSection from '@/components/PilgrimageOffersSection';
 import HotelDirectorySection from '@/components/HotelDirectorySection';
 import PlanYourOwnPackageSection from '@/components/PlanYourOwnPackageSection';
 import FlightEnquirySection from '@/components/FlightEnquirySection';
 import CmsBasicSection from '@/components/CmsBasicSections';
 import type { DirectoryCategory } from '@/lib/hotelSectionSelection';
 import { useEffect, useRef, useState } from "react";
-export default function PageSectionsRenderer({ sections, pageData, initialPackageData, initialDestinationData, initialBlogData, initialGuideData, publishedVisaCards, publishedSitePaths, initialHotelDirectory = [] }: { sections: any[], pageData?: any, initialPackageData?: any, initialDestinationData?: any[], initialBlogData?: any[], initialGuideData?: any[], publishedVisaCards?: { slug: string; title: string }[], publishedSitePaths?: string[], initialHotelDirectory?: DirectoryCategory[] }) {
+export default function PageSectionsRenderer({ sections, pageData, initialPackageData, initialDestinationData, initialBlogData, initialGuideData, publishedVisaCards, publishedSitePaths, initialHotelDirectory = [], socialLinks = [] }: { sections: any[], pageData?: any, initialPackageData?: any, initialDestinationData?: any[], initialBlogData?: any[], initialGuideData?: any[], publishedVisaCards?: { slug: string; title: string }[], publishedSitePaths?: string[], initialHotelDirectory?: DirectoryCategory[], socialLinks?: { name: string; url: string; icon?: string; openInNewTab?: boolean }[] }) {
   if (!sections || !Array.isArray(sections)) return null;
 
   const whoWeAreSection = sections.find((section: any) =>
@@ -158,6 +159,9 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         }
         if (sec.type === 'Certifications Flip Cards' || sec.type === 'Our Certifications') {
           return <CertificationsFlipCardsSection key={idx} data={sec.data || {}} />;
+        }
+        if (sec.type === 'Pilgrimage Offers & Quick Links') {
+          return <PilgrimageOffersSection key={sec.id || idx} data={sec.data || {}} />;
         }
         if (sec.type === 'Elegant Text Content') {
           return <ElegantTextSection key={sec.id || idx} data={sec.data || {}} />;
@@ -584,7 +588,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         }
 
         if (sec.type === "Homepage Hero Banner" || sec.type === "Hero Slider") {
-          return <HomepageHeroBanner key={idx} data={sec.data} backgroundImage={heroBackgroundImage} pageData={pageData} publishedVisaCards={publishedVisaCards} publishedSitePaths={publishedSitePaths} />;
+          return <HomepageHeroBanner key={idx} data={sec.data} backgroundImage={heroBackgroundImage} pageData={pageData} publishedVisaCards={publishedVisaCards} publishedSitePaths={publishedSitePaths} socialLinks={socialLinks} />;
         }
 
         if (sec.type === "Who We Are") {

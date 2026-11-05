@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Jost, Marcellus, Plus_Jakarta_Sans, Poppins } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -18,7 +19,7 @@ import {
   getFooterData,
   getSeoIntelligenceSettings,
 } from "@/actions/pageActions";
-import { resolveCanonicalPublicOrigin, getSiteEnvironment } from '@/lib/urlResolver';
+import { resolveCanonicalPublicOrigin, getSiteEnvironment, isProductionSiteHost } from '@/lib/urlResolver';
 import { getHiddenSitePagePaths } from "@/lib/sitePageVisibility";
 import { db } from "@/db";
 import { visaProcessing } from "@/db/schema";
@@ -74,7 +75,10 @@ export async function generateMetadata(): Promise<Metadata> {
     getSeoIntelligenceSettings(),
   ]);
   const faviconUrl = identity?.favicon || "/img/favicon.png";
-  const isIndexingEnabled = getSiteEnvironment(seoSettings) === 'production' && (seoSettings?.siteIndexingEnabled ?? true);
+  // SEO settings may be shared by the live and staging deployments. The actual
+  // request host must be production before metadata can become indexable.
+  const requestHost = (await headers()).get('host');
+  const isIndexingEnabled = isProductionSiteHost(requestHost) && getSiteEnvironment(seoSettings) === 'production' && (seoSettings?.siteIndexingEnabled ?? true);
 
   return {
     metadataBase: new URL(resolveCanonicalPublicOrigin(seoSettings)),

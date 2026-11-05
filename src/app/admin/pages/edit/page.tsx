@@ -40,6 +40,7 @@ import { getPackageHotelEntries } from '@/lib/packageHotelEntries';
 import SeoSettingsForm, { SeoSettings } from '@/components/admin/SeoSettingsForm';
 
 import ImageUploadWidget from '@/components/admin/ImageUploadWidget';
+import { PILGRIMAGE_OFFERS_DEFAULTS } from '@/components/PilgrimageOffersSection';
 import HomepageSideBannerFields, { DEFAULT_HOMEPAGE_SIDE_BANNERS, readHomepageSideBanners } from '@/components/admin/HomepageSideBannerFields';
 import { DEFAULT_FEATURED_TRAVEL_SECTION } from '@/lib/featuredTravelExperiences';
 
@@ -398,6 +399,8 @@ const SECTION_CATALOG: SectionCategory[] = [
 
       { type: 'Elegant Text Content', description: 'Two-column section with text on the left, an image on the right, and an optional button.', pages: ['Any Page'] },
 
+      { type: 'Pilgrimage Offers & Quick Links', description: 'Two matching pink offer panels with image, feature checklist, three quick-link cards, Hajj CTA, editable slugs, and a centered eyebrow and heading.', pages: ['Any Page', 'Homepage', 'Hajj Packages', 'Umrah Packages'] },
+
     ],
 
   },
@@ -532,6 +535,8 @@ function PageBuilderContent() {
   // Homepage Hero Banner Specific Fields
 
   const [heroEyebrow, setHeroEyebrow] = useState('Est. in UK 2001 · Licensed Pilgrimage Operator');
+
+  const [quoteTitle, setQuoteTitle] = useState('Get a Free Quote');
 
   const [primaryBtnLabel, setPrimaryBtnLabel] = useState('View Umrah Packages →');
 
@@ -884,7 +889,7 @@ function PageBuilderContent() {
 
           setBannerSize(p.bannerSize || 'cover');
 
-          setBannerTitle(p.bannerTitle || p.title);
+          setBannerTitle(p.bannerTitle ?? p.title ?? '');
 
           setBannerDescription(p.bannerDescription || '');
 
@@ -949,6 +954,8 @@ function PageBuilderContent() {
                 if (heroSec && heroSec.data) {
 
                   if (heroSec.data.heroEyebrow !== undefined) setHeroEyebrow(heroSec.data.heroEyebrow);
+
+                  if (typeof heroSec.data.quoteTitle === 'string') setQuoteTitle(heroSec.data.quoteTitle);
 
                   if (heroSec.data.primaryBtnLabel !== undefined) setPrimaryBtnLabel(heroSec.data.primaryBtnLabel);
 
@@ -1197,7 +1204,7 @@ function PageBuilderContent() {
 
                       title: 'British Hajj Travel',
 
-                      description: "For over 25 years, British Hajj Travel has been a trusted travel agency in UK, offering Hajj and Umrah services, airline ticketing, and visa processing with unmatched expertise. We are UK's No. 1 authorized PIA seller agency and an official agent licensed by the Ministry of Hajj & Umrah, IATA, TICO, OCTA, and ASTA."
+                      description: "For over 20 years, British Hajj Travel has been a trusted travel agency in UK, offering Hajj and Umrah services, airline ticketing, and visa processing with unmatched expertise. We are UK's No. 1 authorized PIA seller agency and an official agent licensed by the Ministry of Hajj & Umrah, IATA, TICO, OCTA, and ASTA."
 
                     }
 
@@ -1291,7 +1298,7 @@ function PageBuilderContent() {
 
                   title: 'British Hajj Travel',
 
-                  description: "For over 25 years, British Hajj Travel has been a trusted travel agency in UK, offering Hajj and Umrah services, airline ticketing, and visa processing with unmatched expertise."
+                  description: "For over 20 years, British Hajj Travel has been a trusted travel agency in UK, offering Hajj and Umrah services, airline ticketing, and visa processing with unmatched expertise."
 
                 }
 
@@ -1654,6 +1661,8 @@ function PageBuilderContent() {
 
       };
 
+    } else if (type === 'Pilgrimage Offers & Quick Links') {
+      defaultData = { ...PILGRIMAGE_OFFERS_DEFAULTS, features: [...PILGRIMAGE_OFFERS_DEFAULTS.features] };
     } else if (type === 'Elegant Text Content') {
       defaultData = {
         eyebrow: '',
@@ -1750,7 +1759,7 @@ function PageBuilderContent() {
 
         title: 'British Hajj Travel',
 
-        description: "For over 25 years, British Hajj Travel has been a trusted travel agency in UK..."
+        description: "For over 20 years, British Hajj Travel has been a trusted travel agency in UK..."
 
       };
 
@@ -2199,9 +2208,11 @@ function PageBuilderContent() {
 
             heroEyebrow,
 
-            title: bannerTitle || title || '',
+            quoteTitle,
 
-            description: bannerDescription || "British Hajj Travel plans Hajj and Umrah journeys from UK down to the smallest detail...",
+            title: bannerTitle,
+
+            description: bannerDescription,
 
             primaryBtnLabel,
 
@@ -2321,7 +2332,7 @@ function PageBuilderContent() {
 
         fd.append('bannerSize', bannerSize);
 
-        fd.append('bannerTitle', bannerTitle || title);
+        fd.append('bannerTitle', (slug === '/' || (!processingMode && pageId === 1)) ? bannerTitle : (bannerTitle || title));
 
         fd.append('bannerDescription', bannerDescription);
 
@@ -2333,6 +2344,7 @@ function PageBuilderContent() {
 
           if (res.success) {
 
+            setSections(updatedSections);
             setMessage('✅ Page Saved Successfully!');
 
             setTimeout(() => setMessage(null), 3000);
@@ -3136,6 +3148,21 @@ function PageBuilderContent() {
           </div>
 
 
+
+          <div className="mt-5 mb-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <label htmlFor="homepage-quote-form-title" className="mb-1.5 block text-[10px] font-extrabold uppercase tracking-wider text-slate-700">
+              Homepage Quote Form Heading
+            </label>
+            <input
+              id="homepage-quote-form-title"
+              type="text"
+              value={quoteTitle}
+              onChange={(event) => setQuoteTitle(event.target.value)}
+              placeholder="Get a Free Quote"
+              className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-medium outline-none focus:border-primary"
+            />
+            <p className="mb-0 mt-2 text-[11px] text-slate-500">Displayed inside the blue quote form. Social icon links are managed under Settings → Footer → Social Links.</p>
+          </div>
 
           <HomepageSideBannerFields value={homepageSideBanners} onChange={setHomepageSideBanners} />
 
@@ -5137,7 +5164,7 @@ function PageBuilderContent() {
 
                             {/* Universal Section Header Block (Eyebrow, Heading, Description) - Hidden for Blog sections */}
 
-                            {sec.type !== 'Latest Blogs Grid' && sec.type !== 'Blog Posts Carousel' && sec.type !== 'Testimonials' && sec.type !== 'Hajj Services Grid' && sec.type !== 'Elegant Text Content' && sec.type !== 'Text Block (Rich Text)' && sec.type !== 'Packages Content (Rich Text)' && sec.type !== 'Plan Your Own Package Form' && sec.type !== 'Flight Enquiry Form' && sec.type !== 'Hajj 2027 Registration Form' && sec.type !== 'YOSR Al Mashaer Hajj Form' && sec.type !== 'Umrah Enquiry 2026-27 Form' && !['Package Detail Blocks', 'Package Flight Details', 'Package Hotel Details', 'Package Occupancy Prices', 'Package Inclusions', 'Package Detail Gallery'].includes(sec.type) && (
+                            {sec.type !== 'Latest Blogs Grid' && sec.type !== 'Blog Posts Carousel' && sec.type !== 'Testimonials' && sec.type !== 'Hajj Services Grid' && sec.type !== 'Elegant Text Content' && sec.type !== 'Pilgrimage Offers & Quick Links' && sec.type !== 'Text Block (Rich Text)' && sec.type !== 'Packages Content (Rich Text)' && sec.type !== 'Plan Your Own Package Form' && sec.type !== 'Flight Enquiry Form' && sec.type !== 'Hajj 2027 Registration Form' && sec.type !== 'YOSR Al Mashaer Hajj Form' && sec.type !== 'Umrah Enquiry 2026-27 Form' && !['Package Detail Blocks', 'Package Flight Details', 'Package Hotel Details', 'Package Occupancy Prices', 'Package Inclusions', 'Package Detail Gallery'].includes(sec.type) && (
 
                               <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 flex flex-col gap-2">
 
@@ -5157,9 +5184,16 @@ function PageBuilderContent() {
 
                                       type="text"
 
-                                      value={sec.data?.eyebrow || ''}
+                                      value={sec.type === 'Homepage Hero Banner' || sec.type === 'Hero Slider' ? heroEyebrow : (sec.data?.eyebrow ?? '')}
 
-                                      onChange={(e) => updateSectionData(sec.id, 'eyebrow', e.target.value)}
+                                      onChange={(e) => {
+                                        if (sec.type === 'Homepage Hero Banner' || sec.type === 'Hero Slider') {
+                                          setHeroEyebrow(e.target.value);
+                                          updateSectionData(sec.id, 'heroEyebrow', e.target.value);
+                                        } else {
+                                          updateSectionData(sec.id, 'eyebrow', e.target.value);
+                                        }
+                                      }}
 
                                       placeholder="e.g. Exclusive Upcoming / Who We Are"
 
@@ -5177,9 +5211,12 @@ function PageBuilderContent() {
 
                                       type="text"
 
-                                      value={sec.data?.title || sec.title || ''}
+                                      value={sec.type === 'Homepage Hero Banner' || sec.type === 'Hero Slider' ? bannerTitle : (sec.data?.title ?? sec.title ?? '')}
 
-                                      onChange={(e) => updateSectionData(sec.id, 'title', e.target.value)}
+                                      onChange={(e) => {
+                                        if (sec.type === 'Homepage Hero Banner' || sec.type === 'Hero Slider') setBannerTitle(e.target.value);
+                                        updateSectionData(sec.id, 'title', e.target.value);
+                                      }}
 
                                       placeholder="e.g. Umrah Packages from UK"
 
@@ -5199,9 +5236,12 @@ function PageBuilderContent() {
 
                                     rows={2}
 
-                                    value={sec.data?.description || ''}
+                                    value={sec.type === 'Homepage Hero Banner' || sec.type === 'Hero Slider' ? bannerDescription : (sec.data?.description ?? '')}
 
-                                    onChange={(e) => updateSectionData(sec.id, 'description', e.target.value)}
+                                    onChange={(e) => {
+                                      if (sec.type === 'Homepage Hero Banner' || sec.type === 'Hero Slider') setBannerDescription(e.target.value);
+                                      updateSectionData(sec.id, 'description', e.target.value);
+                                    }}
 
                                     placeholder="Section introduction or sub-header details..."
 
@@ -8335,6 +8375,142 @@ function PageBuilderContent() {
 
                             )}
 
+
+
+                            {sec.type === 'Pilgrimage Offers & Quick Links' && (
+                              <div className="mt-1 space-y-5 rounded-xl border border-slate-200 bg-white p-4">
+                                <div>
+                                  <h4 className="m-0 text-sm font-extrabold text-primary">Pilgrimage Offers & Quick Links</h4>
+                                  <p className="mb-0 mt-1 text-xs text-gray-500">Reusable section with a white background. Set its position by adding/moving it on a page. Each card has an independent link. Empty URLs stay inactive until you enter a destination.</p>
+                                </div>
+
+                                <div className="grid gap-3 md:grid-cols-2">
+                                  {([['eyebrow', 'Eyebrow label'], ['title', 'Main heading']] as const).map(([field, label]) => (
+                                    <label key={field} className="block text-xs font-semibold text-slate-700">
+                                      {label}
+                                      <input type="text" value={sec.data?.[field] ?? PILGRIMAGE_OFFERS_DEFAULTS[field]}
+                                        onChange={(e) => updateSectionData(sec.id, field, e.target.value)}
+                                        placeholder={PILGRIMAGE_OFFERS_DEFAULTS[field]}
+                                        className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                                    </label>
+                                  ))}
+                                </div>
+                                <p className="m-0 text-[11px] text-slate-500">Main heading uses <code>font-serif text-primary text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98] !justify-center</code>.</p>
+
+                                <div className="space-y-3 rounded-xl border border-slate-200 bg-slate-50/50 p-3">
+                                  <h5 className="m-0 text-xs font-extrabold text-primary">LEFT: WHAT WE OFFER</h5>
+                                  <label className="block text-xs font-semibold text-slate-700">
+                                    Card heading
+                                    <input value={sec.data?.leftTitle ?? PILGRIMAGE_OFFERS_DEFAULTS.leftTitle}
+                                      onChange={(e) => updateSectionData(sec.id, 'leftTitle', e.target.value)}
+                                      className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm" />
+                                  </label>
+                                  <div className="grid gap-3 md:grid-cols-2">
+                                    <div>
+                                      <p className="mb-1 text-xs font-semibold text-slate-700">Image (optional override)</p>
+                                      <ImageUploadWidget value={sec.data?.offerImage || ''}
+                                        onChange={(url) => updateSectionData(sec.id, 'offerImage', url)} subfolder="sections" />
+                                      <p className="m-0 mt-1 text-[11px] text-slate-500">Uses the reference collage by default. Upload an image to replace it.</p>
+                                    </div>
+                                    <label className="block text-xs font-semibold text-slate-700">
+                                      Image alt text
+                                      <input value={sec.data?.offerImageAlt ?? PILGRIMAGE_OFFERS_DEFAULTS.offerImageAlt}
+                                        onChange={(e) => updateSectionData(sec.id, 'offerImageAlt', e.target.value)}
+                                        className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm" />
+                                    </label>
+                                  </div>
+                                  {([['leftParagraph1', 'First paragraph'], ['leftParagraph2', 'Second paragraph']] as const).map(([field, label]) => (
+                                    <label key={field} className="block text-xs font-semibold text-slate-700">
+                                      {label}
+                                      <textarea rows={3} value={sec.data?.[field] ?? PILGRIMAGE_OFFERS_DEFAULTS[field]}
+                                        onChange={(e) => updateSectionData(sec.id, field, e.target.value)}
+                                        className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm" />
+                                    </label>
+                                  ))}
+                                  <div>
+                                    <p className="mb-2 text-xs font-bold text-slate-700">Four benefit labels</p>
+                                    <div className="grid gap-2 md:grid-cols-2">
+                                      {PILGRIMAGE_OFFERS_DEFAULTS.features.map((fallback, i) => (
+                                        <label className="block text-xs font-semibold text-slate-700" key={i}>
+                                          Benefit {i + 1}
+                                          <input type="text" value={sec.data?.features?.[i] ?? fallback}
+                                            onChange={(e) => {
+                                              const next = [...(Array.isArray(sec.data?.features) ? sec.data.features : PILGRIMAGE_OFFERS_DEFAULTS.features)];
+                                              next[i] = e.target.value;
+                                              updateSectionData(sec.id, 'features', next);
+                                            }}
+                                            className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm" />
+                                        </label>
+                                      ))}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div className="space-y-3 rounded-xl border border-slate-200 bg-slate-50/50 p-3">
+                                  <h5 className="m-0 text-xs font-extrabold text-primary">RIGHT: 5 STAR & AFFORDABLE PACKAGES</h5>
+                                  <label className="block text-xs font-semibold text-slate-700">
+                                    Card heading
+                                    <input value={sec.data?.rightTitle ?? PILGRIMAGE_OFFERS_DEFAULTS.rightTitle}
+                                      onChange={(e) => updateSectionData(sec.id, 'rightTitle', e.target.value)}
+                                      className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm" />
+                                  </label>
+                                  {([['rightParagraph1', 'First paragraph'], ['rightParagraph2', 'Second paragraph']] as const).map(([field, label]) => (
+                                    <label key={field} className="block text-xs font-semibold text-slate-700">
+                                      {label}
+                                      <textarea rows={field === 'rightParagraph1' ? 5 : 2}
+                                        value={sec.data?.[field] ?? PILGRIMAGE_OFFERS_DEFAULTS[field]}
+                                        onChange={(e) => updateSectionData(sec.id, field, e.target.value)}
+                                        className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm" />
+                                    </label>
+                                  ))}
+                                </div>
+
+                                <div className="space-y-3">
+                                  <h5 className="m-0 text-xs font-extrabold text-primary">CARD LINKS &amp; DESTINATIONS</h5>
+                                  <p className="m-0 text-[11px] text-slate-500">Enter a relative slug, such as <code>/hajj-packages</code>, or a full HTTPS URL. Each card becomes clickable when its URL is set.</p>
+                                  {(['makkah', 'madinah', 'insurance', 'hajj'] as const).map((name) => {
+                                    const titleKey = `${name}Title` as const;
+                                    const descriptionKey = `${name}Description` as const;
+                                    const actionKey = `${name}Action` as const;
+                                    const urlKey = `${name}Url` as const;
+                                    return (
+                                      <div key={name} className="space-y-3 rounded-xl border border-slate-200 bg-slate-50/60 p-3">
+                                        <h6 className="m-0 text-xs font-extrabold capitalize text-primary">{name === 'hajj' ? 'Hajj Packages 2027 (large red button)' : name === 'makkah' ? 'Live Makkah' : name === 'madinah' ? 'Live Madinah' : 'Travel Insurance'}</h6>
+                                        <div className="grid gap-3 md:grid-cols-2">
+                                          <label className="block text-xs font-semibold text-slate-700">
+                                            Card title
+                                            <input value={sec.data?.[titleKey] ?? PILGRIMAGE_OFFERS_DEFAULTS[titleKey]}
+                                              onChange={(e) => updateSectionData(sec.id, titleKey, e.target.value)}
+                                              className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm" />
+                                          </label>
+                                          <label className="block text-xs font-semibold text-slate-700">
+                                            Description
+                                            <input value={sec.data?.[descriptionKey] ?? PILGRIMAGE_OFFERS_DEFAULTS[descriptionKey]}
+                                              onChange={(e) => updateSectionData(sec.id, descriptionKey, e.target.value)}
+                                              className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm" />
+                                          </label>
+                                          {name !== 'hajj' && (
+                                            <label className="block text-xs font-semibold text-slate-700">
+                                              Call-to-action label
+                                              <input value={sec.data?.[actionKey] ?? (name === 'makkah' ? PILGRIMAGE_OFFERS_DEFAULTS.makkahAction : name === 'madinah' ? PILGRIMAGE_OFFERS_DEFAULTS.madinahAction : PILGRIMAGE_OFFERS_DEFAULTS.insuranceAction)}
+                                                onChange={(e) => updateSectionData(sec.id, actionKey, e.target.value)}
+                                                className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm" />
+                                            </label>
+                                          )}
+                                          <label className="block text-xs font-semibold text-slate-700">
+                                            Destination slug / URL
+                                            <input type="text" value={sec.data?.[urlKey] || ''}
+                                              onChange={(e) => updateSectionData(sec.id, urlKey, e.target.value)}
+                                              placeholder={name === 'hajj' ? '/hajj-packages' : '/your-page-slug'}
+                                              className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm" />
+                                          </label>
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            )}
 
 
                             {sec.type === 'Elegant Text Content' && (

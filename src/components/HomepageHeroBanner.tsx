@@ -17,6 +17,35 @@ import { submitQuoteEnquiryAction } from "@/lib/publicEnquiryClient";
 import SubmissionSuccessModal from "@/components/SubmissionSuccessModal";
 import { FORM_SUCCESS_MESSAGE } from "@/lib/formSuccess";
 import { resolveVisibleVisaCards, type PublicVisaPage } from "@/lib/publicPageVisibility";
+import chAccreditation from "@/assets/accreditation-ch.webp";
+import iataAccreditation from "@/assets/accreditation-iata.webp";
+import pilgrimageAccreditation from "@/assets/accreditation-pilgrimage.webp";
+
+type SocialLink = {
+  name: string;
+  url: string;
+  icon?: string;
+  openInNewTab?: boolean;
+};
+
+const accreditations = [
+  { src: chAccreditation, alt: "Registration badge 04214473" },
+  { src: iataAccreditation, alt: "IATA badge 96005722" },
+  { src: pilgrimageAccreditation, alt: "Pilgrimage badge 1160" },
+];
+
+const fallbackSocialIconClass: Record<string, string> = {
+  facebook: "fa-facebook-f",
+  instagram: "fa-instagram",
+  linkedin: "fa-linkedin-in",
+  tiktok: "fa-tiktok",
+  youtube: "fa-youtube",
+  pinterest: "fa-pinterest-p",
+  twitter: "fa-x-twitter",
+  x: "fa-x-twitter",
+  whatsapp: "fa-whatsapp",
+};
+
 
 function IndiaFlag() {
   return (
@@ -300,7 +329,7 @@ function VisaMobileLoopCarousel({ cards }: { cards: Array<{ card: any; href: str
   );
 }
 
-export default function HomepageHeroBanner({ data, pageData, backgroundImage, publishedVisaCards = [], publishedSitePaths = [] }: { data: any; pageData?: any; backgroundImage?: string; publishedVisaCards?: PublicVisaPage[]; publishedSitePaths?: string[] }) {
+export default function HomepageHeroBanner({ data, pageData, backgroundImage, publishedVisaCards = [], publishedSitePaths = [], socialLinks = [] }: { data: any; pageData?: any; backgroundImage?: string; publishedVisaCards?: PublicVisaPage[]; publishedSitePaths?: string[]; socialLinks?: SocialLink[] }) {
   const heroData = {
     heroEyebrow: data?.heroEyebrow || "",
     title: pageData?.bannerTitle || data?.title || "",
@@ -341,11 +370,15 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
     flightsRouteTo: data?.flightsRouteTo || "",
     flightsButtonLabel: data?.flightsButtonLabel || "",
     flightsButtonLink: data?.flightsButtonLink || "",
-    quoteTitle: data?.quoteTitle || "",
+    quoteTitle: typeof data?.quoteTitle === "string" ? data.quoteTitle : "Get a Free Quote",
   };
 
   const visibleVisaCards = resolveVisibleVisaCards<any>(heroData.visaCards, publishedVisaCards, publishedSitePaths);
   const visaDocumentsVisible = publishedSitePaths.includes(heroData.visaDocumentsLink);
+  const activeSocialLinks = socialLinks.filter((item) =>
+    item && typeof item.name === "string" && item.name.trim() &&
+    typeof item.url === "string" && /^https?:\/\//i.test(item.url.trim())
+  );
 
   const [quoteForm, setQuoteForm] = useState({
     fullName: "",
@@ -488,8 +521,38 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                     </div>
                   </div>
 
-                  <div className="mx-auto w-full md:max-w-[400px] sm:max-w-full min-w-0 rounded-2xl bg-[#0B1672] p-5 shadow-[0_22px_40px_rgba(2,12,27,0.25)] sm:rounded-[28px] sm:p-6 md:p-7 2xl:max-w-[440px]">
-                    {/* <h2 className="mb-6 text-center font-serif text-[26px] leading-none text-white md:text-[30px]">{heroData.quoteTitle}</h2> */}
+                  <div className="mx-auto flex w-full min-w-0 flex-col sm:max-w-full md:max-w-[400px] 2xl:max-w-[440px]">
+                    {activeSocialLinks.length > 0 ? (
+                      <nav aria-label="Follow us on social media" className="mb-4 flex flex-wrap items-center justify-center gap-2.5">
+                        {activeSocialLinks.map((item, index) => {
+                          const iconName = fallbackSocialIconClass[item.name.toLowerCase().split(/[\s(]/)[0]];
+                          return (
+                            <a
+                              key={`${item.name}-${index}`}
+                              href={item.url}
+                              target={item.openInNewTab === false ? undefined : "_blank"}
+                              rel={item.openInNewTab === false ? undefined : "noopener noreferrer"}
+                              aria-label={`Follow us on ${item.name}`}
+                              title={item.name}
+                              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white text-primary shadow-[0_5px_18px_rgba(2,12,27,0.15)] transition-transform hover:-translate-y-0.5 hover:bg-[#f5f6fb] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                            >
+                              {iconName ? (
+                                <i className={`fa-brands ${iconName} text-lg`} aria-hidden="true" />
+                              ) : item.icon ? (
+                                <img src={item.icon} alt="" aria-hidden="true" className="h-5 w-5 object-contain" loading="lazy" />
+                              ) : (
+                                <span aria-hidden="true" className="text-sm font-bold">{item.name.charAt(0)}</span>
+                              )}
+                            </a>
+                          );
+                        })}
+                      </nav>
+                    ) : null}
+
+                    <div className="mx-auto w-full md:max-w-[400px] sm:max-w-full min-w-0 rounded-2xl bg-[#0B1672] p-5 shadow-[0_22px_40px_rgba(2,12,27,0.25)] sm:rounded-[28px] sm:p-6 md:p-7 2xl:max-w-[440px]">
+                      {heroData.quoteTitle?.trim() ? (
+                        <h2 className="mb-6 text-center font-serif text-[clamp(1.5rem,2.2vw,2rem)] leading-[1.1] text-white">{heroData.quoteTitle}</h2>
+                      ) : null}
                     {quoteStatus ? <p className="mb-4 text-center text-sm font-semibold text-white">{quoteStatus}</p> : null}
 
                     <form noValidate className="flex h-full flex-col gap-5" onSubmit={handleQuoteSubmit}>
@@ -620,6 +683,21 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                         </button>
                       </div>
                     </form>
+                    </div>
+
+                    <div className="mt-4 flex w-full flex-wrap items-center justify-center gap-3" role="group" aria-label="Travel industry accreditations">
+                      {accreditations.map((badge) => (
+                        <Image
+                          key={badge.alt}
+                          src={badge.src}
+                          alt={badge.alt}
+                          width={82}
+                          height={82}
+                          className="h-[74px] w-[74px] rounded-full border border-slate-200 bg-white object-cover shadow-[0_6px_16px_rgba(2,12,27,0.14)] sm:h-[82px] sm:w-[82px]"
+                          sizes="82px"
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>

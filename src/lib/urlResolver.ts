@@ -8,6 +8,16 @@ export const STAGING_SITE_ORIGIN = 'https://new.britishhajtravel.com';
 export const PRODUCTION_SITE_ORIGIN = 'https://www.britishhajtravel.com';
 export type SiteEnvironment = 'staging' | 'production';
 
+/** Never expose the staging hostname when production settings share the same DB. */
+export function isProductionSiteHost(host: string | null | undefined): boolean {
+  const hostname = String(host || '').trim().toLowerCase().replace(/:\d+$/, '').replace(/\.$/, '');
+  const configuredProductionHost = new URL(PRODUCTION_SITE_ORIGIN).hostname.toLowerCase();
+  const alternateHost = configuredProductionHost.startsWith('www.')
+    ? configuredProductionHost.slice(4)
+    : `www.${configuredProductionHost}`;
+  return hostname === configuredProductionHost || hostname === alternateHost;
+}
+
 export function getSiteEnvironment(settings?: { siteEnvironment?: string | null }): SiteEnvironment {
   return settings?.siteEnvironment === 'production' ? 'production' : 'staging';
 }
@@ -59,7 +69,7 @@ export function isValidPublicOrigin(urlString?: string | null): boolean {
 }
 
 /**
- * Normalizes a URL to a clean public origin: e.g. "https://www.britishhajjtravel.com"
+ * Normalizes a URL to a clean public origin, such as https://www.britishhajtravel.com.
  */
 export function normalizePublicOrigin(urlString?: string | null): string | null {
   if (!isValidPublicOrigin(urlString)) return null;

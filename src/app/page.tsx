@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import PageSectionsRenderer from "@/components/PageSectionsRenderer";
-import { getPageBySlug } from "@/actions/pageActions";
+import { getFooterData, getPageBySlug } from "@/actions/pageActions";
 import { getPublishedVisaProcessingCards } from "@/actions/visaProcessingActions";
 import { loadCmsSectionContext } from "@/lib/cmsSectionContext";
 import { buildPageMetadata } from "@/lib/seoMetadata";
@@ -11,10 +11,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const [pageData, publishedVisaCards, saudiVisaPage] = await Promise.all([
+  const [pageData, publishedVisaCards, saudiVisaPage, footerData] = await Promise.all([
     getPageBySlug("/"),
     getPublishedVisaProcessingCards(),
     getPageBySlug("/saudi-visa"),
+    getFooterData(),
   ]);
 
   let dynamicSections: any[] = [];
@@ -40,6 +41,7 @@ export default async function Home() {
         pageData={pageData}
         {...sectionContext}
         publishedVisaCards={publishedVisaCards}
+        socialLinks={Array.isArray(footerData?.socialLinks) ? footerData.socialLinks : []}
         publishedSitePaths={saudiVisaPage?.status === "published" ? ["/saudi-visa"] : []}
 
       />
