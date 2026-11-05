@@ -188,7 +188,7 @@ export default function TestimonialsCarousel({
                       />
                       <div>
                         <div className="text-[15px] font-bold text-slate-900 mb-[1px] font-sans">{review.name}</div>
-                        <div className="text-[12px] text-slate-400 font-medium">{review.time}</div>
+                        <div className="text-[12px] text-gray-500 font-medium">{review.time}</div>
                       </div>
                     </div>
                     <div className="flex items-center justify-center w-6 h-6">
@@ -244,7 +244,7 @@ export default function TestimonialsCarousel({
 
                   <div className={`text-xs leading-relaxed text-slate-600 font-normal mb-3 font-sans transition-[max-height] duration-500 ease-in-out overflow-hidden ${isExpanded ? "line-clamp-none max-h-[300px]" : "line-clamp-3 max-h-[60px]"}`}>{review.text}</div>
 
-                  <span className="text-xs text-slate-400 font-semibold no-underline cursor-pointer inline-block hover:text-primary transition-colors" onClick={() => toggleReview(review.id)}>
+                  <span className="text-xs text-gray-500 font-semibold no-underline cursor-pointer inline-block hover:text-primary transition-colors" onClick={() => toggleReview(review.id)}>
                     {isExpanded ? "Read less" : "Read more"}
                   </span>
                 </div>

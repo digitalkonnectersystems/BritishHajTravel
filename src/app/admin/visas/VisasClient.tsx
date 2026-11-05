@@ -128,7 +128,7 @@ export default function VisasClient({ initialVisas }: VisasClientProps) {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200/60 pb-4">
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900 m-0">Saudi Visa Services</h1>
-          <p className="text-xs text-slate-500 mt-1 mb-0">
+          <p className="text-xs text-gray-500 mt-1 mb-0">
             Manage authorized Saudi visa processing categories, requirements &amp; guidelines
           </p>
         </div>
@@ -223,7 +223,7 @@ export default function VisasClient({ initialVisas }: VisasClientProps) {
               <button
                 type="button"
                 onClick={() => setEditingVisa(null)}
-                className="text-slate-400 hover:text-slate-600 bg-transparent border-none text-base cursor-pointer"
+                className="text-gray-500 hover:text-slate-600 bg-transparent border-none text-base cursor-pointer"
               >
                 ✕
               </button>
@@ -289,7 +289,7 @@ export default function VisasClient({ initialVisas }: VisasClientProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {visas.length === 0 ? (
-          <div className="col-span-full p-12 text-center text-slate-400 text-xs bg-white rounded-3xl border border-slate-100">
+          <div className="col-span-full p-12 text-center text-gray-500 text-xs bg-white rounded-3xl border border-slate-100">
             No visa categories created in database yet.
           </div>
         ) : (
@@ -343,14 +343,14 @@ export default function VisasClient({ initialVisas }: VisasClientProps) {
                 </div>
 
                 <h3 className="text-base font-extrabold text-slate-900 m-0 mb-2">{v.title}</h3>
-                <p className="text-xs text-slate-500 leading-relaxed m-0 mb-4">{v.shortDescription}</p>
+                <p className="text-xs text-gray-500 leading-relaxed m-0 mb-4">{v.shortDescription}</p>
               </div>
 
               <div className="pt-3 border-t border-slate-100 flex justify-between items-center">
                 <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${v.isPublished ? 'text-emerald-700 bg-emerald-50 border border-emerald-200' : 'text-amber-700 bg-amber-50 border border-amber-200'}`}>
                   {v.isPublished ? '✓ Published' : 'Hidden'}
                 </span>
-                <span className="text-[10px] font-mono text-slate-400">ID: {v.id}</span>
+                <span className="text-[10px] font-mono text-gray-500">ID: {v.id}</span>
               </div>
             </div>
           ))

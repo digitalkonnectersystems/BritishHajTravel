@@ -285,7 +285,7 @@ export default function DynamicSiteForm({
 
   if (fieldsList.length === 0) {
     return (
-      <div className="text-center py-20 text-slate-500">
+      <div className="text-center py-20 text-gray-500">
         <div className="inline-block w-6 h-6 border-2 border-slate-300 border-t-primary rounded-full animate-spin mb-3" />
         <p className="text-sm">Loading form...</p>
       </div>

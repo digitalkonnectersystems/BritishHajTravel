@@ -113,7 +113,7 @@ function BlogEditorInner() {
   };
 
   const fieldLabel = (text: string, required = false) => (
-    <label className="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5">
+    <label className="block text-[11px] font-extrabold text-gray-500 uppercase tracking-wider mb-1.5">
       {text}{required && <span className="text-red-400 ml-0.5">*</span>}
     </label>
   );
@@ -132,7 +132,7 @@ function BlogEditorInner() {
         {/* Top Bar */}
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
-            <Link href="/admin/blogs" className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-800 no-underline transition-colors">
+            <Link href="/admin/blogs" className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-slate-800 no-underline transition-colors">
               <ArrowLeft className="w-3.5 h-3.5" /> Back to Blogs
             </Link>
             <span className="text-slate-300">|</span>
@@ -190,7 +190,7 @@ function BlogEditorInner() {
               <div className="mt-2 items-center gap-2">
                 {fieldLabel('Slug')}
                 <div className="flex-1 flex items-center gap-0 border border-slate-200 rounded-xl overflow-hidden">
-                  <span className="px-3 py-2 text-[11px] font-mono text-slate-400 bg-slate-50 border-r border-slate-200">/</span>
+                  <span className="px-3 py-2 text-[11px] font-mono text-gray-500 bg-slate-50 border-r border-slate-200">/</span>
                   <input
                     type="text"
                     value={form.slug}
@@ -216,7 +216,7 @@ function BlogEditorInner() {
             {/* Full Content */}
             <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-xs">
               {fieldLabel('Full Blog Content', true)}
-              <p className="text-[11px] text-slate-400 mb-2">Supports HTML markup for headings, bold, lists, images etc.</p>
+              <p className="text-[11px] text-gray-500 mb-2">Supports HTML markup for headings, bold, lists, images etc.</p>
               <TiptapEditor
                 value={form.content}
                 onChange={(html) => setForm((p) => ({ ...p, content: html }))}
@@ -248,7 +248,7 @@ function BlogEditorInner() {
               <div className="flex items-center justify-between">
                 <div>
                   <div className="text-xs font-bold text-slate-800">Published</div>
-                  <div className="text-[11px] text-slate-400">Visible on the frontend</div>
+                  <div className="text-[11px] text-gray-500">Visible on the frontend</div>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -264,12 +264,12 @@ function BlogEditorInner() {
 
               {/* Published Date */}
               <div>
-                <label className="block text-[11px] font-extrabold text-slate-500 uppercase mb-1.5">Display Date <span className="font-normal text-slate-400 normal-case">(optional)</span></label>
+                <label className="block text-[11px] font-extrabold text-gray-500 uppercase mb-1.5">Display Date <span className="font-normal text-gray-500 normal-case">(optional)</span></label>
                 <CustomDatePicker
                   value={form.publishedAt}
                   onChange={(val) => setForm((p) => ({ ...p, publishedAt: val }))}
                 />
-                <p className="text-[10px] text-slate-400 mt-1">If empty, the current date is saved automatically</p>
+                <p className="text-[10px] text-gray-500 mt-1">If empty, the current date is saved automatically</p>
               </div>
             </div>
 

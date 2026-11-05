@@ -477,7 +477,7 @@ export default function SeoCenterModal({
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <h2 className="text-sm font-black text-black m-0 tracking-tight">SEO Center</h2>
-                <span className="text-slate-400 text-xs font-medium">— Editing:</span>
+                <span className="text-gray-500 text-xs font-medium">— Editing:</span>
                 <span className="text-xs font-bold text-amber-300 bg-amber-950/80 border border-emerald-700/60 px-2.5 py-0.5 rounded-full">
                   {pageData.title}
                 </span>
@@ -499,7 +499,7 @@ export default function SeoCenterModal({
               onClick={() => scrollToSection('score', 'seo-sec-score')}
               className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-bold transition-colors cursor-pointer"
             >
-              <Eye className="w-3.5 h-3.5 text-slate-400" />
+              <Eye className="w-3.5 h-3.5 text-gray-500" />
               <span>Live Preview</span>
             </button>
 
@@ -542,7 +542,7 @@ export default function SeoCenterModal({
         <div className="flex-1 flex overflow-hidden">
           {/* Left Navigation Sidebar Tabs */}
           <aside className="w-60 min-w-[240px] bg-white border-r border-slate-200 p-4 space-y-1.5 overflow-y-auto shrink-0">
-            <div className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 px-3 pb-2">
+            <div className="text-[10px] font-extrabold uppercase tracking-wider text-gray-500 px-3 pb-2">
               SEO Categories
             </div>
 
@@ -638,7 +638,7 @@ export default function SeoCenterModal({
               <div className="flex items-center justify-between gap-4 flex-wrap">
                 <div>
                   <h3 className="text-sm font-extrabold text-slate-900 m-0">Meta Data Management</h3>
-                  <p className="text-xs text-slate-400 m-0 mt-0.5">
+                  <p className="text-xs text-gray-500 m-0 mt-0.5">
                     Optimize title, description, and target keywords for standard search engines (strictly within 60 &amp; 160 characters).
                   </p>
                 </div>
@@ -705,7 +705,7 @@ export default function SeoCenterModal({
 
                 {/* Meta Keywords (optional, retained for engines/tools that still consume them) */}
                 <div>
-                  <label className="block text-xs font-extrabold text-slate-700 mb-1">Meta Keywords <span className="font-medium text-slate-400">(optional)</span></label>
+                  <label className="block text-xs font-extrabold text-slate-700 mb-1">Meta Keywords <span className="font-medium text-gray-500">(optional)</span></label>
                   <textarea
                     rows={2}
                     value={metaKeywords}
@@ -713,7 +713,7 @@ export default function SeoCenterModal({
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs text-slate-800 font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                     placeholder="hajj packages, umrah packages, saudi visa"
                   />
-                  <p className="mt-1 mb-0 text-[10px] text-slate-400">Comma-separated. This does not replace the title or description and is not required for Google ranking.</p>
+                  <p className="mt-1 mb-0 text-[10px] text-gray-500">Comma-separated. This does not replace the title or description and is not required for Google ranking.</p>
                 </div>
               </div>
             </section>
@@ -725,7 +725,7 @@ export default function SeoCenterModal({
                   <h3 className="text-sm font-extrabold text-slate-900 m-0 flex items-center gap-1.5">
                     <Sparkles className="w-4 h-4 text-primary" /> Smart Accessibility Engine
                   </h3>
-                  <p className="text-xs text-slate-400 m-0 mt-0.5">
+                  <p className="text-xs text-gray-500 m-0 mt-0.5">
                     Automatically analyze page images, OpenGraph social cards, and generate descriptive, SEO-friendly alt text.
                   </p>
                 </div>
@@ -760,7 +760,7 @@ export default function SeoCenterModal({
               <div className="space-y-3">
                 {/* Hero Image Alt */}
                 <div className="flex items-center gap-4 p-3 rounded-2xl border border-slate-200 bg-slate-50/50">
-                  <div className="w-16 h-12 rounded-xl bg-slate-200 overflow-hidden shrink-0 flex items-center justify-center text-slate-400">
+                  <div className="w-16 h-12 rounded-xl bg-slate-200 overflow-hidden shrink-0 flex items-center justify-center text-gray-500">
                     <ImageIcon className="w-6 h-6" />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -782,7 +782,7 @@ export default function SeoCenterModal({
 
                 {/* Open Graph Social Card Alt */}
                 <div className="flex items-center gap-4 p-3 rounded-2xl border border-slate-200 bg-slate-50/50">
-                  <div className="w-16 h-12 rounded-xl bg-slate-200 overflow-hidden shrink-0 flex items-center justify-center text-slate-400">
+                  <div className="w-16 h-12 rounded-xl bg-slate-200 overflow-hidden shrink-0 flex items-center justify-center text-gray-500">
                     <Globe className="w-6 h-6 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -809,7 +809,7 @@ export default function SeoCenterModal({
               <div className="flex items-center justify-between gap-4 flex-wrap">
                 <div>
                   <h3 className="text-sm font-extrabold text-slate-900 m-0">GEO (Generative Engine Optimization)</h3>
-                  <p className="text-xs text-slate-400 m-0 mt-0.5">
+                  <p className="text-xs text-gray-500 m-0 mt-0.5">
                     Optimize content discoverability for LLMs (ChatGPT, Gemini, Claude, Perplexity).
                   </p>
                 </div>
@@ -861,7 +861,7 @@ export default function SeoCenterModal({
               <div className="flex items-center justify-between gap-4 flex-wrap">
                 <div>
                   <h3 className="text-sm font-extrabold text-slate-900 m-0">AEO (Answer Engine Optimization)</h3>
-                  <p className="text-xs text-slate-400 m-0 mt-0.5">
+                  <p className="text-xs text-gray-500 m-0 mt-0.5">
                     Optimize for Featured Snippets, Voice Search, and &quot;People Also Ask&quot; blocks.
                   </p>
                 </div>
@@ -901,7 +901,7 @@ export default function SeoCenterModal({
               <div className="flex items-center justify-between gap-4 flex-wrap">
                 <div>
                   <h3 className="text-sm font-extrabold text-slate-900 m-0">Dynamic JSON-LD Schema</h3>
-                  <p className="text-xs text-slate-400 m-0 mt-0.5">
+                  <p className="text-xs text-gray-500 m-0 mt-0.5">
                     Manage structured data to help search engines understand page context.
                   </p>
                 </div>
@@ -960,7 +960,7 @@ export default function SeoCenterModal({
               <div className="flex items-center justify-between gap-4 flex-wrap">
                 <div>
                   <h3 className="text-sm font-extrabold text-slate-900 m-0">Technical SEO &amp; Social Cards</h3>
-                  <p className="text-xs text-slate-400 m-0 mt-0.5">Canonical URLs, Indexing rules, and Open Graph attributes.</p>
+                  <p className="text-xs text-gray-500 m-0 mt-0.5">Canonical URLs, Indexing rules, and Open Graph attributes.</p>
                 </div>
                 <button
                   type="button"
@@ -992,7 +992,7 @@ export default function SeoCenterModal({
                     title="Generated from the active SEO environment and page slug; change in Admin Settings."
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs text-slate-800"
                   />
-                  <p className="text-[11px] text-slate-500 mt-1">Managed by Admin Settings → SEO Intelligence → Website SEO Environment.</p>
+                  <p className="text-[11px] text-gray-500 mt-1">Managed by Admin Settings → SEO Intelligence → Website SEO Environment.</p>
                 </div>
 
                 <div>
@@ -1033,7 +1033,7 @@ export default function SeoCenterModal({
                 <h3 className="text-sm font-extrabold text-slate-900 m-0 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-primary" /> AI Search Readiness Score &amp; Issues Audit
                 </h3>
-                <p className="text-xs text-slate-400 m-0 mt-0.5">Real-time automated diagnostic audit and issue checklist for this page.</p>
+                <p className="text-xs text-gray-500 m-0 mt-0.5">Real-time automated diagnostic audit and issue checklist for this page.</p>
               </div>
 
               <div className="flex flex-col sm:flex-row items-center gap-6 p-4 rounded-2xl bg-slate-50 border border-slate-200">
@@ -1059,7 +1059,7 @@ export default function SeoCenterModal({
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
                     <span className="text-2xl font-black text-slate-900">{overallScore}</span>
-                    <span className="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">OVERALL SCORE</span>
+                    <span className="text-[9px] font-extrabold text-gray-500 uppercase tracking-wider">OVERALL SCORE</span>
                   </div>
                 </div>
 
@@ -1113,7 +1113,7 @@ export default function SeoCenterModal({
                     <button
                       type="button"
                       onClick={() => setPreviewDevice('desktop')}
-                      className={`px-2.5 py-1 rounded-md text-[11px] font-bold flex items-center gap-1 transition-all ${previewDevice === 'desktop' ? 'bg-white text-primary shadow-xs' : 'text-slate-500'
+                      className={`px-2.5 py-1 rounded-md text-[11px] font-bold flex items-center gap-1 transition-all ${previewDevice === 'desktop' ? 'bg-white text-primary shadow-xs' : 'text-gray-500'
                         }`}
                     >
                       <Monitor className="w-3 h-3" /> Desktop
@@ -1121,7 +1121,7 @@ export default function SeoCenterModal({
                     <button
                       type="button"
                       onClick={() => setPreviewDevice('mobile')}
-                      className={`px-2.5 py-1 rounded-md text-[11px] font-bold flex items-center gap-1 transition-all ${previewDevice === 'mobile' ? 'bg-white text-primary shadow-xs' : 'text-slate-500'
+                      className={`px-2.5 py-1 rounded-md text-[11px] font-bold flex items-center gap-1 transition-all ${previewDevice === 'mobile' ? 'bg-white text-primary shadow-xs' : 'text-gray-500'
                         }`}
                     >
                       <Smartphone className="w-3 h-3" /> Mobile
@@ -1164,7 +1164,7 @@ export default function SeoCenterModal({
                     <span className="flex items-center gap-2 font-bold text-slate-800">
                       <CheckCircle2 className="w-4 h-4 text-primary" /> Meta Title is optimally formatted
                     </span>
-                    <span className="text-[10px] font-bold text-slate-500 bg-white border border-slate-200 px-2 py-0.5 rounded-md">
+                    <span className="text-[10px] font-bold text-gray-500 bg-white border border-slate-200 px-2 py-0.5 rounded-md">
                       Traditional SEO
                     </span>
                   </div>
@@ -1173,7 +1173,7 @@ export default function SeoCenterModal({
                     <span className="flex items-center gap-2 font-bold text-slate-800">
                       <CheckCircle2 className="w-4 h-4 text-primary" /> Meta Description is optimally formatted
                     </span>
-                    <span className="text-[10px] font-bold text-slate-500 bg-white border border-slate-200 px-2 py-0.5 rounded-md">
+                    <span className="text-[10px] font-bold text-gray-500 bg-white border border-slate-200 px-2 py-0.5 rounded-md">
                       Traditional SEO
                     </span>
                   </div>
@@ -1182,7 +1182,7 @@ export default function SeoCenterModal({
                     <span className="flex items-center gap-2 font-bold text-slate-800">
                       <CheckCircle2 className="w-4 h-4 text-primary" /> JSON-LD Schema is valid JSON
                     </span>
-                    <span className="text-[10px] font-bold text-slate-500 bg-white border border-slate-200 px-2 py-0.5 rounded-md">
+                    <span className="text-[10px] font-bold text-gray-500 bg-white border border-slate-200 px-2 py-0.5 rounded-md">
                       Schema Valid
                     </span>
                   </div>

@@ -36,6 +36,6 @@ export default async function HotelsPage() {
       heroSettings={page?.seoSettings}
     />
     {active.length ? <PageSectionsRenderer sections={sections} pageData={page} {...sectionContext} initialHotelDirectory={categories} /> :
-      <div className="mx-auto max-w-4xl px-5 py-20 text-center text-slate-500">Hotel listings will be available soon.</div>}
+      <div className="mx-auto max-w-4xl px-5 py-20 text-center text-gray-500">Hotel listings will be available soon.</div>}
   </main>;
 }

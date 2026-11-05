@@ -101,7 +101,7 @@ export default function PackageDetailPageClient({
     return (
       <div className="min-h-screen bg-[#faf7f2] flex flex-col justify-center items-center p-8 text-center">
         <h2 className="text-2xl font-bold font-serif text-slate-800 mb-2">Package Not Found</h2>
-        <p className="text-xs text-slate-500 mb-6">The requested package details could not be loaded.</p>
+        <p className="text-xs text-gray-500 mb-6">The requested package details could not be loaded.</p>
         <Link href="/" className="bg-primary text-white px-6 py-3 rounded-xl font-extrabold text-xs">
           ← Back to Homepage
         </Link>
@@ -596,11 +596,11 @@ export default function PackageDetailPageClient({
                     <h3 className="text-xl sm:text-2xl font-bold font-serif text-slate-800">
                       Package Gallery
                     </h3>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="text-xs text-gray-500 mt-1">
                       Click any image to view it in full size.
                     </p>
                   </div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500">
                     {packagesGallery.length} {packagesGallery.length === 1 ? "Photo" : "Photos"}
                   </span>
                 </div>
@@ -663,9 +663,9 @@ export default function PackageDetailPageClient({
                             {faq.question}
                           </span>
                           {isOpenItem ? (
-                            <ChevronUp className="w-5 h-5 text-slate-400 shrink-0" />
+                            <ChevronUp className="w-5 h-5 text-gray-500 shrink-0" />
                           ) : (
-                            <ChevronDown className="w-5 h-5 text-slate-400 shrink-0" />
+                            <ChevronDown className="w-5 h-5 text-gray-500 shrink-0" />
                           )}
                         </button>
                         {isOpenItem && (
@@ -839,7 +839,7 @@ export default function PackageDetailPageClient({
                         className={`w-full flex items-center justify-between border border-line p-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium ${errors.selectedDate ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"
                           }`}
                       >
-                        <span className={selectedDate ? "text-slate-900" : "text-slate-400"}>
+                        <span className={selectedDate ? "text-slate-900" : "text-gray-500"}>
                           {selectedDate
                             ? (() => {
                               const [year, month, day] = selectedDate.split('-');
@@ -847,7 +847,7 @@ export default function PackageDetailPageClient({
                             })()
                             : "e.g. Nov 17, 2026"}
                         </span>
-                        <Calendar className="w-4 h-4 text-slate-400 shrink-0 ml-2" />
+                        <Calendar className="w-4 h-4 text-gray-500 shrink-0 ml-2" />
                       </div>
                       <input
                         type="date"
@@ -893,7 +893,7 @@ export default function PackageDetailPageClient({
                           </option>
                         ))}
                       </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <polyline points="6 9 12 15 18 9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>

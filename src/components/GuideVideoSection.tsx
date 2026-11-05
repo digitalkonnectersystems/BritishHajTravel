@@ -47,7 +47,7 @@ export default function GuideVideoSection({ data = {} }: { data?: { source?: str
             <p className="rounded-xl bg-red-50 p-4 text-sm text-red-700">This video link is not a supported YouTube or Vimeo URL.</p>
           );
         })()}
-        {data.caption && <p className="mt-3 text-center text-sm text-slate-500">{data.caption}</p>}
+        {data.caption && <p className="mt-3 text-center text-sm text-gray-500">{data.caption}</p>}
       </div>
     </section>
   );

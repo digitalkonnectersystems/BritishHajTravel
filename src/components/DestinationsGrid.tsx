@@ -27,7 +27,7 @@ export default function DestinationsGrid({ destinations = [], title = 'Destinati
       <div className="max-w-[1150px] mx-auto px-3">
         <h1 className="text-center text-primary text-3xl md:text-4xl font-medium mb-9">{title}</h1>
         {destinations.length === 0 ? (
-          <p className="text-center text-slate-500 py-12">Destinations coming soon.</p>
+          <p className="text-center text-gray-500 py-12">Destinations coming soon.</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-7 gap-y-8">
             {destinations.map((destination) => {

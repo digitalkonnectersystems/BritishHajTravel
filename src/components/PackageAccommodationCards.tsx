@@ -12,7 +12,7 @@ export default function PackageAccommodationCards({ detail, card, pkg }: { detai
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
       {hotels.map((hotel) => <article key={hotel.id} className="bg-white rounded-2xl overflow-hidden border border-blue-100 shadow-md flex flex-col">
         <div className="relative h-48 bg-slate-100">
-          {hotel.image ? <Image src={hotel.image} alt={hotel.name || hotel.label} fill unoptimized className="object-cover" /> : <div className="h-full flex items-center justify-center text-slate-400 text-xs">No image available</div>}
+          {hotel.image ? <Image src={hotel.image} alt={hotel.name || hotel.label} fill unoptimized className="object-cover" /> : <div className="h-full flex items-center justify-center text-gray-500 text-xs">No image available</div>}
           <span className="absolute top-3 left-3 bg-primary text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase">{hotel.label}</span>
         </div>
         <div className="p-5 flex-1 space-y-3">

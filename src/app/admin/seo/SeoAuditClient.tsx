@@ -43,7 +43,7 @@ export default function SeoAuditClient({ initialReport }: { initialReport: SeoAu
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="m-0 text-2xl font-extrabold text-slate-900">SEO Center</h1>
-          <p className="mt-1 text-xs text-slate-500">
+          <p className="mt-1 text-xs text-gray-500">
             Audits the same Next.js Metadata API output used by public CMS pages, packages, destinations and blogs, including canonical, robots, Open Graph and Twitter/X tags. Fixes are stored on the selected entity without changing public routes or page structure.
           </p>
         </div>
@@ -67,7 +67,7 @@ export default function SeoAuditClient({ initialReport }: { initialReport: SeoAu
 
       <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-xs lg:flex-row lg:items-center">
         <div className="relative min-w-0 flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
@@ -92,7 +92,7 @@ export default function SeoAuditClient({ initialReport }: { initialReport: SeoAu
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[980px] border-collapse text-left text-xs">
-            <thead className="bg-slate-50 text-[10px] font-extrabold uppercase tracking-wider text-slate-500">
+            <thead className="bg-slate-50 text-[10px] font-extrabold uppercase tracking-wider text-gray-500">
               <tr>
                 <th className="px-4 py-3">Page / Entity</th>
                 <th className="px-4 py-3">Metadata title</th>
@@ -107,12 +107,12 @@ export default function SeoAuditClient({ initialReport }: { initialReport: SeoAu
                 <tr key={item.key} className="align-top hover:bg-slate-50/70">
                   <td className="px-4 py-4">
                     <div className="font-extrabold text-slate-900">{item.title}</div>
-                    <div className="mt-1 font-mono text-[10px] text-slate-500">{item.route}</div>
+                    <div className="mt-1 font-mono text-[10px] text-gray-500">{item.route}</div>
                     <span className="mt-2 inline-flex rounded-full bg-slate-100 px-2 py-0.5 text-[9px] font-black uppercase tracking-wide text-slate-600">{item.entityType}</span>
                   </td>
                   <td className="max-w-[280px] px-4 py-4">
                     <div className="font-bold text-slate-800">{item.metadata.title || 'Missing'}</div>
-                    <div className="mt-1 text-[10px] text-slate-400">{item.metadata.title.length} characters</div>
+                    <div className="mt-1 text-[10px] text-gray-500">{item.metadata.title.length} characters</div>
                   </td>
                   <td className="max-w-[250px] break-all px-4 py-4 font-mono text-[10px] text-slate-600">{item.metadata.canonical || 'Missing'}</td>
                   <td className="px-4 py-4 text-center">
@@ -130,7 +130,7 @@ export default function SeoAuditClient({ initialReport }: { initialReport: SeoAu
                             {issue.message}
                           </div>
                         ))}
-                        {item.issues.length > 4 && <div className="text-[10px] font-bold text-slate-400">+{item.issues.length - 4} more</div>}
+                        {item.issues.length > 4 && <div className="text-[10px] font-bold text-gray-500">+{item.issues.length - 4} more</div>}
                       </div>
                     )}
                   </td>
@@ -142,7 +142,7 @@ export default function SeoAuditClient({ initialReport }: { initialReport: SeoAu
                 </tr>
               ))}
               {filtered.length === 0 && (
-                <tr><td colSpan={6} className="px-4 py-12 text-center text-sm text-slate-400">No SEO records match these filters.</td></tr>
+                <tr><td colSpan={6} className="px-4 py-12 text-center text-sm text-gray-500">No SEO records match these filters.</td></tr>
               )}
             </tbody>
           </table>
@@ -173,7 +173,7 @@ export default function SeoAuditClient({ initialReport }: { initialReport: SeoAu
 function SummaryCard({ label, value, icon }: { label: string; value: number; icon: ReactNode }) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">
-      <div className="flex items-center justify-between text-slate-500">
+      <div className="flex items-center justify-between text-gray-500">
         <span className="text-xs font-bold">{label}</span>
         {icon}
       </div>

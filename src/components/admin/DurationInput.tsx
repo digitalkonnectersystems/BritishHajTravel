@@ -69,7 +69,7 @@ export default function DurationInput({
           value={numVal}
           disabled={showToggle && !enabled}
           onChange={handleNumberChange}
-          className={`w-full px-2.5 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-900 outline-none focus:border-primary shadow-2xs ${showToggle && !enabled ? 'bg-slate-100 text-slate-400 opacity-60' : ''
+          className={`w-full px-2.5 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-900 outline-none focus:border-primary shadow-2xs ${showToggle && !enabled ? 'bg-slate-100 text-gray-500 opacity-60' : ''
             }`}
           placeholder="e.g. 14"
         />

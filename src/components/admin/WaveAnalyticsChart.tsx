@@ -73,7 +73,7 @@ export function WaveAnalyticsChart({
   return (
     <section className={`overflow-hidden rounded-[24px] border border-slate-200/80 bg-white shadow-[0_20px_50px_-35px_rgba(30,41,59,.48)] ${compact ? 'p-4' : 'p-5 sm:p-6'}`}>
       {(title || description) && <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-        <div>{title && <h3 className="m-0 text-base font-extrabold tracking-tight text-slate-900">{title}</h3>}{description && <p className="mt-1 text-xs leading-5 text-slate-500">{description}</p>}</div>
+        <div>{title && <h3 className="m-0 text-base font-extrabold tracking-tight text-slate-900">{title}</h3>}{description && <p className="mt-1 text-xs leading-5 text-gray-500">{description}</p>}</div>
         <span className="rounded-full border border-teal-100 bg-teal-50 px-3 py-1 text-[10px] font-extrabold uppercase tracking-wide text-teal-700">{mode === 'timeline' ? 'Daily activity' : 'Category snapshot'}</span>
       </div>}
       <div className="rounded-[20px] border border-slate-100 bg-gradient-to-br from-[#f7fbff] via-[#f8f7ff] to-[#f0fbf6] p-3 sm:p-4">

@@ -105,7 +105,7 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200/60 pb-4">
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900 m-0">Forms Queries</h1>
-          <p className="text-xs text-slate-500 mt-1 mb-0">
+          <p className="text-xs text-gray-500 mt-1 mb-0">
             Manage, track, and process all incoming website form submissions across dedicated database tables
           </p>
         </div>
@@ -144,7 +144,7 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
       {/* Filter & Search Bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-3xl border border-slate-100 shadow-2xs">
         <div className="relative flex-1 w-full max-w-md">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-gray-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Search by ref ID, name, email, or phone..."
@@ -155,7 +155,7 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto">
-          <Filter className="w-4 h-4 text-slate-400" />
+          <Filter className="w-4 h-4 text-gray-500" />
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
@@ -197,7 +197,7 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
             <tbody className="divide-y divide-slate-100">
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-slate-400 text-xs">
+                  <td colSpan={7} className="py-12 text-center text-gray-500 text-xs">
                     No form queries found matching filter criteria.
                   </td>
                 </tr>
@@ -223,13 +223,13 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
                       </td>
                       <td className="py-3.5 px-4">
                         <div className="font-bold text-slate-900">{item.fullName}</div>
-                        <div className="text-[10px] text-slate-400">
+                        <div className="text-[10px] text-gray-500">
                           {item.city || 'UK'} {item.province}
                         </div>
                       </td>
                       <td className="py-3.5 px-4">
                         <div className="font-semibold text-slate-800">{item.phone}</div>
-                        <div className="text-[10px] text-slate-400">{item.email}</div>
+                        <div className="text-[10px] text-gray-500">{item.email}</div>
                       </td>
                       <td className="py-3.5 px-4 font-extrabold text-primary">
                         {item.preferredPackageType || item.type}
@@ -291,7 +291,7 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
                   <Mail className="h-5 w-5 text-primary" />
                   <h2 className="m-0 text-lg font-extrabold text-slate-900">Enquiry &amp; Sent Email</h2>
                 </div>
-                <p className="mt-1 mb-0 text-xs text-slate-500">{selectedEnquiry.enquiryNumber} · {selectedEnquiry.sourceForm || 'Form source not recorded'}</p>
+                <p className="mt-1 mb-0 text-xs text-gray-500">{selectedEnquiry.enquiryNumber} · {selectedEnquiry.sourceForm || 'Form source not recorded'}</p>
               </div>
               <button type="button" onClick={() => setSelectedEnquiry(null)} className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 text-white bg-red hover:bg-red-700 cursor-pointer" title="Close">
                 <X className="h-4 w-4" />
@@ -314,7 +314,7 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
                     ['Message', selectedEnquiry.message],
                   ].filter(([, value]) => value !== null && value !== undefined && String(value).trim() !== '').map(([label, value]) => (
                     <div key={String(label)} className="rounded-xl border border-slate-200 bg-white p-3">
-                      <div className="text-[9px] font-black uppercase tracking-wider text-slate-400">{label}</div>
+                      <div className="text-[9px] font-black uppercase tracking-wider text-gray-500">{label}</div>
                       <div className="mt-1 whitespace-pre-wrap break-words font-semibold text-slate-800">{String(value)}</div>
                     </div>
                   ))}
@@ -330,7 +330,7 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
                     ['Delivery', selectedEnquiry.emailDeliveryStatus || 'Unknown'],
                   ].map(([label, value]) => (
                     <div key={String(label)} className="rounded-xl border border-slate-200 bg-white p-3">
-                      <div className="text-[9px] font-black uppercase tracking-wider text-slate-400">{label}</div>
+                      <div className="text-[9px] font-black uppercase tracking-wider text-gray-500">{label}</div>
                       <div className="mt-1 break-words font-semibold text-slate-800">{String(value)}</div>
                     </div>
                   ))}
@@ -347,7 +347,7 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
                     className="min-h-[500px] flex-1 rounded-2xl border border-slate-200 bg-white"
                   />
                 ) : (
-                  <div className="flex min-h-[500px] flex-1 items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-sm text-slate-500">
+                  <div className="flex min-h-[500px] flex-1 items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-sm text-gray-500">
                     No email snapshot is stored for this enquiry. Records created before email snapshot storage cannot be reconstructed exactly. After applying the latest database migration, every new submission stores the exact prepared admin email before SMTP delivery is attempted.
                   </div>
                 )}

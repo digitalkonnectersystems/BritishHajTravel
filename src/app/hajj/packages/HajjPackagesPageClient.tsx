@@ -227,7 +227,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
                 )}
                 <h2 className="text-3xl md:text-4xl font-extrabold text-primary mb-3">{heading}</h2>
                 {subtitle && (
-                  <p className="text-sm text-slate-500 max-w-xl mx-auto">{subtitle}</p>
+                  <p className="text-sm text-gray-500 max-w-xl mx-auto">{subtitle}</p>
                 )}
               </div>
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
@@ -240,7 +240,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
                       <DynamicIcon name={svc.icon || 'Star'} className="w-8 h-8" />
                     </div>
                     <h3 className="text-sm font-extrabold text-primary leading-snug">{svc.title}</h3>
-                    <p className="text-[11px] text-slate-500 leading-relaxed">{svc.description}</p>
+                    <p className="text-[11px] text-gray-500 leading-relaxed">{svc.description}</p>
                   </div>
                 ))}
               </div>

@@ -123,7 +123,7 @@ export default function CertificationsFlipCardsSection({
   }
 
   return (
-    <section className="py-20 relative bg-blue-lt overflow-hidden">
+    <section className="py-6 md:py-10 relative bg-blue-lt overflow-hidden">
 
       {/* Background */}
       {bgImage && (
@@ -152,7 +152,7 @@ export default function CertificationsFlipCardsSection({
 
 
         {/* Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
 
           {items.map((item, idx) => {
             const isFlipped = flippedIndex === idx;
@@ -267,7 +267,7 @@ export default function CertificationsFlipCardsSection({
                       rounded-3xl
                       bg-white
                       text-primary
-                      p-8
+                      p-6
                       [transform:rotateY(180deg)]
                       [backface-visibility:hidden]
                       flex

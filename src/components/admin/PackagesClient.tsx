@@ -344,7 +344,7 @@ function HajjCardFields({ pkgData, setPkgData }: { pkgData: any; setPkgData: (v:
             </div>
           ))}
           {inclusions.length === 0 && (
-            <p className="text-xs text-slate-400 italic">No inclusions configured. Default inclusions will be shown.</p>
+            <p className="text-xs text-gray-500 italic">No inclusions configured. Default inclusions will be shown.</p>
           )}
         </div>
       </div>
@@ -494,7 +494,7 @@ function UmrahCardFields({ pkgData, setPkgData }: { pkgData: any; setPkgData: (v
                     placeholder="e.g. Breakfast Included"
                     className="w-full pl-7 pr-2 py-1.5 rounded-lg border border-slate-200 text-xs"
                   />
-                  <Utensils className="w-3.5 h-3.5 text-slate-400 absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <Utensils className="w-3.5 h-3.5 text-gray-500 absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
               </div>
               <div>
@@ -540,7 +540,7 @@ function UmrahCardFields({ pkgData, setPkgData }: { pkgData: any; setPkgData: (v
                     placeholder="e.g. Breakfast Included"
                     className="w-full pl-7 pr-2 py-1.5 rounded-lg border border-slate-200 text-xs"
                   />
-                  <Utensils className="w-3.5 h-3.5 text-slate-400 absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <Utensils className="w-3.5 h-3.5 text-gray-500 absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
               </div>
               <div>
@@ -592,7 +592,7 @@ function UmrahCardFields({ pkgData, setPkgData }: { pkgData: any; setPkgData: (v
             </div>
           ))}
           {includes.length === 0 && (
-            <p className="text-xs text-slate-400 italic">No inclusions added yet. Click "+ Add Item".</p>
+            <p className="text-xs text-gray-500 italic">No inclusions added yet. Click "+ Add Item".</p>
           )}
         </div>
       </div>
@@ -884,7 +884,7 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
           <h1 className="text-2xl font-extrabold text-slate-900 m-0">
             {activeTab === 'hajj' ? 'Hajj Packages' : 'Umrah Packages'}
           </h1>
-          <p className="text-xs text-slate-500 mt-1 mb-0">
+          <p className="text-xs text-gray-500 mt-1 mb-0">
             {activeTab === 'hajj'
               ? 'Manage Hajj package offerings, prices, and live availability'
               : 'Manage Umrah package offerings, prices, and live availability'}
@@ -965,7 +965,7 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
               <div className="col-span-full">
                 <label className="text-xs font-bold text-slate-700 block mb-1">Page Slug *</label>
                 <div className="flex">
-                  <span className="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-slate-200 bg-slate-50 text-slate-500 sm:text-xs">
+                  <span className="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-slate-200 bg-slate-50 text-gray-500 sm:text-xs">
                     /
                   </span>
                   <input
@@ -1092,7 +1092,7 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
                 <Tags className="w-4 h-4 text-primary" />
                 {activeTab === 'hajj' ? 'Hajj' : 'Umrah'} Package Categories
               </h3>
-              <span className="text-[10px] text-slate-400 font-medium">Group packages into categories — assign them per package in the table below</span>
+              <span className="text-[10px] text-gray-500 font-medium">Group packages into categories — assign them per package in the table below</span>
             </div>
 
             {/* Add category */}
@@ -1117,7 +1117,7 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
 
             {/* Category list */}
             {categories.length === 0 ? (
-              <p className="text-xs text-slate-400 italic py-6 text-center border border-dashed border-slate-200 rounded-xl">
+              <p className="text-xs text-gray-500 italic py-6 text-center border border-dashed border-slate-200 rounded-xl">
                 No categories yet. Add your first {activeTab === 'hajj' ? 'Hajj' : 'Umrah'} package category above.
               </p>
             ) : (
@@ -1131,7 +1131,7 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
                         onClick={() => handleMoveCategory(idx, -1)}
                         disabled={idx === 0}
                         title="Move up"
-                        className="w-5 h-4 rounded bg-slate-100 hover:bg-primary hover:text-white text-slate-500 flex items-center justify-center border-none cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                        className="w-5 h-4 rounded bg-slate-100 hover:bg-primary hover:text-white text-gray-500 flex items-center justify-center border-none cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                       >
                         <ChevronUp className="w-3 h-3" />
                       </button>
@@ -1140,7 +1140,7 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
                         onClick={() => handleMoveCategory(idx, 1)}
                         disabled={idx === categories.length - 1}
                         title="Move down"
-                        className="w-5 h-4 rounded bg-slate-100 hover:bg-primary hover:text-white text-slate-500 flex items-center justify-center border-none cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                        className="w-5 h-4 rounded bg-slate-100 hover:bg-primary hover:text-white text-gray-500 flex items-center justify-center border-none cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                       >
                         <ChevronDown className="w-3 h-3" />
                       </button>
@@ -1159,7 +1159,7 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
                     ) : (
                       <div className="flex-1 min-w-0">
                         <div className="text-xs font-bold text-slate-900 truncate">{cat.name}</div>
-                        <div className="text-[10px] font-mono text-slate-400 truncate">/{cat.slug}</div>
+                        <div className="text-[10px] font-mono text-gray-500 truncate">/{cat.slug}</div>
                       </div>
                     )}
 
@@ -1171,7 +1171,7 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
                     {/* Published badge */}
                     <span className={`text-[10px] font-extrabold px-2.5 py-1 rounded-full border whitespace-nowrap shrink-0 ${cat.isPublished
                       ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                      : 'bg-slate-100 text-slate-500 border-slate-200'
+                      : 'bg-slate-100 text-gray-500 border-slate-200'
                       }`}
                     >
                       {cat.isPublished ? '● Published' : '● Hidden'}
@@ -1219,7 +1219,7 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
           <table className="w-full text-left text-xs border-collapse">
             <thead>
               <tr className="bg-slate-900 text-slate-300 font-extrabold text-[10px] uppercase tracking-wider">
-                <th className="py-3 px-3 w-10 text-center text-slate-400" title="Drag to reorder">⋮⋮</th>
+                <th className="py-3 px-3 w-10 text-center text-gray-500" title="Drag to reorder">⋮⋮</th>
                 <th className="py-3 px-4">Package Title</th>
                 <th className="py-3 px-4">
                   <button
@@ -1259,7 +1259,7 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
             <tbody className="divide-y divide-slate-100">
               {filteredPkgs.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="py-12 text-center text-slate-400 text-xs">
+                  <td colSpan={9} className="py-12 text-center text-gray-500 text-xs">
                     No packages found. Click "Create New {activeTab === 'hajj' ? 'Hajj' : 'Umrah'} Package" to add one.
                   </td>
                 </tr>
@@ -1281,12 +1281,12 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
                           : 'border-slate-100 hover:bg-slate-50/60'
                         }`}
                     >
-                      <td className="py-3.5 px-3 text-center text-slate-400 hover:text-slate-700">
+                      <td className="py-3.5 px-3 text-center text-gray-500 hover:text-slate-700">
                         <GripVertical className="w-4 h-4 mx-auto cursor-grab active:cursor-grabbing" />
                       </td>
                       <td className="py-3.5 px-4">
                         <div className={`font-bold ${isSoldOut ? 'text-red-700' : 'text-slate-900'}`}>{pkg.title}</div>
-                        <div className="text-[10px] font-mono text-slate-400">{pkg.slug}</div>
+                        <div className="text-[10px] font-mono text-gray-500">{pkg.slug}</div>
                         {isSoldOut && (
                           <span className="inline-flex items-center gap-1 mt-0.5 text-[9px] font-extrabold text-red-500 uppercase tracking-wider">
                             <span className="w-1.5 h-1.5 bg-red-500 rounded-full inline-block" /> Sold Out
@@ -1303,7 +1303,7 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
                             {pkgCode}
                           </span>
                         ) : (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] text-slate-400 bg-slate-50 border border-dashed border-slate-200">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] text-gray-500 bg-slate-50 border border-dashed border-slate-200">
                             No Code
                           </span>
                         )}

@@ -80,7 +80,7 @@ function TextField({ label, value, onChange, multiline = false }: {
 }) {
   return (
     <label className="block min-w-0">
-      <span className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-slate-500">{label}</span>
+      <span className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-gray-500">{label}</span>
       {multiline ? (
         <textarea
           rows={3}
@@ -196,7 +196,7 @@ export default function HomepageSideBannerFields({ value, onChange }: {
   return (
     <section className="border-t border-slate-100 pt-5">
       <h3 className="m-0 text-xs font-extrabold uppercase tracking-wider text-slate-800">Homepage Left &amp; Right Side Banners</h3>
-      <p className="mb-5 mt-1 text-[11px] text-slate-500">Edit both side panels here. These settings are saved with the homepage hero section. The published layout and styling stay unchanged.</p>
+      <p className="mb-5 mt-1 text-[11px] text-gray-500">Edit both side panels here. These settings are saved with the homepage hero section. The published layout and styling stay unchanged.</p>
       <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
         <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4">
           <h4 className="m-0 text-xs font-extrabold uppercase tracking-wider text-[#101D83]">Left Banner: Hotel Booking</h4>
@@ -286,7 +286,7 @@ export default function HomepageSideBannerFields({ value, onChange }: {
       {uploadError ? <p role="alert" className="mt-2 text-xs font-semibold text-red">{uploadError}</p> : null}
       <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-4">
         <h4 className="mb-1 text-xs font-extrabold uppercase tracking-wider text-slate-800">Live Side Banner Preview</h4>
-        <p className="mb-4 text-[11px] text-slate-500">Updates as you type. Click Update above to save changes to the live homepage.</p>
+        <p className="mb-4 text-[11px] text-gray-500">Updates as you type. Click Update above to save changes to the live homepage.</p>
         <div className="grid grid-cols-1 justify-items-center gap-5 lg:grid-cols-2">
           <SideBannerPreview theme="hotel" value={value} />
           <SideBannerPreview theme="flights" value={value} />

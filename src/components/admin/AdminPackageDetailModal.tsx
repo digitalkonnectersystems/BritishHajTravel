@@ -307,7 +307,7 @@ Side trips to Pakistan or any other destination available with an additional cos
                 <label className="block text-xs font-bold text-primary mb-1">
                   📖 PACKAGE OVERVIEW (ITINERARY TIMELINE STEPS)
                 </label>
-                <p className="text-[10px] text-slate-500 mb-2">
+                <p className="text-[10px] text-gray-500 mb-2">
                   Format headings with bold text or double line breaks to automatically separate itinerary blocks on the detail page.
                 </p>
                 <textarea
@@ -328,7 +328,7 @@ Side trips to Pakistan or any other destination available with an additional cos
                 <label className="block text-xs font-bold text-amber-800 mb-1 flex items-center gap-1">
                   <Star className="w-4 h-4 fill-amber-500 text-amber-500" /> PACKAGE HIGHLIGHTS (1 ITEM PER LINE)
                 </label>
-                <p className="text-[10px] text-slate-500 mb-2">
+                <p className="text-[10px] text-gray-500 mb-2">
                   Each line becomes a star bullet point (✦). Add &quot;Not Included&quot; in a line to style it with a red ✕ icon.
                 </p>
                 <textarea
@@ -344,7 +344,7 @@ Side trips to Pakistan or any other destination available with an additional cos
                 <label className="block text-xs font-bold text-emerald-800 mb-1 flex items-center gap-1">
                   <Check className="w-4 h-4 text-primary" /> ELIGIBILITY REQUIREMENTS (1 ITEM PER LINE)
                 </label>
-                <p className="text-[10px] text-slate-500 mb-2">
+                <p className="text-[10px] text-gray-500 mb-2">
                   Each line will be formatted into an eligibility requirement card item.
                 </p>
                 <textarea
@@ -363,7 +363,7 @@ Side trips to Pakistan or any other destination available with an additional cos
               <label className="block text-xs font-bold text-amber-900 flex items-center gap-1">
                 <AlertCircle className="w-4 h-4 text-amber-600" /> IMPORTANT BOOKING NOTICE ALERT BOX TEXT
               </label>
-              <p className="text-[10px] text-slate-500">
+              <p className="text-[10px] text-gray-500">
                 This notice is prominently displayed inside a golden highlight card under the Highlights section.
               </p>
               <textarea
@@ -382,7 +382,7 @@ Side trips to Pakistan or any other destination available with an additional cos
               <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-slate-200">
                 <div>
                   <h4 className="font-bold text-slate-800 text-xs">Manage Package FAQs</h4>
-                  <p className="text-[10px] text-slate-500">Add question & answer pairs for pilgrims.</p>
+                  <p className="text-[10px] text-gray-500">Add question & answer pairs for pilgrims.</p>
                 </div>
                 <button
                   type="button"

@@ -105,8 +105,8 @@ export default function MonthYearPicker({
         aria-expanded={isOpen}
       >
         <div className="flex items-center gap-2 overflow-hidden truncate">
-          <Calendar className="w-4 h-4 text-slate-400 shrink-0" />
-          <span className={displayLabel ? 'font-semibold text-slate-800' : 'text-slate-400'}>
+          <Calendar className="w-4 h-4 text-gray-500 shrink-0" />
+          <span className={displayLabel ? 'font-semibold text-slate-800' : 'text-gray-500'}>
             {displayLabel || placeholder}
           </span>
         </div>
@@ -183,7 +183,7 @@ export default function MonthYearPicker({
             <button
               type="button"
               onClick={handleClear}
-              className="text-slate-400 hover:text-slate-600 font-semibold cursor-pointer border-none bg-transparent"
+              className="text-gray-500 hover:text-slate-600 font-semibold cursor-pointer border-none bg-transparent"
             >
               Clear
             </button>

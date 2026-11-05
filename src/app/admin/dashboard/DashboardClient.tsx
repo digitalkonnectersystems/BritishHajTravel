@@ -73,11 +73,11 @@ function DistributionWaveCard({
     <section className="rounded-[28px] border border-slate-200/80 bg-white p-5 sm:p-6 shadow-[0_16px_40px_-30px_rgba(15,23,42,.45)] overflow-hidden">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div><h3 className="text-base font-extrabold text-slate-900">{title}</h3>
-          <p className="mt-1 text-xs text-slate-500">{subtitle}</p></div>
+          <p className="mt-1 text-xs text-gray-500">{subtitle}</p></div>
         <Link href={linkHref} className="rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-800 hover:bg-emerald-100">{linkLabel} ↗</Link>
       </div>
       <div className="mt-5 rounded-2xl bg-gradient-to-br from-slate-50 to-emerald-50/60 p-4 border border-slate-100">
-        <div className="flex justify-between items-baseline"><span className="text-xs font-semibold text-slate-500">{totalLabel} · current database snapshot</span><strong className="text-2xl font-black text-slate-900 tabular-nums">{totalCount}</strong></div>
+        <div className="flex justify-between items-baseline"><span className="text-xs font-semibold text-gray-500">{totalLabel} · current database snapshot</span><strong className="text-2xl font-black text-slate-900 tabular-nums">{totalCount}</strong></div>
         <WaveAnalyticsChart
           compact
           title=""
@@ -91,7 +91,7 @@ function DistributionWaveCard({
       <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
         {slices.map(slice => <div key={slice.label} className="flex items-center justify-between gap-2 rounded-xl bg-slate-50/80 border border-slate-100 px-3 py-2.5">
           <span className="flex min-w-0 items-center gap-2 text-xs font-semibold text-slate-600"><span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: slice.gradientColors[0] }} />{slice.label}</span>
-          <span className="shrink-0 text-sm font-extrabold text-slate-900 tabular-nums">{slice.count} <small className="text-[10px] font-medium text-slate-400">({Math.round(slice.count * 100 / total)}%)</small></span>
+          <span className="shrink-0 text-sm font-extrabold text-slate-900 tabular-nums">{slice.count} <small className="text-[10px] font-medium text-gray-500">({Math.round(slice.count * 100 / total)}%)</small></span>
         </div>)}
       </div>
     </section>
@@ -309,12 +309,12 @@ export default function DashboardClient({
             </div>
 
             {recentEnquiries.length === 0 ? (
-              <div className="py-8 text-center text-slate-500 text-xs">No recent enquiry rows available. Check migration status if the KPI total is non-zero.</div>
+              <div className="py-8 text-center text-gray-500 text-xs">No recent enquiry rows available. Check migration status if the KPI total is non-zero.</div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
-                    <tr className="border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                    <tr className="border-b border-slate-100 text-[10px] font-bold text-gray-500 uppercase tracking-wider">
                       <th className="py-2.5 pb-3">Enquiry ID</th>
                       <th className="py-2.5 pb-3">Pilgrim Name</th>
                       <th className="py-2.5 pb-3">Phone</th>
@@ -329,7 +329,7 @@ export default function DashboardClient({
                           {e.enquiryNumber}
                         </td>
                         <td className="py-3 font-semibold text-slate-900">{e.fullName}</td>
-                        <td className="py-3 text-slate-500 font-mono text-[11px]">{e.phone}</td>
+                        <td className="py-3 text-gray-500 font-mono text-[11px]">{e.phone}</td>
                         <td className="py-3">
                           <span
                             className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold capitalize ${e.status === 'new'
@@ -366,7 +366,7 @@ export default function DashboardClient({
                 <div className="text-sm font-extrabold text-slate-900 flex items-center gap-1.5">
                   <Activity className="w-4 h-4 text-emerald-700" /> Recent Activity
                 </div>
-                <p className="text-[11px] text-slate-500 mt-0.5 mb-0">
+                <p className="text-[11px] text-gray-500 mt-0.5 mb-0">
                   Real-time action audit trail
                 </p>
               </div>
@@ -435,7 +435,7 @@ export default function DashboardClient({
                             {act.details}
                           </div>
                         )}
-                        <div className="text-[9px] text-slate-400 mt-1 flex items-center justify-between">
+                        <div className="text-[9px] text-gray-500 mt-1 flex items-center justify-between">
                           <span>⏱ {act.timeAgo || 'Recently'}</span>
                           <span
                             style={{
@@ -479,7 +479,7 @@ export default function DashboardClient({
                 <div key={p.id} className="p-2.5 bg-white/80 rounded-xl border border-slate-200/50 flex items-center justify-between">
                   <div className="min-w-0 pr-2">
                     <div className="font-bold text-xs text-slate-900 truncate">{p.title}</div>
-                    <div className="text-[10px] font-mono text-slate-500 mt-0.5 truncate">{p.slug}</div>
+                    <div className="text-[10px] font-mono text-gray-500 mt-0.5 truncate">{p.slug}</div>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
                     <span
@@ -510,7 +510,7 @@ export default function DashboardClient({
 
             <div className="flex flex-col gap-2">
               {initialPackages.length === 0 ? (
-                <div className="py-4 text-center text-slate-400 text-xs">No packages yet.</div>
+                <div className="py-4 text-center text-gray-500 text-xs">No packages yet.</div>
               ) : (
                 initialPackages.slice(0, 4).map((p) => (
                   <div
@@ -519,7 +519,7 @@ export default function DashboardClient({
                   >
                     <div className="min-w-0">
                       <div className="text-xs font-bold text-slate-900 truncate">{p.title}</div>
-                      <div className="text-[10px] text-slate-400 font-semibold uppercase mt-0.5">
+                      <div className="text-[10px] text-gray-500 font-semibold uppercase mt-0.5">
                         {p.type} • {p.month}
                       </div>
                     </div>

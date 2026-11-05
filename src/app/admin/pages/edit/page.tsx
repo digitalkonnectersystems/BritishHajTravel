@@ -1589,9 +1589,9 @@ function PageBuilderContent() {
       };
 
     } else if (type === 'Plan Your Own Package Form') {
-      defaultData = { title: 'Plan your own Package', buttonText: 'SEND', dayOptions: '7, 10, 14, 21, 28', maxWidth: '1440px' };
+      defaultData = { title: 'Plan your own Package', buttonText: 'SEND', dayOptions: '7, 10, 14, 21, 28', maxWidth: '1400px' };
     } else if (type === 'Flight Enquiry Form') {
-      defaultData = { title: 'Flight Enquiry', buttonText: 'Submit', flightOptions: 'Return Flight\nOne Way\nFlexible', maxWidth: '1440px' };
+      defaultData = { title: 'Flight Enquiry', buttonText: 'Submit', flightOptions: 'Return Flight\nOne Way\nFlexible', maxWidth: '1400px' };
     } else if (type === 'Umrah Enquiry 2026-27 Form') {
 
       defaultData = { title: 'Umrah Enquiry 2026-27' };
@@ -2503,7 +2503,7 @@ function PageBuilderContent() {
 
               </h3>
 
-              <span className="text-[11px] text-slate-400 font-medium">Recommended 1920px x 640px (min-height: 640px)</span>
+              <span className="text-[11px] text-gray-500 font-medium">Recommended 1920px x 640px (min-height: 640px)</span>
 
             </div>
 
@@ -2583,7 +2583,7 @@ function PageBuilderContent() {
 
                 </span>
 
-                <span className="text-[10px] text-slate-400 mt-1 font-medium">
+                <span className="text-[10px] text-gray-500 mt-1 font-medium">
 
                   Recommended 1920px x 640px (aspect ratio ~ 3:1, min-height 640px)
 
@@ -2597,7 +2597,7 @@ function PageBuilderContent() {
 
                 <div>
 
-                  <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">
+                  <label className="block text-[10px] font-extrabold text-gray-500 uppercase tracking-wider mb-1">
 
                     POSITION
 
@@ -2631,7 +2631,7 @@ function PageBuilderContent() {
 
                 <div>
 
-                  <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">
+                  <label className="block text-[10px] font-extrabold text-gray-500 uppercase tracking-wider mb-1">
 
                     SIZE
 
@@ -2707,7 +2707,7 @@ function PageBuilderContent() {
 
                   <div className="text-xs font-black text-slate-900 leading-none">{badge1Top}</div>
 
-                  <div className="text-[10px] text-slate-500 font-semibold mt-0.5">{badge1Sub}</div>
+                  <div className="text-[10px] text-gray-500 font-semibold mt-0.5">{badge1Sub}</div>
 
                 </div>
 
@@ -2729,7 +2729,7 @@ function PageBuilderContent() {
 
                   <div className="text-xs font-black text-slate-900 leading-none">{badge2Top}</div>
 
-                  <div className="text-[10px] text-slate-500 font-semibold mt-0.5">{badge2Sub}</div>
+                  <div className="text-[10px] text-gray-500 font-semibold mt-0.5">{badge2Sub}</div>
 
                 </div>
 
@@ -2795,7 +2795,7 @@ function PageBuilderContent() {
 
             <div>
 
-              <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">
+              <label className="block text-[10px] font-extrabold text-gray-500 uppercase tracking-wider mb-1">
 
                 EYEBROW TAGLINE
 
@@ -2823,7 +2823,7 @@ function PageBuilderContent() {
 
               <div className="flex items-center justify-between mb-1">
 
-                <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">
+                <label className="block text-[10px] font-extrabold text-gray-500 uppercase tracking-wider">
 
                   TITLE (H1)
 
@@ -2903,7 +2903,7 @@ function PageBuilderContent() {
 
             <div className="lg:col-span-2">
 
-              <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">
+              <label className="block text-[10px] font-extrabold text-gray-500 uppercase tracking-wider mb-1">
 
                 SUBTEXT / DESCRIPTION
 
@@ -2929,7 +2929,7 @@ function PageBuilderContent() {
 
             <div>
 
-              <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">
+              <label className="block text-[10px] font-extrabold text-gray-500 uppercase tracking-wider mb-1">
 
                 PRIMARY CTA BUTTON LABEL
 
@@ -2955,7 +2955,7 @@ function PageBuilderContent() {
 
             <div>
 
-              <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">
+              <label className="block text-[10px] font-extrabold text-gray-500 uppercase tracking-wider mb-1">
 
                 PRIMARY CTA LINK
 
@@ -2981,7 +2981,7 @@ function PageBuilderContent() {
 
             <div>
 
-              <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">
+              <label className="block text-[10px] font-extrabold text-gray-500 uppercase tracking-wider mb-1">
 
                 SECONDARY CTA BUTTON LABEL
 
@@ -3007,7 +3007,7 @@ function PageBuilderContent() {
 
             <div>
 
-              <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">
+              <label className="block text-[10px] font-extrabold text-gray-500 uppercase tracking-wider mb-1">
 
                 SECONDARY CTA LINK
 
@@ -3033,7 +3033,7 @@ function PageBuilderContent() {
 
             <div>
 
-              <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">
+              <label className="block text-[10px] font-extrabold text-gray-500 uppercase tracking-wider mb-1">
 
                 BADGE 1 TOP TEXT
 
@@ -3059,7 +3059,7 @@ function PageBuilderContent() {
 
             <div>
 
-              <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">
+              <label className="block text-[10px] font-extrabold text-gray-500 uppercase tracking-wider mb-1">
 
                 BADGE 1 SUBTEXT
 
@@ -3085,7 +3085,7 @@ function PageBuilderContent() {
 
             <div>
 
-              <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">
+              <label className="block text-[10px] font-extrabold text-gray-500 uppercase tracking-wider mb-1">
 
                 BADGE 2 TOP TEXT
 
@@ -3111,7 +3111,7 @@ function PageBuilderContent() {
 
             <div>
 
-              <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">
+              <label className="block text-[10px] font-extrabold text-gray-500 uppercase tracking-wider mb-1">
 
                 BADGE 2 SUBTEXT
 
@@ -3153,7 +3153,7 @@ function PageBuilderContent() {
 
                 </h3>
 
-                <p className="text-[11px] text-slate-400 mt-1 mb-0">
+                <p className="text-[11px] text-gray-500 mt-1 mb-0">
 
                   Fully dynamic controls for the bottom floating banner: upload custom SVG/image icons, customize titles, and manage each visa card with uploadable SVG flags.
 
@@ -3205,7 +3205,7 @@ function PageBuilderContent() {
 
                 <label className="block">
 
-                  <span className="block text-[9px] font-extrabold text-slate-500 uppercase tracking-wide mb-1">Section Title</span>
+                  <span className="block text-[9px] font-extrabold text-gray-500 uppercase tracking-wide mb-1">Section Title</span>
 
                   <input
 
@@ -3225,7 +3225,7 @@ function PageBuilderContent() {
 
                 <label className="block">
 
-                  <span className="block text-[9px] font-extrabold text-slate-500 uppercase tracking-wide mb-1">Section Subtitle</span>
+                  <span className="block text-[9px] font-extrabold text-gray-500 uppercase tracking-wide mb-1">Section Subtitle</span>
 
                   <input
 
@@ -3245,7 +3245,7 @@ function PageBuilderContent() {
 
                 <label className="block">
 
-                  <span className="block text-[9px] font-extrabold text-slate-500 uppercase tracking-wide mb-1">Documents Button Label</span>
+                  <span className="block text-[9px] font-extrabold text-gray-500 uppercase tracking-wide mb-1">Documents Button Label</span>
 
                   <input
 
@@ -3265,7 +3265,7 @@ function PageBuilderContent() {
 
                 <label className="block">
 
-                  <span className="block text-[9px] font-extrabold text-slate-500 uppercase tracking-wide mb-1">Documents Button Link</span>
+                  <span className="block text-[9px] font-extrabold text-gray-500 uppercase tracking-wide mb-1">Documents Button Link</span>
 
                   <input
 
@@ -3293,7 +3293,7 @@ function PageBuilderContent() {
 
                 <label className="block">
 
-                  <span className="block text-[9px] font-extrabold text-slate-500 uppercase tracking-wide mb-1">Journey Text Top</span>
+                  <span className="block text-[9px] font-extrabold text-gray-500 uppercase tracking-wide mb-1">Journey Text Top</span>
 
                   <input
 
@@ -3313,7 +3313,7 @@ function PageBuilderContent() {
 
                 <label className="block">
 
-                  <span className="block text-[9px] font-extrabold text-slate-500 uppercase tracking-wide mb-1">Journey Text Bottom</span>
+                  <span className="block text-[9px] font-extrabold text-gray-500 uppercase tracking-wide mb-1">Journey Text Bottom</span>
 
                   <input
 
@@ -3337,7 +3337,7 @@ function PageBuilderContent() {
 
                 <div className="block">
 
-                  <span className="block text-[9px] font-extrabold text-slate-500 uppercase tracking-wide mb-1">Center Icon (SVG / Image)</span>
+                  <span className="block text-[9px] font-extrabold text-gray-500 uppercase tracking-wide mb-1">Center Icon (SVG / Image)</span>
 
                   <div className="flex items-center gap-2">
 
@@ -3425,7 +3425,7 @@ function PageBuilderContent() {
 
                 <div className="block">
 
-                  <span className="block text-[9px] font-extrabold text-slate-500 uppercase tracking-wide mb-1">Journey Illustration (SVG / Image)</span>
+                  <span className="block text-[9px] font-extrabold text-gray-500 uppercase tracking-wide mb-1">Journey Illustration (SVG / Image)</span>
 
                   <div className="flex items-center gap-2">
 
@@ -3577,7 +3577,7 @@ function PageBuilderContent() {
 
                         title="Move Up"
 
-                        className="p-1 rounded hover:bg-slate-100 text-slate-500 disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer border-none bg-transparent"
+                        className="p-1 rounded hover:bg-slate-100 text-gray-500 disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer border-none bg-transparent"
 
                       >
 
@@ -3611,7 +3611,7 @@ function PageBuilderContent() {
 
                         title="Move Down"
 
-                        className="p-1 rounded hover:bg-slate-100 text-slate-500 disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer border-none bg-transparent"
+                        className="p-1 rounded hover:bg-slate-100 text-gray-500 disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer border-none bg-transparent"
 
                       >
 
@@ -3641,7 +3641,7 @@ function PageBuilderContent() {
 
                         title="Duplicate"
 
-                        className="p-1 rounded hover:bg-slate-100 text-slate-500 cursor-pointer border-none bg-transparent text-[11px] font-bold"
+                        className="p-1 rounded hover:bg-slate-100 text-gray-500 cursor-pointer border-none bg-transparent text-[11px] font-bold"
 
                       >
 
@@ -3681,7 +3681,7 @@ function PageBuilderContent() {
 
                     <div className="sm:col-span-4 flex flex-col items-center justify-center p-3 rounded-xl bg-slate-50 border border-slate-200/80 text-center">
 
-                      <span className="text-[9px] font-black uppercase tracking-wider text-slate-400 mb-1.5">
+                      <span className="text-[9px] font-black uppercase tracking-wider text-gray-500 mb-1.5">
 
                         Flag / SVG Icon
 
@@ -3789,7 +3789,7 @@ function PageBuilderContent() {
 
                       <label className="block">
 
-                        <span className="block text-[9px] font-extrabold text-slate-500 uppercase tracking-wide mb-1">
+                        <span className="block text-[9px] font-extrabold text-gray-500 uppercase tracking-wide mb-1">
 
                           Country / Visa Title
 
@@ -3827,7 +3827,7 @@ function PageBuilderContent() {
 
                       <label className="block">
 
-                        <span className="block text-[9px] font-extrabold text-slate-500 uppercase tracking-wide mb-1">
+                        <span className="block text-[9px] font-extrabold text-gray-500 uppercase tracking-wide mb-1">
 
                           Passport Sub-Label
 
@@ -3865,7 +3865,7 @@ function PageBuilderContent() {
 
                       <label className="block">
 
-                        <span className="block text-[9px] font-extrabold text-slate-500 uppercase tracking-wide mb-1">
+                        <span className="block text-[9px] font-extrabold text-gray-500 uppercase tracking-wide mb-1">
 
                           Price Display
 
@@ -3903,7 +3903,7 @@ function PageBuilderContent() {
 
                       <label className="block">
 
-                        <span className="block text-[9px] font-extrabold text-slate-500 uppercase tracking-wide mb-1">
+                        <span className="block text-[9px] font-extrabold text-gray-500 uppercase tracking-wide mb-1">
 
                           Slug / URL Link
 
@@ -3941,7 +3941,7 @@ function PageBuilderContent() {
 
                       <label className="col-span-2 block">
 
-                        <span className="block text-[9px] font-extrabold text-slate-500 uppercase tracking-wide mb-1">
+                        <span className="block text-[9px] font-extrabold text-gray-500 uppercase tracking-wide mb-1">
 
                           SVG / Image URL (Uploaded or External Link)
 
@@ -4005,7 +4005,7 @@ function PageBuilderContent() {
 
               </h3>
 
-              <span className="text-[11px] text-slate-400 font-medium">This banner background image applies to hero header preview</span>
+              <span className="text-[11px] text-gray-500 font-medium">This banner background image applies to hero header preview</span>
 
             </div>
 
@@ -4083,7 +4083,7 @@ function PageBuilderContent() {
 
               </span>
 
-              <span className="text-[10px] text-slate-400 mt-1 font-medium">
+              <span className="text-[10px] text-gray-500 mt-1 font-medium">
 
                 Recommended 1920px x 360px (aspect ratio ~ 16:3, max 2MB)
 
@@ -4156,7 +4156,7 @@ function PageBuilderContent() {
 
             <div>
 
-              <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">
+              <label className="block text-[10px] font-extrabold text-gray-500 uppercase tracking-wider mb-1">
 
                 POSITION
 
@@ -4190,7 +4190,7 @@ function PageBuilderContent() {
 
             <div>
 
-              <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">
+              <label className="block text-[10px] font-extrabold text-gray-500 uppercase tracking-wider mb-1">
 
                 SIZE
 
@@ -4222,7 +4222,7 @@ function PageBuilderContent() {
 
               <div className="flex items-center justify-between mb-1">
 
-                <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">
+                <label className="block text-[10px] font-extrabold text-gray-500 uppercase tracking-wider">
 
                   TITLE (H1)
 
@@ -4302,7 +4302,7 @@ function PageBuilderContent() {
 
             <div>
 
-              <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">
+              <label className="block text-[10px] font-extrabold text-gray-500 uppercase tracking-wider mb-1">
 
                 SUBTEXT / DESCRIPTION
 
@@ -4330,8 +4330,8 @@ function PageBuilderContent() {
             <div className="border-t border-slate-100 pt-4">
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <h4 className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider m-0">INNER PAGE HERO SUPPORT CONTENT</h4>
-                  <p className="text-[11px] text-slate-400 mt-1 mb-0">Edit the badge and three trust points shown below the hero copy.</p>
+                  <h4 className="text-[10px] font-extrabold text-gray-500 uppercase tracking-wider m-0">INNER PAGE HERO SUPPORT CONTENT</h4>
+                  <p className="text-[11px] text-gray-500 mt-1 mb-0">Edit the badge and three trust points shown below the hero copy.</p>
                 </div>
               </div>
 
@@ -4346,7 +4346,7 @@ function PageBuilderContent() {
                   SHOW BADGE AND TRUST POINTS ON INNER PAGE BANNER
                 </label>
                 <div>
-                  <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">BADGE LABEL</label>
+                  <label className="block text-[10px] font-extrabold text-gray-500 uppercase tracking-wider mb-1">BADGE LABEL</label>
                   <input
                     type="text"
                     value={saudiVisaEyebrow}
@@ -4357,7 +4357,7 @@ function PageBuilderContent() {
 
                 {saudiVisaFeatures.map((feature, index) => (
                   <div key={index} className="rounded-xl border border-slate-200 bg-slate-50/70 p-3">
-                    <div className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-2">FEATURE {index + 1}</div>
+                    <div className="text-[10px] font-extrabold text-gray-500 uppercase tracking-wider mb-2">FEATURE {index + 1}</div>
                     <select
                       value={feature.icon || 'document'}
                       onChange={(e) => setSaudiVisaFeatures((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, icon: e.target.value } : item))}
@@ -4411,7 +4411,7 @@ function PageBuilderContent() {
 
             <div className="mb-4">
 
-              <label className="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5">
+              <label className="block text-[11px] font-extrabold text-gray-500 uppercase tracking-wider mb-1.5">
 
                 TITLE *
 
@@ -4461,7 +4461,7 @@ function PageBuilderContent() {
 
             <div>
 
-              <label className="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5">
+              <label className="block text-[11px] font-extrabold text-gray-500 uppercase tracking-wider mb-1.5">
 
                 SLUG *
 
@@ -4484,24 +4484,24 @@ function PageBuilderContent() {
             {(guideCategory || guideCategoryParam) && (
               <div className="mt-4 border-t border-slate-100 pt-4">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                  <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">GUIDE CATEGORY
+                  <label className="block text-[10px] font-extrabold text-gray-500 uppercase tracking-wider">GUIDE CATEGORY
                     <select value={guideCategory} onChange={(e) => setGuideCategory(e.target.value as GuideCategory)} className="mt-1 w-full px-3 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs">
                       <option value="">Select category</option><option value="hajj">Hajj Guides</option><option value="umrah">Umrah Guides</option>
                     </select>
                   </label>
-                  <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">CARD NUMBER
+                  <label className="block text-[10px] font-extrabold text-gray-500 uppercase tracking-wider">CARD NUMBER
                     <input type="number" min="1" value={guideCardData.number} onChange={(e) => setGuideCardData((current) => ({ ...current, number: Number(e.target.value) || 1 }))} className="mt-1 w-full px-3 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs" />
                   </label>
-                  <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">SVG ICON
+                  <label className="block text-[10px] font-extrabold text-gray-500 uppercase tracking-wider">SVG ICON
                     <select value={guideCardData.icon} onChange={(e) => setGuideCardData((current) => ({ ...current, icon: e.target.value }))} className="mt-1 w-full px-3 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs">
                       {GUIDE_ICON_OPTIONS.map((icon) => <option key={icon} value={icon}>{icon}</option>)}
                     </select>
                   </label>
-                  <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">CARD BUTTON
+                  <label className="block text-[10px] font-extrabold text-gray-500 uppercase tracking-wider">CARD BUTTON
                     <input type="text" value={guideCardData.buttonLabel} onChange={(e) => setGuideCardData((current) => ({ ...current, buttonLabel: e.target.value }))} className="mt-1 w-full px-3 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs" />
                   </label>
                 </div>
-                <label className="mt-3 block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">CARD DESCRIPTION
+                <label className="mt-3 block text-[10px] font-extrabold text-gray-500 uppercase tracking-wider">CARD DESCRIPTION
                   <textarea value={guideCardData.detail} onChange={(e) => setGuideCardData((current) => ({ ...current, detail: e.target.value }))} rows={2} className="mt-1 w-full px-3 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs" />
                 </label>
               </div>
@@ -4537,7 +4537,7 @@ function PageBuilderContent() {
 
                   onClick={() => setActiveTab(t.key as any)}
 
-                  className={`px-4 py-3.5 text-xs border-x-0 border-t-0 border-b-3 font-sans transition-colors cursor-pointer ${activeTab === t.key ? 'border-b-primary text-primary font-extrabold' : 'border-b-transparent text-slate-500 font-semibold hover:text-slate-900'}`}
+                  className={`px-4 py-3.5 text-xs border-x-0 border-t-0 border-b-3 font-sans transition-colors cursor-pointer ${activeTab === t.key ? 'border-b-primary text-primary font-extrabold' : 'border-b-transparent text-gray-500 font-semibold hover:text-slate-900'}`}
 
                 >
 
@@ -5000,7 +5000,7 @@ function PageBuilderContent() {
                                   <button type="button" className="rounded border border-primary px-3 py-2 text-xs font-semibold text-primary" onClick={() => updateSectionData(sec.id, 'hotelIds', [...chosenIds, ...availableHotels.map(h => Number(h.id)).filter(id => !chosenIds.includes(id))])}>+ Add all hotels in {selectedCategory.name}</button>
                                   <div className="space-y-2">
                                     <p className="text-xs font-bold text-slate-700">Selected hotels ({selectedHotels.length})</p>
-                                    {selectedHotels.length === 0 && <p className="text-xs text-slate-500">No hotels selected. Add hotels above to display this section on the website.</p>}
+                                    {selectedHotels.length === 0 && <p className="text-xs text-gray-500">No hotels selected. Add hotels above to display this section on the website.</p>}
                                     {selectedHotels.map((hotel: any, index: number) => <div key={hotel.id} className="flex items-center gap-2 rounded border border-slate-200 bg-slate-50 p-2 text-xs">
                                       {hotel.imageUrl && <img src={hotel.imageUrl} alt="" className="h-10 w-12 rounded object-cover" />}
                                       <span className="min-w-0 flex-1 font-semibold text-slate-800">{hotel.name}</span>
@@ -5016,7 +5016,7 @@ function PageBuilderContent() {
                             {['Package Detail Blocks', 'Package Flight Details', 'Package Hotel Details', 'Package Occupancy Prices', 'Package Inclusions', 'Package Detail Gallery'].includes(sec.type) && (
                               <div className="rounded-xl border p-4 bg-white space-y-3">
                                 <h4 className="text-sm font-bold text-primary">Package Detail Sections</h4>
-                                <p className="text-xs text-slate-500">Select one published package. Content, hotels, prices and inclusions are read directly from its detail-page records.</p>
+                                <p className="text-xs text-gray-500">Select one published package. Content, hotels, prices and inclusions are read directly from its detail-page records.</p>
                                 <label className="block text-xs font-semibold">Package
                                   <select className="block w-full p-2 border rounded mt-1" value={sec.data?.packageId || 0} onChange={e => {
                                     updateSectionData(sec.id, 'packageId', Number(e.target.value));
@@ -5032,7 +5032,7 @@ function PageBuilderContent() {
                                 </label>)}
                                 {(sec.type === 'Package Hotel Details' || sec.type === 'Package Detail Blocks') && (() => {
                                   const selected = allPackages.find(p => Number(p.id) === Number(sec.data?.packageId));
-                                  if (!selected) return <p className="text-xs text-slate-500">Select a package to edit hotel cards for this section.</p>;
+                                  if (!selected) return <p className="text-xs text-gray-500">Select a package to edit hotel cards for this section.</p>;
                                   const hotelCards = sec.data?.hotelCards;
                                   const overridden = Array.isArray(hotelCards);
                                   const currentHotels = overridden ? hotelCards : getPackageHotelEntries(selected.detailPageData, selected.cardData, selected);
@@ -5040,7 +5040,7 @@ function PageBuilderContent() {
                                     <div className="flex flex-wrap gap-2 items-center justify-between">
                                       <div>
                                         <h5 className="font-bold text-sm text-primary">Hotel details for this section</h5>
-                                        <p className="text-xs text-slate-500">{overridden ? 'Custom hotel cards are saved with this page section only.' : 'Currently using live hotel details from the selected package.'}</p>
+                                        <p className="text-xs text-gray-500">{overridden ? 'Custom hotel cards are saved with this page section only.' : 'Currently using live hotel details from the selected package.'}</p>
                                       </div>
                                       {overridden ? <button type="button" className="text-xs border border-slate-300 rounded-lg px-3 py-2" onClick={() => updateSectionData(sec.id, 'hotelCards', null)}>Reset to live package hotels</button>
                                         : <button type="button" className="text-xs bg-primary text-white rounded-lg px-3 py-2" onClick={() => updateSectionData(sec.id, 'hotelCards', currentHotels.map((hotel: any) => ({ ...hotel })))}>Customize hotels for this section</button>}
@@ -5058,13 +5058,13 @@ function PageBuilderContent() {
                             {(sec.type === 'Plan Your Own Package Form' || sec.type === 'Flight Enquiry Form') && (
                               <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
                                 <h4 className="text-sm font-bold text-primary">{sec.type}</h4>
-                                <p className="text-xs text-slate-500">
+                                <p className="text-xs text-gray-500">
                                   {sec.type === 'Plan Your Own Package Form'
                                     ? 'Name, email, phone and number of days. Enquiries are saved under Quotes and use the existing Get a Free Quote email routing.'
                                     : 'Name, email, phone, traveling date, return date and flight option. Enquiries appear under Flights and use existing Flight Booking emails.'}
                                 </p>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                  {([['title', 'Section heading'], ['buttonText', 'Submit button text'], ['maxWidth', 'Maximum width (e.g. 1440px)']] as const).map(([field, label]) => (
+                                  {([['title', 'Section heading'], ['buttonText', 'Submit button text'], ['maxWidth', 'Maximum width (e.g. 1400px)']] as const).map(([field, label]) => (
                                     <label key={field} className="block text-xs font-semibold text-slate-700">{label}
                                       <input type="text" maxLength={field === 'maxWidth' ? 8 : 140}
                                         value={sec.data?.[field] ?? ''}
@@ -5087,7 +5087,7 @@ function PageBuilderContent() {
                             {sec.type === 'Umrah Enquiry 2026-27 Form' && (
                               <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
                                 <h4 className="text-sm font-bold text-primary">Umrah Enquiry 2026-27 Form</h4>
-                                <p className="text-xs text-slate-500">Move this section to position the form. Configure its fields and separate admin/customer email templates under Settings &gt; Forms.</p>
+                                <p className="text-xs text-gray-500">Move this section to position the form. Configure its fields and separate admin/customer email templates under Settings &gt; Forms.</p>
                                 <label className="block text-xs font-semibold text-slate-700">
                                   Form heading
                                   <input type="text" maxLength={140} value={sec.data?.title ?? 'Umrah Enquiry 2026-27'}
@@ -5101,7 +5101,7 @@ function PageBuilderContent() {
                             {sec.type === 'YOSR Al Mashaer Hajj Form' && (
                               <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
                                 <h4 className="text-sm font-bold text-primary">YOSR Al Mashaer Hajj Form</h4>
-                                <p className="text-xs text-slate-500">Branded form with its own Settings &gt; Forms configuration, admin email and customer email. Move this section to choose its page position.</p>
+                                <p className="text-xs text-gray-500">Branded form with its own Settings &gt; Forms configuration, admin email and customer email. Move this section to choose its page position.</p>
                                 <label className="block text-xs font-semibold text-slate-700">
                                   Heading beside logo
                                   <input type="text" maxLength={140} value={sec.data?.title ?? 'Register for Hajj 2027'}
@@ -5115,7 +5115,7 @@ function PageBuilderContent() {
                             {sec.type === 'Hajj 2027 Registration Form' && (
                               <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
                                 <h4 className="text-sm font-bold text-primary">Hajj 2027 Registration Form</h4>
-                                <p className="text-xs text-slate-500">Move this section up or down to set its frontend position. Form fields, options, and admin/customer email templates are managed globally in Settings &gt; Forms &gt; Hajj 2027 Registration Form.</p>
+                                <p className="text-xs text-gray-500">Move this section up or down to set its frontend position. Form fields, options, and admin/customer email templates are managed globally in Settings &gt; Forms &gt; Hajj 2027 Registration Form.</p>
                                 <label className="block text-xs font-semibold text-slate-700">
                                   Form heading
                                   <input type="text" maxLength={140} value={sec.data?.title ?? 'Register for Hajj 2027'}
@@ -5588,7 +5588,7 @@ function PageBuilderContent() {
 
                                           updateSectionData(sec.id, 'items', currentItems);
 
-                                        }} className={`p-1 rounded border border-slate-200 ${isFirst ? 'opacity-30 cursor-not-allowed bg-slate-50 text-slate-400' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer'}`} title="Move Up">
+                                        }} className={`p-1 rounded border border-slate-200 ${isFirst ? 'opacity-30 cursor-not-allowed bg-slate-50 text-gray-500' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer'}`} title="Move Up">
 
                                           <MoveUp className="w-3 h-3" />
 
@@ -5604,7 +5604,7 @@ function PageBuilderContent() {
 
                                           updateSectionData(sec.id, 'items', currentItems);
 
-                                        }} className={`p-1 rounded border border-slate-200 ${isLast ? 'opacity-30 cursor-not-allowed bg-slate-50 text-slate-400' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer'}`} title="Move Down">
+                                        }} className={`p-1 rounded border border-slate-200 ${isLast ? 'opacity-30 cursor-not-allowed bg-slate-50 text-gray-500' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer'}`} title="Move Down">
 
                                           <MoveDown className="w-3 h-3" />
 
@@ -5697,7 +5697,7 @@ function PageBuilderContent() {
                                   </select>
                                 </label>
 
-                                <p className="m-0 text-[11px] text-slate-500">Move this section with the page section arrows. Cards display two per row on mobile and four per row on desktop.</p>
+                                <p className="m-0 text-[11px] text-gray-500">Move this section with the page section arrows. Cards display two per row on mobile and four per row on desktop.</p>
 
                                 {(Array.isArray(sec.data?.items) ? sec.data.items : []).map((stat: any, sIdx: number, allItems: any[]) => {
 
@@ -5711,9 +5711,9 @@ function PageBuilderContent() {
 
                                       <div className="flex flex-col gap-0.5 shrink-0">
 
-                                        <button type="button" disabled={isFirst} onClick={() => { if (isFirst) return; const currentItems = [...allItems];[currentItems[sIdx - 1], currentItems[sIdx]] = [currentItems[sIdx], currentItems[sIdx - 1]]; updateSectionData(sec.id, 'items', currentItems); }} className={`p-1 rounded border border-slate-200 ${isFirst ? 'opacity-30 cursor-not-allowed bg-slate-50 text-slate-400' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer'}`} title="Move Up"><MoveUp className="w-3 h-3" /></button>
+                                        <button type="button" disabled={isFirst} onClick={() => { if (isFirst) return; const currentItems = [...allItems];[currentItems[sIdx - 1], currentItems[sIdx]] = [currentItems[sIdx], currentItems[sIdx - 1]]; updateSectionData(sec.id, 'items', currentItems); }} className={`p-1 rounded border border-slate-200 ${isFirst ? 'opacity-30 cursor-not-allowed bg-slate-50 text-gray-500' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer'}`} title="Move Up"><MoveUp className="w-3 h-3" /></button>
 
-                                        <button type="button" disabled={isLast} onClick={() => { if (isLast) return; const currentItems = [...allItems];[currentItems[sIdx + 1], currentItems[sIdx]] = [currentItems[sIdx], currentItems[sIdx + 1]]; updateSectionData(sec.id, 'items', currentItems); }} className={`p-1 rounded border border-slate-200 ${isLast ? 'opacity-30 cursor-not-allowed bg-slate-50 text-slate-400' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer'}`} title="Move Down"><MoveDown className="w-3 h-3" /></button>
+                                        <button type="button" disabled={isLast} onClick={() => { if (isLast) return; const currentItems = [...allItems];[currentItems[sIdx + 1], currentItems[sIdx]] = [currentItems[sIdx], currentItems[sIdx + 1]]; updateSectionData(sec.id, 'items', currentItems); }} className={`p-1 rounded border border-slate-200 ${isLast ? 'opacity-30 cursor-not-allowed bg-slate-50 text-gray-500' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer'}`} title="Move Down"><MoveDown className="w-3 h-3" /></button>
 
                                       </div>
 
@@ -5747,7 +5747,7 @@ function PageBuilderContent() {
 
                                 <div>
 
-                                  <label className="block text-[11px] font-bold text-slate-500 mb-1.5">
+                                  <label className="block text-[11px] font-bold text-gray-500 mb-1.5">
 
                                     🖼 SECTION IMAGE UPLOADER
 
@@ -5781,7 +5781,7 @@ function PageBuilderContent() {
 
                                   <div>
 
-                                    <label className="block text-[10px] font-bold text-slate-500 mb-0.5">SUBHEADING</label>
+                                    <label className="block text-[10px] font-bold text-gray-500 mb-0.5">SUBHEADING</label>
 
                                     <input
 
@@ -5801,7 +5801,7 @@ function PageBuilderContent() {
 
                                   <div>
 
-                                    <label className="block text-[10px] font-bold text-slate-500 mb-0.5">CHECKLIST FEATURES (One per line)</label>
+                                    <label className="block text-[10px] font-bold text-gray-500 mb-0.5">CHECKLIST FEATURES (One per line)</label>
 
                                     <textarea
 
@@ -6023,7 +6023,7 @@ function PageBuilderContent() {
 
                                               }}
 
-                                              className={`p-1 rounded border border-slate-200 flex items-center justify-center transition-colors ${isFirst ? 'opacity-30 cursor-not-allowed bg-slate-50 text-slate-400' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs'
+                                              className={`p-1 rounded border border-slate-200 flex items-center justify-center transition-colors ${isFirst ? 'opacity-30 cursor-not-allowed bg-slate-50 text-gray-500' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs'
 
                                                 }`}
 
@@ -6057,7 +6057,7 @@ function PageBuilderContent() {
 
                                               }}
 
-                                              className={`p-1 rounded border border-slate-200 flex items-center justify-center transition-colors ${isLast ? 'opacity-30 cursor-not-allowed bg-slate-50 text-slate-400' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs'
+                                              className={`p-1 rounded border border-slate-200 flex items-center justify-center transition-colors ${isLast ? 'opacity-30 cursor-not-allowed bg-slate-50 text-gray-500' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs'
 
                                                 }`}
 
@@ -6410,7 +6410,7 @@ function PageBuilderContent() {
 
                                   </label>
 
-                                  <p className="text-[10px] text-slate-500 leading-4">Visitors see the poster image (no black borders) and the video plays inline on your site when they click the card. Supports YouTube watch/shorts/live links, Vimeo links, direct .mp4/.webm files, or any raw embed URL. Leave empty to show the plain image.</p>
+                                  <p className="text-[10px] text-gray-500 leading-4">Visitors see the poster image (no black borders) and the video plays inline on your site when they click the card. Supports YouTube watch/shorts/live links, Vimeo links, direct .mp4/.webm files, or any raw embed URL. Leave empty to show the plain image.</p>
 
                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
 
@@ -6420,9 +6420,9 @@ function PageBuilderContent() {
 
                                       <ImageUploadWidget value={sec.data?.videoPoster || ''} onChange={(url) => updateSectionData(sec.id, 'videoPoster', url)} subfolder="sections" />
 
-                                      <button onClick={() => { const ytId = getYouTubeVideoId(String(sec.data?.videoUrl || '')); if (ytId) updateSectionData(sec.id, 'videoPoster', `https://i.ytimg.com/vi/${ytId}/maxresdefault.jpg`); }} disabled={!getYouTubeVideoId(String(sec.data?.videoUrl || ''))} className={`mt-1 text-[10px] font-bold rounded-md px-2 py-1 border cursor-pointer ${getYouTubeVideoId(String(sec.data?.videoUrl || '')) ? 'bg-primary text-white border-primary' : 'bg-white text-slate-400 border-slate-200 cursor-not-allowed'}`}>Use YouTube Thumbnail</button>
+                                      <button onClick={() => { const ytId = getYouTubeVideoId(String(sec.data?.videoUrl || '')); if (ytId) updateSectionData(sec.id, 'videoPoster', `https://i.ytimg.com/vi/${ytId}/maxresdefault.jpg`); }} disabled={!getYouTubeVideoId(String(sec.data?.videoUrl || ''))} className={`mt-1 text-[10px] font-bold rounded-md px-2 py-1 border cursor-pointer ${getYouTubeVideoId(String(sec.data?.videoUrl || '')) ? 'bg-primary text-white border-primary' : 'bg-white text-gray-500 border-slate-200 cursor-not-allowed'}`}>Use YouTube Thumbnail</button>
 
-                                      <p className="text-[10px] text-slate-500 mt-1">Leave empty to auto-use the video's own YouTube thumbnail (or the LEFT IMAGE for non-YouTube videos).</p>
+                                      <p className="text-[10px] text-gray-500 mt-1">Leave empty to auto-use the video's own YouTube thumbnail (or the LEFT IMAGE for non-YouTube videos).</p>
 
                                     </div>
 
@@ -6438,7 +6438,7 @@ function PageBuilderContent() {
 
                                       </select>
 
-                                      <p className="text-[10px] text-slate-500 mt-1">The badge title/subtitle above is reused as the play-button label on the card.</p>
+                                      <p className="text-[10px] text-gray-500 mt-1">The badge title/subtitle above is reused as the play-button label on the card.</p>
 
                                     </div>
 
@@ -6992,7 +6992,7 @@ function PageBuilderContent() {
 
                                           <div className="text-xs font-bold text-slate-800 truncate">{pkg.title}</div>
 
-                                          <div className="text-[10px] text-slate-500 truncate">
+                                          <div className="text-[10px] text-gray-500 truncate">
 
                                             £ ${pkg.startingPrice} • {formatTravelMonth(pkg.month) || pkg.month}
 
@@ -7030,7 +7030,7 @@ function PageBuilderContent() {
 
                                   {(sec.data?.packageIds || []).length === 0 && (
 
-                                    <div className="text-xs text-center text-slate-400 p-4 border border-dashed border-slate-200 rounded-lg">
+                                    <div className="text-xs text-center text-gray-500 p-4 border border-dashed border-slate-200 rounded-lg">
 
                                       No packages added yet. Select from the dropdown above.
 
@@ -7167,7 +7167,7 @@ function PageBuilderContent() {
 
                                     <div className="flex justify-between items-center">
 
-                                      <span className="text-[10px] font-extrabold text-slate-500">CARD #{sIdx + 1}</span>
+                                      <span className="text-[10px] font-extrabold text-gray-500">CARD #{sIdx + 1}</span>
 
                                       <button
 
@@ -7197,7 +7197,7 @@ function PageBuilderContent() {
 
                                       <div>
 
-                                        <label className="block text-[9px] font-bold text-slate-500 mb-0.5">ICON</label>
+                                        <label className="block text-[9px] font-bold text-gray-500 mb-0.5">ICON</label>
 
                                         <input
 
@@ -7223,7 +7223,7 @@ function PageBuilderContent() {
 
                                       <div>
 
-                                        <label className="block text-[9px] font-bold text-slate-500 mb-0.5">CARD TITLE</label>
+                                        <label className="block text-[9px] font-bold text-gray-500 mb-0.5">CARD TITLE</label>
 
                                         <input
 
@@ -7251,7 +7251,7 @@ function PageBuilderContent() {
 
                                     <div>
 
-                                      <label className="block text-[9px] font-bold text-slate-500 mb-0.5">SUBTITLE / TAGLINE</label>
+                                      <label className="block text-[9px] font-bold text-gray-500 mb-0.5">SUBTITLE / TAGLINE</label>
 
                                       <input
 
@@ -7277,7 +7277,7 @@ function PageBuilderContent() {
 
                                     <div>
 
-                                      <label className="block text-[9px] font-bold text-slate-500 mb-0.5">DESCRIPTION</label>
+                                      <label className="block text-[9px] font-bold text-gray-500 mb-0.5">DESCRIPTION</label>
 
                                       <textarea
 
@@ -7357,7 +7357,7 @@ function PageBuilderContent() {
 
                                   <div>
 
-                                    <label className="block text-[9px] font-bold text-slate-500 mb-0.5 uppercase">Eyebrow Label</label>
+                                    <label className="block text-[9px] font-bold text-gray-500 mb-0.5 uppercase">Eyebrow Label</label>
 
                                     <input
 
@@ -7377,7 +7377,7 @@ function PageBuilderContent() {
 
                                   <div>
 
-                                    <label className="block text-[9px] font-bold text-slate-500 mb-0.5 uppercase">Section Title (H2)</label>
+                                    <label className="block text-[9px] font-bold text-gray-500 mb-0.5 uppercase">Section Title (H2)</label>
 
                                     <input
 
@@ -7397,7 +7397,7 @@ function PageBuilderContent() {
 
                                   <div>
 
-                                    <label className="block text-[9px] font-bold text-slate-500 mb-0.5 uppercase">Subtitle / Tagline</label>
+                                    <label className="block text-[9px] font-bold text-gray-500 mb-0.5 uppercase">Subtitle / Tagline</label>
 
                                     <input
 
@@ -7445,7 +7445,7 @@ function PageBuilderContent() {
 
                                     <div className="flex justify-between items-center">
 
-                                      <span className="text-[10px] font-extrabold text-slate-500">CARD #{sIdx + 1}</span>
+                                      <span className="text-[10px] font-extrabold text-gray-500">CARD #{sIdx + 1}</span>
 
                                       <button
 
@@ -7475,7 +7475,7 @@ function PageBuilderContent() {
 
                                       <div>
 
-                                        <label className="block text-[9px] font-bold text-slate-500 mb-0.5">ICON</label>
+                                        <label className="block text-[9px] font-bold text-gray-500 mb-0.5">ICON</label>
 
                                         <input
 
@@ -7501,7 +7501,7 @@ function PageBuilderContent() {
 
                                       <div>
 
-                                        <label className="block text-[9px] font-bold text-slate-500 mb-0.5">TITLE</label>
+                                        <label className="block text-[9px] font-bold text-gray-500 mb-0.5">TITLE</label>
 
                                         <input
 
@@ -7529,7 +7529,7 @@ function PageBuilderContent() {
 
                                     <div>
 
-                                      <label className="block text-[9px] font-bold text-slate-500 mb-0.5">DESCRIPTION</label>
+                                      <label className="block text-[9px] font-bold text-gray-500 mb-0.5">DESCRIPTION</label>
 
                                       <input
 
@@ -7577,7 +7577,7 @@ function PageBuilderContent() {
 
                                     </span>
 
-                                    <p className="text-[11px] text-slate-500 mt-0.5">
+                                    <p className="text-[11px] text-gray-500 mt-0.5">
 
                                       Upload 1 or more promotional flyers. 1 brochure will center, multiple will display in a responsive grid.
 
@@ -7689,7 +7689,7 @@ function PageBuilderContent() {
 
                                     <p className="text-sm font-bold text-slate-700 mb-1">No brochure images uploaded yet</p>
 
-                                    <p className="text-xs text-slate-500 mb-4">Select multiple image files at once to upload them instantly</p>
+                                    <p className="text-xs text-gray-500 mb-4">Select multiple image files at once to upload them instantly</p>
 
                                     <label className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-white hover:text-primary text-white text-xs font-bold cursor-pointer transition-colors shadow-sm">
 
@@ -7827,11 +7827,11 @@ function PageBuilderContent() {
 
                                           <div className="flex justify-between items-center gap-2">
 
-                                            <div className="flex items-center gap-1.5 text-slate-500">
+                                            <div className="flex items-center gap-1.5 text-gray-500">
 
                                               <span
 
-                                                className="cursor-grab active:cursor-grabbing p-1 -ml-1 rounded hover:bg-slate-200 text-slate-400 hover:text-slate-700 transition-colors"
+                                                className="cursor-grab active:cursor-grabbing p-1 -ml-1 rounded hover:bg-slate-200 text-gray-500 hover:text-slate-700 transition-colors"
 
                                                 title="Drag to reorder flyer"
 
@@ -7993,7 +7993,7 @@ function PageBuilderContent() {
 
                                           <div>
 
-                                            <label className="block text-[9px] font-bold text-slate-500 mb-0.5 uppercase">Link URL (Optional)</label>
+                                            <label className="block text-[9px] font-bold text-gray-500 mb-0.5 uppercase">Link URL (Optional)</label>
 
                                             <input
 
@@ -8033,7 +8033,7 @@ function PageBuilderContent() {
 
                                           <div>
 
-                                            <label className="block text-[9px] font-bold text-slate-500 mb-0.5 uppercase">SEO Alt Text</label>
+                                            <label className="block text-[9px] font-bold text-gray-500 mb-0.5 uppercase">SEO Alt Text</label>
 
                                             <input
 
@@ -8093,7 +8093,7 @@ function PageBuilderContent() {
 
                                     <span className="text-xs font-extrabold text-primary uppercase">GALLERY IMAGES & VIDEOS</span>
 
-                                    <p className="text-[11px] text-slate-500 mt-0.5">Images keep their full aspect ratio and display in a responsive masonry layout. Videos appear below the images.</p>
+                                    <p className="text-[11px] text-gray-500 mt-0.5">Images keep their full aspect ratio and display in a responsive masonry layout. Videos appear below the images.</p>
 
                                   </div>
 
@@ -8193,7 +8193,7 @@ function PageBuilderContent() {
 
                                       <div key={imageIndex} className="rounded-lg border border-slate-200 bg-slate-50 p-2.5">
 
-                                        {imageSrc ? <img src={imageSrc} alt={imageAlt || 'Gallery preview'} className="mb-2 h-32 w-full rounded object-cover" /> : <div className="mb-2 flex h-32 items-center justify-center rounded border-2 border-dashed border-slate-300 text-xs text-slate-500">No image selected</div>}
+                                        {imageSrc ? <img src={imageSrc} alt={imageAlt || 'Gallery preview'} className="mb-2 h-32 w-full rounded object-cover" /> : <div className="mb-2 flex h-32 items-center justify-center rounded border-2 border-dashed border-slate-300 text-xs text-gray-500">No image selected</div>}
 
                                         <ImageUploadWidget value={imageSrc} onChange={(url) => updateImage({ image: url })} subfolder={`gallery/${galleryName}`} hideManualUrl={false} />
 
@@ -8271,7 +8271,7 @@ function PageBuilderContent() {
 
                                     <div className="mb-2 flex items-center justify-between gap-2">
 
-                                      <span className="text-[10px] font-bold uppercase text-slate-500">Question {itemIndex + 1}</span>
+                                      <span className="text-[10px] font-bold uppercase text-gray-500">Question {itemIndex + 1}</span>
 
                                       <button
 
@@ -8341,7 +8341,7 @@ function PageBuilderContent() {
                               <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-4 mt-1">
                                 <div>
                                   <h4 className="text-sm font-extrabold text-primary m-0">Elegant Text Content</h4>
-                                  <p className="text-xs text-slate-500 mt-1 mb-0">Text stays on the left, with the image on the right. On mobile, the image appears beneath the text.</p>
+                                  <p className="text-xs text-gray-500 mt-1 mb-0">Text stays on the left, with the image on the right. On mobile, the image appears beneath the text.</p>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                   <label className="block text-xs font-semibold text-slate-700">
@@ -8367,7 +8367,7 @@ function PageBuilderContent() {
                                       <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
                                         <ImageIcon className="w-3.5 h-3.5 text-primary" /> Section Featured Image (Optional)
                                       </span>
-                                      <p className="text-[11px] text-slate-500 m-0">Displays to the right of the text, with no card or overlay.</p>
+                                      <p className="text-[11px] text-gray-500 m-0">Displays to the right of the text, with no card or overlay.</p>
                                     </div>
                                     {sec.data?.image && (
                                       <button
@@ -8427,7 +8427,7 @@ function PageBuilderContent() {
                                   onChange={html => updateSectionData(sec.id, 'content', html)}
                                   minHeight="220px"
                                 />
-                                <p className="text-xs text-slate-500 m-0">Use Heading 2 and Heading 3 for titles inside the text. The styling is automatic. Existing Rich Text sections are unchanged.</p>
+                                <p className="text-xs text-gray-500 m-0">Use Heading 2 and Heading 3 for titles inside the text. The styling is automatic. Existing Rich Text sections are unchanged.</p>
                               </div>
                             )}
 
@@ -8452,7 +8452,7 @@ function PageBuilderContent() {
 
                                 />
 
-                                <p className="text-[10px] text-slate-400 m-0">
+                                <p className="text-[10px] text-gray-500 m-0">
 
                                   Content is saved as HTML and rendered on the frontend with your site&apos;s prose styles.
 
@@ -8524,7 +8524,7 @@ function PageBuilderContent() {
 
                                     <div>
 
-                                      <label className="block text-[9px] font-bold text-slate-500 mb-0.5">TITLE / BADGE</label>
+                                      <label className="block text-[9px] font-bold text-gray-500 mb-0.5">TITLE / BADGE</label>
 
                                       <input
 
@@ -8550,7 +8550,7 @@ function PageBuilderContent() {
 
                                     <div>
 
-                                      <label className="block text-[9px] font-bold text-slate-500 mb-0.5">ICON CLASS / NAME</label>
+                                      <label className="block text-[9px] font-bold text-gray-500 mb-0.5">ICON CLASS / NAME</label>
 
                                       <input
 
@@ -8578,7 +8578,7 @@ function PageBuilderContent() {
 
                                     <div>
 
-                                      <label className="block text-[9px] font-bold text-slate-500 mb-0.5">ENGINE</label>
+                                      <label className="block text-[9px] font-bold text-gray-500 mb-0.5">ENGINE</label>
 
                                       <select
 
@@ -8708,7 +8708,7 @@ function PageBuilderContent() {
 
                                     <div className="flex justify-between items-center">
 
-                                      <span className="text-[10px] font-extrabold text-slate-500">VISA CARD #{vIdx + 1}</span>
+                                      <span className="text-[10px] font-extrabold text-gray-500">VISA CARD #{vIdx + 1}</span>
 
                                       <button
 
@@ -8738,7 +8738,7 @@ function PageBuilderContent() {
 
                                       <div>
 
-                                        <label className="block text-[9px] font-bold text-slate-500 mb-0.5">VISA TITLE</label>
+                                        <label className="block text-[9px] font-bold text-gray-500 mb-0.5">VISA TITLE</label>
 
                                         <input
 
@@ -8764,7 +8764,7 @@ function PageBuilderContent() {
 
                                       <div>
 
-                                        <label className="block text-[9px] font-bold text-slate-500 mb-0.5">IMAGE URL</label>
+                                        <label className="block text-[9px] font-bold text-gray-500 mb-0.5">IMAGE URL</label>
 
                                         <ImageUploadWidget
 
@@ -8792,7 +8792,7 @@ function PageBuilderContent() {
 
                                     <div>
 
-                                      <label className="block text-[9px] font-bold text-slate-500 mb-0.5">DESCRIPTION</label>
+                                      <label className="block text-[9px] font-bold text-gray-500 mb-0.5">DESCRIPTION</label>
 
                                       <textarea
 
@@ -8846,7 +8846,7 @@ function PageBuilderContent() {
                                     ['helpText', 'HELP TEXT', 'Our team is available to assist you with your Umrah visa application.'],
                                     ['helpLink', 'WHATSAPP HELP LINK', 'https://wa.me/447957197390'],
                                   ].map(([field, label, placeholder]) => (
-                                    <label key={field} className="block text-[9px] font-bold text-slate-500">
+                                    <label key={field} className="block text-[9px] font-bold text-gray-500">
                                       {label}
                                       <input
                                         type="text"
@@ -8861,7 +8861,7 @@ function PageBuilderContent() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                   {(sec.data?.formFields || DEFAULT_UMRAH_VISA_FORM_FIELDS).map((field: any, fieldIndex: number) => (
                                     <div key={field.id || fieldIndex} className="rounded-lg border border-slate-200 p-2">
-                                      <div className="text-[9px] font-extrabold text-slate-500 uppercase mb-1">FORM FIELD {fieldIndex + 1}</div>
+                                      <div className="text-[9px] font-extrabold text-gray-500 uppercase mb-1">FORM FIELD {fieldIndex + 1}</div>
                                       <div className="grid grid-cols-2 gap-2">
                                         <input type="text" value={field.label || ''} placeholder="Label" onChange={(e) => { const fields = [...(sec.data?.formFields || DEFAULT_UMRAH_VISA_FORM_FIELDS)]; fields[fieldIndex] = { ...(fields[fieldIndex] || field), label: e.target.value }; updateSectionData(sec.id, 'formFields', fields); }} className="w-full px-2 py-1.5 rounded-md border border-slate-300 text-[11px]" />
                                         <input type="text" value={field.placeholder || ''} placeholder="Placeholder" onChange={(e) => { const fields = [...(sec.data?.formFields || DEFAULT_UMRAH_VISA_FORM_FIELDS)]; fields[fieldIndex] = { ...(fields[fieldIndex] || field), placeholder: e.target.value }; updateSectionData(sec.id, 'formFields', fields); }} className="w-full px-2 py-1.5 rounded-md border border-slate-300 text-[11px]" />
@@ -8876,8 +8876,8 @@ function PageBuilderContent() {
                                 <div className="border-t border-slate-100 pt-3">
                                   <div className="flex items-center justify-between mb-2">
                                     <div>
-                                      <div className="text-[9px] font-extrabold text-slate-500 uppercase">REQUIREMENTS ITEMS</div>
-                                      <div className="text-[10px] text-slate-400">Search and select an icon, then edit the title and description.</div>
+                                      <div className="text-[9px] font-extrabold text-gray-500 uppercase">REQUIREMENTS ITEMS</div>
+                                      <div className="text-[10px] text-gray-500">Search and select an icon, then edit the title and description.</div>
                                     </div>
                                     <button
                                       type="button"
@@ -8893,19 +8893,19 @@ function PageBuilderContent() {
                                       return (
                                         <div key={itemIndex} className="grid grid-cols-1 md:grid-cols-[190px_1fr_1fr_28px] gap-2 rounded-lg border border-slate-200 bg-slate-50/60 p-2">
                                           <div>
-                                            <label className="block text-[9px] font-bold text-slate-500">ICON SEARCH</label>
+                                            <label className="block text-[9px] font-bold text-gray-500">ICON SEARCH</label>
                                             <input list={iconListId} value={item.icon || 'Info'} onChange={(e) => { const items = [...(sec.data?.requirements || DEFAULT_UMRAH_VISA_REQUIREMENTS)]; items[itemIndex] = { ...(items[itemIndex] || item), icon: e.target.value }; updateSectionData(sec.id, 'requirements', items); }} placeholder="Search icons..." className="w-full rounded-md border border-slate-300 bg-white px-2 py-1.5 text-[10px]" />
                                             <datalist id={iconListId}>{UMRAH_VISA_ICON_OPTIONS.map((icon) => <option key={icon} value={icon} />)}</datalist>
                                           </div>
-                                          <label className="block text-[9px] font-bold text-slate-500">TITLE<input type="text" value={item.title || ''} onChange={(e) => { const items = [...(sec.data?.requirements || DEFAULT_UMRAH_VISA_REQUIREMENTS)]; items[itemIndex] = { ...(items[itemIndex] || item), title: e.target.value }; updateSectionData(sec.id, 'requirements', items); }} className="mt-1 w-full rounded-md border border-slate-300 bg-white px-2 py-1.5 text-[11px] font-normal" /></label>
-                                          <label className="block text-[9px] font-bold text-slate-500">DESCRIPTION<textarea rows={2} value={item.description || ''} onChange={(e) => { const items = [...(sec.data?.requirements || DEFAULT_UMRAH_VISA_REQUIREMENTS)]; items[itemIndex] = { ...(items[itemIndex] || item), description: e.target.value }; updateSectionData(sec.id, 'requirements', items); }} className="mt-1 w-full rounded-md border border-slate-300 bg-white px-2 py-1.5 text-[11px] font-normal" /></label>
+                                          <label className="block text-[9px] font-bold text-gray-500">TITLE<input type="text" value={item.title || ''} onChange={(e) => { const items = [...(sec.data?.requirements || DEFAULT_UMRAH_VISA_REQUIREMENTS)]; items[itemIndex] = { ...(items[itemIndex] || item), title: e.target.value }; updateSectionData(sec.id, 'requirements', items); }} className="mt-1 w-full rounded-md border border-slate-300 bg-white px-2 py-1.5 text-[11px] font-normal" /></label>
+                                          <label className="block text-[9px] font-bold text-gray-500">DESCRIPTION<textarea rows={2} value={item.description || ''} onChange={(e) => { const items = [...(sec.data?.requirements || DEFAULT_UMRAH_VISA_REQUIREMENTS)]; items[itemIndex] = { ...(items[itemIndex] || item), description: e.target.value }; updateSectionData(sec.id, 'requirements', items); }} className="mt-1 w-full rounded-md border border-slate-300 bg-white px-2 py-1.5 text-[11px] font-normal" /></label>
                                           <button type="button" aria-label={`Remove requirement ${itemIndex + 1}`} onClick={() => { const items = [...(sec.data?.requirements || DEFAULT_UMRAH_VISA_REQUIREMENTS)]; items.splice(itemIndex, 1); updateSectionData(sec.id, 'requirements', items); }} className="mt-5 flex h-7 w-7 items-center justify-center rounded-md bg-red-50 text-red"><Trash2 className="h-3.5 w-3.5" /></button>
                                         </div>
                                       );
                                     })}
                                   </div>
                                 </div>
-                                <label className="block text-[9px] font-bold text-slate-500">
+                                <label className="block text-[9px] font-bold text-gray-500">
                                   IMPORTANT NOTES (one note per line)
                                   <textarea
                                     rows={4}
@@ -8931,14 +8931,14 @@ function PageBuilderContent() {
                                     ['subtitle', 'SUBTITLE', 'Approved by Ministry of Hajj / Umrah | Saudi Arabia Visa Services Overview'],
                                     ['image', 'DOCUMENT IMAGE URL', '/img/saudi-visa-2.webp'],
                                   ].map(([field, label, placeholder]) => (
-                                    <label key={field} className="block text-[9px] font-bold text-slate-500">{label}
+                                    <label key={field} className="block text-[9px] font-bold text-gray-500">{label}
                                       <input type="text" value={sec.data?.[field] || ''} placeholder={placeholder} onChange={(e) => updateSectionData(sec.id, field, e.target.value)} className="mt-1 w-full rounded-md border border-slate-300 px-2.5 py-1.5 text-[11px] font-normal" />
                                     </label>
                                   ))}
                                 </div>
                                 <div className="border-t border-slate-100 pt-3">
                                   <div className="flex items-center justify-between mb-2">
-                                    <span className="text-[9px] font-extrabold text-slate-500 uppercase">SERVICE TABLE ROWS</span>
+                                    <span className="text-[9px] font-extrabold text-gray-500 uppercase">SERVICE TABLE ROWS</span>
                                     <button type="button" onClick={() => updateSectionData(sec.id, 'rows', [...(sec.data?.rows || []), ['New service', 'Add service details']])} className="inline-flex items-center gap-1 rounded-md bg-primary px-2.5 py-1.5 text-[10px] font-bold text-white"><Plus className="h-3 w-3" /> Add row</button>
                                   </div>
                                   <div className="space-y-2">
@@ -8959,7 +8959,7 @@ function PageBuilderContent() {
                                 <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                                   <div>
                                     <span className="text-[11px] font-extrabold text-primary uppercase">Guide step cards</span>
-                                    <p className="mt-1 text-[10px] text-slate-500">Choose a Lucide SVG icon, edit the step content, and set the destination slug.</p>
+                                    <p className="mt-1 text-[10px] text-gray-500">Choose a Lucide SVG icon, edit the step content, and set the destination slug.</p>
                                   </div>
                                   <button
                                     type="button"
@@ -8971,7 +8971,7 @@ function PageBuilderContent() {
                                     className="inline-flex items-center gap-1 rounded-md bg-primary px-2.5 py-1.5 text-[10px] font-bold text-white"
                                   ><Plus className="h-3 w-3" /> Add step</button>
                                 </div>
-                                <label className="block text-[9px] font-bold text-slate-500">GUIDE CATEGORY
+                                <label className="block text-[9px] font-bold text-gray-500">GUIDE CATEGORY
                                   <select value={sec.data?.guideCategory || ''} onChange={(e) => { const value = e.target.value as GuideCategory; setGuideCategory(value); updateSectionData(sec.id, 'guideCategory', value); }} className="mt-1 w-full rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-[11px]">
                                     <option value="">Select category</option>
                                     <option value="hajj">Hajj Guides</option>
@@ -8980,7 +8980,7 @@ function PageBuilderContent() {
                                 </label>
                                 {sec.data?.guideCategory && (
                                   <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
-                                    <p className="mb-2 text-[9px] font-extrabold uppercase text-slate-500">SELECT GUIDES TO DISPLAY</p>
+                                    <p className="mb-2 text-[9px] font-extrabold uppercase text-gray-500">SELECT GUIDES TO DISPLAY</p>
                                     <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                                       {guideOptions.filter((guide) => guide.guideCategory === sec.data?.guideCategory).map((guide) => {
                                         const selected = Array.isArray(sec.data?.guideIds) && sec.data.guideIds.includes(guide.id);
@@ -8992,10 +8992,10 @@ function PageBuilderContent() {
                                         );
                                       })}
                                     </div>
-                                    {guideOptions.filter((guide) => guide.guideCategory === sec.data?.guideCategory).length === 0 && <p className="text-[10px] text-slate-400">Create a guide in the selected category first.</p>}
+                                    {guideOptions.filter((guide) => guide.guideCategory === sec.data?.guideCategory).length === 0 && <p className="text-[10px] text-gray-500">Create a guide in the selected category first.</p>}
                                   </div>
                                 )}
-                                <label className="block text-[9px] font-bold text-slate-500">DEFAULT BUTTON LABEL
+                                <label className="block text-[9px] font-bold text-gray-500">DEFAULT BUTTON LABEL
                                   <input type="text" value={sec.data?.buttonLabel || 'Learn More'} onChange={(e) => updateSectionData(sec.id, 'buttonLabel', e.target.value)} className="mt-1 w-full rounded-md border border-slate-300 px-2.5 py-1.5 text-[11px]" />
                                 </label>
                                 <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
@@ -9003,27 +9003,27 @@ function PageBuilderContent() {
                                     <div key={stepIndex} className="relative rounded-lg border border-slate-200 bg-slate-50 p-3">
                                       <button type="button" onClick={() => updateSectionData(sec.id, 'steps', allSteps.filter((_, index) => index !== stepIndex))} className="absolute right-2 top-2 rounded bg-red-50 p-1 text-red" title="Remove guide step"><Trash2 className="h-3.5 w-3.5" /></button>
                                       <div className="grid grid-cols-[80px_1fr] gap-2 pr-8">
-                                        <label className="block text-[9px] font-bold text-slate-500">STEP NO.
+                                        <label className="block text-[9px] font-bold text-gray-500">STEP NO.
                                           <input type="number" min="1" value={step.number || stepIndex + 1} onChange={(e) => { const steps = [...allSteps]; steps[stepIndex] = { ...steps[stepIndex], number: e.target.value }; updateSectionData(sec.id, 'steps', steps); }} className="mt-1 w-full rounded-md border border-slate-300 px-2 py-1.5 text-[11px]" />
                                         </label>
-                                        <label className="block text-[9px] font-bold text-slate-500">SVG ICON
+                                        <label className="block text-[9px] font-bold text-gray-500">SVG ICON
                                           <select value={step.icon || 'FileText'} onChange={(e) => { const steps = [...allSteps]; steps[stepIndex] = { ...steps[stepIndex], icon: e.target.value }; updateSectionData(sec.id, 'steps', steps); }} className="mt-1 w-full rounded-md border border-slate-300 bg-white px-2 py-1.5 text-[11px]">
                                             {GUIDE_ICON_OPTIONS.map((icon) => <option key={icon} value={icon}>{icon}</option>)}
                                           </select>
                                         </label>
                                       </div>
                                       <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
-                                        <label className="block text-[9px] font-bold text-slate-500">TITLE
+                                        <label className="block text-[9px] font-bold text-gray-500">TITLE
                                           <input type="text" value={step.title || ''} onChange={(e) => { const steps = [...allSteps]; steps[stepIndex] = { ...steps[stepIndex], title: e.target.value }; updateSectionData(sec.id, 'steps', steps); }} className="mt-1 w-full rounded-md border border-slate-300 px-2 py-1.5 text-[11px]" />
                                         </label>
-                                        <label className="block text-[9px] font-bold text-slate-500">LEARN MORE SLUG
+                                        <label className="block text-[9px] font-bold text-gray-500">LEARN MORE SLUG
                                           <input type="text" value={step.slug || ''} placeholder="/your-page" onChange={(e) => { const steps = [...allSteps]; steps[stepIndex] = { ...steps[stepIndex], slug: e.target.value }; updateSectionData(sec.id, 'steps', steps); }} className="mt-1 w-full rounded-md border border-slate-300 px-2 py-1.5 text-[11px]" />
                                         </label>
                                       </div>
-                                      <label className="mt-2 block text-[9px] font-bold text-slate-500">DETAIL
+                                      <label className="mt-2 block text-[9px] font-bold text-gray-500">DETAIL
                                         <textarea rows={2} value={step.detail || step.description || ''} onChange={(e) => { const steps = [...allSteps]; steps[stepIndex] = { ...steps[stepIndex], detail: e.target.value }; updateSectionData(sec.id, 'steps', steps); }} className="mt-1 w-full rounded-md border border-slate-300 px-2 py-1.5 text-[11px]" />
                                       </label>
-                                      <label className="mt-2 block text-[9px] font-bold text-slate-500">BUTTON LABEL
+                                      <label className="mt-2 block text-[9px] font-bold text-gray-500">BUTTON LABEL
                                         <input type="text" value={step.buttonLabel || ''} placeholder={sec.data?.buttonLabel || 'Learn More'} onChange={(e) => { const steps = [...allSteps]; steps[stepIndex] = { ...steps[stepIndex], buttonLabel: e.target.value }; updateSectionData(sec.id, 'steps', steps); }} className="mt-1 w-full rounded-md border border-slate-300 px-2 py-1.5 text-[11px]" />
                                       </label>
                                     </div>
@@ -9036,15 +9036,15 @@ function PageBuilderContent() {
                               <div className="bg-white border border-slate-200 rounded-xl p-3 flex flex-col gap-3 mt-1">
                                 <span className="text-[11px] font-extrabold text-primary uppercase">Document / Passport Correct Format</span>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                  <label className="block text-[9px] font-bold text-slate-500">TITLE (HTML ALLOWED)
+                                  <label className="block text-[9px] font-bold text-gray-500">TITLE (HTML ALLOWED)
                                     <input type="text" value={sec.data?.title || ''} placeholder="Document / Passport Correct Format" onChange={(e) => updateSectionData(sec.id, 'title', e.target.value)} className="mt-1 w-full rounded-md border border-slate-300 px-2.5 py-1.5 text-[11px]" />
                                   </label>
-                                  <label className="block text-[9px] font-bold text-slate-500">SUBTITLE
+                                  <label className="block text-[9px] font-bold text-gray-500">SUBTITLE
                                     <input type="text" value={sec.data?.subtitle || ''} placeholder="Please check the examples below..." onChange={(e) => updateSectionData(sec.id, 'subtitle', e.target.value)} className="mt-1 w-full rounded-md border border-slate-300 px-2.5 py-1.5 text-[11px]" />
                                   </label>
                                 </div>
                                 <div className="flex items-center justify-between border-t border-slate-100 pt-3">
-                                  <span className="text-[9px] font-extrabold text-slate-500 uppercase">EXAMPLE CARDS</span>
+                                  <span className="text-[9px] font-extrabold text-gray-500 uppercase">EXAMPLE CARDS</span>
                                   <button type="button" onClick={() => updateSectionData(sec.id, 'cards', [...(sec.data?.cards || DEFAULT_UMRAH_VISA_DOCUMENT_CARDS), { image: '/img/saudi-visa-2.webp', tone: 'bad', title: 'New example', bullets: ['Add guidance'] }])} className="inline-flex items-center gap-1 rounded-md bg-primary px-2.5 py-1.5 text-[10px] font-bold text-white"><Plus className="h-3 w-3" /> Add card</button>
                                 </div>
                                 <div className="space-y-2">
@@ -9117,7 +9117,7 @@ function PageBuilderContent() {
 
                                   <div>
 
-                                    <label className="block text-[9px] font-bold text-slate-500 mb-0.5">EMAIL CONTACT</label>
+                                    <label className="block text-[9px] font-bold text-gray-500 mb-0.5">EMAIL CONTACT</label>
 
                                     <input
 
@@ -9133,19 +9133,19 @@ function PageBuilderContent() {
 
                                   </div>
                                   <div>
-                                    <label className="block text-[9px] font-bold text-slate-500 mb-0.5">SECTION BACKGROUND IMAGE</label>
+                                    <label className="block text-[9px] font-bold text-gray-500 mb-0.5">SECTION BACKGROUND IMAGE</label>
                                     <ImageUploadWidget
                                       value={sec.data?.backgroundImage || ''}
                                       onChange={(url) => updateSectionData(sec.id, 'backgroundImage', url)}
                                       subfolder="sections"
                                       compact
                                     />
-                                    <span className="mt-1 block text-[10px] text-slate-400">Upload a JPG, PNG, or WebP image used behind the process steps.</span>
+                                    <span className="mt-1 block text-[10px] text-gray-500">Upload a JPG, PNG, or WebP image used behind the process steps.</span>
                                   </div>
 
                                   <div>
 
-                                    <label className="block text-[9px] font-bold text-slate-500 mb-0.5">PHONE CONTACT</label>
+                                    <label className="block text-[9px] font-bold text-gray-500 mb-0.5">PHONE CONTACT</label>
 
                                     <input
 
@@ -9209,7 +9209,7 @@ function PageBuilderContent() {
 
                                     <div>
 
-                                      <label className="block text-[9px] font-bold text-slate-500 mb-0.5">STEP TITLE</label>
+                                      <label className="block text-[9px] font-bold text-gray-500 mb-0.5">STEP TITLE</label>
 
                                       <input
 
@@ -9235,7 +9235,7 @@ function PageBuilderContent() {
 
                                     <div>
 
-                                      <label className="block text-[9px] font-bold text-slate-500 mb-0.5">STEP DESCRIPTION</label>
+                                      <label className="block text-[9px] font-bold text-gray-500 mb-0.5">STEP DESCRIPTION</label>
 
                                       <textarea
 
@@ -9282,7 +9282,7 @@ function PageBuilderContent() {
                                     <span className="mb-2 block text-[10px] font-extrabold uppercase text-slate-600">{heading}</span>
                                     <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                                       {fields.map(([field, label]: string[]) => (
-                                        <label key={field} className="block text-[9px] font-bold text-slate-500">{label}
+                                        <label key={field} className="block text-[9px] font-bold text-gray-500">{label}
                                           <input type="text" value={sec.data?.[group]?.[field] || ''} onChange={(e) => updateSectionData(sec.id, group, { ...(sec.data?.[group] || {}), [field]: e.target.value })} className="mt-1 w-full rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-[11px]" />
                                         </label>
                                       ))}
@@ -9291,7 +9291,7 @@ function PageBuilderContent() {
                                 ))}
                                 <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                                   {['flightIcon', 'accommodationIcon'].map((field) => (
-                                    <label key={field} className="block text-[9px] font-bold uppercase text-slate-500">{field === 'flightIcon' ? 'Flight icon' : 'Accommodation icon'}
+                                    <label key={field} className="block text-[9px] font-bold uppercase text-gray-500">{field === 'flightIcon' ? 'Flight icon' : 'Accommodation icon'}
                                       <input type="text" value={sec.data?.[field] || ''} onChange={(e) => updateSectionData(sec.id, field, e.target.value)} className="mt-1 w-full rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-[11px]" placeholder="Lucide icon name" />
                                     </label>
                                   ))}
@@ -9304,7 +9304,7 @@ function PageBuilderContent() {
                                 <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                                   <div>
                                     <span className="text-[11px] font-extrabold uppercase text-primary">💺 Available Seats Cards Manager</span>
-                                    <p className="mt-1 text-[10px] text-slate-500">Add compact availability cards. Airline logos upload to the flights folder.</p>
+                                    <p className="mt-1 text-[10px] text-gray-500">Add compact availability cards. Airline logos upload to the flights folder.</p>
                                   </div>
                                   <button
                                     type="button"
@@ -9407,7 +9407,7 @@ function PageBuilderContent() {
                                     <div className="flex items-center justify-between border-b border-slate-200 pb-2 pr-10">
                                       <div>
                                         <h3 className="text-xs font-extrabold uppercase tracking-wide text-slate-900">Flight card {fIdx + 1}</h3>
-                                        <p className="text-[10px] text-slate-500">Complete the compact fields below</p>
+                                        <p className="text-[10px] text-gray-500">Complete the compact fields below</p>
                                       </div>
                                       <div className="flex items-center gap-2">
                                         {fl.bookingUrl && (
@@ -9498,7 +9498,7 @@ function PageBuilderContent() {
                                         </div>
 
                                         <div className="flex flex-col gap-1.5 w-full min-w-0 pt-1">
-                                          <label className="text-[10px] font-bold uppercase tracking-wide text-slate-500">
+                                          <label className="text-[10px] font-bold uppercase tracking-wide text-gray-500">
                                             Card badge
                                             <input
                                               type="text"
@@ -9549,7 +9549,7 @@ function PageBuilderContent() {
 
                                             }}
 
-                                            className="text-xs text-slate-500 border-b border-transparent hover:border-slate-300 focus:border-primary outline-none transition-colors w-full bg-transparent p-0"
+                                            className="text-xs text-gray-500 border-b border-transparent hover:border-slate-300 focus:border-primary outline-none transition-colors w-full bg-transparent p-0"
 
                                             placeholder="Operated By..."
 
@@ -9735,7 +9735,7 @@ function PageBuilderContent() {
 
                                             }}
 
-                                            className="text-[10px] text-slate-400 mt-0.5 uppercase w-full text-center border-b border-transparent hover:border-slate-300 focus:border-primary outline-none bg-transparent p-0"
+                                            className="text-[10px] text-gray-500 mt-0.5 uppercase w-full text-center border-b border-transparent hover:border-slate-300 focus:border-primary outline-none bg-transparent p-0"
 
                                             placeholder={fl.originCode || 'LHR'}
 
@@ -9753,7 +9753,7 @@ function PageBuilderContent() {
 
                                       <div className="flex flex-col items-end justify-center w-full gap-1.5 rounded-lg border border-slate-200 bg-white p-3">
 
-                                        <label className="w-full text-[10px] font-bold uppercase tracking-wide text-slate-500">
+                                        <label className="w-full text-[10px] font-bold uppercase tracking-wide text-gray-500">
                                           Fare
                                           <select
                                             value={String(fl.price || '').toUpperCase() === 'TBC' ? 'tbc' : 'numeric'}
@@ -9782,7 +9782,7 @@ function PageBuilderContent() {
                                           />
                                         </label>
 
-                                        <label className="w-full text-[10px] font-bold uppercase tracking-wide text-slate-500">
+                                        <label className="w-full text-[10px] font-bold uppercase tracking-wide text-gray-500">
                                           Booking URL
                                           <input
                                             type="text"
@@ -9809,7 +9809,7 @@ function PageBuilderContent() {
                                       <div className="mb-2 flex items-center justify-between">
                                         <div>
                                           <h4 className="text-xs font-extrabold uppercase tracking-wide text-primary">Detailed itinerary</h4>
-                                          <p className="text-[10px] text-slate-500">Dates, legs, classes and layovers</p>
+                                          <p className="text-[10px] text-gray-500">Dates, legs, classes and layovers</p>
                                         </div>
                                       </div>
                                       <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
@@ -10210,7 +10210,7 @@ function PageBuilderContent() {
 
                                         <div className="flex justify-between items-center mb-1">
 
-                                          <span className="text-[10px] font-bold text-slate-500 tracking-wider">
+                                          <span className="text-[10px] font-bold text-gray-500 tracking-wider">
 
                                             ⋮⋮ LOGO #{lIdx + 1}
 
@@ -10228,7 +10228,7 @@ function PageBuilderContent() {
 
                                             }}
 
-                                            className="flex items-center justify-center cursor-pointer text-slate-400 hover:text-red-500 transition-colors"
+                                            className="flex items-center justify-center cursor-pointer text-gray-500 hover:text-red-500 transition-colors"
 
                                             title="Remove logo"
 
@@ -10384,7 +10384,7 @@ function PageBuilderContent() {
                                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-2">
                                       {(Array.isArray(sec.data?.airlineLogos) ? sec.data.airlineLogos : []).map((logoItem: any, lIdx: number, allLogos: any[]) => (
                                         <div key={lIdx} draggable onDragStart={(e) => e.dataTransfer.setData('air-logo', lIdx.toString())} onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); const from = parseInt(e.dataTransfer.getData('air-logo'), 10); if (isNaN(from) || from === lIdx) return; const upd = [...allLogos]; const [r] = upd.splice(from, 1); upd.splice(lIdx, 0, r); updateSectionData(sec.id, 'airlineLogos', upd); }} className="relative flex flex-col gap-1.5 bg-slate-50 border border-slate-200 rounded-lg p-2 cursor-grab">
-                                          {logoItem.src ? <img src={logoItem.src} alt={logoItem.alt} className="w-full h-12 object-contain bg-white rounded border border-slate-100" /> : <div className="w-full h-12 bg-slate-100 rounded border border-dashed border-slate-300 flex items-center justify-center text-[10px] text-slate-400">No image</div>}
+                                          {logoItem.src ? <img src={logoItem.src} alt={logoItem.alt} className="w-full h-12 object-contain bg-white rounded border border-slate-100" /> : <div className="w-full h-12 bg-slate-100 rounded border border-dashed border-slate-300 flex items-center justify-center text-[10px] text-gray-500">No image</div>}
                                           <input type="text" value={logoItem.src || ''} onChange={(e) => { const u = [...allLogos]; u[lIdx] = { ...u[lIdx], src: e.target.value }; updateSectionData(sec.id, 'airlineLogos', u); }} className="w-full text-[10px] px-1.5 py-1 rounded border border-slate-200 bg-white" placeholder="Image URL" />
                                           <input type="text" value={logoItem.alt || ''} onChange={(e) => { const u = [...allLogos]; u[lIdx] = { ...u[lIdx], alt: e.target.value }; updateSectionData(sec.id, 'airlineLogos', u); }} className="w-full text-[10px] px-1.5 py-1 rounded border border-slate-200 bg-white" placeholder="Alt text" />
                                           <button type="button" onClick={() => { const u = allLogos.filter((_, i) => i !== lIdx); updateSectionData(sec.id, 'airlineLogos', u); }} className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-red text-white text-[10px] flex items-center justify-center font-bold">×</button>
@@ -10456,7 +10456,7 @@ function PageBuilderContent() {
                                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-2">
                                       {(Array.isArray(sec.data?.hotelLogos) ? sec.data.hotelLogos : []).map((logoItem: any, lIdx: number, allLogos: any[]) => (
                                         <div key={lIdx} draggable onDragStart={(e) => e.dataTransfer.setData('hotel-logo', lIdx.toString())} onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); const from = parseInt(e.dataTransfer.getData('hotel-logo'), 10); if (isNaN(from) || from === lIdx) return; const upd = [...allLogos]; const [r] = upd.splice(from, 1); upd.splice(lIdx, 0, r); updateSectionData(sec.id, 'hotelLogos', upd); }} className="relative flex flex-col gap-1.5 bg-slate-50 border border-slate-200 rounded-lg p-2 cursor-grab">
-                                          {logoItem.src ? <img src={logoItem.src} alt={logoItem.alt} className="w-full h-12 object-contain bg-white rounded border border-slate-100" /> : <div className="w-full h-12 bg-slate-100 rounded border border-dashed border-slate-300 flex items-center justify-center text-[10px] text-slate-400">No image</div>}
+                                          {logoItem.src ? <img src={logoItem.src} alt={logoItem.alt} className="w-full h-12 object-contain bg-white rounded border border-slate-100" /> : <div className="w-full h-12 bg-slate-100 rounded border border-dashed border-slate-300 flex items-center justify-center text-[10px] text-gray-500">No image</div>}
                                           <input type="text" value={logoItem.src || ''} onChange={(e) => { const u = [...allLogos]; u[lIdx] = { ...u[lIdx], src: e.target.value }; updateSectionData(sec.id, 'hotelLogos', u); }} className="w-full text-[10px] px-1.5 py-1 rounded border border-slate-200 bg-white" placeholder="Image URL" />
                                           <input type="text" value={logoItem.alt || ''} onChange={(e) => { const u = [...allLogos]; u[lIdx] = { ...u[lIdx], alt: e.target.value }; updateSectionData(sec.id, 'hotelLogos', u); }} className="w-full text-[10px] px-1.5 py-1 rounded border border-slate-200 bg-white" placeholder="Alt text" />
                                           <button type="button" onClick={() => { const u = allLogos.filter((_, i) => i !== lIdx); updateSectionData(sec.id, 'hotelLogos', u); }} className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-red text-white text-[10px] flex items-center justify-center font-bold">×</button>
@@ -10533,7 +10533,7 @@ function PageBuilderContent() {
 
                                 <div className="flex flex-col gap-3 p-4 bg-slate-50 rounded-lg border border-slate-200">
 
-                                  <label className="block text-[10px] font-bold text-slate-500">
+                                  <label className="block text-[10px] font-bold text-gray-500">
 
                                     SECTION BACKGROUND IMAGE
 
@@ -10577,7 +10577,7 @@ function PageBuilderContent() {
 
                                       </div>
 
-                                      <span className="text-xs text-slate-500">Upload background image (JPG, PNG, WebP) for the section. Suggested size: 1920x800px.</span>
+                                      <span className="text-xs text-gray-500">Upload background image (JPG, PNG, WebP) for the section. Suggested size: 1920x800px.</span>
 
                                     </div>
 
@@ -10701,7 +10701,7 @@ function PageBuilderContent() {
 
                                           <span className="text-xs font-bold text-slate-700 flex items-center gap-1" title="Drag to reorder card">
 
-                                            <span className="text-slate-400">⋮⋮</span> Card #{cIdx + 1}
+                                            <span className="text-gray-500">⋮⋮</span> Card #{cIdx + 1}
 
                                           </span>
 
@@ -10843,7 +10843,7 @@ function PageBuilderContent() {
 
                                   <div>
 
-                                    <label className="block text-[9px] font-bold text-slate-500 mb-0.5">BUTTON LABEL</label>
+                                    <label className="block text-[9px] font-bold text-gray-500 mb-0.5">BUTTON LABEL</label>
 
                                     <input
 
@@ -10861,7 +10861,7 @@ function PageBuilderContent() {
 
                                   <div>
 
-                                    <label className="block text-[9px] font-bold text-slate-500 mb-0.5">BUTTON LINK</label>
+                                    <label className="block text-[9px] font-bold text-gray-500 mb-0.5">BUTTON LINK</label>
 
                                     <input
 
@@ -10907,7 +10907,7 @@ function PageBuilderContent() {
 
                                       </h4>
 
-                                      <p className="text-[10px] text-slate-500 font-medium">
+                                      <p className="text-[10px] text-gray-500 font-medium">
 
                                         Configure addresses, phone lines, emails, and direct social URLs for contact cards
 
@@ -10977,7 +10977,7 @@ function PageBuilderContent() {
 
                                       <div>
 
-                                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                                        <label className="block text-[10px] font-bold text-gray-500 uppercase mb-1">
 
                                           Head Office Address
 
@@ -11003,7 +11003,7 @@ function PageBuilderContent() {
 
                                       <div>
 
-                                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                                        <label className="block text-[10px] font-bold text-gray-500 uppercase mb-1">
 
                                           Branch Office Address
 
@@ -11137,7 +11137,7 @@ function PageBuilderContent() {
 
                                                       }}
 
-                                                      className={`p-1 rounded-md border border-slate-200 flex items-center justify-center transition-colors ${isFirst ? 'opacity-30 cursor-not-allowed bg-slate-100 text-slate-400' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs'
+                                                      className={`p-1 rounded-md border border-slate-200 flex items-center justify-center transition-colors ${isFirst ? 'opacity-30 cursor-not-allowed bg-slate-100 text-gray-500' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs'
 
                                                         }`}
 
@@ -11171,7 +11171,7 @@ function PageBuilderContent() {
 
                                                       }}
 
-                                                      className={`p-1 rounded-md border border-slate-200 flex items-center justify-center transition-colors ${isLast ? 'opacity-30 cursor-not-allowed bg-slate-100 text-slate-400' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs'
+                                                      className={`p-1 rounded-md border border-slate-200 flex items-center justify-center transition-colors ${isLast ? 'opacity-30 cursor-not-allowed bg-slate-100 text-gray-500' : 'bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs'
 
                                                         }`}
 
@@ -11427,7 +11427,7 @@ function PageBuilderContent() {
 
                                       <div>
 
-                                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                                        <label className="block text-[10px] font-bold text-gray-500 uppercase mb-1">
 
                                           Official Email Address
 
@@ -11547,7 +11547,7 @@ function PageBuilderContent() {
 
                                             <div className="flex justify-between items-center">
 
-                                              <span className="text-[10px] font-bold text-slate-500 uppercase">
+                                              <span className="text-[10px] font-bold text-gray-500 uppercase">
 
                                                 Icon #{sIdx + 1}: {item.name || 'Social Link'}
 
@@ -11767,7 +11767,7 @@ function PageBuilderContent() {
 
                                   <div>
 
-                                    <label className="block text-[9px] font-bold text-slate-500 mb-0.5">BACKGROUND COLOR</label>
+                                    <label className="block text-[9px] font-bold text-gray-500 mb-0.5">BACKGROUND COLOR</label>
 
                                     <input
 
@@ -11787,7 +11787,7 @@ function PageBuilderContent() {
 
                                   <div>
 
-                                    <label className="block text-[9px] font-bold text-slate-500 mb-0.5">MAX WIDTH (e.g. 1280px)</label>
+                                    <label className="block text-[9px] font-bold text-gray-500 mb-0.5">MAX WIDTH (e.g. 1280px)</label>
 
                                     <input
 
@@ -11833,7 +11833,7 @@ function PageBuilderContent() {
 
                                     <div>
 
-                                      <label className="block text-[9px] font-bold text-slate-500 mb-0.5">LOCATION TITLE</label>
+                                      <label className="block text-[9px] font-bold text-gray-500 mb-0.5">LOCATION TITLE</label>
 
                                       <input
 
@@ -11851,7 +11851,7 @@ function PageBuilderContent() {
 
                                     <div>
 
-                                      <label className="block text-[9px] font-bold text-slate-500 mb-0.5">LOCATION ADDRESS</label>
+                                      <label className="block text-[9px] font-bold text-gray-500 mb-0.5">LOCATION ADDRESS</label>
 
                                       <input
 
@@ -11869,7 +11869,7 @@ function PageBuilderContent() {
 
                                     <div>
 
-                                      <label className="block text-[9px] font-bold text-slate-500 mb-0.5">HEAD MAP EMBED URL</label>
+                                      <label className="block text-[9px] font-bold text-gray-500 mb-0.5">HEAD MAP EMBED URL</label>
 
                                       <input
 
@@ -11899,7 +11899,7 @@ function PageBuilderContent() {
 
                                     <div>
 
-                                      <label className="block text-[9px] font-bold text-slate-500 mb-0.5">LOCATION TITLE</label>
+                                      <label className="block text-[9px] font-bold text-gray-500 mb-0.5">LOCATION TITLE</label>
 
                                       <input
 
@@ -11917,7 +11917,7 @@ function PageBuilderContent() {
 
                                     <div>
 
-                                      <label className="block text-[9px] font-bold text-slate-500 mb-0.5">LOCATION ADDRESS</label>
+                                      <label className="block text-[9px] font-bold text-gray-500 mb-0.5">LOCATION ADDRESS</label>
 
                                       <input
 
@@ -11935,7 +11935,7 @@ function PageBuilderContent() {
 
                                     <div>
 
-                                      <label className="block text-[9px] font-bold text-slate-500 mb-0.5">BRANCH MAP EMBED URL</label>
+                                      <label className="block text-[9px] font-bold text-gray-500 mb-0.5">BRANCH MAP EMBED URL</label>
 
                                       <input
 
@@ -12089,7 +12089,7 @@ function PageBuilderContent() {
 
                                         <div className="flex items-center gap-1.5">
 
-                                          <span className="text-[9px] font-bold text-slate-500">New Tab</span>
+                                          <span className="text-[9px] font-bold text-gray-500">New Tab</span>
 
                                           <Switch
 
@@ -12241,7 +12241,7 @@ function PageBuilderContent() {
 
                                                 <div className="flex justify-between items-center">
 
-                                                  <span className="text-[9px] font-bold text-slate-500 uppercase">
+                                                  <span className="text-[9px] font-bold text-gray-500 uppercase">
 
                                                     Landline #{lIdx + 1}
 
@@ -12251,7 +12251,7 @@ function PageBuilderContent() {
 
                                                     <div className="flex items-center gap-1">
 
-                                                      <span className="text-[9px] font-bold text-slate-500">New Tab</span>
+                                                      <span className="text-[9px] font-bold text-gray-500">New Tab</span>
 
                                                       <Switch
 
@@ -12437,7 +12437,7 @@ function PageBuilderContent() {
 
                                                 <div className="flex justify-between items-center">
 
-                                                  <span className="text-[9px] font-bold text-slate-500 uppercase">
+                                                  <span className="text-[9px] font-bold text-gray-500 uppercase">
 
                                                     WhatsApp #{wIdx + 1}
 
@@ -12447,7 +12447,7 @@ function PageBuilderContent() {
 
                                                     <div className="flex items-center gap-1">
 
-                                                      <span className="text-[9px] font-bold text-slate-500">New Tab</span>
+                                                      <span className="text-[9px] font-bold text-gray-500">New Tab</span>
 
                                                       <Switch
 
@@ -12593,7 +12593,7 @@ function PageBuilderContent() {
 
                                         <div className="flex items-center gap-1.5">
 
-                                          <span className="text-[9px] font-bold text-slate-500">New Tab</span>
+                                          <span className="text-[9px] font-bold text-gray-500">New Tab</span>
 
                                           <Switch
 
@@ -12653,7 +12653,7 @@ function PageBuilderContent() {
 
                                         <div className="flex items-center gap-1.5">
 
-                                          <span className="text-[9px] font-bold text-slate-500">New Tab</span>
+                                          <span className="text-[9px] font-bold text-gray-500">New Tab</span>
 
                                           <Switch
 
@@ -12756,7 +12756,7 @@ function PageBuilderContent() {
 
                                 <div className="mb-6">
 
-                                  <label className="block text-[9px] font-bold text-slate-500 mb-0.5">AUTOPLAY SPEED (MILLISECONDS)</label>
+                                  <label className="block text-[9px] font-bold text-gray-500 mb-0.5">AUTOPLAY SPEED (MILLISECONDS)</label>
 
                                   <input
 
@@ -12788,7 +12788,7 @@ function PageBuilderContent() {
 
                                     <div className="flex justify-between items-center">
 
-                                      <span className="text-[10px] font-extrabold text-slate-500">REVIEW #{rIdx + 1}</span>
+                                      <span className="text-[10px] font-extrabold text-gray-500">REVIEW #{rIdx + 1}</span>
 
                                       <button
 
@@ -12818,7 +12818,7 @@ function PageBuilderContent() {
 
                                       <div>
 
-                                        <label className="block text-[9px] font-bold text-slate-500 mb-0.5">REVIEWER NAME</label>
+                                        <label className="block text-[9px] font-bold text-gray-500 mb-0.5">REVIEWER NAME</label>
 
                                         <input
 
@@ -12844,7 +12844,7 @@ function PageBuilderContent() {
 
                                       <div>
 
-                                        <label className="block text-[9px] font-bold text-slate-500 mb-0.5">TIME AGO</label>
+                                        <label className="block text-[9px] font-bold text-gray-500 mb-0.5">TIME AGO</label>
 
                                         <input
 
@@ -12872,7 +12872,7 @@ function PageBuilderContent() {
 
                                     <div className="mt-2">
 
-                                      <label className="block text-[9px] font-bold text-slate-500 mb-0.5">AVATAR URL</label>
+                                      <label className="block text-[9px] font-bold text-gray-500 mb-0.5">AVATAR URL</label>
 
                                       <input
 
@@ -12898,7 +12898,7 @@ function PageBuilderContent() {
 
                                     <div className="mt-2">
 
-                                      <label className="block text-[9px] font-bold text-slate-500 mb-0.5">REVIEW TEXT</label>
+                                      <label className="block text-[9px] font-bold text-gray-500 mb-0.5">REVIEW TEXT</label>
 
                                       <textarea
 
@@ -12986,7 +12986,7 @@ function PageBuilderContent() {
 
                     <div>
 
-                      <label className="block font-extrabold text-slate-500 text-xs mb-1">META TITLE</label>
+                      <label className="block font-extrabold text-gray-500 text-xs mb-1">META TITLE</label>
 
                       <input type="text" value={metaTitle || ''} onChange={(e) => setMetaTitle(e.target.value)} className="w-full p-2 border border-slate-200 rounded-lg outline-none focus:border-primary" />
 
@@ -12994,7 +12994,7 @@ function PageBuilderContent() {
 
                     <div>
 
-                      <label className="block font-extrabold text-slate-500 text-xs mb-1">META DESCRIPTION</label>
+                      <label className="block font-extrabold text-gray-500 text-xs mb-1">META DESCRIPTION</label>
 
                       <textarea rows={3} value={metaDescription || ''} onChange={(e) => setMetaDescription(e.target.value)} className="w-full p-2 border border-slate-200 rounded-lg outline-none focus:border-primary" />
 
@@ -13082,7 +13082,7 @@ function PageBuilderContent() {
 
 
 
-            <div className="pt-3 border-t border-slate-100 flex items-center gap-2 text-[11px] text-slate-400 font-medium">
+            <div className="pt-3 border-t border-slate-100 flex items-center gap-2 text-[11px] text-gray-500 font-medium">
 
               <span>⏱</span>
 

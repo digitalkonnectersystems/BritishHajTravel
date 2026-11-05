@@ -180,7 +180,7 @@ export default async function BlogDetailPage({ blog, slug }: { blog: any; slug: 
                 </div>
 
                 {relatedBlogs.length === 0 ? (
-                  <div className="px-5 py-8 text-center text-xs text-slate-400">No other articles yet.</div>
+                  <div className="px-5 py-8 text-center text-xs text-gray-500">No other articles yet.</div>
                 ) : (
                   <div
                     className="divide-y divide-slate-50 overflow-y-auto"
@@ -258,7 +258,7 @@ function SidebarPackageSection({
       </div>
 
       {packages.length === 0 ? (
-        <div className="px-5 py-6 text-center text-xs text-slate-400">
+        <div className="px-5 py-6 text-center text-xs text-gray-500">
           {emptyText}
         </div>
       ) : (
@@ -309,7 +309,7 @@ function SidebarPackageSection({
                     </Link>
 
                     <div className="mt-1.5">
-                      <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wide">
+                      <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wide">
                         From
                       </span>
                       <div className="text-sm font-black text-primary">

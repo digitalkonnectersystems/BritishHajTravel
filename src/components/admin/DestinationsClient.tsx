@@ -37,11 +37,11 @@ function DestinationPackagePrices({ packageData, setPackageData }: { packageData
       <div className="flex items-center justify-between gap-3">
         <div>
           <h4 className="text-sm font-extrabold text-slate-900">Package Type &amp; Price ({currencySettings.symbol}) *</h4>
-          <p className="text-[11px] text-slate-500 mt-1">Configure the occupancy or package tiers shown on this destination package.</p>
+          <p className="text-[11px] text-gray-500 mt-1">Configure the occupancy or package tiers shown on this destination package.</p>
         </div>
         <button type="button" onClick={() => updatePrices([...prices, { packageType: '', price: '' }])} className="rounded-full border border-primary bg-white px-3 py-1.5 text-[11px] font-extrabold text-primary">+ Add Package Type</button>
       </div>
-      {prices.length === 0 && <p className="rounded-xl border border-dashed border-slate-300 bg-white p-3 text-xs text-slate-500">No package price tiers added yet.</p>}
+      {prices.length === 0 && <p className="rounded-xl border border-dashed border-slate-300 bg-white p-3 text-xs text-gray-500">No package price tiers added yet.</p>}
       {prices.map((item: any, index: number) => (
         <div key={index} className="grid grid-cols-[minmax(0,1fr)_220px_40px] gap-3 rounded-xl border border-slate-200 bg-white p-3 max-md:grid-cols-1">
           <label className="text-[10px] font-bold text-slate-700">PACKAGE TYPE<input value={item.packageType || ''} onChange={(e) => { const next = [...prices]; next[index] = { ...next[index], packageType: e.target.value }; updatePrices(next); }} placeholder="Quad Occupancy" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm font-normal" /></label>
@@ -183,14 +183,14 @@ export default function DestinationsClient({ initialDestinations }: { initialDes
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
-        <div><h1 className="text-2xl font-extrabold text-slate-900 m-0">Destinations</h1><p className="text-xs text-slate-400 mt-1">Each destination is one package shown on the destinations page.</p></div>
+        <div><h1 className="text-2xl font-extrabold text-slate-900 m-0">Destinations</h1><p className="text-xs text-gray-500 mt-1">Each destination is one package shown on the destinations page.</p></div>
         <button type="button" onClick={beginCreate} className="bg-primary text-white px-4 py-2.5 rounded-xl text-xs font-bold inline-flex items-center gap-2"><Plus className="w-4 h-4" /> Add Destination Package</button>
       </div>
 
       {message && <div className="rounded-xl bg-blue-50 border border-blue-100 px-4 py-3 text-xs font-semibold text-primary">{message}</div>}
 
       {editing && <form onSubmit={save} className="bg-white border border-slate-100 rounded-2xl p-6 shadow-xs grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="md:col-span-2 flex items-center justify-between border-b border-slate-100 pb-3"><h2 className="font-extrabold text-slate-900">{form.id ? 'Edit destination package' : 'New destination package'}</h2><button type="button" onClick={() => setEditing(false)} className="text-slate-400"><X className="w-4 h-4" /></button></div>
+        <div className="md:col-span-2 flex items-center justify-between border-b border-slate-100 pb-3"><h2 className="font-extrabold text-slate-900">{form.id ? 'Edit destination package' : 'New destination package'}</h2><button type="button" onClick={() => setEditing(false)} className="text-gray-500"><X className="w-4 h-4" /></button></div>
         <div className="md:col-span-2 flex gap-2 border-b border-slate-100 pb-3"><button type="button" onClick={() => setEditorTab('basic')} className={`px-4 py-2 rounded-lg text-xs font-bold ${editorTab === 'basic' ? 'bg-red text-white' : 'bg-slate-100 text-slate-600'}`}>Basic &amp; Card Info</button><button type="button" onClick={() => setEditorTab('detail')} className={`px-4 py-2 rounded-lg text-xs font-bold ${editorTab === 'detail' ? 'bg-red text-white' : 'bg-slate-100 text-slate-600'}`}>Detail Page Content</button></div>
         {editorTab === 'basic' && <>
           <label className="text-xs font-bold text-slate-600">Destination title<input required value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-normal" /></label>
@@ -216,13 +216,13 @@ export default function DestinationsClient({ initialDestinations }: { initialDes
       </form>}
 
       <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-xs">
-        {items.length === 0 ? <p className="p-8 text-center text-sm text-slate-400">No destination packages created yet.</p> : items.map((item, index) => {
+        {items.length === 0 ? <p className="p-8 text-center text-sm text-gray-500">No destination packages created yet.</p> : items.map((item, index) => {
           const pkg = getPackage(item);
           return (
             <div key={item.id} draggable onDragStart={() => setDraggedIndex(index)} onDragOver={(event) => handleDragOver(event, index)} onDragEnd={handleDragEnd} className={`flex items-center gap-4 border-b border-slate-100 p-4 last:border-0 ${draggedIndex === index ? 'bg-emerald-50 opacity-60' : ''}`}>
-              <span className="cursor-grab select-none text-slate-400">⋮⋮</span>
+              <span className="cursor-grab select-none text-gray-500">⋮⋮</span>
               <div className="w-20 h-14 bg-slate-100 rounded-lg overflow-hidden shrink-0">{pkg.cardData?.bannerImage && <img src={pkg.cardData.bannerImage} alt="" className="w-full h-full object-cover" />}</div>
-              <div className="min-w-0 flex-1"><div className="font-bold text-sm text-slate-900">{item.title}</div><div className="text-xs text-slate-400">/destinations/{item.slug} · {pkg.title || item.title} · {pkg.status || 'available'}</div></div>
+              <div className="min-w-0 flex-1"><div className="font-bold text-sm text-slate-900">{item.title}</div><div className="text-xs text-gray-500">/destinations/{item.slug} · {pkg.title || item.title} · {pkg.status || 'available'}</div></div>
               {item.slug && item.status === 'published' && <Link href={`/destinations/${item.slug}`} target="_blank" rel="noopener noreferrer" className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg" title="Preview public destination detail"><Eye className="w-4 h-4" /></Link>}
               <button type="button" onClick={() => togglePublication(item)} aria-label={item.status === 'published' ? 'Hide destination from public website' : 'Show destination on public website'} title={item.status === 'published' ? 'Hide destination from public website' : 'Show destination on public website'} className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg">{item.status === 'published' ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</button>
               <button type="button" onClick={() => duplicate(item)} aria-label="Duplicate destination package" title="Duplicate destination package" className="p-2 text-violet-700 hover:bg-violet-50 rounded-lg"><Copy className="w-4 h-4" /></button>

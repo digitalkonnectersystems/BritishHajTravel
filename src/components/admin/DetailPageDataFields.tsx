@@ -136,7 +136,7 @@ export default function DetailPageDataFields({
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h4 className="text-sm font-extrabold uppercase text-slate-900">Package Hotel Details</h4>
-            <p className="text-xs text-slate-500">Edit, add, remove or reorder accommodations. Changes appear on the package detail page.</p>
+            <p className="text-xs text-gray-500">Edit, add, remove or reorder accommodations. Changes appear on the package detail page.</p>
           </div>
           <button type="button" onClick={() => update('hotelCards', [
             ...getPackageHotelEntries(d, cardData),
@@ -187,7 +187,7 @@ export default function DetailPageDataFields({
             </div>;
           })}
         </div>
-        {getPackageHotelEntries(d, cardData).length === 0 && <p className="text-xs text-slate-500">No hotels. Click Add Hotel to create one.</p>}
+        {getPackageHotelEntries(d, cardData).length === 0 && <p className="text-xs text-gray-500">No hotels. Click Add Hotel to create one.</p>}
       </div>
 
       {/* Overview Builder */}
@@ -259,7 +259,7 @@ export default function DetailPageDataFields({
                   }}
                   className="flex-1 px-3 py-2 rounded-lg border border-slate-200 text-xs"
                 />
-                <label className="flex items-center gap-1 text-[10px] font-bold text-slate-500 shrink-0 cursor-pointer">
+                <label className="flex items-center gap-1 text-[10px] font-bold text-gray-500 shrink-0 cursor-pointer">
                   <input type="checkbox" checked={hl.isCross} onChange={e => {
                     const newH = [...d.highlights];
                     newH[i].isCross = e.target.checked;
@@ -398,7 +398,7 @@ export default function DetailPageDataFields({
         </div>
 
         {packagesGallery.length === 0 && (
-          <p className="text-xs text-slate-400 italic mt-2">No gallery images added yet.</p>
+          <p className="text-xs text-gray-500 italic mt-2">No gallery images added yet.</p>
         )}
       </div>
 

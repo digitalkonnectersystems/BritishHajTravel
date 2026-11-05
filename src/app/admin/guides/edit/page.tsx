@@ -167,7 +167,7 @@ function GuideEditorContent() {
       <div className="mx-auto flex min-w-0 w-full max-w-[1400px] flex-col gap-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="min-w-0">
-            <Link href="/admin/guides" className="mb-2 inline-flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-primary"><ArrowLeft className="h-3.5 w-3.5" /> Back to Guides</Link>
+            <Link href="/admin/guides" className="mb-2 inline-flex items-center gap-1 text-xs font-bold text-gray-500 hover:text-primary"><ArrowLeft className="h-3.5 w-3.5" /> Back to Guides</Link>
             <h1 className="text-2xl font-extrabold text-slate-900">{id ? 'Edit Guide' : 'Add Guide'}</h1>
             <p className="mt-1 text-xs text-soft-ink">Manage the guide page, card content, and sections without leaving Guides.</p>
           </div>
@@ -181,13 +181,13 @@ function GuideEditorContent() {
             <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-xs">
               <h2 className="mb-4 text-sm font-extrabold text-slate-900">Guide Page</h2>
               <div className="grid gap-4">
-                <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Title *
+                <label className="text-[10px] font-extrabold uppercase tracking-wider text-gray-500">Title *
                   <input value={title} onChange={(event) => updateTitle(event.target.value)} className="mt-1 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm font-bold outline-none focus:border-primary" />
                 </label>
-                <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Slug *
+                <label className="text-[10px] font-extrabold uppercase tracking-wider text-gray-500">Slug *
                   <input value={slug} onChange={(event) => setSlug(event.target.value)} className="mt-1 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-primary" />
                 </label>
-                <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Page description / SEO description
+                <label className="text-[10px] font-extrabold uppercase tracking-wider text-gray-500">Page description / SEO description
                   <textarea value={description} onChange={(event) => setDescription(event.target.value)} rows={3} className="mt-1 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs outline-none focus:border-primary" />
                 </label>
               </div>
@@ -201,8 +201,8 @@ function GuideEditorContent() {
                     <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
                       <input value={section.title} onChange={(event) => updateSection(index, { title: event.target.value })} className="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-bold" />
                       <div className="flex shrink-0 items-center gap-1">
-                        <button type="button" onClick={() => moveSection(index, -1)} disabled={index === 0} className="rounded-lg bg-white p-2 text-slate-500 disabled:opacity-30" title="Move section up"><ArrowUp className="h-3.5 w-3.5" /></button>
-                        <button type="button" onClick={() => moveSection(index, 1)} disabled={index === sections.length - 1} className="rounded-lg bg-white p-2 text-slate-500 disabled:opacity-30" title="Move section down"><ArrowDown className="h-3.5 w-3.5" /></button>
+                        <button type="button" onClick={() => moveSection(index, -1)} disabled={index === 0} className="rounded-lg bg-white p-2 text-gray-500 disabled:opacity-30" title="Move section up"><ArrowUp className="h-3.5 w-3.5" /></button>
+                        <button type="button" onClick={() => moveSection(index, 1)} disabled={index === sections.length - 1} className="rounded-lg bg-white p-2 text-gray-500 disabled:opacity-30" title="Move section down"><ArrowDown className="h-3.5 w-3.5" /></button>
                         <button type="button" onClick={() => setSections((current) => current.filter((_, sectionIndex) => sectionIndex !== index))} className="rounded-lg bg-red-50 p-2 text-red"><Trash2 className="h-3.5 w-3.5" /></button>
                       </div>
                     </div>
@@ -217,7 +217,7 @@ function GuideEditorContent() {
                       <div className="grid min-w-0 gap-4 rounded-lg border border-slate-200 bg-white p-3">
                         <div className="grid gap-3 md:grid-cols-2">
                           {(['eyebrow', 'heading', 'description'] as const).map((field) => (
-                            <label key={field} className={`text-[10px] font-extrabold uppercase tracking-wider text-slate-500 ${field === 'description' ? 'md:col-span-2' : ''}`}>{field === 'heading' ? 'FAQ title' : field}
+                            <label key={field} className={`text-[10px] font-extrabold uppercase tracking-wider text-gray-500 ${field === 'description' ? 'md:col-span-2' : ''}`}>{field === 'heading' ? 'FAQ title' : field}
                               {field === 'description' ? <textarea rows={2} value={section.data[field] || ''} onChange={(event) => updateSection(index, { data: { ...section.data, [field]: event.target.value } })} className="mt-1 w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-xs" /> : <input value={section.data[field] || ''} onChange={(event) => updateSection(index, { data: { ...section.data, [field]: event.target.value } })} className="mt-1 w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-xs" />}
                             </label>
                           ))}
@@ -270,7 +270,7 @@ function GuideEditorContent() {
                       </div>
                     ) : section.type === 'Video' ? (
                       <div className="grid gap-3 rounded-lg border border-slate-200 bg-white p-3">
-                        <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Video source
+                        <label className="text-[10px] font-extrabold uppercase tracking-wider text-gray-500">Video source
                           <select value={section.data.source || 'embed'} onChange={(event) => updateSection(index, { data: { ...section.data, source: event.target.value } })} className="mt-1 w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-xs">
                             <option value="embed">YouTube or Vimeo embed</option>
                             <option value="upload">Upload video file</option>
@@ -292,21 +292,21 @@ function GuideEditorContent() {
                             <button type="button" onClick={() => videoInputRefs.current[section.id]?.click()} disabled={uploadingVideo === section.id} className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-[10px] font-bold text-white disabled:opacity-60">
                               <Upload className="h-3.5 w-3.5" /> {uploadingVideo === section.id ? 'Uploading...' : 'Choose video'}
                             </button>
-                            {section.data.url && <p className="mt-2 break-all text-[10px] text-slate-500">{section.data.url}</p>}
+                            {section.data.url && <p className="mt-2 break-all text-[10px] text-gray-500">{section.data.url}</p>}
                           </div>
                         ) : (
                           <input value={section.data.url || ''} onChange={(event) => updateSection(index, { data: { ...section.data, url: event.target.value } })} placeholder="https://www.youtube.com/watch?v=... or https://vimeo.com/..." className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-xs" />
                         )}
-                        <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Video title (optional)
+                        <label className="text-[10px] font-extrabold uppercase tracking-wider text-gray-500">Video title (optional)
                           <input value={section.data.title || ''} onChange={(event) => updateSection(index, { data: { ...section.data, title: event.target.value } })} placeholder="Watch our guide video" className="mt-1 w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-xs" />
                         </label>
-                        <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Caption
+                        <label className="text-[10px] font-extrabold uppercase tracking-wider text-gray-500">Caption
                           <input value={section.data.caption || ''} onChange={(event) => updateSection(index, { data: { ...section.data, caption: event.target.value } })} className="mt-1 w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-xs" />
                         </label>
                       </div>
                     ) : (
                       <div className="rounded-lg border border-slate-200 bg-white p-3">
-                        <p className="text-[11px] text-slate-500">This section renders the guide card grid selected for this guide page.</p>
+                        <p className="text-[11px] text-gray-500">This section renders the guide card grid selected for this guide page.</p>
                       </div>
                     )}
                   </div>
@@ -320,10 +320,10 @@ function GuideEditorContent() {
             <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-xs">
               <h2 className="mb-4 text-sm font-extrabold text-slate-900">Guide Settings</h2>
               <div className="grid gap-4">
-                <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Category
+                <label className="text-[10px] font-extrabold uppercase tracking-wider text-gray-500">Category
                   <select value={category} onChange={(event) => setCategory(event.target.value as GuideCategory)} className="mt-1 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs"><option value="hajj">Hajj Guides</option><option value="umrah">Umrah Guides</option></select>
                 </label>
-                <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Status
+                <label className="text-[10px] font-extrabold uppercase tracking-wider text-gray-500">Status
                   <select value={status} onChange={(event) => setStatus(event.target.value as 'published' | 'draft')} className="mt-1 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs"><option value="published">Published</option><option value="draft">Draft</option></select>
                 </label>
               </div>
@@ -332,10 +332,10 @@ function GuideEditorContent() {
             <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-xs">
               <h2 className="mb-4 text-sm font-extrabold text-slate-900">Guide Card</h2>
               <div className="grid gap-4">
-                <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Card number<input type="number" min="1" value={card.number} onChange={(event) => setCard({ ...card, number: Number(event.target.value) || 1 })} className="mt-1 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs" /></label>
-                <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">SVG icon<select value={card.icon} onChange={(event) => setCard({ ...card, icon: event.target.value })} className="mt-1 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs">{ICONS.map((icon) => <option key={icon}>{icon}</option>)}</select></label>
-                <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Card description<textarea value={card.detail} onChange={(event) => setCard({ ...card, detail: event.target.value })} rows={3} className="mt-1 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs" /></label>
-                <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Button label<input value={card.buttonLabel} onChange={(event) => setCard({ ...card, buttonLabel: event.target.value })} className="mt-1 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs" /></label>
+                <label className="text-[10px] font-extrabold uppercase tracking-wider text-gray-500">Card number<input type="number" min="1" value={card.number} onChange={(event) => setCard({ ...card, number: Number(event.target.value) || 1 })} className="mt-1 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs" /></label>
+                <label className="text-[10px] font-extrabold uppercase tracking-wider text-gray-500">SVG icon<select value={card.icon} onChange={(event) => setCard({ ...card, icon: event.target.value })} className="mt-1 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs">{ICONS.map((icon) => <option key={icon}>{icon}</option>)}</select></label>
+                <label className="text-[10px] font-extrabold uppercase tracking-wider text-gray-500">Card description<textarea value={card.detail} onChange={(event) => setCard({ ...card, detail: event.target.value })} rows={3} className="mt-1 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs" /></label>
+                <label className="text-[10px] font-extrabold uppercase tracking-wider text-gray-500">Button label<input value={card.buttonLabel} onChange={(event) => setCard({ ...card, buttonLabel: event.target.value })} className="mt-1 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs" /></label>
               </div>
             </div>
           </div>
@@ -346,5 +346,5 @@ function GuideEditorContent() {
 }
 
 export default function AdminGuideEditPage() {
-  return <Suspense fallback={<div className="p-8 text-sm text-slate-500">Loading guide editor...</div>}><GuideEditorContent /></Suspense>;
+  return <Suspense fallback={<div className="p-8 text-sm text-gray-500">Loading guide editor...</div>}><GuideEditorContent /></Suspense>;
 }

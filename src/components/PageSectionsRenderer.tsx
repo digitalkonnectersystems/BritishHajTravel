@@ -61,7 +61,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
     : "";
 
   return (
-    <div className="bht-public-sections w-full bg-blue-lt">
+    <div className="bht-public-sections w-full bg-blue-lt pb-6 md:pb-10">
       {sections.map((sec: any, idx: number) => {
         if (!sec || !sec.type) return null;
         if (sec.hidden === true || sec.visible === false) return null;
@@ -412,7 +412,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                     direction={sec.data?.direction || "left"}
                   />
                 ) : (
-                  <p className="text-center text-slate-400 text-sm">No {sec.type === "Hotels" ? "hotel" : "airline"} logos configured yet.</p>
+                  <p className="text-center text-gray-500 text-sm">No {sec.type === "Hotels" ? "hotel" : "airline"} logos configured yet.</p>
                 )}
                 {sec.data?.viewAllSlug && (
                   <div className="mt-7 text-center">
@@ -467,7 +467,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                           direction={sec.data?.airlineDirection || "left"}
                         />
                       ) : (
-                        <p className="text-center text-slate-400 text-sm">No airline logos configured yet.</p>
+                        <p className="text-center text-gray-500 text-sm">No airline logos configured yet.</p>
                       )}
                     </div>
 
@@ -505,7 +505,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                           direction={sec.data?.hotelDirection || "left"}
                         />
                       ) : (
-                        <p className="text-center text-slate-400 text-sm">No hotel logos configured yet.</p>
+                        <p className="text-center text-gray-500 text-sm">No hotel logos configured yet.</p>
                       )}
                     </div>
 
@@ -553,7 +553,7 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                     cardStyle={true}
                   />
                 ) : (
-                  <p className="text-center text-slate-400 text-sm">No organization logos configured yet.</p>
+                  <p className="text-center text-gray-500 text-sm">No organization logos configured yet.</p>
                 )}
                 {sec.data?.viewAllSlug && (
                   <div className="mt-7 text-center">
@@ -721,7 +721,7 @@ function GoogleReviewsSlider({ reviews }: { reviews: any[] }) {
                         />
                         <div>
                           <h4 className="text-[14px] font-bold text-slate-900 leading-tight m-0 font-sans">{r.name}</h4>
-                          <span className="text-xs text-slate-400 font-medium">{r.date}</span>
+                          <span className="text-xs text-gray-500 font-medium">{r.date}</span>
                         </div>
                       </div>
                       {/* Google Official Icon Badge */}
@@ -779,7 +779,7 @@ function GoogleReviewsSlider({ reviews }: { reviews: any[] }) {
                     <button
                       type="button"
                       onClick={() => setExpandedReviewId(isExpanded ? null : r.id)}
-                      className="text-xs text-slate-400 hover:text-slate-700 cursor-pointer font-medium transition-colors bg-transparent border-none p-0 inline-flex items-center gap-1"
+                      className="text-xs text-gray-500 hover:text-slate-700 cursor-pointer font-medium transition-colors bg-transparent border-none p-0 inline-flex items-center gap-1"
                     >
                       {isExpanded ? "Read less" : "Read more"}
                     </button>

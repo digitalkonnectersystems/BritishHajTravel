@@ -886,8 +886,8 @@ section#flights {
 }
 
 .section-head h2 {
-  font-size: clamp(28px, 3.4vw, 42px);
-  margin-top: 16px;
+  /* font-size: clamp(28px, 3.4vw, 42px); */
+  /* margin-top: 16px; */
 }
 
 .section-head p {

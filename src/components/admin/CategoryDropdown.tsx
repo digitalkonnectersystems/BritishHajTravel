@@ -121,14 +121,14 @@ export default function CategoryDropdown({ value, onChange, className = '' }: Ca
         className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-xs text-left outline-none focus:border-primary disabled:opacity-50"
       >
         <span className="truncate">{loading ? 'Loading...' : value || 'Select Category'}</span>
-        <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
         <div className="absolute z-50 w-full mt-2 bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden flex flex-col max-h-[300px]">
           <div className="overflow-y-auto flex-1 py-1">
             {categories.length === 0 ? (
-              <div className="px-3 py-2 text-xs text-slate-500 text-center">No categories found</div>
+              <div className="px-3 py-2 text-xs text-gray-500 text-center">No categories found</div>
             ) : (
               categories.map((cat) => (
                 <div
@@ -144,7 +144,7 @@ export default function CategoryDropdown({ value, onChange, className = '' }: Ca
                   <button
                     type="button"
                     title="Delete category"
-                    className="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-md transition-all"
+                    className="opacity-0 group-hover:opacity-100 p-1 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-md transition-all"
                     onClick={(e) => handleDeleteCategory(cat, e)}
                   >
                     <Trash2 className="w-3.5 h-3.5" />

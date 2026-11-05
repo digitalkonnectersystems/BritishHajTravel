@@ -13,7 +13,7 @@ function SavedStats({ items }: { items: any[] }) {
       {items.filter(item => item?.label && item?.value !== undefined && item?.value !== '').map((item: any, i: number) => (
         <div key={i} className="flex flex-col items-center justify-center p-2">
           <h3 className="text-2xl md:text-3xl font-bold text-primary font-serif m-0">{String(item.value)}</h3>
-          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1 m-0">{item.label}</p>
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mt-1 m-0">{item.label}</p>
         </div>
       ))}
     </div>
@@ -159,7 +159,7 @@ export default function AboutPageClient({ initialPageData, sectionContext }: { i
                         <span className="font-bold text-sm">{b.icon}</span>
                       )}
                     </div>
-                    <span className="text-xs font-bold tracking-wider text-slate-500 uppercase">{b.title}</span>
+                    <span className="text-xs font-bold tracking-wider text-gray-500 uppercase">{b.title}</span>
                   </div>
                 ))}
               </div>
@@ -197,19 +197,19 @@ export default function AboutPageClient({ initialPageData, sectionContext }: { i
                         <div className="p-2.5 rounded-xl bg-emerald-50/50 border border-emerald-100/50 flex gap-3 items-center">
                           <div className="flex-1">
                             <h4 className="text-xs font-bold text-slate-800">{pkg.makkahHotel.name}</h4>
-                            <p className="text-[10px]! text-slate-500">{pkg.makkahHotel.location}</p>
+                            <p className="text-[10px]! text-gray-500">{pkg.makkahHotel.location}</p>
                           </div>
                         </div>
                         <div className="p-2.5 rounded-xl bg-amber-50/40 border border-amber-100/50 flex gap-3 items-center">
                           <div className="flex-1">
                             <h4 className="text-xs font-bold text-slate-800">{pkg.madinahHotel.name}</h4>
-                            <p className="text-[10px]! text-slate-500">{pkg.madinahHotel.location}</p>
+                            <p className="text-[10px]! text-gray-500">{pkg.madinahHotel.location}</p>
                           </div>
                         </div>
                       </div>
                       <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
                         <div>
-                          <span className="text-[9px] font-bold text-slate-400 block uppercase">STARTING FROM</span>
+                          <span className="text-[9px] font-bold text-gray-500 block uppercase">STARTING FROM</span>
                           <span className="text-lg font-extrabold text-primary">{pkg.price}</span>
                         </div>
                         <button className="bg-primary hover:bg-red text-white hover:text-slate-900 px-4 py-2 rounded-xl text-xs font-bold transition-all">

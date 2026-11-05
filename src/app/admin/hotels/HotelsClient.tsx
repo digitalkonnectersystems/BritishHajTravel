@@ -171,7 +171,7 @@ export default function HotelsClient() {
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="m-0 text-2xl font-extrabold text-slate-900">Hotels</h1>
-            <p className="mt-1 text-xs text-slate-500">Manage hotel listings, city categories, images, and external detail links.</p>
+            <p className="mt-1 text-xs text-gray-500">Manage hotel listings, city categories, images, and external detail links.</p>
           </div>
           {message && <div className="rounded-lg bg-emerald-50 px-4 py-2 text-xs font-bold text-emerald-700">{message}</div>}
         </div>
@@ -184,12 +184,12 @@ export default function HotelsClient() {
               <button className="rounded-lg bg-primary px-4 py-2 text-xs font-bold text-white hover:bg-white hover:text-primary" type="submit">
                 {editingCategoryId ? 'Update Category' : 'Add Category'}
               </button>
-              {editingCategoryId && <button type="button" onClick={() => { setEditingCategoryId(null); setCategoryName(''); }} className="text-xs font-bold text-slate-500">Cancel editing</button>}
+              {editingCategoryId && <button type="button" onClick={() => { setEditingCategoryId(null); setCategoryName(''); }} className="text-xs font-bold text-gray-500">Cancel editing</button>}
             </form>
             <div className="mt-5 flex flex-col gap-2">
               {categories.map((category, categoryIndex) => (
                 <div key={category.id} draggable onDragStart={() => setDraggedCategoryIndex(categoryIndex)} onDragOver={(event) => { event.preventDefault(); reorderCategories(categoryIndex); }} onDragEnd={finishCategoryReorder} className={`flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 ${draggedCategoryIndex === categoryIndex ? 'opacity-40' : ''}`}>
-                  <span className="mr-2 cursor-grab select-none text-slate-400" title="Drag to reorder">⋮⋮</span>
+                  <span className="mr-2 cursor-grab select-none text-gray-500" title="Drag to reorder">⋮⋮</span>
                   <a href={`/hotels/#${category.slug}`} target="_blank" className="text-sm font-bold text-primary">{category.name}</a>
                   <div className="ml-auto flex gap-2 text-[11px] font-bold">
                     <button type="button" onClick={() => { setEditingCategoryId(category.id); setCategoryName(category.name); }} title="Edit category" aria-label="Edit category" className="rounded-lg bg-blue-50 p-2 text-blue-700"><Pencil className="h-4 w-4" /></button>
@@ -231,14 +231,14 @@ export default function HotelsClient() {
 
         <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
           <div className="border-b border-slate-200 px-5 py-4"><h2 className="m-0 text-sm font-extrabold uppercase tracking-wide text-primary">Current hotels</h2></div>
-          {loading ? <p className="p-5 text-sm text-slate-500">Loading hotels...</p> : (
+          {loading ? <p className="p-5 text-sm text-gray-500">Loading hotels...</p> : (
             <div className="divide-y divide-slate-100">
               {hotels.map((hotel, hotelIndex) => (
                 <div key={hotel.id} draggable onDragStart={() => setDraggedHotelIndex(hotelIndex)} onDragOver={(event) => { event.preventDefault(); reorderHotels(hotelIndex); }} onDragEnd={finishHotelReorder} className={`grid grid-cols-[24px_minmax(0,1fr)_auto] items-center gap-4 px-5 py-4 ${draggedHotelIndex === hotelIndex ? 'bg-emerald-50 opacity-60' : ''}`}>
-                  <span className="cursor-grab select-none text-slate-400" title="Drag to reorder">⋮⋮</span>
+                  <span className="cursor-grab select-none text-gray-500" title="Drag to reorder">⋮⋮</span>
                   <div className="flex min-w-0 items-center justify-self-start gap-3">
                     {hotel.imageUrl ? <img src={hotel.imageUrl} alt="" className="h-14 w-20 rounded object-cover" /> : <div className="h-14 w-20 rounded bg-slate-100" />}
-                    <div className="min-w-0"><p className="m-0 text-sm font-bold text-slate-900">{hotel.name}</p><p className="m-0 text-xs text-slate-500">{hotel.city} · {categories.find((category) => category.id === hotel.categoryId)?.name || 'Uncategorised'}</p></div>
+                    <div className="min-w-0"><p className="m-0 text-sm font-bold text-slate-900">{hotel.name}</p><p className="m-0 text-xs text-gray-500">{hotel.city} · {categories.find((category) => category.id === hotel.categoryId)?.name || 'Uncategorised'}</p></div>
                   </div>
                   <div className="flex justify-self-end gap-2">
                     <button type="button" onClick={() => toggleHotelPublication(hotel)} aria-label={hotel.isPublished ? 'Hide hotel from public website' : 'Show hotel on public website'} title={hotel.isPublished ? 'Hide hotel from public website' : 'Show hotel on public website'} className="rounded-lg bg-slate-100 p-2 text-slate-600">{hotel.isPublished ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}</button>
@@ -248,7 +248,7 @@ export default function HotelsClient() {
                   </div>
                 </div>
               ))}
-              {!hotels.length && <p className="p-5 text-sm text-slate-500">No hotels added yet.</p>}
+              {!hotels.length && <p className="p-5 text-sm text-gray-500">No hotels added yet.</p>}
             </div>
           )}
         </section>

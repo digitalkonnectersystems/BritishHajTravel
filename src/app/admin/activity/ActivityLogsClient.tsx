@@ -132,7 +132,7 @@ export default function ActivityLogsClient({ initialActivities }: ActivityLogsCl
               {filtered.length} entries
             </span>
           </div>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-gray-500 mt-1">
             Detailed chronological record of all administrative actions and user CRUD operations across all team members.
           </p>
         </div>
@@ -171,7 +171,7 @@ export default function ActivityLogsClient({ initialActivities }: ActivityLogsCl
       {/* Search & Filter Bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex-wrap">
         <div className="relative flex-1 w-full min-w-[240px]">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-gray-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Search by action, IP, user, email, or details..."
@@ -184,7 +184,7 @@ export default function ActivityLogsClient({ initialActivities }: ActivityLogsCl
         <div className="flex items-center gap-2.5 w-full sm:w-auto flex-wrap">
           {/* User Filter Dropdown */}
           <div className="flex items-center gap-1.5">
-            <Users className="w-4 h-4 text-slate-400" />
+            <Users className="w-4 h-4 text-gray-500" />
             <select
               value={selectedUser}
               onChange={(e) => setSelectedUser(e.target.value)}
@@ -201,7 +201,7 @@ export default function ActivityLogsClient({ initialActivities }: ActivityLogsCl
 
           {/* Entity Type Filter Dropdown */}
           <div className="flex items-center gap-1.5">
-            <Filter className="w-4 h-4 text-slate-400" />
+            <Filter className="w-4 h-4 text-gray-500" />
             <select
               value={selectedType}
               onChange={(e) => setSelectedType(e.target.value)}
@@ -299,10 +299,10 @@ export default function ActivityLogsClient({ initialActivities }: ActivityLogsCl
           <tbody className="divide-y divide-slate-100">
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={6} className="py-12 text-center text-slate-400">
+                <td colSpan={6} className="py-12 text-center text-gray-500">
                   <Activity className="w-8 h-8 text-slate-300 mx-auto mb-2" />
                   <div className="font-bold text-slate-600">No activity log entries found</div>
-                  <div className="text-[11px] text-slate-400 mt-0.5">
+                  <div className="text-[11px] text-gray-500 mt-0.5">
                     {search || selectedType !== 'all' || selectedUser !== 'all'
                       ? 'Try adjusting your search query, user filter, or entity filter'
                       : 'Activity logs will appear automatically as administrative actions occur across all users'}
@@ -353,7 +353,7 @@ export default function ActivityLogsClient({ initialActivities }: ActivityLogsCl
                           </div>
                           <div className="min-w-0">
                             <div className="font-bold text-slate-800 truncate">{act.user}</div>
-                            {act.userEmail && <div className="text-[10px] text-slate-400 truncate">{act.userEmail}</div>}
+                            {act.userEmail && <div className="text-[10px] text-gray-500 truncate">{act.userEmail}</div>}
                           </div>
                         </div>
                       </td>
@@ -372,7 +372,7 @@ export default function ActivityLogsClient({ initialActivities }: ActivityLogsCl
                       </td>
                       <td className="py-3.5 px-4 text-right shrink-0">
                         <div className="font-extrabold text-slate-800">{act.timeAgo || 'Recently'}</div>
-                        <div className="text-[10px] text-slate-400">
+                        <div className="text-[10px] text-gray-500">
                           {new Date(act.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                         </div>
                       </td>
@@ -383,13 +383,13 @@ export default function ActivityLogsClient({ initialActivities }: ActivityLogsCl
                           <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
                             <div className="px-4 py-2.5 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
                               <span className="text-[11px] font-extrabold text-slate-800">Changed fields</span>
-                              <span className="text-[10px] font-bold text-slate-500">{changes.length} change{changes.length === 1 ? '' : 's'}</span>
+                              <span className="text-[10px] font-bold text-gray-500">{changes.length} change{changes.length === 1 ? '' : 's'}</span>
                             </div>
                             {changes.length > 0 ? (
                               <div className="overflow-x-auto">
                                 <table className="w-full text-[11px] border-collapse">
                                   <thead>
-                                    <tr className="border-b border-slate-200 text-slate-500 uppercase tracking-wider text-[9px]">
+                                    <tr className="border-b border-slate-200 text-gray-500 uppercase tracking-wider text-[9px]">
                                       <th className="text-left px-4 py-2 w-1/5">Field</th>
                                       <th className="text-left px-4 py-2 w-2/5">Before</th>
                                       <th className="text-left px-4 py-2 w-2/5">After</th>
@@ -411,7 +411,7 @@ export default function ActivityLogsClient({ initialActivities }: ActivityLogsCl
                                 </table>
                               </div>
                             ) : (
-                              <div className="px-4 py-4 text-[11px] text-slate-500">
+                              <div className="px-4 py-4 text-[11px] text-gray-500">
                                 This older log entry did not store both before and after values. New CRUD updates that provide audit snapshots will show the exact changed fields here.
                               </div>
                             )}

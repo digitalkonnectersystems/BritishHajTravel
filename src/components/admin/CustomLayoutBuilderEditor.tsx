@@ -133,7 +133,7 @@ export default function CustomLayoutBuilderEditor({ data, onChange }: { data: an
 
   return <div className="space-y-4 bg-white border border-slate-200 rounded-xl p-4">
     <div><h3 className="text-sm font-extrabold text-primary">Nested Visual Section Builder</h3>
-      <p className="text-xs text-slate-500">Build a div → grid → div → heading → form hierarchy. Select any widget to edit its content, colours, typography, borders and spacing. Drag widgets into a container or reorder them.</p>
+      <p className="text-xs text-gray-500">Build a div → grid → div → heading → form hierarchy. Select any widget to edit its content, colours, typography, borders and spacing. Drag widgets into a container or reorder them.</p>
     </div>
     <details className="border rounded-lg p-3" open><summary className="font-bold text-sm cursor-pointer">Section styling</summary><div className="mt-3"><StyleEditor value={style} onChange={updateStyle} heading="Outer section settings" layout />
       <label className={caption}>Outer content width (px)<input type="number" className={input} value={style.maxWidth ?? 1200} onChange={e => updateStyle({ ...style, maxWidth: Number(e.target.value) })} /></label></div></details>
@@ -142,11 +142,11 @@ export default function CustomLayoutBuilderEditor({ data, onChange }: { data: an
         <div className="flex gap-1 flex-wrap">{BUILDER_BLOCK_TYPES.map(type => <button type="button" key={type} className="border rounded-md px-2 py-1.5 text-xs bg-red-500" onClick={() => add(null, type)}>+ {type}</button>)}</div>
         {message && <p role="alert" className="text-xs text-orange-700">{message}</p>}
         <NodeTree nodes={blocks} depth={0} selectedId={selectedId} onSelect={setSelectedId} onAdd={add} onRemove={remove} onMove={move} onDuplicate={duplicate} onWrap={wrap} onDrop={drop} dragging={dragging} setDragging={setDragging} />
-        {!blocks.length && <p className="text-xs text-slate-500 border rounded p-5">Add a container to begin building your section.</p>}
+        {!blocks.length && <p className="text-xs text-gray-500 border rounded p-5">Add a container to begin building your section.</p>}
       </div>
       <div className="border rounded-xl p-3 bg-slate-50 space-y-3 min-w-0">
         <h4 className="text-sm font-bold text-primary">{selected ? `Edit ${selected.type}` : 'Widget settings'}</h4>
-        {!selected && <p className="text-xs text-slate-500">Select a widget in the Navigator to customize it.</p>}
+        {!selected && <p className="text-xs text-gray-500">Select a widget in the Navigator to customize it.</p>}
         {selected && <>
           <label className={caption}>Widget type: {selected.type}</label>
           <label className="text-xs flex items-center gap-2 text-slate-700"><input type="checkbox" checked={!!selected.hidden} onChange={e => patchNode(selected.id, { hidden: e.target.checked })} /> Hide this widget</label>
@@ -186,7 +186,7 @@ export default function CustomLayoutBuilderEditor({ data, onChange }: { data: an
             <details className="border p-2 rounded bg-white"><summary className="text-xs font-bold cursor-pointer">Form submit button styling</summary><div className="mt-3"><StyleEditor value={selected.buttonStyle || {}} onChange={val => patchNode(selected.id, { buttonStyle: val })} /></div></details>
             {(['admin', 'customer'] as const).map(audience => <details key={audience} className="border rounded bg-white p-2"><summary className="text-xs font-bold cursor-pointer capitalize">{audience} email notification</summary>
               <div className="space-y-2 mt-3">{emailKeys.map(key => <label key={key} className={caption}>{key === 'replyTo' ? 'Reply-To' : key.toUpperCase()}{key === 'body' ? <textarea rows={7} className={`${input} font-mono`} value={selected.emailTemplates?.[audience]?.[key] || ''} onChange={e => emailPatch(audience, key, e.target.value)} /> : <input className={input} value={selected.emailTemplates?.[audience]?.[key] || ''} onChange={e => emailPatch(audience, key, e.target.value)} />}</label>)}
-                <p className="text-[11px] text-slate-500">Placeholders: [Customer Name], [Customer Email], [Customer Phone], [Form Name], [enquiryNumber] and each form field key.</p>
+                <p className="text-[11px] text-gray-500">Placeholders: [Customer Name], [Customer Email], [Customer Phone], [Form Name], [enquiryNumber] and each form field key.</p>
               </div></details>)}
           </div>}
           <div className="border-t pt-3"><StyleEditor heading={`Individual ${selected.type} styling`} layout={isBuilderContainer(selected.type)} value={selected.style || {}} onChange={v => patchStyle(selected.id, v)} /></div>

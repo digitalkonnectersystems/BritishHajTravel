@@ -40,7 +40,7 @@ export default function SeoSettingsForm({ data, onChange }: Props) {
           />
           <div>
             <span className="block text-sm font-bold text-slate-800">Include in Sitemap</span>
-            <span className="block text-xs text-slate-500">Allow search engines to index this page</span>
+            <span className="block text-xs text-gray-500">Allow search engines to index this page</span>
           </div>
         </label>
 
@@ -53,7 +53,7 @@ export default function SeoSettingsForm({ data, onChange }: Props) {
           />
           <div>
             <span className="block text-sm font-bold text-slate-800">NoIndex</span>
-            <span className="block text-xs text-slate-500">Add noindex meta tag (excludes from sitemap)</span>
+            <span className="block text-xs text-gray-500">Add noindex meta tag (excludes from sitemap)</span>
           </div>
         </label>
 
@@ -66,7 +66,7 @@ export default function SeoSettingsForm({ data, onChange }: Props) {
           />
           <div>
             <span className="block text-sm font-bold text-slate-800">NoFollow</span>
-            <span className="block text-xs text-slate-500">Add nofollow meta tag to links</span>
+            <span className="block text-xs text-gray-500">Add nofollow meta tag to links</span>
           </div>
         </label>
       </div>
@@ -84,7 +84,7 @@ export default function SeoSettingsForm({ data, onChange }: Props) {
             onChange={(e) => update('priority', e.target.value)}
             className="w-full text-sm p-3 border border-slate-200 rounded-lg outline-none focus:border-primary"
           />
-          <p className="text-[10px] text-slate-500 mt-1">Leave blank to use default (0.0 to 1.0)</p>
+          <p className="text-[10px] text-gray-500 mt-1">Leave blank to use default (0.0 to 1.0)</p>
         </div>
 
         <div>

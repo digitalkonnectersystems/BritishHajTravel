@@ -162,7 +162,7 @@ export default function UmrahRegistrationForm({
         </div>
         {error && <p role="alert" className="text-red-700 text-sm">{error}</p>}
         {success && <p role="status" className="text-green-800 text-sm">{success}</p>}
-        <p className="text-xs text-slate-500">This is an Umrah travel enquiry, not a confirmed booking.</p>
+        <p className="text-xs text-gray-500">This is an Umrah travel enquiry, not a confirmed booking.</p>
       </form>
     </div>
   </section>;

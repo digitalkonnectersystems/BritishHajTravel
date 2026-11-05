@@ -39,8 +39,8 @@ export default function CustomDatePicker({ value, onChange, className = '' }: Cu
         onClick={handleClick}
         className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-xs text-left cursor-pointer hover:border-primary transition-colors"
       >
-        <span className={value ? 'text-slate-800' : 'text-slate-400'}>{formattedDate}</span>
-        <Calendar className="w-4 h-4 text-slate-400" />
+        <span className={value ? 'text-slate-800' : 'text-gray-500'}>{formattedDate}</span>
+        <Calendar className="w-4 h-4 text-gray-500" />
       </div>
       <input
         ref={inputRef}

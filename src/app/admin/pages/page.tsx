@@ -166,7 +166,7 @@ export default function AdminPagesListPage() {
         <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-xs">
           <table className="w-full border-collapse text-left text-xs">
             <thead>
-              <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 text-[11px] uppercase tracking-wider">
+              <tr className="bg-slate-50 border-b border-slate-200 text-gray-500 text-[11px] uppercase tracking-wider">
                 <th className="py-3 px-3 w-10 text-center">⋮⋮</th>
                 <th className="py-3 px-5 font-bold">Title</th>
                 <th className="py-3 px-5 font-bold">Slug</th>
@@ -185,11 +185,11 @@ export default function AdminPagesListPage() {
                   onDragEnd={handleDragEnd}
                   className={`border-b border-slate-100 cursor-grab transition-colors ${draggedIndex === idx ? 'bg-emerald-50' : 'bg-white'}`}
                 >
-                  <td className="py-4 px-3 text-center text-slate-400 text-base cursor-grab" title="Drag to reorder">
+                  <td className="py-4 px-3 text-center text-gray-500 text-base cursor-grab" title="Drag to reorder">
                     ⋮⋮
                   </td>
                   <td className="py-4 px-5 font-bold text-slate-900">{p.title}</td>
-                  <td className="py-4 px-5 text-slate-500 font-mono text-xs">
+                  <td className="py-4 px-5 text-gray-500 font-mono text-xs">
                     <div className="flex items-center gap-2 group">
                       <span>{p.slug}</span>
                       <button
@@ -211,7 +211,7 @@ export default function AdminPagesListPage() {
                       {p.status === 'published' ? 'Visible' : 'Hidden'}
                     </span>
                   </td>
-                  <td className="py-4 px-5 text-slate-400 text-xs">
+                  <td className="py-4 px-5 text-gray-500 text-xs">
                     {p.updatedAt ? new Date(p.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recently'}
                   </td>
                   <td className="py-4 px-5 text-right">

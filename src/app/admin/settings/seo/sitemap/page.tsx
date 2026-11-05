@@ -105,7 +105,7 @@ export default function SitemapSettingsPage() {
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-2xl font-bold text-slate-800">Sitemap Management</h1>
-          <p className="text-sm text-slate-500 mt-1">Configure and manage your XML Sitemaps for SEO</p>
+          <p className="text-sm text-gray-500 mt-1">Configure and manage your XML Sitemaps for SEO</p>
         </div>
         <div className="flex gap-3">
           <button
@@ -130,19 +130,19 @@ export default function SitemapSettingsPage() {
       <div className="flex gap-6 mb-6 border-b border-slate-200">
         <button
           onClick={() => setActiveTab('overview')}
-          className={`pb-3 px-2 border-b-2 font-medium ${activeTab === 'overview' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+          className={`pb-3 px-2 border-b-2 font-medium ${activeTab === 'overview' ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-slate-700'}`}
         >
           <div className="flex items-center gap-2"><FileText size={16} /> Overview</div>
         </button>
         <button
           onClick={() => setActiveTab('config')}
-          className={`pb-3 px-2 border-b-2 font-medium ${activeTab === 'config' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+          className={`pb-3 px-2 border-b-2 font-medium ${activeTab === 'config' ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-slate-700'}`}
         >
           <div className="flex items-center gap-2"><Settings size={16} /> Configuration</div>
         </button>
         <button
           onClick={() => setActiveTab('logs')}
-          className={`pb-3 px-2 border-b-2 font-medium ${activeTab === 'logs' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+          className={`pb-3 px-2 border-b-2 font-medium ${activeTab === 'logs' ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-slate-700'}`}
         >
           <div className="flex items-center gap-2"><History size={16} /> Logs & History</div>
         </button>
@@ -151,19 +151,19 @@ export default function SitemapSettingsPage() {
       {activeTab === 'overview' && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-            <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2">Live Sitemap URL</h3>
+            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Live Sitemap URL</h3>
             <a href="/sitemap.xml" target="_blank" className="text-blue-600 font-medium hover:underline break-all">
               {typeof window !== 'undefined' ? window.location.origin : ''}/sitemap.xml
             </a>
           </div>
           <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-            <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2">Last Generated</h3>
+            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Last Generated</h3>
             <div className="text-xl font-bold text-slate-800">
               {logs.find(l => l.action === 'generate' && l.status === 'success')?.createdAt ? new Date(logs.find(l => l.action === 'generate' && l.status === 'success').createdAt).toLocaleString() : 'Never'}
             </div>
           </div>
           <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-            <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2">Last Submitted</h3>
+            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Last Submitted</h3>
             <div className="text-xl font-bold text-slate-800">
               {logs.find(l => l.action === 'submit' && l.status === 'success')?.createdAt ? new Date(logs.find(l => l.action === 'submit' && l.status === 'success').createdAt).toLocaleString() : 'Never'}
             </div>
@@ -273,7 +273,7 @@ export default function SitemapSettingsPage() {
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 border-b border-slate-200 text-xs text-slate-500 font-bold uppercase tracking-wider">
+              <tr className="bg-slate-50 border-b border-slate-200 text-xs text-gray-500 font-bold uppercase tracking-wider">
                 <th className="p-4">Date</th>
                 <th className="p-4">Action</th>
                 <th className="p-4">Status</th>
@@ -283,7 +283,7 @@ export default function SitemapSettingsPage() {
             <tbody>
               {logs.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="p-8 text-center text-slate-500">No logs found</td>
+                  <td colSpan={4} className="p-8 text-center text-gray-500">No logs found</td>
                 </tr>
               )}
               {logs.map((log) => (
@@ -299,7 +299,7 @@ export default function SitemapSettingsPage() {
                     {log.status === 'warning' && <span className="inline-flex items-center gap-1 text-yellow-600"><AlertTriangle size={14} /> Warning</span>}
                     {log.status === 'error' && <span className="inline-flex items-center gap-1 text-red"><XCircle size={14} /> Error</span>}
                   </td>
-                  <td className="p-4 text-slate-500 text-xs max-w-md truncate">
+                  <td className="p-4 text-gray-500 text-xs max-w-md truncate">
                     {JSON.stringify(log.details)}
                   </td>
                 </tr>

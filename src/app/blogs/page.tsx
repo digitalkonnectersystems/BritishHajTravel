@@ -66,7 +66,7 @@ export default async function BlogsListingPage() {
         <div className="section-inner">
 
           {allBlogs.length === 0 && (
-            <div className="text-center py-24 text-slate-400">
+            <div className="text-center py-24 text-gray-500">
               <p className="text-5xl mb-4">📝</p>
               <h2 className="text-xl font-bold text-slate-600 mb-2">No articles yet</h2>
               <p className="text-sm">Check back soon — we&apos;re writing something great.</p>
@@ -103,7 +103,7 @@ export default async function BlogsListingPage() {
                   {featured.excerpt && (
                     <p className="normal-text">{featured.excerpt}</p>
                   )}
-                  {/* <div className="flex items-center gap-3 text-xs text-slate-400">
+                  {/* <div className="flex items-center gap-3 text-xs text-gray-500">
                     <span className="w-7 h-7 rounded-full bg-primary flex items-center justify-center text-white font-bold text-[10px]">
                       {featured.authorName?.charAt(0) || 'K'}
                     </span>

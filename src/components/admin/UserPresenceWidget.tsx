@@ -99,7 +99,7 @@ export default function UserPresenceWidget({ currentUser }: UserPresenceWidgetPr
           )}
         </span>
         <ChevronDown
-          className={`w-3 h-3 text-slate-400 transition-transform duration-200 ${open ? 'rotate-180' : ''
+          className={`w-3 h-3 text-gray-500 transition-transform duration-200 ${open ? 'rotate-180' : ''
             }`}
         />
       </button>
@@ -125,7 +125,7 @@ export default function UserPresenceWidget({ currentUser }: UserPresenceWidgetPr
           {/* User List */}
           <div className="p-2 divide-y divide-slate-100 max-h-80 overflow-y-auto">
             {users.length === 0 ? (
-              <div className="p-4 text-center text-xs text-slate-400">Loading user presence...</div>
+              <div className="p-4 text-center text-xs text-gray-500">Loading user presence...</div>
             ) : (
               users.map((u) => {
                 const isMe = currentEmail && u.email.toLowerCase() === currentEmail;
@@ -169,9 +169,9 @@ export default function UserPresenceWidget({ currentUser }: UserPresenceWidgetPr
                             </span>
                           )}
                         </div>
-                        <div className="text-[10px] text-slate-400 truncate">{u.email}</div>
+                        <div className="text-[10px] text-gray-500 truncate">{u.email}</div>
                         <div className="flex items-center gap-1.5 mt-0.5">
-                          <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">
+                          <span className="text-[9px] font-semibold text-gray-500 uppercase tracking-wider">
                             {roleLabel}
                           </span>
                         </div>
@@ -191,7 +191,7 @@ export default function UserPresenceWidget({ currentUser }: UserPresenceWidgetPr
                             <span className="w-1.5 h-1.5 rounded-full bg-red"></span>
                             Offline
                           </span>
-                          <span className="text-[8px] text-slate-400 mt-0.5">
+                          <span className="text-[8px] text-gray-500 mt-0.5">
                             {u.lastSeenAgo || 'Offline'}
                           </span>
                         </div>
@@ -204,7 +204,7 @@ export default function UserPresenceWidget({ currentUser }: UserPresenceWidgetPr
           </div>
 
           {/* Footer note */}
-          <div className="p-2 bg-slate-50 border-t border-slate-100 text-center text-[10px] text-slate-400">
+          <div className="p-2 bg-slate-50 border-t border-slate-100 text-center text-[10px] text-gray-500">
             Auto-refreshes every 15s · Active within 3 mins
           </div>
         </div>

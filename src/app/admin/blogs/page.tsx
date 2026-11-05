@@ -150,7 +150,7 @@ export default function AdminBlogsPage() {
         <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-xs">
           <table className="w-full border-collapse text-left text-xs">
             <thead>
-              <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 text-[11px] uppercase tracking-wider">
+              <tr className="bg-slate-50 border-b border-slate-200 text-gray-500 text-[11px] uppercase tracking-wider">
                 <th className="py-3 px-3 w-10 text-center font-bold">⋮⋮</th>
                 <th className="py-3 px-4 font-bold w-16">Thumb</th>
                 <th className="py-3 px-4 font-bold">Title</th>
@@ -163,7 +163,7 @@ export default function AdminBlogsPage() {
             <tbody>
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-slate-400 text-xs">
+                  <td colSpan={7} className="py-12 text-center text-gray-500 text-xs">
                     {blogs.length === 0 ? 'No blog posts yet. Create your first one above.' : 'No results match your search.'}
                   </td>
                 </tr>
@@ -185,7 +185,7 @@ export default function AdminBlogsPage() {
                       }`}
                   >
                     {/* Drag Handle */}
-                    <td className="py-3 px-3 text-center text-slate-400 cursor-grab active:cursor-grabbing select-none" title="Drag to reorder">
+                    <td className="py-3 px-3 text-center text-gray-500 cursor-grab active:cursor-grabbing select-none" title="Drag to reorder">
                       <span className="text-sm font-bold opacity-60 hover:opacity-100">⋮⋮</span>
                     </td>
 
@@ -210,7 +210,7 @@ export default function AdminBlogsPage() {
                           </span>
                         )}
                       </div>
-                      <div className="text-[10px] text-slate-400 font-mono mt-0.5">{b.slug ? `/${b.slug}` : 'No slug'}</div>
+                      <div className="text-[10px] text-gray-500 font-mono mt-0.5">{b.slug ? `/${b.slug}` : 'No slug'}</div>
                     </td>
 
                     {/* Category */}
@@ -228,7 +228,7 @@ export default function AdminBlogsPage() {
                     </td>
 
                     {/* Published Date */}
-                    <td className="py-3 px-4 text-slate-400 text-[11px] whitespace-nowrap">
+                    <td className="py-3 px-4 text-gray-500 text-[11px] whitespace-nowrap">
                       {formatDate(b.publishedAt || b.createdAt)}
                     </td>
 

@@ -130,7 +130,7 @@ function KaabaJourneyIllustration({
         </svg>
       )}
       <div className="leading-tight text-primary">
-        <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">{journeyTextTop}</div>
+        <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-gray-500">{journeyTextTop}</div>
         <div className="font-serif text-lg">{journeyTextBottom}</div>
       </div>
     </div>
@@ -284,7 +284,7 @@ function VisaMobileLoopCarousel({ cards }: { cards: Array<{ card: any; href: str
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-[13px] font-bold leading-tight text-slate-900">{visa.country}</span>
-                    <span className="mt-0.5 block min-h-[14px] truncate text-[11px] font-medium leading-tight text-slate-400">{visa.passportLabel || '\u00a0'}</span>
+                    <span className="mt-0.5 block min-h-[14px] truncate text-[11px] font-medium leading-tight text-gray-500">{visa.passportLabel || '\u00a0'}</span>
                   </span>
                 </span>
                 <span className="mt-4 flex items-center gap-2">
@@ -644,7 +644,7 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
           </div>
         </div>
 
-        {visibleVisaCards.length > 0 ? <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-8">
+        {visibleVisaCards.length > 0 ? <div className="mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-8">
           <div className="relative z-20 -mt-2 overflow-hidden rounded-3xl border border-slate-100/90 bg-white p-5 shadow-[0_20px_50px_-12px_rgba(15,23,42,0.12)] sm:-mt-4 sm:p-6 md:-mt-6 md:rounded-[30px] md:p-7 lg:-mt-8">
             <div className="mb-6 flex flex-col items-center justify-between gap-4 md:mb-7 md:flex-row">
               <div className="hidden w-1/4 items-center justify-start lg:flex">
@@ -661,7 +661,7 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                     {heroData.visaTitle}
                   </h2>
                 </div>
-                <p className="mb-0 mt-1 text-xs font-medium text-slate-500 sm:text-sm">{heroData.visaSubtitle}</p>
+                <p className="mb-0 mt-1 text-xs font-medium text-gray-500 sm:text-sm">{heroData.visaSubtitle}</p>
               </div>
 
               <div className="flex items-center justify-center lg:w-1/4 lg:justify-end">
@@ -692,7 +692,7 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                         <div className="truncate text-[13px] font-bold leading-tight text-slate-900 transition-colors group-hover:text-primary">
                           {visa.country}
                         </div>
-                        <div className="mt-0.5 min-h-[14px] truncate text-[11px] font-medium leading-tight text-slate-400">
+                        <div className="mt-0.5 min-h-[14px] truncate text-[11px] font-medium leading-tight text-gray-500">
                           {visa.passportLabel || "\u00A0"}
                         </div>
                       </div>

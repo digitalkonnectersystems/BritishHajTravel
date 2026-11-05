@@ -190,7 +190,7 @@ export default function UmrahPackagesPageClient({ initialPageData, packages = []
               { title: 'Nusuk Umrah Guide', href: '/umrah-guide', description: 'Plan your Umrah journey' },
             ].map((item) => <Link key={item.href} href={item.href} className="flex flex-col bg-white border border-slate-200 hover:border-[#b50007] transition-colors rounded-xl p-6 no-underline">
               <span className="text-[#020e43] text-lg font-bold">{item.title}</span>
-              <span className="text-slate-500 text-xs mt-2 flex-1">{item.description}</span>
+              <span className="text-gray-500 text-xs mt-2 flex-1">{item.description}</span>
               <span className="text-[#b50007] text-xs font-extrabold mt-5">VIEW PAGE →</span>
             </Link>)}
           </div>

@@ -273,7 +273,7 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
                 />
                 <label
                   htmlFor="name"
-                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.name ? "text-red peer-focus:text-red" : "text-slate-400 peer-focus:text-red"}`}
+                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.name ? "text-red peer-focus:text-red" : "text-gray-500 peer-focus:text-red"}`}
                 >
                   Name
                 </label>
@@ -294,7 +294,7 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
                 />
                 <label
                   htmlFor="email"
-                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.email ? "text-red peer-focus:text-red" : "text-slate-400 peer-focus:text-red"}`}
+                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.email ? "text-red peer-focus:text-red" : "text-gray-500 peer-focus:text-red"}`}
                 >
                   Email Address
                 </label>
@@ -320,7 +320,7 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
                 />
                 <label
                   htmlFor="phone"
-                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.phone ? "text-red peer-focus:text-red" : "text-slate-400 peer-focus:text-red"}`}
+                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.phone ? "text-red peer-focus:text-red" : "text-gray-500 peer-focus:text-red"}`}
                 >
                   Phone Number
                 </label>
@@ -337,7 +337,7 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
                 />
                 <label
                   htmlFor="subject"
-                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs text-slate-400 peer-focus:text-red`}
+                  className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs text-gray-500 peer-focus:text-red`}
                 >
                   Subject
                 </label>
@@ -365,7 +365,7 @@ function ContactFormSection({ data, initialFormConfig }: { data?: any; initialFo
 
               <label
                 htmlFor="message"
-                className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.message ? "text-red peer-focus:text-red" : "text-slate-400 peer-focus:text-red"}`}
+                className={`absolute left-3 top-3 text-sm transition-all duration-300 pointer-events-none peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:left-0 peer-focus:text-xs font-semibold peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:left-0 peer-[:not(:placeholder-shown)]:text-xs ${errors.message ? "text-red peer-focus:text-red" : "text-gray-500 peer-focus:text-red"}`}
               >
                 How can we help you?
               </label>
@@ -415,7 +415,7 @@ function ContactMapsSection({ data }: { data?: any }) {
           <h3 className="text-md font-extrabold uppercase tracking-widest text-primary flex items-center gap-2">
             <i className="fa-solid fa-building text-red"></i> {headTitle}
           </h3>
-          <p className="text-sm text-slate-500 font-medium mt-0.5">{headAddress}</p>
+          <p className="text-sm text-gray-500 font-medium mt-0.5">{headAddress}</p>
         </div>
         <iframe
           src={headMap}
@@ -431,7 +431,7 @@ function ContactMapsSection({ data }: { data?: any }) {
           <h3 className="text-md font-extrabold uppercase tracking-widest text-primary flex items-center gap-2">
             <i className="fa-solid fa-building text-red"></i> {branchTitle}
           </h3>
-          <p className="text-sm text-slate-500 font-medium mt-0.5">{branchAddress}</p>
+          <p className="text-sm text-gray-500 font-medium mt-0.5">{branchAddress}</p>
         </div>
         <iframe
           src={branchMap}

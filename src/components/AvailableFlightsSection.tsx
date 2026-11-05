@@ -98,9 +98,9 @@ function getDirection(flight: AvailableFlight, direction: "outbound" | "return")
 function Segment({ point, fallbackCode }: { point?: FlightPoint; fallbackCode: string }) {
   return (
     <div className="min-w-0 text-center">
-      <div className="text-base font-bold tracking-wide text-[#10254a] sm:text-lg md:text-xl">{point?.code || fallbackCode}</div>
-      <div className="truncate text-[10px] text-slate-400">{point?.city || ""}</div>
-      <div className="whitespace-nowrap text-[10px] text-slate-500 sm:text-[11px]">{point?.time || ""}</div>
+      <div className="text-base font-bold tracking-wide text-ink sm:text-lg md:text-xl">{point?.code || fallbackCode}</div>
+      <div className="truncate !text-[10px] text-gray-500">{point?.city || ""}</div>
+      <div className="whitespace-nowrap !text-[10px] text-gray-500 sm:text-[11px]">{point?.time || ""}</div>
     </div>
   );
 }
@@ -122,8 +122,8 @@ function RouteRow({ first, second, className, flightNumber, fallbackFirst, fallb
       <div className="relative flex min-w-0 items-center justify-center">
         <div className="absolute left-0 right-0 border-t border-dashed border-red" />
         <div className="relative z-10 flex min-w-0 flex-col items-center bg-white px-1 text-center sm:min-w-24 sm:px-2">
-          <span className="text-[10px] font-medium text-[#10254a]">{flightNumber || ""}</span>
-          <span className="text-[10px] font-semibold text-red">{classValue ? `Class ${classValue}` : ""}</span>
+          <span className="!text-[10px] font-medium text-ink">{flightNumber || ""}</span>
+          <span className="!text-[10px] font-semibold text-red">{classValue ? `Class ${classValue}` : ""}</span>
         </div>
       </div>
       <Segment point={secondPoint} fallbackCode={fallbackSecond} />
@@ -139,15 +139,15 @@ function DirectionBlock({ label, direction, fallbackFirst, fallbackSecond }: {
 }) {
   return (
     <div className="space-y-2">
-      <div className="flex items-center justify-between gap-2 text-[10px] font-semibold uppercase tracking-wider text-slate-500 sm:text-[11px]">
+      <div className="flex items-center justify-between gap-2 text-[10px] font-semibold uppercase tracking-wider text-gray-500 sm:text-[11px]">
         <span>{label}</span>
-        <span className="normal-case text-[#10254a]">{formatFlightDateRange(direction.date, direction.dateEnd)}</span>
+        <span className="normal-case text-ink">{formatFlightDateRange(direction.date, direction.dateEnd)}</span>
       </div>
       {direction.via ? (
         <>
           <RouteRow first={direction.first} second={direction.via} className={direction.first?.className || direction.className} flightNumber={direction.first?.flightNumber} fallbackFirst={fallbackFirst} fallbackSecond={direction.via.code || fallbackSecond} />
           {direction.layoverText || direction.layoverDuration ? (
-            <div className="flex items-center justify-between gap-2 rounded bg-[#fff0f2] px-2 py-1 text-[10px] text-[#10254a] sm:px-3 sm:text-[11px]">
+            <div className="flex items-center justify-between gap-2 rounded bg-[#fff0f2] px-2 py-1 text-[10px] text-ink sm:px-3 sm:text-[11px]">
               <span>{direction.layoverText || "Layover"}</span>
               <span className="font-semibold">{direction.layoverDuration || ""}</span>
             </div>
@@ -158,7 +158,7 @@ function DirectionBlock({ label, direction, fallbackFirst, fallbackSecond }: {
         <RouteRow first={direction.first} second={direction.second} className={direction.className} flightNumber={direction.first?.flightNumber || direction.second?.flightNumber} fallbackFirst={fallbackFirst} fallbackSecond={fallbackSecond} />
       )}
       {direction.layoverText || direction.layoverDuration ? (
-        <div className={`${direction.via ? "hidden" : ""} flex items-center justify-between gap-2 rounded bg-[#fff0f2] px-2 py-1 text-[10px] text-[#10254a] sm:px-3 sm:text-[11px]`}>
+        <div className={`${direction.via ? "hidden" : ""} flex items-center justify-between gap-2 rounded bg-[#fff0f2] px-2 py-1 text-[10px] text-ink sm:px-3 sm:text-[11px]`}>
           <span>{direction.layoverText || "Layover"}</span>
           <span className="font-semibold">{direction.layoverDuration || ""}</span>
         </div>
@@ -171,11 +171,11 @@ export default function AvailableFlightsSection({ data, bookingTarget }: { data?
   const items: AvailableFlight[] = Array.isArray(data?.items) ? data.items.filter((item: AvailableFlight) => Boolean(item && (item.name || item.code))) : [];
   if (items.length === 0) return null;
   return (
-    <section className="overflow-hidden bg-[#f2f8ff] py-8 sm:py-10 md:py-16">
+    <section className="overflow-hidden bg-[#f2f8ff] py-8 py-6 md:py-10">
       <div className="mx-auto w-full max-w-5xl px-3 sm:px-4">
-        <div className="section-head center mb-6 text-center sm:mb-8">
+        <div className="font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98] center mb-6 text-center sm:mb-8">
           <span className="eyebrow mx-auto block">{data?.eyebrow || ""}</span>
-          <h2 className="section-heading font-serif tracking-tight text-primary">
+          <h2 className="font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">
             {data?.title || ""}
           </h2>
         </div>
@@ -196,8 +196,8 @@ export default function AvailableFlightsSection({ data, bookingTarget }: { data?
                       <div className="flex h-9 min-w-12 items-center justify-center rounded bg-red px-2 text-xs font-bold text-white sm:h-11 sm:min-w-14 sm:text-sm">{flight.code || "AIR"}</div>
                     )}
                     <div className="min-w-0">
-                      <h3 className="truncate text-xs font-bold text-[#10254a] sm:text-sm">{flight.name || "Airline flight"}</h3>
-                      <p className="text-[11px] text-slate-500">{flight.operatedBy || ""}</p>
+                      <h3 className="truncate text-sm font-bold text-ink sm:text-base md:text-xl">{flight.name || "Airline flight"}</h3>
+                      <p className="!text-[10px] text-gray-500">{flight.operatedBy || ""}</p>
                     </div>
                   </div>
                   <span className="shrink-0 rounded border border-red px-1.5 py-1 text-[10px] font-bold text-red sm:px-2 sm:text-xs">{flight.badgeText || ""}</span>
@@ -210,12 +210,12 @@ export default function AvailableFlightsSection({ data, bookingTarget }: { data?
                 </div>
                 <div className="mt-3 flex flex-col items-start gap-3 border-t border-slate-200 pt-3 sm:mt-4 sm:flex-row sm:items-center sm:justify-between">
                   <p className="flex min-w-0 items-center gap-2 text-[10px]! text-slate-600 sm:text-[11px]">
-                    <span className="text-base text-[#10254a]" aria-hidden="true">♿</span>
+                    <span className="text-base text-ink" aria-hidden="true">♿</span>
                     <span><strong className="font-semibold">Available Seats:</strong> {flight.seatsValue || flight.seatsText?.replace(/^available seats:\s*/i, "") || ""}</span>
                   </p>
                   <div className="text-right">
-                    <div className="text-xl font-bold text-[#10254a] sm:text-2xl">{flight.price || ""}</div>
-                    <div className="text-[10px] italic text-slate-500">{flight.priceSubtext || ""}</div>
+                    <div className="text-xl font-bold text-ink sm:text-2xl">{flight.price || ""}</div>
+                    <div className="text-[10px] italic text-gray-500">{flight.priceSubtext || ""}</div>
                   </div>
                 </div>
                 {bookingUrl ? (

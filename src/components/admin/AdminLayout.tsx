@@ -249,7 +249,7 @@ export default function AdminLayout({ children, activeNavHref }: AdminLayoutProp
                   }`}
                 onClick={() => setSidebarOpen(false)}
               >
-                <span className={`shrink-0 ${isActive ? 'text-white' : 'text-slate-500 group-hover:text-[#020E43]'}`}>
+                <span className={`shrink-0 ${isActive ? 'text-white' : 'text-gray-500 group-hover:text-[#020E43]'}`}>
                   {item.icon}
                 </span>
                 {item.label}
@@ -329,7 +329,7 @@ export default function AdminLayout({ children, activeNavHref }: AdminLayoutProp
                       <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                       <div>
                         <div className="text-[11px] font-bold text-slate-800">Database and storage status require server checks</div>
-                        <div className="text-[10px] text-slate-500">Status is not inferred from being logged in</div>
+                        <div className="text-[10px] text-gray-500">Status is not inferred from being logged in</div>
                       </div>
                     </div>
                   </div>
@@ -355,9 +355,9 @@ export default function AdminLayout({ children, activeNavHref }: AdminLayoutProp
                 </div>
                 <div className="text-left hidden sm:block">
                   <div className="text-xs font-extrabold text-slate-800 leading-tight">{userName}</div>
-                  <div className="text-[9px] font-semibold text-slate-400 capitalize">{userRole}</div>
+                  <div className="text-[9px] font-semibold text-gray-500 capitalize">{userRole}</div>
                 </div>
-                <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${profileOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-3.5 h-3.5 text-gray-500 transition-transform duration-200 ${profileOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {/* Admin Profile Dropdown Flyout Card */}

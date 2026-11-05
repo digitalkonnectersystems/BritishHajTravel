@@ -254,7 +254,7 @@ export default function PackageBookingModal({
                 {pkg?.month ? ` - ${formatTravelMonth(pkg.month) || pkg.month}` : ""}
               </h3>
 
-              <p className="text-slate-500 text-xs">
+              <p className="text-gray-500 text-xs">
                 Please fill out the form below to initiate your
                 booking inquiry.
               </p>
@@ -485,7 +485,7 @@ export default function PackageBookingModal({
                         className={
                           selectedDate
                             ? "text-slate-900"
-                            : "text-slate-400"
+                            : "text-gray-500"
                         }
                       >
                         {selectedDate
@@ -512,7 +512,7 @@ export default function PackageBookingModal({
                           : "e.g. Nov 17, 2026"}
                       </span>
 
-                      <Calendar className="w-4 h-4 text-slate-400" />
+                      <Calendar className="w-4 h-4 text-gray-500" />
                     </div>
 
 
@@ -585,7 +585,7 @@ export default function PackageBookingModal({
                         </option>
                       ))}
                     </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <polyline points="6 9 12 15 18 9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>

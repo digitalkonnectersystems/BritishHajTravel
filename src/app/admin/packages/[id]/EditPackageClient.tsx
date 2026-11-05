@@ -547,7 +547,7 @@ function UmrahCardFields({ pkgData, setPkgData }: { pkgData: any; setPkgData: (v
                     placeholder="e.g. Breakfast Included"
                     className="w-full pl-7 pr-2 py-1.5 rounded-lg border border-slate-200 text-xs"
                   />
-                  <Utensils className="w-3.5 h-3.5 text-slate-400 absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <Utensils className="w-3.5 h-3.5 text-gray-500 absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
               </div>
               <div>
@@ -592,7 +592,7 @@ function UmrahCardFields({ pkgData, setPkgData }: { pkgData: any; setPkgData: (v
                     placeholder="e.g. Breakfast Included"
                     className="w-full pl-7 pr-2 py-1.5 rounded-lg border border-slate-200 text-xs"
                   />
-                  <Utensils className="w-3.5 h-3.5 text-slate-400 absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <Utensils className="w-3.5 h-3.5 text-gray-500 absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
               </div>
               <div>
@@ -845,14 +845,14 @@ export default function EditPackageClient({ packageData }: EditPackageClientProp
           <button
             type="button"
             onClick={() => setActiveTab('basic')}
-            className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'basic' ? 'bg-red text-white shadow' : 'text-slate-500 hover:text-slate-700'}`}
+            className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'basic' ? 'bg-red text-white shadow' : 'text-gray-500 hover:text-slate-700'}`}
           >
             Basic & Card Info
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('detail')}
-            className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'detail' ? 'bg-red text-white shadow' : 'text-slate-500 hover:text-slate-700'}`}
+            className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'detail' ? 'bg-red text-white shadow' : 'text-gray-500 hover:text-slate-700'}`}
           >
             Detail Page Content
           </button>
@@ -890,7 +890,7 @@ export default function EditPackageClient({ packageData }: EditPackageClientProp
               <div className="col-span-full">
                 <label className="text-xs font-bold text-slate-700 block mb-1">Page Slug *</label>
                 <div className="flex">
-                  <span className="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-slate-200 bg-slate-50 text-slate-500 sm:text-xs">
+                  <span className="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-slate-200 bg-slate-50 text-gray-500 sm:text-xs">
                     /
                   </span>
                   <input
@@ -945,7 +945,7 @@ export default function EditPackageClient({ packageData }: EditPackageClientProp
                     <label className="text-xs font-bold text-slate-800 block">
                       Package Type & Price ({currencySettings.symbol}) *
                     </label>
-                    <span className="text-[10px] text-slate-500 font-medium">
+                    <span className="text-[10px] text-gray-500 font-medium">
                       Configure multiple occupancy or package tiers with individual {currencySettings.symbol} prices.
                     </span>
                   </div>
@@ -1028,7 +1028,7 @@ export default function EditPackageClient({ packageData }: EditPackageClientProp
                       <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${editingPkg.status === 'sold_out' ? 'translate-x-5' : 'translate-x-0'
                         }`} />
                     </div>
-                    <span className={`text-xs font-extrabold uppercase tracking-wider ${editingPkg.status === 'sold_out' ? 'text-red' : 'text-slate-500'
+                    <span className={`text-xs font-extrabold uppercase tracking-wider ${editingPkg.status === 'sold_out' ? 'text-red' : 'text-gray-500'
                       }`}>
                       {editingPkg.status === 'sold_out' ? '🔴 Sold Out' : 'Mark as Sold Out'}
                     </span>
@@ -1039,12 +1039,12 @@ export default function EditPackageClient({ packageData }: EditPackageClientProp
                       onChange={e => setEditingPkg({ ...editingPkg, status: e.target.value as any })}
                       className={`flex-1 px-3.5 py-2.5 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:border-primary bg-white ${editingPkg.status === 'available' ? '!text-primary' :
                         editingPkg.status === 'coming_soon' ? '!text-amber-500' :
-                          '!text-slate-500'
+                          '!text-gray-500'
                         }`}
                     >
                       <option value="available" className="text-primary font-semibold">● Available</option>
                       <option value="coming_soon" className="text-amber-500 font-semibold">● Coming Soon</option>
-                      <option value="draft" className="text-slate-500 font-semibold">● Draft</option>
+                      <option value="draft" className="text-gray-500 font-semibold">● Draft</option>
                     </select>
                   )}
                 </div>

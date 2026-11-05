@@ -68,6 +68,6 @@ export default function PackageHotelCardsEditor({
         </div>
       </div>)}
     </div>
-    {hotels.length === 0 && <p className="text-xs text-slate-500">No hotel cards. Use Add Hotel to create one.</p>}
+    {hotels.length === 0 && <p className="text-xs text-gray-500">No hotel cards. Use Add Hotel to create one.</p>}
   </div>;
 }

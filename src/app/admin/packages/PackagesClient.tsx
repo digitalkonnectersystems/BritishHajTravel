@@ -203,7 +203,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200/60 pb-4">
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900 m-0">Pilgrimage Packages</h1>
-          <p className="text-xs text-slate-500 mt-1 mb-0">
+          <p className="text-xs text-gray-500 mt-1 mb-0">
             Manage Hajj &amp; Umrah package offerings, prices, and live availability
           </p>
         </div>
@@ -247,7 +247,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
             <div className="md:col-span-2">
               <label className="text-xs font-bold text-slate-700 block mb-1">Page Slug *</label>
               <div className="flex">
-                <span className="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-slate-200 bg-slate-50 text-slate-500 sm:text-xs">
+                <span className="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-slate-200 bg-slate-50 text-gray-500 sm:text-xs">
                   /{newPkg.type === 'hajj' ? 'hajj-packages' : 'umrah-packages'}/
                 </span>
                 <input
@@ -296,7 +296,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
                   <label className="text-xs font-bold text-slate-800 block">
                     Package Type & Price ({currencySettings.symbol}) *
                   </label>
-                  <span className="text-[10px] text-slate-500 font-medium">
+                  <span className="text-[10px] text-gray-500 font-medium">
                     Configure multiple occupancy or package tiers with individual {currencySettings.symbol} prices.
                   </span>
                 </div>
@@ -412,7 +412,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
             <tbody className="divide-y divide-slate-100">
               {packagesList.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-slate-400 text-xs">
+                  <td colSpan={7} className="py-12 text-center text-gray-500 text-xs">
                     No packages in database yet.
                   </td>
                 </tr>
@@ -423,7 +423,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
                     <tr key={pkg.id} className="hover:bg-slate-50/60 transition-colors">
                       <td className="py-3.5 px-4 font-bold text-slate-900">
                         <div>{pkg.title}</div>
-                        <div className="text-[10px] font-mono text-slate-400">{pkg.slug}</div>
+                        <div className="text-[10px] font-mono text-gray-500">{pkg.slug}</div>
                       </td>
                       <td className="py-3.5 px-4">
                         {pkgCode ? (
@@ -434,7 +434,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
                             {pkgCode}
                           </span>
                         ) : (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] text-slate-400 bg-slate-50 border border-dashed border-slate-200">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] text-gray-500 bg-slate-50 border border-dashed border-slate-200">
                             No Code
                           </span>
                         )}

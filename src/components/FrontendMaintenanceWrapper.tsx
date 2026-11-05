@@ -68,7 +68,7 @@ export default function FrontendMaintenanceWrapper({
             Our platform is currently undergoing scheduled maintenance and upgrades to serve you better. We apologize for any inconvenience.
           </p>
 
-          <div className="w-full pt-6 border-t border-slate-700/60 flex flex-col items-center justify-center gap-6 text-xs text-slate-400">
+          <div className="w-full pt-6 border-t border-slate-700/60 flex flex-col items-center justify-center gap-6 text-xs text-gray-500">
             <div className="text-center gap-4">
               Urgent Enquiries?<br />
               Email:{' '}

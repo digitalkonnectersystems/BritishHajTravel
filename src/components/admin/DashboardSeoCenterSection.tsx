@@ -100,7 +100,7 @@ export default function DashboardSeoCenterSection({ pages, audit = [] }: Dashboa
                 Next-Gen Intelligence
               </span>
             </div>
-            <p className="text-xs text-slate-500 m-0 mt-0.5">
+            <p className="text-xs text-gray-500 m-0 mt-0.5">
               Current local metadata audit across {totalPages} CMS entities, not an external Google/AI indexation measurement
             </p>
           </div>
@@ -111,7 +111,7 @@ export default function DashboardSeoCenterSection({ pages, audit = [] }: Dashboa
           className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-200 bg-white text-slate-700 text-xs font-bold hover:bg-slate-50 transition-colors shadow-2xs no-underline shrink-0"
         >
           <span>Manage All Pages</span>
-          <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+          <ArrowRight className="w-3.5 h-3.5 text-gray-500" />
         </Link>
       </div>
 
@@ -121,13 +121,13 @@ export default function DashboardSeoCenterSection({ pages, audit = [] }: Dashboa
         <div className="bg-[#F8FAFC] rounded-2xl p-5 border border-slate-200 flex flex-col items-center justify-center text-center relative overflow-hidden">
           <div className="w-full rounded-2xl bg-white/70 p-4 mb-3 border border-emerald-100 text-center">
             <span className="block text-3xl font-black text-emerald-900">{healthRating}%</span>
-            <span className="block text-[9px] font-extrabold uppercase tracking-wider text-slate-500">Measured health rating</span>
+            <span className="block text-[9px] font-extrabold uppercase tracking-wider text-gray-500">Measured health rating</span>
             <MetricWave value={healthRating} label="Overall SEO health" />
           </div>
           <div className="text-xs font-extrabold text-slate-800">
             {needingFixesCount > 0 ? 'Action Required' : 'Good Standing'}
           </div>
-          <div className="text-[10px] text-slate-500 font-semibold mt-0.5">
+          <div className="text-[10px] text-gray-500 font-semibold mt-0.5">
             {passedPagesCount} of {totalPages} Entities with no critical errors
           </div>
         </div>
@@ -215,7 +215,7 @@ export default function DashboardSeoCenterSection({ pages, audit = [] }: Dashboa
             </div>
           </div>
 
-          <p className="text-[10px] text-slate-500 font-medium m-0 leading-tight">
+          <p className="text-[10px] text-gray-500 font-medium m-0 leading-tight">
             Automated multi-layer scanner detects missing titles, schemas, alt tags, and Open Graph card data.
           </p>
         </div>
@@ -228,7 +228,7 @@ export default function DashboardSeoCenterSection({ pages, audit = [] }: Dashboa
             <h3 className="text-xs font-extrabold text-slate-900 m-0 flex items-center gap-1.5">
               <BarChart2 className="w-4 h-4 text-primary" /> Current SEO Audit Score
             </h3>
-            <p className="text-[11px] text-slate-400 m-0 mt-0.5">
+            <p className="text-[11px] text-gray-500 m-0 mt-0.5">
               Historical measurements were not supplied; only the current database metadata score is shown
             </p>
           </div>
@@ -244,8 +244,8 @@ export default function DashboardSeoCenterSection({ pages, audit = [] }: Dashboa
             <div className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-teal-500 via-sky-400 to-violet-500 opacity-25 blur-sm" style={{ width: `${Math.max(0, Math.min(100, healthRating))}%` }} />
             <div className="relative h-full rounded-full shadow-[0_4px_16px_rgba(56,189,248,.32)] transition-[width] duration-500" style={{ width: `${Math.max(0, Math.min(100, healthRating))}%`, background: "linear-gradient(90deg,#0d9488 0%,#38bdf8 28%,#6366f1 62%,#a855f7 80%,#f59e0b 100%)" }} />
           </div>
-          <div className="flex justify-between text-[10px] font-bold text-slate-400"><span>0 · Needs attention</span><span>50 · Improving</span><span>100 · Excellent</span></div>
-          <p className="mt-1 text-[11px] text-slate-500">Current snapshot only. Historical comparisons will be available when dated audit snapshots are stored.</p>
+          <div className="flex justify-between text-[10px] font-bold text-gray-500"><span>0 · Needs attention</span><span>50 · Improving</span><span>100 · Excellent</span></div>
+          <p className="mt-1 text-[11px] text-gray-500">Current snapshot only. Historical comparisons will be available when dated audit snapshots are stored.</p>
         </div>
       </div>
 
@@ -256,7 +256,7 @@ export default function DashboardSeoCenterSection({ pages, audit = [] }: Dashboa
             <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
             Pages Requiring SEO Attention ({pagesNeedingAttention.length})
           </span>
-          <span className="text-[10px] text-slate-400 font-semibold">
+          <span className="text-[10px] text-gray-500 font-semibold">
             Exact source locations listed below
           </span>
         </div>

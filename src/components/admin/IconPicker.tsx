@@ -168,7 +168,7 @@ export default function IconPicker({
               <span className="font-semibold text-slate-800 truncate">{selectedLabel}</span>
             </>
           ) : (
-            <span className="text-slate-400">{placeholder}</span>
+            <span className="text-gray-500">{placeholder}</span>
           )}
         </div>
 
@@ -183,7 +183,7 @@ export default function IconPicker({
               <X className="w-3 h-3" />
             </span>
           )}
-          <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+          <ChevronDown className={`w-3.5 h-3.5 text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
         </div>
       </button>
 
@@ -215,9 +215,9 @@ export default function IconPicker({
           </div>
 
           {activeProviderTab === 'dynamic' ? (
-            <div className="p-6 text-center text-xs text-slate-400 space-y-2">
-              <p className="font-medium text-slate-500">Dynamic icons unavailable</p>
-              <p className="text-[10px] text-slate-400">
+            <div className="p-6 text-center text-xs text-gray-500 space-y-2">
+              <p className="font-medium text-gray-500">Dynamic icons unavailable</p>
+              <p className="text-[10px] text-gray-500">
                 External dynamic icon provider is not configured. Please choose from the available Lucide icon library.
               </p>
             </div>
@@ -225,7 +225,7 @@ export default function IconPicker({
             <>
               {/* Search Bar */}
               <div className="p-2 border-b border-slate-100 flex items-center gap-2 bg-white">
-                <Search className="w-3.5 h-3.5 text-slate-400 shrink-0 ml-1" />
+                <Search className="w-3.5 h-3.5 text-gray-500 shrink-0 ml-1" />
                 <input
                   ref={searchInputRef}
                   type="text"
@@ -235,13 +235,13 @@ export default function IconPicker({
                     setSearch(e.target.value);
                     setFocusedIndex(0);
                   }}
-                  className="w-full text-xs outline-none bg-transparent placeholder:text-slate-400 text-slate-800"
+                  className="w-full text-xs outline-none bg-transparent placeholder:text-gray-500 text-slate-800"
                 />
                 {search && (
                   <button
                     type="button"
                     onClick={() => setSearch('')}
-                    className="p-1 text-slate-400 hover:text-slate-600 rounded-full"
+                    className="p-1 text-gray-500 hover:text-slate-600 rounded-full"
                   >
                     <X className="w-3 h-3" />
                   </button>
@@ -255,7 +255,7 @@ export default function IconPicker({
                 role="listbox"
               >
                 {filteredIcons.length === 0 ? (
-                  <div className="p-6 text-center text-xs text-slate-400">
+                  <div className="p-6 text-center text-xs text-gray-500">
                     No icons found for &ldquo;{search}&rdquo;
                   </div>
                 ) : (

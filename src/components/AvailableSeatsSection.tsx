@@ -39,12 +39,12 @@ export default function AvailableSeatsSection({ data }: { data?: AvailableSeatsD
   if (cards.length === 0) return null;
 
   return (
-    <section className="relative overflow-hidden bg-[#f1f9ff] px-4 py-8 md:py-10">
+    <section className="relative overflow-hidden bg-[#f1f9ff] px-4 py-8 md:py-10 pt-0 md:pt-0">
       <div className="mx-auto max-w-7xl">
         <div className="section-head center text-center mb-8">
           {data?.eyebrow ? <span className="eyebrow mx-auto block">{data.eyebrow}</span> : null}
-          {data?.title ? <h2 className="section-heading font-serif text-primary">{data.title}</h2> : null}
-          {data?.subtitle ? <p className="mt-2 text-sm text-slate-600">{data.subtitle}</p> : null}
+          {data?.title ? <h2 className="font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">{data.title}</h2> : null}
+          {data?.subtitle ? <p className="mt-2 text-sm text-gray-500 font-medium">{data.subtitle}</p> : null}
         </div>
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
           {cards.map((card, index) => (
@@ -63,7 +63,7 @@ export default function AvailableSeatsSection({ data }: { data?: AvailableSeatsD
               </div>
               <div className="mt-4 flex items-center justify-between gap-3">
                 <span className="rounded-lg bg-[#fff1f5] px-3 py-3 text-xs font-bold text-red">{card.price ? card.price.replace(/^(?:£|CAD|GBP|USD|EUR|\$)\s*/i, `${currency.symbol} `) : "TBC / Person"}</span>
-                <a href={card.bookingUrl || "/contact"} className="rounded-full border border-red px-4 py-2 text-xs font-bold text-red transition hover:bg-red hover:text-white">{card.bookingLabel || "Book Now"} →</a>
+                <a href={card.bookingUrl || "/contact"} className="rounded-sm border border-red px-4 py-2 text-xs font-bold text-red transition hover:bg-red hover:text-white">{card.bookingLabel || "Book Now"} →</a>
               </div>
             </article>
           ))}

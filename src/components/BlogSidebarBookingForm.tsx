@@ -337,7 +337,7 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
                 }}
                 className={`py-2.5 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${packageType === "hajj"
                   ? "bg-primary text-white shadow-sm"
-                  : "bg-transparent text-slate-500 hover:text-slate-800"
+                  : "bg-transparent text-gray-500 hover:text-slate-800"
                   }`}
               >
                 Hajj
@@ -355,7 +355,7 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
                 }}
                 className={`py-2.5 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${packageType === "umrah"
                   ? "bg-primary text-white shadow-sm"
-                  : "bg-transparent text-slate-500 hover:text-slate-800"
+                  : "bg-transparent text-gray-500 hover:text-slate-800"
                   }`}
               >
                 Umrah
@@ -477,7 +477,7 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
               className={`cursor-pointer w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium appearance-none bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat flex items-center justify-between ${errors.selectedDate ? "border-red-600 focus:border-red-600 focus:ring-1 focus:ring-red-600" : "focus:border-emerald-800"
                 }`}
             >
-              <span className={selectedDate ? "text-slate-900" : "text-slate-400"}>
+              <span className={selectedDate ? "text-slate-900" : "text-gray-500"}>
                 {selectedDate
                   ? (() => {
                     const [year, month, day] = selectedDate.split('-');
@@ -485,7 +485,7 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
                   })()
                   : "e.g. Nov 17, 2026"}
               </span>
-              <Calendar className="w-4 h-4 text-slate-400" />
+              <Calendar className="w-4 h-4 text-gray-500" />
             </div>
             <input
               type="date"
@@ -530,7 +530,7 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
                   </option>
                 ))}
               </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <polyline points="6 9 12 15 18 9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>

@@ -149,7 +149,7 @@ export default function VisaProcessingListClient({ initialPages }: { initialPage
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="flex flex-col gap-3 border-b border-slate-100 p-4 sm:flex-row sm:items-center sm:justify-between">
           <label className="relative block w-full sm:max-w-md">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
             <input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
@@ -173,10 +173,10 @@ export default function VisaProcessingListClient({ initialPages }: { initialPage
 
         <div className="overflow-x-auto">
           <table className="w-full min-w-[850px] text-left text-sm">
-            <thead className="bg-slate-50 text-[11px] uppercase tracking-wider text-slate-500">
+            <thead className="bg-slate-50 text-[11px] uppercase tracking-wider text-gray-500">
               <tr>
                 <th className="px-5 py-4 font-extrabold">Country / Page</th>
-                <th className="px-5 py-4 font-extrabold">Public URL <span className="normal-case tracking-normal text-slate-400">· editable</span></th>
+                <th className="px-5 py-4 font-extrabold">Public URL <span className="normal-case tracking-normal text-gray-500">· editable</span></th>
                 <th className="px-5 py-4 font-extrabold">Visibility</th>
                 <th className="px-5 py-4 text-right font-extrabold">Actions</th>
               </tr>
@@ -193,7 +193,7 @@ export default function VisaProcessingListClient({ initialPages }: { initialPage
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-2">
-                        <Link2 className="h-4 w-4 shrink-0 text-slate-400" />
+                        <Link2 className="h-4 w-4 shrink-0 text-gray-500" />
                         <input
                           aria-label={`Public URL for ${page.title}`}
                           value={draftSlug}
@@ -210,19 +210,19 @@ export default function VisaProcessingListClient({ initialPages }: { initialPage
                             <button type="button" aria-label={`Cancel public URL edit for ${page.title}`} title="Cancel URL edit" onClick={() => setSlugDrafts((current) => ({ ...current, [page.id]: page.slug }))} className="rounded-lg bg-slate-100 p-2 text-slate-600 hover:bg-slate-200"><X className="h-4 w-4" /></button>
                           </>
                         ) : (
-                          <Link href={page.slug} target="_blank" aria-label={`Open ${page.title} in a new tab`} title="Open public page" className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-primary"><ExternalLink className="h-4 w-4" /></Link>
+                          <Link href={page.slug} target="_blank" aria-label={`Open ${page.title} in a new tab`} title="Open public page" className="rounded-lg p-2 text-gray-500 hover:bg-slate-100 hover:text-primary"><ExternalLink className="h-4 w-4" /></Link>
                         )}
                       </div>
                     </td>
                     <td className="px-5 py-4">
-                      <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold ${page.status === 'published' ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>
+                      <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold ${page.status === 'published' ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-gray-500'}`}>
                         <span className={`h-1.5 w-1.5 rounded-full ${page.status === 'published' ? 'bg-emerald-500' : 'bg-slate-400'}`} />
                         {page.status === 'published' ? 'Visible' : 'Hidden'}
                       </span>
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex items-center justify-end gap-1.5">
-                        {busy === page.id ? <span className="mr-1 inline-flex p-2 text-slate-400"><LoaderCircle className="h-4 w-4 animate-spin" /></span> : null}
+                        {busy === page.id ? <span className="mr-1 inline-flex p-2 text-gray-500"><LoaderCircle className="h-4 w-4 animate-spin" /></span> : null}
                         <Link href={`/admin/pages/edit?table=visa_processing&id=${page.id}`} aria-label={`Edit ${page.title}`} title="Edit page sections" className="rounded-lg bg-blue-50 p-2 text-blue-700 transition hover:bg-blue-100"><Pencil className="h-4 w-4" /></Link>
                         <button type="button" disabled={busy !== null} onClick={() => void toggleVisibility(page)} aria-label={`${page.status === 'published' ? 'Hide' : 'Show'} ${page.title} on frontend`} title={page.status === 'published' ? 'Hide on frontend' : 'Show on frontend'} className={`rounded-lg p-2 transition disabled:opacity-50 ${page.status === 'published' ? 'bg-amber-50 text-amber-700 hover:bg-amber-100' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'}`}>
                           {page.status === 'published' ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -236,9 +236,9 @@ export default function VisaProcessingListClient({ initialPages }: { initialPage
               })}
               {visiblePages.length === 0 ? (
                 <tr><td colSpan={4} className="px-5 py-14 text-center">
-                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400"><Search className="h-5 w-5" /></div>
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-gray-500"><Search className="h-5 w-5" /></div>
                   <div className="mt-3 font-semibold text-slate-700">{pages.length ? 'No matching pages' : 'No visa-processing pages yet'}</div>
-                  <p className="mt-1 text-xs text-slate-500">{pages.length ? 'Try another search or visibility filter.' : 'Create the first country page to get started.'}</p>
+                  <p className="mt-1 text-xs text-gray-500">{pages.length ? 'Try another search or visibility filter.' : 'Create the first country page to get started.'}</p>
                 </td></tr>
               ) : null}
             </tbody>

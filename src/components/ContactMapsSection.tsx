@@ -15,7 +15,7 @@ export default function ContactMapsSection({ data }: { data?: any }) {
           <h3 className="text-sm font-extrabold uppercase tracking-widest text-primary flex items-center gap-2">
             <i className="fa-solid fa-building text-red"></i> {headTitle}
           </h3>
-          <p className="text-xs text-slate-500 font-medium mt-0.5">{headAddress}</p>
+          <p className="text-xs text-gray-500 font-medium mt-0.5">{headAddress}</p>
         </div>
         <iframe
           src={headMap}
@@ -31,7 +31,7 @@ export default function ContactMapsSection({ data }: { data?: any }) {
           <h3 className="text-sm font-extrabold uppercase tracking-widest text-primary flex items-center gap-2">
             <i className="fa-solid fa-building text-red"></i> {branchTitle}
           </h3>
-          <p className="text-xs text-slate-500 font-medium mt-0.5">{branchAddress}</p>
+          <p className="text-xs text-gray-500 font-medium mt-0.5">{branchAddress}</p>
         </div>
         <iframe
           src={branchMap}

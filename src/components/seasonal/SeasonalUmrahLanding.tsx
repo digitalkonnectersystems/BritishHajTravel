@@ -13,7 +13,7 @@ import type { SeasonalUmrahPageData } from '@/lib/seasonalUmrah';
 const sectionTitleClass = 'font-serif text-primary text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]';
 const ctaClass = 'inline-flex min-h-[46px] items-center justify-center gap-2 rounded-md border border-red bg-red px-5 py-3 text-xs font-extrabold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#ed1b24] hover:border-[#ed1b24] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red';
 const labelClass = 'grid min-w-0 gap-1 text-[11px] font-bold text-white';
-const inputClass = 'min-h-[37px] w-full rounded border border-[#c8d1e0] bg-white px-3 py-2 text-xs font-medium text-[#142345] placeholder:text-slate-400 focus:border-red focus:outline-none focus:ring-2 focus:ring-red/20';
+const inputClass = 'min-h-[37px] w-full rounded border border-[#c8d1e0] bg-white px-3 py-2 text-xs font-medium text-[#142345] placeholder:text-gray-500 focus:border-red focus:outline-none focus:ring-2 focus:ring-red/20';
 
 /** Archive page: the three historic offers are database rows, NOT fabricated prices. */
 export default function SeasonalUmrahLanding({
@@ -186,13 +186,13 @@ export default function SeasonalUmrahLanding({
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="flex min-w-0 flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6">
                 <MapPin size={25} aria-hidden="true" className="text-red" />
-                <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500">MAKKAH</span>
+                <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-gray-500">MAKKAH</span>
                 <strong className="font-serif text-lg leading-snug text-primary">{first.makkah}</strong>
                 <small className="text-xs leading-relaxed text-slate-600">{first.makkahNights} · Bed &amp; breakfast (BB) on original listing</small>
               </div>
               <div className="flex min-w-0 flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6">
                 <MapPin size={25} aria-hidden="true" className="text-red" />
-                <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500">MADINAH</span>
+                <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-gray-500">MADINAH</span>
                 <strong className="font-serif text-lg leading-snug text-primary">{first.madinah}</strong>
                 <small className="text-xs leading-relaxed text-slate-600">{first.madinahNights} · Bed &amp; breakfast (BB) on original listing</small>
               </div>

@@ -1230,7 +1230,7 @@ export default function AdminSettingsPage() {
               onClick={() => setActiveTab(t.id)}
               className={`px-3.5 py-2 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 border ${activeTab === t.id
                 ? 'bg-primary text-white border-primary'
-                : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
+                : 'bg-white text-gray-500 border-slate-200 hover:border-slate-300'
                 }`}
             >
               <span>{t.icon}</span>
@@ -1243,7 +1243,7 @@ export default function AdminSettingsPage() {
         {activeTab === 'currency' && (
           <div className="bg-white rounded-2xl border border-slate-200 p-6 max-w-2xl space-y-5">
             <h2 className="text-lg font-bold">Global Display Currency</h2>
-            <p className="text-sm text-slate-500">Changes the displayed symbol for supported package prices throughout the site. This does not convert stored amounts or exchange rates.</p>
+            <p className="text-sm text-gray-500">Changes the displayed symbol for supported package prices throughout the site. This does not convert stored amounts or exchange rates.</p>
             <label className="block text-sm font-semibold">Currency code
               <select className="block mt-2 w-full p-3 rounded-lg border" value={currencyData.code}
                 onChange={(e) => { const found = CURRENCY_OPTIONS.find(x => x.code === e.target.value) || DEFAULT_CURRENCY; setCurrencyData(found); }}>
@@ -1269,13 +1269,13 @@ export default function AdminSettingsPage() {
             <div className="flex gap-2.5">
               <button
                 onClick={() => setSubTab('header')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold cursor-pointer transition-all border ${subTab === 'header' ? 'border-primary bg-blue-100 text-primary' : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300'}`}
+                className={`px-4 py-2 rounded-xl text-xs font-bold cursor-pointer transition-all border ${subTab === 'header' ? 'border-primary bg-blue-100 text-primary' : 'border-slate-200 bg-white text-gray-500 hover:border-slate-300'}`}
               >
                 📋 Header Builder
               </button>
               <button
                 onClick={() => setSubTab('footer')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold cursor-pointer transition-all border ${subTab === 'footer' ? 'border-primary bg-blue-100 text-primary' : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300'}`}
+                className={`px-4 py-2 rounded-xl text-xs font-bold cursor-pointer transition-all border ${subTab === 'footer' ? 'border-primary bg-blue-100 text-primary' : 'border-slate-200 bg-white text-gray-500 hover:border-slate-300'}`}
               >
                 👣 Footer Builder
               </button>
@@ -1301,7 +1301,7 @@ export default function AdminSettingsPage() {
               {/* Logo & Identity Panel */}
               <div className="border-b border-slate-100 pb-6">
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-xs font-extrabold text-slate-500 uppercase tracking-wider m-0">
+                  <h3 className="text-xs font-extrabold text-gray-500 uppercase tracking-wider m-0">
                     🖼 LOGO &amp; IDENTITY
                   </h3>
                   <button
@@ -1647,7 +1647,7 @@ export default function AdminSettingsPage() {
 
               {/* Visibility Toggles */}
               {/* <div className="border-b border-slate-100 pb-6">
-                <h3 className="text-xs font-extrabold text-slate-500 uppercase tracking-wider mb-4">
+                <h3 className="text-xs font-extrabold text-gray-500 uppercase tracking-wider mb-4">
                   👁 VISIBILITY TOGGLES
                 </h3>
                 <div className="flex flex-col gap-3.5">
@@ -1746,7 +1746,7 @@ export default function AdminSettingsPage() {
                   {(footerData.socialLinks || []).map((item: any, sIdx: number) => (
                     <div {...footerDragHandlers('socialLinks', sIdx)} title="Drag row to reorder" key={sIdx} className="bg-white p-3 rounded-xl border border-slate-200 flex flex-col gap-2.5">
                       <div className="flex justify-between items-center">
-                        <span className="text-[10px] font-bold text-slate-500 uppercase">Icon #{sIdx + 1}: {item.name}</span>
+                        <span className="text-[10px] font-bold text-gray-500 uppercase">Icon #{sIdx + 1}: {item.name}</span>
                         <button
                           type="button"
                           onClick={() => {
@@ -2337,7 +2337,7 @@ export default function AdminSettingsPage() {
                   <h2 className="text-xl font-extrabold text-slate-900 m-0 flex items-center gap-2">
                     <Search className="w-5 h-5 text-primary" /> SEO Intelligence &amp; Search Engine Indexing
                   </h2>
-                  <p className="text-xs text-slate-500 m-0 mt-0.5">
+                  <p className="text-xs text-gray-500 m-0 mt-0.5">
                     Configure search engine crawl indexing, XML sitemaps, Google Search Console verification, and Google Analytics 4 (GA4).
                   </p>
                 </div>
@@ -2424,7 +2424,7 @@ export default function AdminSettingsPage() {
                   <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">🌐</div>
                   <div>
                     <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider m-0">Website SEO Environment</h3>
-                    <p className="text-[11px] text-slate-500 m-0 mt-0.5">
+                    <p className="text-[11px] text-gray-500 m-0 mt-0.5">
                       Select Staging for testing, or Production when the live site is ready. Save SEO settings to apply.
                     </p>
                     <p className="text-[11px] text-amber-800 m-0 mt-1">
@@ -2459,7 +2459,7 @@ export default function AdminSettingsPage() {
                       </div>
                       <div>
                         <h3 className="text-sm font-bold text-slate-900 m-0">XML Sitemap</h3>
-                        <p className="text-[11px] text-slate-500 m-0">Dynamically generated XML sitemap for search engine crawlers.</p>
+                        <p className="text-[11px] text-gray-500 m-0">Dynamically generated XML sitemap for search engine crawlers.</p>
                       </div>
                     </div>
                     <button
@@ -2557,7 +2557,7 @@ export default function AdminSettingsPage() {
                       </div>
                       <div>
                         <h3 className="text-sm font-bold text-slate-900 m-0">Robots.txt Configuration</h3>
-                        <p className="text-[11px] text-slate-500 m-0">Crawler instructions served at /robots.txt.</p>
+                        <p className="text-[11px] text-gray-500 m-0">Crawler instructions served at /robots.txt.</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -2596,8 +2596,8 @@ export default function AdminSettingsPage() {
                       <div className="space-y-1">
                         <div>User-agent: *</div>
                         <div className="text-emerald-700 font-bold">Allow: /</div>
-                        <div className="text-slate-500">Disallow: /admin/</div>
-                        <div className="text-slate-500">Disallow: /api/</div>
+                        <div className="text-gray-500">Disallow: /admin/</div>
+                        <div className="text-gray-500">Disallow: /api/</div>
                         {Array.isArray(seoData.additionalDisallowPaths) && seoData.additionalDisallowPaths.map((p: string, pIdx: number) => (
                           <div key={pIdx} className="text-amber-700">Disallow: {p}</div>
                         ))}
@@ -2691,7 +2691,7 @@ export default function AdminSettingsPage() {
                       </div>
                       <div>
                         <h3 className="text-sm font-bold text-slate-900 m-0">Google Search Console</h3>
-                        <p className="text-[11px] text-slate-500 m-0">Verify website ownership and submit sitemaps to Google.</p>
+                        <p className="text-[11px] text-gray-500 m-0">Verify website ownership and submit sitemaps to Google.</p>
                       </div>
                     </div>
                     <span className={`text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full border ${seoData.googleSearchConsoleCode
@@ -2720,7 +2720,7 @@ export default function AdminSettingsPage() {
                       placeholder="e.g. d_y3Z59b09vF6P8_..."
                       className="w-full p-3 rounded-xl border border-slate-300 bg-white text-xs font-mono font-medium text-slate-900 outline-none focus:border-primary transition-colors"
                     />
-                    <span className="text-[11px] text-slate-500 block mt-1.5">
+                    <span className="text-[11px] text-gray-500 block mt-1.5">
                       Paste either your verification code or the full <code className="bg-slate-200/80 px-1 py-0.5 rounded text-[10px] text-slate-800">&lt;meta name=&quot;google-site-verification&quot;&gt;</code> tag provided by Google Search Console.
                     </span>
                   </div>
@@ -2738,7 +2738,7 @@ export default function AdminSettingsPage() {
                         Open Search Console <ExternalLink className="w-3 h-3" />
                       </a>
                     </div>
-                    <p className="text-[11px] text-slate-500 m-0 leading-relaxed">
+                    <p className="text-[11px] text-gray-500 m-0 leading-relaxed">
                       After entering your verification tag, verify ownership in Google Search Console, then navigate to <strong>Sitemaps</strong> in GSC and submit <code className="text-primary font-bold">sitemap.xml</code>.
                     </p>
                   </div>
@@ -2753,7 +2753,7 @@ export default function AdminSettingsPage() {
                       </div>
                       <div>
                         <h3 className="text-sm font-bold text-slate-900 m-0">Google Analytics 4 (GA4)</h3>
-                        <p className="text-[11px] text-slate-500 m-0">Live visitor tracking and user behavior analytics.</p>
+                        <p className="text-[11px] text-gray-500 m-0">Live visitor tracking and user behavior analytics.</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -2777,7 +2777,7 @@ export default function AdminSettingsPage() {
                       placeholder="e.g. G-XXXXXXXXXX"
                       className="w-full p-3 rounded-xl border border-slate-300 bg-white text-xs font-mono font-medium text-slate-900 outline-none focus:border-primary transition-colors"
                     />
-                    <span className="text-[11px] text-slate-500 block mt-1.5">
+                    <span className="text-[11px] text-gray-500 block mt-1.5">
                       Found in Google Analytics &gt; Admin &gt; Data Streams &gt; Web stream details.
                     </span>
                   </div>
@@ -2785,7 +2785,7 @@ export default function AdminSettingsPage() {
                   <div className="flex items-center justify-between p-3.5 bg-white rounded-xl border border-slate-200">
                     <div>
                       <span className="text-xs font-bold text-slate-800 block">Enable Global Tracking</span>
-                      <span className="text-[11px] text-slate-500">Inject gtag.js script across all public website pages.</span>
+                      <span className="text-[11px] text-gray-500">Inject gtag.js script across all public website pages.</span>
                     </div>
                     <Switch
                       checked={Boolean(seoData.googleAnalyticsEnabled ?? true)}
@@ -2805,7 +2805,7 @@ export default function AdminSettingsPage() {
                     </div>
                     <div>
                       <h3 className="text-sm font-bold text-slate-900 m-0">Search Engine Indexing Readiness Checklist</h3>
-                      <p className="text-[11px] text-slate-500 m-0">Deterministic verification of all search engine discoverability prerequisites.</p>
+                      <p className="text-[11px] text-gray-500 m-0">Deterministic verification of all search engine discoverability prerequisites.</p>
                     </div>
                   </div>
                 </div>
@@ -2883,7 +2883,7 @@ export default function AdminSettingsPage() {
               <div className="flex justify-between items-center border-b border-slate-100 pb-3">
                 <div>
                   <h2 className="text-xl font-extrabold text-slate-900 m-0">Site Identity</h2>
-                  <p className="text-xs text-slate-500 m-0 mt-0.5">Manage your website&apos;s core branding and metadata.</p>
+                  <p className="text-xs text-gray-500 m-0 mt-0.5">Manage your website&apos;s core branding and metadata.</p>
                 </div>
                 <div className="flex items-center gap-3">
                   {identitySaveMsg && <span className="text-xs font-bold text-primary">{identitySaveMsg}</span>}
@@ -2934,7 +2934,7 @@ export default function AdminSettingsPage() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                       <div>
-                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Subtext / Label Above Number</label>
+                        <label className="block text-[10px] font-bold text-gray-500 uppercase mb-1">Subtext / Label Above Number</label>
                         <input
                           type="text"
                           value={identityData.whatsappHeaderLabel || ''}
@@ -2944,7 +2944,7 @@ export default function AdminSettingsPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Display Number / Text</label>
+                        <label className="block text-[10px] font-bold text-gray-500 uppercase mb-1">Display Number / Text</label>
                         <input
                           type="text"
                           value={identityData.whatsappHeaderText || ''}
@@ -2954,7 +2954,7 @@ export default function AdminSettingsPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">WhatsApp URL (wa.me/...)</label>
+                        <label className="block text-[10px] font-bold text-gray-500 uppercase mb-1">WhatsApp URL (wa.me/...)</label>
                         <input
                           type="text"
                           value={identityData.whatsappHeaderUrl || ''}
@@ -2976,7 +2976,7 @@ export default function AdminSettingsPage() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">WhatsApp URL (wa.me/...)</label>
+                        <label className="block text-[10px] font-bold text-gray-500 uppercase mb-1">WhatsApp URL (wa.me/...)</label>
                         <input
                           type="text"
                           value={identityData.whatsappFloatUrl || ''}
@@ -2986,7 +2986,7 @@ export default function AdminSettingsPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Tooltip / Aria Label</label>
+                        <label className="block text-[10px] font-bold text-gray-500 uppercase mb-1">Tooltip / Aria Label</label>
                         <input
                           type="text"
                           value={identityData.whatsappFloatLabel || ''}
@@ -3070,7 +3070,7 @@ export default function AdminSettingsPage() {
               <div className="flex justify-between items-center border-b border-slate-100 pb-3">
                 <div>
                   <h2 className="text-xl font-extrabold text-slate-900 m-0">Share Tools</h2>
-                  <p className="text-xs text-slate-500 m-0 mt-0.5">Configure the global floating share sidebar for your website.</p>
+                  <p className="text-xs text-gray-500 m-0 mt-0.5">Configure the global floating share sidebar for your website.</p>
                 </div>
                 <div className="flex items-center gap-3">
                   {shareSaveMsg && <span className="text-xs font-bold text-primary">{shareSaveMsg}</span>}
@@ -3423,7 +3423,7 @@ export default function AdminSettingsPage() {
                                 updated[pIdx] = temp;
                                 setShareData({ ...shareData, activePlatforms: updated });
                               }}
-                              className="p-1 text-slate-500 hover:text-slate-900 disabled:opacity-30 cursor-pointer bg-transparent border-none"
+                              className="p-1 text-gray-500 hover:text-slate-900 disabled:opacity-30 cursor-pointer bg-transparent border-none"
                             >
                               <MoveUp className="w-3.5 h-3.5" />
                             </button>
@@ -3437,7 +3437,7 @@ export default function AdminSettingsPage() {
                                 updated[pIdx] = temp;
                                 setShareData({ ...shareData, activePlatforms: updated });
                               }}
-                              className="p-1 text-slate-500 hover:text-slate-900 disabled:opacity-30 cursor-pointer bg-transparent border-none"
+                              className="p-1 text-gray-500 hover:text-slate-900 disabled:opacity-30 cursor-pointer bg-transparent border-none"
                             >
                               <MoveDown className="w-3.5 h-3.5" />
                             </button>
@@ -3544,7 +3544,7 @@ export default function AdminSettingsPage() {
               <div className="flex justify-between items-center border-b border-slate-100 pb-3">
                 <div>
                   <h2 className="text-xl font-extrabold text-slate-900 m-0">User Management</h2>
-                  <p className="text-xs text-slate-500 m-0 mt-0.5">Manage administrators and restricted editors</p>
+                  <p className="text-xs text-gray-500 m-0 mt-0.5">Manage administrators and restricted editors</p>
                 </div>
                 <div className="flex items-center gap-3">
                   {userSaveMsg && <span className="text-xs font-bold text-primary">{userSaveMsg}</span>}
@@ -3562,7 +3562,7 @@ export default function AdminSettingsPage() {
               <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase text-slate-500 tracking-wider">
+                    <tr className="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase text-gray-500 tracking-wider">
                       <th className="p-4 pl-6">User</th>
                       <th className="p-4">Role</th>
                       <th className="p-4">Status</th>
@@ -3628,7 +3628,7 @@ export default function AdminSettingsPage() {
                               </span>
                             )}
                           </td>
-                          <td className="p-4 text-slate-500 font-medium">
+                          <td className="p-4 text-gray-500 font-medium">
                             {u.createdAt
                               ? new Date(u.createdAt).toLocaleDateString('en-US', {
                                 month: 'numeric',
@@ -3898,7 +3898,7 @@ export default function AdminSettingsPage() {
               <div className="flex justify-between items-center border-b border-slate-100 pb-3">
                 <div>
                   <h2 className="text-xl font-extrabold text-slate-900 m-0">Login Authentication UI Settings</h2>
-                  <p className="text-xs text-slate-500 m-0 mt-0.5">
+                  <p className="text-xs text-gray-500 m-0 mt-0.5">
                     Configure the cinematic 3D login screen&apos;s background, logo, and footer text.
                   </p>
                 </div>
@@ -4018,13 +4018,13 @@ export default function AdminSettingsPage() {
                           const chosen = Array.isArray(loginAuthData.maintenancePaths) ? loginAuthData.maintenancePaths : [];
                           return <label key={String(page.id)} className="flex items-center gap-2 text-xs text-slate-700">
                             <input type="checkbox" checked={chosen.includes(page.slug)} onChange={e => setLoginAuthData({ ...loginAuthData, maintenancePaths: e.target.checked ? [...chosen, page.slug] : chosen.filter((v: string) => v !== page.slug) })} />
-                            <span>{page.title || page.slug} <span className="text-slate-500">({page.slug})</span></span>
+                            <span>{page.title || page.slug} <span className="text-gray-500">({page.slug})</span></span>
                           </label>;
                         })}
                         {!pagesList.length && <p className="text-xs text-amber-800">No CMS pages loaded. Refresh the settings page and try again.</p>}
                       </div>
                     )}
-                    <p className="text-[11px] text-slate-500">Admin and login routes always remain accessible. Changes take effect after saving; public-facing visual styling is unchanged.</p>
+                    <p className="text-[11px] text-gray-500">Admin and login routes always remain accessible. Changes take effect after saving; public-facing visual styling is unchanged.</p>
                   </div>
                 </div>
               </div>
@@ -4039,7 +4039,7 @@ export default function AdminSettingsPage() {
                   <h2 className="text-xl font-extrabold text-slate-900 m-0 flex items-center gap-2">
                     <span>🚩</span> Disclaimer Popup Settings
                   </h2>
-                  <p className="text-xs text-slate-500 m-0 mt-0.5">
+                  <p className="text-xs text-gray-500 m-0 mt-0.5">
                     Configure the disclaimer image that appears on the homepage when a user visits the site.
                   </p>
                 </div>
@@ -4108,7 +4108,7 @@ export default function AdminSettingsPage() {
                 <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-xs flex justify-between items-center">
                   <div>
                     <div className="text-sm font-extrabold text-slate-900 mb-1">Enable Disclaimer Popup</div>
-                    <div className="text-xs text-slate-500">Toggle whether the disclaimer popup is active on the homepage.</div>
+                    <div className="text-xs text-gray-500">Toggle whether the disclaimer popup is active on the homepage.</div>
                   </div>
                   <Switch
                     checked={disclaimerData.enabled ?? false}
@@ -4139,7 +4139,7 @@ export default function AdminSettingsPage() {
                   <h2 className="text-xl font-extrabold text-slate-900 m-0 flex items-center gap-2">
                     <span>🎨</span> Global CSS Overrides
                   </h2>
-                  <p className="text-xs text-slate-500 m-0 mt-0.5">
+                  <p className="text-xs text-gray-500 m-0 mt-0.5">
                     Write custom CSS to override styles across the entire frontend and backend. These styles will be injected with maximum priority.
                   </p>
                 </div>
@@ -4341,7 +4341,7 @@ export default function AdminSettingsPage() {
                               </div>
                             </div>
 
-                            <p className="text-xs text-slate-500 leading-relaxed mb-4">{f.desc}</p>
+                            <p className="text-xs text-gray-500 leading-relaxed mb-4">{f.desc}</p>
 
                             <div className="mb-4">
                               <div className="text-[11px] font-bold text-ink-lt uppercase tracking-wider mb-2">
@@ -4595,7 +4595,7 @@ export default function AdminSettingsPage() {
                   <div className="p-6 lg:p-7 rounded-3xl bg-white border border-slate-200/80 shadow-xs flex flex-col gap-5">
                     <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
                       <div><h4 className="text-base font-extrabold text-slate-900 uppercase m-0">GLOBAL SENDER SETTINGS</h4>
-                        <p className="text-xs text-slate-500 mt-1">These two fields apply to every admin and customer email. Edit To, CC, BCC, Reply-To, Subject, and Body in Email Template.</p></div>
+                        <p className="text-xs text-gray-500 mt-1">These two fields apply to every admin and customer email. Edit To, CC, BCC, Reply-To, Subject, and Body in Email Template.</p></div>
                       <button type="button" disabled={savingForms} onClick={handleSaveFormsSettings} className="bg-primary text-white rounded-xl px-5 py-2.5 text-xs font-bold">Save Email Configs</button>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -4606,7 +4606,7 @@ export default function AdminSettingsPage() {
                         <input type="email" value={emailConfigs.fromEmail} onChange={e => setEmailConfigs(prev => ({ ...prev, fromEmail: e.target.value }))} className="rounded-xl border border-slate-200 p-3 text-sm" />
                       </label>
                     </div>
-                    <p className="text-xs text-slate-500 m-0">The authenticated SMTP account or verified sender alias is used by the server. MAIL_FROM_NAME and MAIL_FROM_EMAIL environment variables take precedence if configured.</p>
+                    <p className="text-xs text-gray-500 m-0">The authenticated SMTP account or verified sender alias is used by the server. MAIL_FROM_NAME and MAIL_FROM_EMAIL environment variables take precedence if configured.</p>
                   </div>
                   {/* ── SMTP Environment Connection (.env Configured) Card ── */}
                   <div className="p-6 lg:p-7 rounded-3xl bg-gradient-to-r from-[#020e43] via-[#102e74] to-[#020e43] text-white border border-[#b50007]/40 shadow-xl relative overflow-hidden">
@@ -4686,7 +4686,7 @@ export default function AdminSettingsPage() {
                       </div>
                       <div>
                         <h4 className="text-sm font-extrabold text-slate-900 uppercase tracking-wider m-0">SUCCESS MESSAGE</h4>
-                        <p className="text-xs text-slate-500 mt-0.5 mb-0">Shown to the user immediately after a successful form submission.</p>
+                        <p className="text-xs text-gray-500 mt-0.5 mb-0">Shown to the user immediately after a successful form submission.</p>
                       </div>
                     </div>
 
@@ -4741,21 +4741,21 @@ export default function AdminSettingsPage() {
                   <div className="flex flex-col gap-5">
                     <div className="bg-white rounded-3xl border border-slate-100 p-5 flex flex-wrap items-center justify-between gap-4">
                       <div><h3 className="text-base font-extrabold text-slate-900 m-0">EMAIL TEMPLATE CONFIGURATION</h3>
-                        <p className="text-xs text-slate-500 mt-1 mb-0">Each form has two separately editable emails: Admin Notification and Customer Confirmation.</p></div>
+                        <p className="text-xs text-gray-500 mt-1 mb-0">Each form has two separately editable emails: Admin Notification and Customer Confirmation.</p></div>
                       <div className="flex gap-2 flex-wrap">
                         <button type="button" onClick={() => updateFormTemplate('body', selectedEmailAudience === 'admin' ? getEditableEmailTemplateHtml() : getEditableEmailTemplateHtml().replace('The following information was submitted through', 'Thank you. We received your request through'))} className="bg-slate-100 rounded-xl border border-slate-200 px-4 py-2 text-xs font-bold">Reset this body</button>
                         <button type="button" disabled={savingForms} onClick={handleSaveFormsSettings} className="bg-primary text-white rounded-xl px-5 py-2 text-xs font-bold">{savingForms ? 'Saving...' : 'Save Templates'}</button>
                       </div>
                     </div>
                     <div className="bg-white rounded-3xl border border-slate-100 p-4">
-                      <p className="text-[11px] font-bold uppercase text-slate-500 mb-3">Select form</p>
+                      <p className="text-[11px] font-bold uppercase text-gray-500 mb-3">Select form</p>
                       <div className="flex flex-wrap gap-2" role="tablist" aria-label="Email template forms">
                         {EMAIL_FORM_DEFINITIONS.map(form => <button key={form.key} type="button" role="tab" aria-selected={selectedEmailForm === form.key} onClick={() => setSelectedEmailForm(form.key)} className={`rounded-xl px-3 py-2 text-xs font-bold border ${selectedEmailForm === form.key ? 'bg-primary text-white border-primary' : 'bg-slate-50 text-slate-700 border-slate-200'}`}>{form.name}</button>)}
                       </div>
                     </div>
                     <div className="bg-white border border-slate-100 rounded-3xl p-5 flex flex-col gap-5">
                       <div className="flex flex-wrap items-center justify-between gap-3">
-                        <div><h4 className="m-0 text-sm font-extrabold text-slate-900">{selectedForm.name}</h4><p className="m-0 mt-1 text-xs text-slate-500">Configure both messages independently. Commas, semicolons, or line breaks separate email addresses.</p></div>
+                        <div><h4 className="m-0 text-sm font-extrabold text-slate-900">{selectedForm.name}</h4><p className="m-0 mt-1 text-xs text-gray-500">Configure both messages independently. Commas, semicolons, or line breaks separate email addresses.</p></div>
                         <div className="flex gap-2" role="tablist" aria-label="Email audience">
                           {(['admin', 'customer'] as const).map(audience => <button key={audience} type="button" role="tab" aria-selected={selectedEmailAudience === audience} onClick={() => setSelectedEmailAudience(audience)} className={`rounded-xl px-4 py-2 text-xs font-bold ${selectedEmailAudience === audience ? 'bg-primary text-white' : 'bg-slate-100 text-slate-800'}`}>{audience === 'admin' ? 'Admin Notification' : 'Customer Confirmation'}</button>)}
                         </div>
@@ -4766,10 +4766,10 @@ export default function AdminSettingsPage() {
                             <textarea rows={2} value={activeTemplate[field]} onChange={e => updateFormTemplate(field, e.target.value)} placeholder={field === 'to' && selectedEmailAudience === 'customer' ? '[Customer Email]' : 'name@example.com, second@example.com'} className="w-full rounded-xl border border-slate-200 bg-white p-3 text-xs font-mono normal-case text-slate-800" />
                           </label>)}
                         </div>
-                        <p className="text-xs text-slate-500 m-0">Use <code>[Customer Email]</code> in any address field to route to the submitting customer. Every email is sent using global From Name and From Email.</p>
+                        <p className="text-xs text-gray-500 m-0">Use <code>[Customer Email]</code> in any address field to route to the submitting customer. Every email is sent using global From Name and From Email.</p>
                         <label className="flex flex-col gap-2 text-xs font-bold text-slate-700">EMAIL SUBJECT
                           <input type="text" value={activeTemplate.subject} onChange={e => updateFormTemplate('subject', e.target.value)} className="w-full rounded-xl border border-slate-200 p-3 text-sm" />
-                          <span className="text-[11px] font-normal text-slate-500">Preview: {renderFormEmailSubject(activeTemplate.subject, selectedForm.name, exampleData)}</span>
+                          <span className="text-[11px] font-normal text-gray-500">Preview: {renderFormEmailSubject(activeTemplate.subject, selectedForm.name, exampleData)}</span>
                         </label>
                         <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
                           <div className="flex flex-wrap items-center justify-between gap-3 mb-3"><h5 className="text-xs font-extrabold uppercase text-slate-800 m-0">Available placeholders for {selectedForm.name}</h5>
@@ -4779,14 +4779,14 @@ export default function AdminSettingsPage() {
                             </div>
                           </div>
                           <div className="flex flex-wrap gap-2">{fields.map(field => <button key={field} type="button" onClick={() => updateFormTemplate(emailInsertTarget, `${activeTemplate[emailInsertTarget]} ${field}`)} className="bg-white border border-slate-200 hover:border-primary px-2.5 py-1.5 rounded-lg text-[11px] font-mono text-slate-700" title={`Insert ${field} into ${emailInsertTarget}`}>{field}</button>)}</div>
-                          <p className="text-[11px] text-slate-500 mt-3 mb-0">Click a placeholder to insert it. You can also type placeholders anywhere in the HTML or subject. Existing HTML tokens such as <code>{'{{SUBMISSION_ROWS}}'}</code> continue to work.</p>
+                          <p className="text-[11px] text-gray-500 mt-3 mb-0">Click a placeholder to insert it. You can also type placeholders anywhere in the HTML or subject. Existing HTML tokens such as <code>{'{{SUBMISSION_ROWS}}'}</code> continue to work.</p>
                         </div>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
                           <div className="bg-[#0B132B] rounded-2xl p-4 text-white flex flex-col gap-3"><div className="text-xs font-bold">&lt;/&gt; EMAIL BODY HTML EDITOR <span className="text-emerald-400 text-[10px]">Live</span></div>
                             <textarea rows={22} value={activeTemplate.body} onChange={e => updateFormTemplate('body', e.target.value)} className="w-full flex-1 bg-slate-900 text-white border border-slate-700 rounded-xl p-3 text-xs font-mono leading-relaxed" />
                           </div>
                           <div className="rounded-2xl border border-slate-200 p-4 flex flex-col gap-3"><div className="text-xs font-bold uppercase text-slate-700">Real-time email preview</div>
-                            <div className="text-[11px] text-slate-500">To: {renderEmailTokens(activeTemplate.to, selectedForm.name, exampleData) || '(not configured)'}</div>
+                            <div className="text-[11px] text-gray-500">To: {renderEmailTokens(activeTemplate.to, selectedForm.name, exampleData) || '(not configured)'}</div>
                             <iframe sandbox="" title={`${selectedForm.name} ${selectedEmailAudience} email preview`} srcDoc={renderFormEmailBody(activeTemplate.body, selectedForm.name, exampleData, selectedEmailAudience)} className="min-h-[430px] w-full rounded-xl border border-slate-200 bg-white" />
                           </div>
                         </div>
@@ -4807,7 +4807,7 @@ export default function AdminSettingsPage() {
                           🔄
                         </button>
                       </h4>
-                      <p className="text-xs text-slate-500 mt-0.5 mb-0 font-medium">Real-time incoming lead submissions across all active forms.</p>
+                      <p className="text-xs text-gray-500 mt-0.5 mb-0 font-medium">Real-time incoming lead submissions across all active forms.</p>
                     </div>
                     <div className="flex items-center gap-3">
                       {selectedInboxItems.length > 0 && (
@@ -4907,7 +4907,7 @@ export default function AdminSettingsPage() {
                           🔄
                         </button>
                       </h4>
-                      <p className="text-xs text-slate-500 mt-0.5 mb-0 font-medium">Real-time tracking of form notification emails sent to administrators.</p>
+                      <p className="text-xs text-gray-500 mt-0.5 mb-0 font-medium">Real-time tracking of form notification emails sent to administrators.</p>
                     </div>
                   </div>
 
@@ -4936,7 +4936,7 @@ export default function AdminSettingsPage() {
                                   </span>
                                 </td>
                                 <td className="py-3 px-4 font-mono text-slate-700">{log.sentTo}</td>
-                                <td className="py-3 px-4 text-slate-500 max-w-[250px] truncate" title={log.details || ''}>{log.details}</td>
+                                <td className="py-3 px-4 text-gray-500 max-w-[250px] truncate" title={log.details || ''}>{log.details}</td>
                               </tr>
                             );
                           })
@@ -4955,7 +4955,7 @@ export default function AdminSettingsPage() {
 
           {/* ================= OTHER TABS PLACEHOLDER ================= */}
           {activeTab !== 'header-footer' && activeTab !== 'seo' && activeTab !== 'identity' && activeTab !== 'share' && activeTab !== 'users' && activeTab !== 'auth' && activeTab !== 'popup' && activeTab !== 'css' && activeTab !== 'forms' && activeTab !== 'currency' && (
-            <div className="p-6 text-center text-slate-500">
+            <div className="p-6 text-center text-gray-500">
               <h3 className="text-base font-bold text-slate-900 mb-2">
                 {TABS.find((t) => t.id === activeTab)?.label} Configuration
               </h3>
@@ -5008,7 +5008,7 @@ export default function AdminSettingsPage() {
 
               {editingItem.parentId && navTree.some((item: any) => item.id === editingItem.parentId && item.label?.toLowerCase() === 'destinations') && destinationsList.length > 0 && (
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Or Select Destination</label>
+                  <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Or Select Destination</label>
                   <select
                     value={editingItem.id?.startsWith('destination-') ? editingItem.id : ''}
                     onChange={(e) => {
@@ -5025,7 +5025,7 @@ export default function AdminSettingsPage() {
 
               {pagesList && pagesList.length > 0 && (
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Or Select Existing Website Page</label>
+                  <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Or Select Existing Website Page</label>
                   <select
                     value=""
                     onChange={(e) => {
@@ -5086,7 +5086,7 @@ export default function AdminSettingsPage() {
             {/* Drawer Header Toolbar */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-white shrink-0">
               <h3 className="font-bold text-slate-900 m-0 text-base">Message Details</h3>
-              <button onClick={() => setActiveInboxMsg(null)} className="p-2 bg-slate-50 rounded-full text-slate-500 hover:text-slate-900 shadow-sm border border-slate-200 cursor-pointer transition-colors">
+              <button onClick={() => setActiveInboxMsg(null)} className="p-2 bg-slate-50 rounded-full text-gray-500 hover:text-slate-900 shadow-sm border border-slate-200 cursor-pointer transition-colors">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -5199,7 +5199,7 @@ export default function AdminSettingsPage() {
                   <a href="#" className="text-[#E7BE6E] text-xs font-bold hover:underline mb-8">
                     Visit Official Website →
                   </a>
-                  <p className="text-slate-500 text-[10px] m-0">
+                  <p className="text-gray-500 text-[10px] m-0">
                     © {new Date().getFullYear()} British Hajj Travel UK Ltd. All Rights Reserved.
                   </p>
                 </div>

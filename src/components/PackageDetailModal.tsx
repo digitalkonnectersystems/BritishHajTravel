@@ -298,7 +298,7 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
               </h3>
               <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-md space-y-6">
                 {(!detailData.overview || detailData.overview.length === 0) ? (
-                  <div className="text-sm text-slate-500">No overview data provided.</div>
+                  <div className="text-sm text-gray-500">No overview data provided.</div>
                 ) : (
                   detailData.overview.map((group: any, bIdx: number) => {
                     if (!group.groupTitle) return null;
@@ -405,9 +405,9 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
                           {faq.question}
                         </span>
                         {isOpenItem ? (
-                          <ChevronUp className="w-5 h-5 text-slate-400 shrink-0" />
+                          <ChevronUp className="w-5 h-5 text-gray-500 shrink-0" />
                         ) : (
-                          <ChevronDown className="w-5 h-5 text-slate-400 shrink-0" />
+                          <ChevronDown className="w-5 h-5 text-gray-500 shrink-0" />
                         )}
                       </button>
                       {isOpenItem && (
@@ -431,7 +431,7 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
               <div className="flex justify-between items-start pb-4 border-b border-slate-100">
                 <div>
                   <h4 className="font-bold font-serif text-red text-lg">{operatorName}</h4>
-                  <p className="text-xs text-slate-400 font-medium">{operatorReviews}</p>
+                  <p className="text-xs text-gray-500 font-medium">{operatorReviews}</p>
                 </div>
                 <div className="bg-red-soft text-red font-extrabold text-xs px-2.5 py-1 rounded-lg flex items-center gap-1 shadow-sm">
                   <span>{operatorRating}</span>
@@ -482,7 +482,7 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
                           </option>
                         ))}
                       </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <polyline points="6 9 12 15 18 9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
@@ -508,7 +508,7 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
                   <span className="group-hover:translate-x-1 transition-transform">➔</span>
                 </button>
 
-                <p className="text-[10px]! text-slate-400 text-center leading-normal pt-1">
+                <p className="text-[10px]! text-gray-500 text-center leading-normal pt-1">
                   *Hajj & Umrah Packages are subject to seat availability. Visa processing is included.
                 </p>
               </form>

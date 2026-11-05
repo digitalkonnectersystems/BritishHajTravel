@@ -136,7 +136,7 @@ export default function SessionTimer({ loginTime }: SessionTimerProps) {
               {/* Modal Heading */}
               <div className="space-y-1">
                 <h3 className="text-lg font-black text-slate-900 m-0">Admin Session Expiring Soon!</h3>
-                <p className="text-xs text-slate-500 m-0 leading-relaxed">
+                <p className="text-xs text-gray-500 m-0 leading-relaxed">
                   Your 8-hour administrator session will expire in less than 5 minutes. Save your work to avoid losing unsaved changes.
                 </p>
               </div>

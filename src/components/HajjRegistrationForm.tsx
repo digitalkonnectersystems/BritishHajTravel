@@ -143,7 +143,7 @@ export default function HajjRegistrationForm({ sourcePage, branded = false, head
           <div className="pt-3"><button type="submit" disabled={busy} className="bg-[#030d48] text-white font-medium text-[15px] rounded-sm px-4 py-2.5 hover:bg-[#152b74] disabled:opacity-50">{busy ? 'Submitting...' : buttonText}</button></div>
           {error && <p role="alert" className="text-red-700 text-sm">{error}</p>}
           {success && <p role="status" className="text-green-800 text-sm">{success}</p>}
-          <p className="text-xs text-slate-500">This is a registration enquiry, not a confirmed booking or Nusuk registration.</p>
+          <p className="text-xs text-gray-500">This is a registration enquiry, not a confirmed booking or Nusuk registration.</p>
         </form>
       </div>
     </div>
