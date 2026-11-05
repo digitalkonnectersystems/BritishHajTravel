@@ -130,11 +130,7 @@ export default function DestinationsPageSection({
                           {accommodations.map((hotel: any, hotelIndex: number) => (
                             <div key={hotel.id || hotelIndex} className="flex gap-3 p-2.5 rounded-2xl border border-[#eef0e4] bg-[#fcfdf9] items-start">
                               <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 bg-slate-100 relative flex items-center justify-center">
-<<<<<<< Updated upstream
                                 {hotel.image ? <img src={hotel.image} alt={hotel.name || hotel.label || 'Accommodation'} className="w-full h-full object-cover" /> : <LucideIcons.Hotel className="w-6 h-6 text-slate-400" />}
-=======
-                                {hotel.image ? <img src={hotel.image} alt={hotel.city} className="w-full h-full object-cover" /> : <LucideIcons.Hotel className="w-6 h-6 text-gray-500" />}
->>>>>>> Stashed changes
                               </div>
                               <div className="min-w-0 flex-1">
                                 <h4 className="text-primary font-black text-xs uppercase tracking-wider leading-none mb-1">{defaultDestinationLabels[hotel.id] && !(cardData[hotel.id]?.label || detailData?.[hotel.id]?.label) ? defaultDestinationLabels[hotel.id] : (hotel.label || 'Accommodation')}</h4>
