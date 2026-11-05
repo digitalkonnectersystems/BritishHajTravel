@@ -1197,7 +1197,7 @@ function PageBuilderContent() {
 
                       title: 'British Hajj Travel',
 
-                      description: "For over 20 years, British Hajj Travel has been a trusted travel agency in UK, offering Hajj and Umrah services, airline ticketing, and visa processing with unmatched expertise. We are UK's No. 1 authorized PIA seller agency and an official agent licensed by the Ministry of Hajj & Umrah, IATA, TICO, OCTA, and ASTA."
+                      description: "For over 25 years, British Hajj Travel has been a trusted travel agency in UK, offering Hajj and Umrah services, airline ticketing, and visa processing with unmatched expertise. We are UK's No. 1 authorized PIA seller agency and an official agent licensed by the Ministry of Hajj & Umrah, IATA, TICO, OCTA, and ASTA."
 
                     }
 
@@ -1291,7 +1291,7 @@ function PageBuilderContent() {
 
                   title: 'British Hajj Travel',
 
-                  description: "For over 20 years, British Hajj Travel has been a trusted travel agency in UK, offering Hajj and Umrah services, airline ticketing, and visa processing with unmatched expertise."
+                  description: "For over 25 years, British Hajj Travel has been a trusted travel agency in UK, offering Hajj and Umrah services, airline ticketing, and visa processing with unmatched expertise."
 
                 }
 
@@ -1750,7 +1750,7 @@ function PageBuilderContent() {
 
         title: 'British Hajj Travel',
 
-        description: "For over 20 years, British Hajj Travel has been a trusted travel agency in UK..."
+        description: "For over 25 years, British Hajj Travel has been a trusted travel agency in UK..."
 
       };
 
