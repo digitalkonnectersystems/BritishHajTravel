@@ -35,7 +35,7 @@ export function RequirementsContentSection({ data = {} }: { data?: any }) {
       "All non-UK passport holders must be resident in the UK.",
     ];
   return (
-    <div className="umrah-visa-requirements-panel !p-6">
+    <div className="umrah-visa-requirements-panel">
           <div className="umrah-visa-section-heading">
             <h2>{data.title || "Requirements for Umrah Visa Application"}</h2>
             <p>{data.subtitle || "Please make sure you have the following documents and information ready:"}</p>

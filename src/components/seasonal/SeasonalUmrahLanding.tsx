@@ -144,7 +144,7 @@ export default function SeasonalUmrahLanding({
                     {success ? <CheckCircle2 size={18} aria-hidden="true" className="shrink-0" /> : null}{status}
                   </p>
                 )}
-                <p className="text-[10px] leading-[1.4] text-[#d9dcf7] min-[440px]:col-span-2">Enquiries are not confirmed bookings.</p>
+                <p className="text-[10px]! leading-[1.4] text-[#d9dcf7] min-[440px]:col-span-2">Enquiries are not confirmed bookings.</p>
               </form>
             </section>
           </aside>

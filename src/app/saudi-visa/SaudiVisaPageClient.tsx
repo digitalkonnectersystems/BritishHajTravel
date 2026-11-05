@@ -13,7 +13,7 @@ import UmrahVisaDocumentGuideSection from "@/components/UmrahVisaDocumentGuideSe
 function ProcessStepsSection({ data }: { data?: any }) {
   return (
     <section
-      className="py-12 bg-white text-primary"
+      className="py-8 md:py-12 bg-white text-primary"
       style={data?.backgroundImage ? { backgroundImage: `linear-gradient(90deg, rgba(3, 19, 65, .0), rgba(3, 19, 65, .0)), url("${String(data.backgroundImage).replace(/"/g, "'")}")`, backgroundPosition: data.backgroundPosition || 'center', backgroundSize: data.backgroundSize || 'cover' } : undefined}
     >
       <div className="max-w-[1400px] mx-auto px-5 visa-grid-bottom grid grid-cols-1 md:grid-cols-2 gap-10 items-center">

@@ -551,7 +551,7 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
           <span>Submit Inquiry</span>
         </button>
 
-        <p className="text-[10px] text-slate-600 text-center leading-normal pt-1">
+        <p className="text-[10px]! text-slate-600 text-center leading-normal pt-1">
           *Subject to availability. Visa processing is included in our packages.
         </p>
       </form>

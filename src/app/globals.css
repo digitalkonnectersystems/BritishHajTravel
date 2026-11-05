@@ -1,5 +1,22 @@
 @import "tailwindcss";
 
+/* Public typography overrides section styles; important Tailwind utilities can opt out. */
+body:has(#bht-public-header) p {
+  font-size: 14px !important;
+
+  @variant md {
+    font-size: 16px !important;
+  }
+}
+
+body:has(#bht-public-header) h4 {
+  font-size: 16px !important;
+
+  @variant md {
+    font-size: 18px !important;
+  }
+}
+
 /* ============ DESIGN TOKENS ============ */
 :root {
   /* Brand & Base Colors */
@@ -269,10 +286,6 @@ h2.section-heading {
 }
 
 /* Custom CSS override */
-.\[\&_p\]\:text-\[15px\] p {
-  font-size: 1rem;
-}
-
 .\[\&_h3\]\:text-\[\#004B39\] h3 {
   color: var(--ink) !important;
 }
@@ -2743,6 +2756,46 @@ select {
   }
 }
 
+@media (width < 48rem) {
+  .visa-grid-bottom {
+    gap: 24px;
+  }
+
+  .visa-info-pane {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .visa-info-pane > * {
+    margin-block: 0;
+  }
+
+  .visa-info-pane .visa-contact-details {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .visa-info-pane .contact-item {
+    margin-block: 0;
+  }
+
+  .visa-info-pane > a {
+    align-self: center;
+  }
+
+  .visa-steps-pane {
+    gap: 12px;
+    padding-left: 0;
+  }
+
+  .visa-steps-pane > .visa-step-card {
+    margin-block: 0;
+    padding: 20px;
+  }
+}
+
 @media (max-width:576px) {
   .visa-contact-details {
     flex-direction: column;
@@ -3006,10 +3059,15 @@ hr {
 
 .umrah-visa-requirements-panel,
 .umrah-visa-form-panel {
+  min-width: 0;
   background: #fff;
   border-radius: 10px;
   padding: 16px;
   box-shadow: 0 8px 24px rgba(3, 31, 76, .06);
+}
+
+.umrah-visa-requirements-panel {
+  padding: 24px;
 }
 
 .umrah-visa-section-heading h2 {
@@ -3028,17 +3086,22 @@ hr {
 .umrah-visa-requirements-list {
   display: grid;
   gap: 10px;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .umrah-visa-requirement {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 14px;
   background: #f2f6fb;
   border-radius: 6px;
   padding: 8px 12px;
   min-height: 52px;
+}
+
+.umrah-visa-requirement > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .umrah-visa-requirement-icon {
@@ -3149,6 +3212,21 @@ hr {
 @media (max-width: 800px) {
   .umrah-visa-application-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (width < 40rem) {
+  .umrah-visa-requirements-panel {
+    padding: 16px;
+  }
+
+  .umrah-visa-requirements-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .umrah-visa-requirement {
+    gap: 10px;
+    padding: 12px;
   }
 }
 

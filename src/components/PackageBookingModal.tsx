@@ -635,7 +635,7 @@ export default function PackageBookingModal({
 
 
               {/* Package Disclaimer */}
-              <p className="text-[10px] text-slate-600 text-center leading-normal pt-1">
+              <p className="text-[10px]! text-slate-600 text-center leading-normal pt-1">
                 *Hajj & Umrah Packages are subject to seat
                 availability. Visa processing is included.
               </p>

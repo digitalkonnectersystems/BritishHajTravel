@@ -209,7 +209,7 @@ export default function AvailableFlightsSection({ data, bookingTarget }: { data?
                   </div>
                 </div>
                 <div className="mt-3 flex flex-col items-start gap-3 border-t border-slate-200 pt-3 sm:mt-4 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="flex min-w-0 items-center gap-2 text-[10px] text-slate-600 sm:text-[11px]">
+                  <p className="flex min-w-0 items-center gap-2 text-[10px]! text-slate-600 sm:text-[11px]">
                     <span className="text-base text-[#10254a]" aria-hidden="true">♿</span>
                     <span><strong className="font-semibold">Available Seats:</strong> {flight.seatsValue || flight.seatsText?.replace(/^available seats:\s*/i, "") || ""}</span>
                   </p>

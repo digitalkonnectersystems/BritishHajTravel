@@ -197,13 +197,13 @@ export default function AboutPageClient({ initialPageData, sectionContext }: { i
                         <div className="p-2.5 rounded-xl bg-emerald-50/50 border border-emerald-100/50 flex gap-3 items-center">
                           <div className="flex-1">
                             <h4 className="text-xs font-bold text-slate-800">{pkg.makkahHotel.name}</h4>
-                            <p className="text-[10px] text-slate-500">{pkg.makkahHotel.location}</p>
+                            <p className="text-[10px]! text-slate-500">{pkg.makkahHotel.location}</p>
                           </div>
                         </div>
                         <div className="p-2.5 rounded-xl bg-amber-50/40 border border-amber-100/50 flex gap-3 items-center">
                           <div className="flex-1">
                             <h4 className="text-xs font-bold text-slate-800">{pkg.madinahHotel.name}</h4>
-                            <p className="text-[10px] text-slate-500">{pkg.madinahHotel.location}</p>
+                            <p className="text-[10px]! text-slate-500">{pkg.madinahHotel.location}</p>
                           </div>
                         </div>
                       </div>

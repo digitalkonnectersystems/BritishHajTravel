@@ -50,7 +50,7 @@ export default function PackageCustomizationCTA({ journey }: { journey: 'hajj' |
     finally { setSending(false); }
   };
   const inputClass = 'block w-full min-h-11 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-950 focus:border-primary focus:outline-none focus:ring-2 focus:ring-blue-100';
-  return <section className="py-6 md:py-10 bg-[#f4f7fb]" aria-label={`Customized ${name} Package`}>
+  return <section className="py-6 md:py-10 bg-[#f4f7fb] pb-0" aria-label={`Customized ${name} Package`}>
     <div className="max-w-[1400px] mx-auto px-5">
       <div className="mx-auto flex max-w-[1440px] flex-col gap-6 rounded-2xl bg-primary p-6 text-white shadow-sm md:flex-row md:items-center md:justify-between md:p-10">
         <div className="flex-1">

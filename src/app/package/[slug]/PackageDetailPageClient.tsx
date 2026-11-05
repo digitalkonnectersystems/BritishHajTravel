@@ -923,7 +923,7 @@ export default function PackageDetailPageClient({
                   <span>{pkg?.status === 'sold_out' ? 'SOLD OUT' : `Book ${pkg.badgeTag || "Package"}`}</span>
                 </button>
 
-                <p className="text-[10px] text-slate-600 text-center leading-normal pt-1">
+                <p className="text-[10px]! text-slate-600 text-center leading-normal pt-1">
                   *Hajj & Umrah Packages are subject to seat availability. Visa processing is included.
                 </p>
               </form>
