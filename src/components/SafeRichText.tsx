@@ -107,13 +107,6 @@ function handleRichTextClick(event: MouseEvent<HTMLDivElement>) {
 
   event.preventDefault();
   window.open(url.toString(), '_blank', 'noopener,noreferrer');
-
-  const download = document.createElement('a');
-  download.href = url.toString();
-  download.download = url.pathname.split('/').pop() || 'visa-application-form.pdf';
-  document.body.appendChild(download);
-  download.click();
-  download.remove();
 }
 
 export default function SafeRichText({ html, className = '', unstyled = false, stripInlineTypography = false }: { html: string; className?: string; unstyled?: boolean; stripInlineTypography?: boolean }) {
