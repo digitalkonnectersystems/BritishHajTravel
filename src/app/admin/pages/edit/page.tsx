@@ -8275,7 +8275,7 @@ function PageBuilderContent() {
 
                                     <div key={videoIndex} className="mb-2 grid grid-cols-[1fr_1fr_auto] gap-2">
 
-                                      <input value={typeof video === 'string' ? video : video?.url || ''} onChange={(event) => updateSectionData(sec.id, 'videos', (Array.isArray(sec.data?.videos) ? sec.data.videos : []).map((entry: any, index: number) => index === videoIndex ? { ...(typeof entry === 'string' ? {} : entry), url: event.target.value } : entry))} placeholder="YouTube, Vimeo, or embed URL" className="rounded border border-slate-300 px-2 py-1.5 text-xs text-slate-900" />
+                                      <input value={typeof video === 'string' ? video : video?.url || ''} onChange={(event) => updateSectionData(sec.id, 'videos', (Array.isArray(sec.data?.videos) ? sec.data.videos : []).map((entry: any, index: number) => index === videoIndex ? { ...(typeof entry === 'string' ? {} : entry), url: event.target.value } : entry))} placeholder="YouTube, Vimeo, TikTok, or embed URL" className="rounded border border-slate-300 px-2 py-1.5 text-xs text-slate-900" />
 
                                       <input value={typeof video === 'string' ? '' : video?.title || ''} onChange={(event) => updateSectionData(sec.id, 'videos', (Array.isArray(sec.data?.videos) ? sec.data.videos : []).map((entry: any, index: number) => index === videoIndex ? { ...(typeof entry === 'string' ? { url: entry } : entry), title: event.target.value } : entry))} placeholder="Video title (optional)" className="rounded border border-slate-300 px-2 py-1.5 text-xs text-slate-900" />
 

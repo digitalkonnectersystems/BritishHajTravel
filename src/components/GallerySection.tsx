@@ -5,15 +5,41 @@ import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 
 type GalleryImage = string | { image?: string; src?: string; url?: string; alt?: string; title?: string };
 type GalleryVideo = { url?: string; title?: string } | string;
+type GalleryData = {
+  images?: GalleryImage[];
+  videos?: GalleryVideo[];
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+};
+
+function getTikTokVideoId(url: URL) {
+  if (url.hostname !== 'tiktok.com' && !url.hostname.endsWith('.tiktok.com')) return null;
+  return url.pathname.match(/^\/@[^/]+\/video\/(\d+)/)?.[1] || null;
+}
+
+function isTikTokUrl(value: string) {
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' && (url.hostname === 'tiktok.com' || url.hostname.endsWith('.tiktok.com'));
+  } catch {
+    return false;
+  }
+}
 
 function getImage(item: GalleryImage) {
   if (typeof item === 'string') return { src: item, alt: 'British Hajj Travel gallery image' };
   return { src: item.image || item.src || item.url || '', alt: item.alt || item.title || 'British Hajj Travel gallery image' };
 }
 
-function getEmbedUrl(value: string) {
+function getEmbedUrl(value: string): string | null {
   try {
     const url = new URL(value);
+    const tiktokVideoId = getTikTokVideoId(url);
+    if (tiktokVideoId) {
+      return `https://www.tiktok.com/player/v1/${tiktokVideoId}?music_info=1&description=1`;
+    }
+    if (url.hostname === 'tiktok.com' || url.hostname.endsWith('.tiktok.com')) return null;
     if (url.hostname.includes('youtube.com')) {
       const id = url.searchParams.get('v');
       return id ? `https://www.youtube.com/embed/${id}` : value;
@@ -26,7 +52,7 @@ function getEmbedUrl(value: string) {
   return value;
 }
 
-export default function GallerySection({ data }: { data?: any }) {
+export default function GallerySection({ data }: { data?: GalleryData }) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const images = (Array.isArray(data?.images) ? data.images : [])
     .map(getImage)
@@ -86,14 +112,12 @@ export default function GallerySection({ data }: { data?: any }) {
 
         {videos.length > 0 && (
           <div className="mt-12 border-t border-slate-200 pt-10">
-            <h3 className="mb-6 text-center text-xl font-bold text-[#071a54]">Videos</h3>
+            <h3 className="mb-6 text-center text-2xl font-bold text-primary">Videos</h3>
             <div className="grid gap-6 md:grid-cols-2">
               {videos.map((video, index) => (
                 <div key={`${video.url}-${index}`} className="overflow-hidden rounded-lg bg-black shadow-lg">
-                  <div className="aspect-video">
-                    <iframe className="h-full w-full" src={getEmbedUrl(video.url)} title={video.title} loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />
-                  </div>
-                  {video.title !== 'Gallery video' && <p className="bg-white px-4 py-3 text-sm font-semibold text-slate-700">{video.title}</p>}
+                  <GalleryVideoEmbed video={video} />
+                  {video.title !== 'Gallery video' && <p className="bg-white px-4 py-3 text-sm font-semibold text-primary">{video.title}</p>}
                 </div>
               ))}
             </div>
@@ -111,5 +135,48 @@ export default function GallerySection({ data }: { data?: any }) {
         </div>
       )}
     </section>
+  );
+}
+
+function GalleryVideoEmbed({ video }: { video: { url: string; title: string } }) {
+  const [embedUrl, setEmbedUrl] = useState<string | null>(() => getEmbedUrl(video.url));
+  const [resolutionFailed, setResolutionFailed] = useState(false);
+  const isPortraitVideo = isTikTokUrl(video.url);
+
+  useEffect(() => {
+    if (embedUrl || !isTikTokUrl(video.url)) return;
+
+    const controller = new AbortController();
+    const params = new URLSearchParams({ url: video.url });
+    fetch(`/api/gallery/tiktok-embed?${params.toString()}`, { signal: controller.signal })
+      .then(async (response) => {
+        const result = await response.json();
+        if (!response.ok || typeof result.embedUrl !== 'string') {
+          throw new Error(result.error || 'Unable to resolve this TikTok video.');
+        }
+        setEmbedUrl(result.embedUrl);
+      })
+      .catch((error: unknown) => {
+        if (controller.signal.aborted) return;
+        console.error('Gallery TikTok embed resolution failed:', error);
+        setResolutionFailed(true);
+      });
+
+    return () => controller.abort();
+  }, [embedUrl, video.url]);
+
+  return (
+    <div className={isPortraitVideo ? 'aspect-[9/16] md:aspect-video' : 'aspect-video'}>
+      {embedUrl ? (
+        <iframe className="h-full w-full" src={embedUrl} title={video.title} loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />
+      ) : resolutionFailed ? (
+        <div className="flex h-full flex-col items-center justify-center gap-2 bg-slate-950 px-4 text-center text-sm text-white">
+          <p>Unable to load this video embed.</p>
+          <a href={video.url} target="_blank" rel="noreferrer" className="underline underline-offset-2">Open video on TikTok</a>
+        </div>
+      ) : (
+        <div className="flex h-full items-center justify-center bg-slate-950 text-sm text-white">Loading video…</div>
+      )}
+    </div>
   );
 }

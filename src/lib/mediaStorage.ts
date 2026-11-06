@@ -11,7 +11,7 @@ export function getMediaRoot() {
   const env = process.env.MEDIA_STORAGE_ROOT?.trim();
   return env ? path.resolve(process.cwd(), env) : path.join(process.cwd(), 'public', 'images_BHT');
 }
-export function getMediaDirectories() {
+export function getMediaDirectories(): {root: string; storage: 'local' | 'public'}[] {
   const root = getMediaRoot();
   const releaseRoot = path.resolve(process.cwd(), 'public', 'images_BHT');
   return root === releaseRoot ? [{root, storage: 'local'}] : [{root, storage:'local'}, {root:releaseRoot, storage:'public'}];
