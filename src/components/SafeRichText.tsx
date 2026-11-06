@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type MouseEvent } from 'react';
 import { RICH_TEXT_PROSE_CLASS } from '@/lib/richTextProseClass';
 
 // Editor content is HTML. Treat tags as markup rather than printing them as
@@ -47,6 +47,13 @@ function safeUrl(url: string, image: boolean): boolean {
   return /^(https?:\/\/|mailto:|tel:|#)/i.test(clean);
 }
 
+function normalizeRichTextUrl(url: string): string {
+  const clean = url.trim();
+  return clean.startsWith('/uploads/')
+    ? clean.replace(/^\/uploads\//, '/images_BHT/uploads/')
+    : clean;
+}
+
 function scrubHtml(html: string, stripInlineTypography = false): string {
   const doc = new DOMParser().parseFromString(normalizeEditorHtml(html), 'text/html');
   const visit = (root: Element) => {
@@ -79,6 +86,7 @@ function scrubHtml(html: string, stripInlineTypography = false): string {
           if (safeDeclarations.length) child.setAttribute('style', safeDeclarations.join('; '));
           else child.removeAttribute('style');
         }
+        if (tag === 'a' && key === 'href') child.setAttribute('href', normalizeRichTextUrl(value));
       }
       if (tag === 'a') { child.setAttribute('rel', 'noopener noreferrer'); }
     }
@@ -87,12 +95,33 @@ function scrubHtml(html: string, stripInlineTypography = false): string {
   return doc.body.innerHTML;
 }
 
+function handleRichTextClick(event: MouseEvent<HTMLDivElement>) {
+  const target = event.target;
+  if (!(target instanceof Element)) return;
+  const anchor = target.closest('a');
+  if (!(anchor instanceof HTMLAnchorElement) || !event.currentTarget.contains(anchor)) return;
+  if (!anchor.textContent?.toLowerCase().includes('download visa application form')) return;
+
+  const url = new URL(anchor.href, window.location.href);
+  if (!/^https?:$/.test(url.protocol) || !url.pathname.toLowerCase().endsWith('.pdf')) return;
+
+  event.preventDefault();
+  window.open(url.toString(), '_blank', 'noopener,noreferrer');
+
+  const download = document.createElement('a');
+  download.href = url.toString();
+  download.download = url.pathname.split('/').pop() || 'visa-application-form.pdf';
+  document.body.appendChild(download);
+  download.click();
+  download.remove();
+}
+
 export default function SafeRichText({ html, className = '', unstyled = false, stripInlineTypography = false }: { html: string; className?: string; unstyled?: boolean; stripInlineTypography?: boolean }) {
   const [sanitized, setSanitized] = useState('');
   useEffect(() => { setSanitized(scrubHtml(html || '', stripInlineTypography)); }, [html, stripInlineTypography]);
   // Components with a dedicated typographic system may opt out of the shared prose utility classes.
   const proseClass = unstyled ? className : `${RICH_TEXT_PROSE_CLASS} ${className}`;
   // Render as plain text until the browser sanitizer has processed the HTML.
-  if (!sanitized) return <div className={proseClass}>{html && !/<\/?[a-z]/i.test(html) ? html : null}</div>;
-  return <div className={proseClass} dangerouslySetInnerHTML={{ __html: sanitized }} />;
+  if (!sanitized) return <div className={proseClass} onClick={handleRichTextClick}>{html && !/<\/?[a-z]/i.test(html) ? html : null}</div>;
+  return <div className={proseClass} onClick={handleRichTextClick} dangerouslySetInnerHTML={{ __html: sanitized }} />;
 }
