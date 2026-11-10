@@ -282,10 +282,10 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
                     <img
                       src="/images_BHT/bht-fav-logo.png"
                       className="w-16 h-16 rounded-full p-2 bg-white object-cover"
-                      alt="British Hajj Travel logo"
+                      alt="British Haj Travel logo"
                     />
                     <div className="reviews-owner">
-                      <b>British Hajj Travel Ltd - United Kingdom</b>
+                      <b>British Haj Travel Ltd - United Kingdom</b>
                       <div className="stars">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
