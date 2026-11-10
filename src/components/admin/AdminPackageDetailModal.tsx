@@ -3,6 +3,7 @@ import { useCurrency } from '@/components/CurrencyProvider';
 
 import React, { useState, useEffect } from "react";
 import { X, Plus, Trash2, HelpCircle, Star, Check, AlertCircle, FileText, Globe, Tag, DollarSign, Clock } from "lucide-react";
+import ModalPortal from "@/components/ui/ModalPortal";
 
 interface AdminPackageDetailModalProps {
   isOpen: boolean;
@@ -31,6 +32,15 @@ export default function AdminPackageDetailModal({
   const [eligibility, setEligibility] = useState("");
   const [importantNotice, setImportantNotice] = useState("");
   const [faqs, setFaqs] = useState<Array<{ question: string; answer: string }>>([]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   useEffect(() => {
     if (pkg) {
@@ -132,7 +142,8 @@ Side trips to Pakistan or any other destination available with an additional cos
   };
 
   return (
-    <div className="fixed inset-0 z-[99999] bg-slate-950/80 backdrop-blur-sm flex justify-center items-center p-4 animate-in fade-in duration-200">
+    <ModalPortal>
+      <div className="fixed inset-0 z-[99999] bg-slate-950/80 backdrop-blur-sm flex justify-center items-center p-4 animate-in fade-in duration-200">
       <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh]">
         {/* Modal Header */}
         <div className="bg-primary text-white p-5 flex justify-between items-center">
@@ -455,5 +466,6 @@ Side trips to Pakistan or any other destination available with an additional cos
         </div>
       </div>
     </div>
+    </ModalPortal>
   );
 }

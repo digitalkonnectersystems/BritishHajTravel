@@ -28,6 +28,7 @@ import type { SeoGenerationContext } from '@/actions/pageActions';
 import { getEntitySeoAction, saveEntitySeoAction } from '@/actions/seoActions';
 import type { SeoEntityType } from '@/lib/seoMetadata';
 import { SEO_TITLE_LIMIT, SEO_DESCRIPTION_LIMIT, seoTextIndicator, validateSeoText } from '@/lib/seoLimits';
+import ModalPortal from '@/components/ui/ModalPortal';
 
 interface SeoCenterModalProps {
   isOpen: boolean;
@@ -471,7 +472,8 @@ export default function SeoCenterModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200 overflow-hidden">
+    <ModalPortal>
+      <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200 overflow-hidden">
       <div className="bg-[#F8FAFC] w-full max-w-6xl h-[86vh] max-h-[820px] rounded-3xl shadow-2xl border border-slate-800 flex flex-col overflow-hidden text-slate-800 animate-in zoom-in-95 duration-200 my-auto">
 
         {/* ── Sleek Dark Top Header Bar ── */}
@@ -1199,5 +1201,6 @@ export default function SeoCenterModal({
         </div>
       </div>
     </div>
+    </ModalPortal>
   );
 }

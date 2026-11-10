@@ -52,9 +52,14 @@ const navItems = [
     icon: <LayoutDashboard className="w-4 h-4" />,
   },
   {
-    label: 'Forms Enquiries',
-    href: '/admin/enquiries',
-    icon: <Mail className="w-4 h-4" />,
+    label: 'Pages',
+    href: '/admin/pages',
+    icon: <Layers className="w-4 h-4" />,
+  },
+  {
+    label: 'Blogs',
+    href: '/admin/blogs',
+    icon: <BookOpen className="w-4 h-4" />,
   },
   {
     label: 'Hajj Packages',
@@ -87,21 +92,6 @@ const navItems = [
     icon: <Globe className="w-4 h-4" />,
   },
   {
-    label: 'Pages',
-    href: '/admin/pages',
-    icon: <Layers className="w-4 h-4" />,
-  },
-  {
-    label: 'Media Library',
-    href: '/admin/media',
-    icon: <Images className="w-4 h-4" />,
-  },
-  {
-    label: 'Blogs',
-    href: '/admin/blogs',
-    icon: <BookOpen className="w-4 h-4" />,
-  },
-  {
     label: 'Guides',
     href: '/admin/guides',
     icon: <BookOpen className="w-4 h-4" />,
@@ -110,6 +100,16 @@ const navItems = [
     label: 'SEO Center',
     href: '/admin/seo',
     icon: <Search className="w-4 h-4" />,
+  },
+  {
+    label: 'Media Library',
+    href: '/admin/media',
+    icon: <Images className="w-4 h-4" />,
+  },
+  {
+    label: 'Forms Enquiries',
+    href: '/admin/enquiries',
+    icon: <Mail className="w-4 h-4" />,
   },
   {
     label: 'Customized Enquiries',

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { updateEnquiryStatus, deleteEnquiryAction, getEnquiriesList } from '@/actions/enquiryActions';
 import ConfirmModal, { ConfirmModalConfig } from '@/components/ui/ConfirmModal';
+import ModalPortal from '@/components/ui/ModalPortal';
 import { Trash2, Search, Filter, Eye, X, Mail } from 'lucide-react';
 import { WaveAnalyticsChart, chartDays, dailySeries } from '@/components/admin/WaveAnalyticsChart';
 import { ENQUIRY_FORM_CATALOG, enquiryFormKey, enquiryFormLabel } from '@/lib/formEnquiryCatalog';
@@ -46,6 +47,15 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
   const [confirmConfig, setConfirmConfig] = useState<ConfirmModalConfig | null>(null);
   const [selectedEnquiry, setSelectedEnquiry] = useState<any | null>(null);
+
+  useEffect(() => {
+    if (!selectedEnquiry) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSelectedEnquiry(null);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedEnquiry]);
 
   const filtered = enquiries.filter((e) => {
     const q = search.trim().toLowerCase();
@@ -310,78 +320,86 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
       </div>
 
       {selectedEnquiry && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/60 p-4" onClick={() => setSelectedEnquiry(null)}>
-          <div className="flex max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl" onClick={(event) => event.stopPropagation()}>
-            <div className="flex items-start justify-between gap-4 border-b border-slate-200 px-5 py-4">
-              <div>
-                <div className="flex items-center gap-2">
-                  <Mail className="h-5 w-5 text-primary" />
-                  <h2 className="m-0 text-lg font-extrabold text-slate-900">Enquiry &amp; Sent Email</h2>
-                </div>
-                <p className="mt-1 mb-0 text-xs text-gray-500">{selectedEnquiry.enquiryNumber} · {selectedEnquiry.sourceForm || 'Form source not recorded'}</p>
-              </div>
-              <button type="button" onClick={() => setSelectedEnquiry(null)} className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 text-white bg-red hover:bg-red-700 cursor-pointer" title="Close">
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-
-            <div className="grid min-h-0 flex-1 grid-cols-1 overflow-hidden lg:grid-cols-[340px_minmax(0,1fr)]">
-              <div className="overflow-y-auto border-b border-slate-200 bg-slate-50 p-5 lg:border-b-0 lg:border-r">
-                <h3 className="mb-3 text-xs font-black uppercase tracking-wider text-slate-700">Submission</h3>
-                <div className="space-y-2 text-xs">
-                  {[
-                    ['Name', selectedEnquiry.fullName],
-                    ['Email', selectedEnquiry.email],
-                    ['Phone', selectedEnquiry.phone],
-                    ['Package / Details', selectedEnquiry.preferredPackageType],
-                    ['Travel / Departure', selectedEnquiry.departureMonth],
-                    ['Adults / Passengers', selectedEnquiry.adults],
-                    ['Children', selectedEnquiry.children],
-                    ['Infants', selectedEnquiry.infants],
-                    ['Message', selectedEnquiry.message],
-                  ].filter(([, value]) => value !== null && value !== undefined && String(value).trim() !== '').map(([label, value]) => (
-                    <div key={String(label)} className="rounded-xl border border-slate-200 bg-white p-3">
-                      <div className="text-[9px] font-black uppercase tracking-wider text-gray-500">{label}</div>
-                      <div className="mt-1 whitespace-pre-wrap break-words font-semibold text-slate-800">{String(value)}</div>
-                    </div>
-                  ))}
-                </div>
-
-                <h3 className="mb-3 mt-5 text-xs font-black uppercase tracking-wider text-slate-700">Email Routing</h3>
-                <div className="space-y-2 text-xs">
-                  {[
-                    ['To', selectedEnquiry.emailTo || 'Not recorded'],
-                    ['CC', selectedEnquiry.emailCc || 'None'],
-                    ['BCC', selectedEnquiry.emailBcc || 'None'],
-                    ['Subject', selectedEnquiry.emailSubject || 'Not recorded'],
-                    ['Delivery', selectedEnquiry.emailDeliveryStatus || 'Unknown'],
-                  ].map(([label, value]) => (
-                    <div key={String(label)} className="rounded-xl border border-slate-200 bg-white p-3">
-                      <div className="text-[9px] font-black uppercase tracking-wider text-gray-500">{label}</div>
-                      <div className="mt-1 break-words font-semibold text-slate-800">{String(value)}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex min-h-[520px] flex-col bg-white p-4">
-                <div className="mb-2 text-xs font-black uppercase tracking-wider text-slate-700">Exact Admin Email Preview</div>
-                {selectedEnquiry.emailHtml ? (
-                  <iframe
-                    title={`Email preview ${selectedEnquiry.enquiryNumber}`}
-                    srcDoc={selectedEnquiry.emailHtml}
-                    sandbox=""
-                    className="min-h-[500px] flex-1 rounded-2xl border border-slate-200 bg-white"
-                  />
-                ) : (
-                  <div className="flex min-h-[500px] flex-1 items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-sm text-gray-500">
-                    No email snapshot is stored for this enquiry. Records created before email snapshot storage cannot be reconstructed exactly. After applying the latest database migration, every new submission stores the exact prepared admin email before SMTP delivery is attempted.
+        <ModalPortal>
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Enquiry details"
+            className="fixed inset-0 z-[99999] flex items-center justify-center bg-slate-950/70 p-3 sm:p-5 backdrop-blur-xs animate-in fade-in duration-150"
+            onClick={() => setSelectedEnquiry(null)}
+          >
+            <div className="flex max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl" onClick={(event) => event.stopPropagation()}>
+              <div className="flex items-start justify-between gap-4 border-b border-slate-200 px-5 py-4">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Mail className="h-5 w-5 text-primary" />
+                    <h2 className="m-0 text-lg font-extrabold text-slate-900">Enquiry &amp; Sent Email</h2>
                   </div>
-                )}
+                  <p className="mt-1 mb-0 text-xs text-gray-500">{selectedEnquiry.enquiryNumber} · {selectedEnquiry.sourceForm || 'Form source not recorded'}</p>
+                </div>
+                <button type="button" onClick={() => setSelectedEnquiry(null)} className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 text-white bg-red hover:bg-red-700 cursor-pointer" title="Close">
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              <div className="grid min-h-0 flex-1 grid-cols-1 overflow-hidden lg:grid-cols-[340px_minmax(0,1fr)]">
+                <div className="overflow-y-auto border-b border-slate-200 bg-slate-50 p-5 lg:border-b-0 lg:border-r">
+                  <h3 className="mb-3 text-xs font-black uppercase tracking-wider text-slate-700">Submission</h3>
+                  <div className="space-y-2 text-xs">
+                    {[
+                      ['Name', selectedEnquiry.fullName],
+                      ['Email', selectedEnquiry.email],
+                      ['Phone', selectedEnquiry.phone],
+                      ['Package / Details', selectedEnquiry.preferredPackageType],
+                      ['Travel / Departure', selectedEnquiry.departureMonth],
+                      ['Adults / Passengers', selectedEnquiry.adults],
+                      ['Children', selectedEnquiry.children],
+                      ['Infants', selectedEnquiry.infants],
+                      ['Message', selectedEnquiry.message],
+                    ].filter(([, value]) => value !== null && value !== undefined && String(value).trim() !== '').map(([label, value]) => (
+                      <div key={String(label)} className="rounded-xl border border-slate-200 bg-white p-3">
+                        <div className="text-[9px] font-black uppercase tracking-wider text-gray-500">{label}</div>
+                        <div className="mt-1 whitespace-pre-wrap break-words font-semibold text-slate-800">{String(value)}</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <h3 className="mb-3 mt-5 text-xs font-black uppercase tracking-wider text-slate-700">Email Routing</h3>
+                  <div className="space-y-2 text-xs">
+                    {[
+                      ['To', selectedEnquiry.emailTo || 'Not recorded'],
+                      ['CC', selectedEnquiry.emailCc || 'None'],
+                      ['BCC', selectedEnquiry.emailBcc || 'None'],
+                      ['Subject', selectedEnquiry.emailSubject || 'Not recorded'],
+                      ['Delivery', selectedEnquiry.emailDeliveryStatus || 'Unknown'],
+                    ].map(([label, value]) => (
+                      <div key={String(label)} className="rounded-xl border border-slate-200 bg-white p-3">
+                        <div className="text-[9px] font-black uppercase tracking-wider text-gray-500">{label}</div>
+                        <div className="mt-1 break-words font-semibold text-slate-800">{String(value)}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex min-h-[520px] flex-col bg-white p-4">
+                  <div className="mb-2 text-xs font-black uppercase tracking-wider text-slate-700">Exact Admin Email Preview</div>
+                  {selectedEnquiry.emailHtml ? (
+                    <iframe
+                      title={`Email preview ${selectedEnquiry.enquiryNumber}`}
+                      srcDoc={selectedEnquiry.emailHtml}
+                      sandbox=""
+                      className="min-h-[500px] flex-1 rounded-2xl border border-slate-200 bg-white"
+                    />
+                  ) : (
+                    <div className="flex min-h-[500px] flex-1 items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-sm text-gray-500">
+                      No email snapshot is stored for this enquiry. Records created before email snapshot storage cannot be reconstructed exactly. After applying the latest database migration, every new submission stores the exact prepared admin email before SMTP delivery is attempted.
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </ModalPortal>
       )}
 
       <ConfirmModal config={confirmConfig} onClose={() => setConfirmConfig(null)} />

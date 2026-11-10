@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Check, CheckSquare, Eye, CloudUpload, FileImage, FileText, Film, Grid2X2, ImageIcon, LayoutList, RefreshCcw, Search, Trash2, WandSparkles, X, RotateCcw, Ruler } from 'lucide-react';
 import { scanFrontendRenderedImages, type RenderedMediaMeasurement } from '@/lib/renderedMediaScanner';
+import ModalPortal from '@/components/ui/ModalPortal';
 
 export type MediaItem = { id: number; name: string; relativePath: string; url: string; mimeType: string; sizeBytes: number; storage: string; status: string; dimensions?: { width: number; height: number } | null };
 
@@ -39,6 +40,15 @@ export default function MediaLibrary({ onSelect, multiple = false, onClose, acce
   const [renderedSizes, setRenderedSizes] = useState<Record<string, RenderedMediaMeasurement>>({});
   const scanControllerRef = useRef<AbortController | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!preview) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setPreview(null);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [preview]);
   const limit = 40;
   const acceptedType = accept.startsWith('video/') ? 'videos' : accept.includes('pdf') ? 'documents' : accept.includes('image/') ? 'images' : 'all';
   const effectiveType = onSelect && acceptedType !== 'all' ? acceptedType : type;
@@ -224,6 +234,51 @@ export default function MediaLibrary({ onSelect, multiple = false, onClose, acce
         </button>)}
       </div>}
     <div className="flex items-center justify-between gap-3 text-xs text-gray-500"><span>Showing {items.length} of {total} matching media files</span><div className="flex items-center gap-2"><button type="button" disabled={page === 1} onClick={() => setPage(page - 1)} className="rounded-lg border border-slate-200 bg-white px-3 py-2 disabled:opacity-40">Previous</button><span>Page {page} / {Math.max(1, Math.ceil(total / limit))}</span><button type="button" disabled={page * limit >= total} onClick={() => setPage(page + 1)} className="rounded-lg border border-slate-200 bg-white px-3 py-2 disabled:opacity-40">Next</button></div></div>
-    {preview && <div role="dialog" aria-modal="true" aria-label="Media preview" className="fixed inset-0 z-[10001] flex items-center justify-center bg-slate-950/75 p-4" onMouseDown={e => { if (e.target === e.currentTarget) setPreview(null); }}><div className="w-full max-w-3xl rounded-2xl bg-white p-5 shadow-xl"><div className="mb-3 flex items-center justify-between gap-3"><h3 className="truncate font-bold text-[#092a35]">{preview.name}</h3><button type="button" aria-label="Close preview" onClick={() => setPreview(null)} className="rounded-lg p-2 hover:bg-slate-100"><X className="h-5 w-5" /></button></div><div className="flex max-h-[65vh] min-h-40 items-center justify-center overflow-hidden rounded-xl bg-slate-100">{preview.mimeType.startsWith('image/') ? <img src={preview.url} alt={preview.name} className="max-h-[65vh] w-full object-contain" /> : preview.mimeType.startsWith('video/') ? <video src={preview.url} controls className="max-h-[65vh] w-full object-contain" onLoadedMetadata={event => { const vid = event.currentTarget; if (!preview.dimensions && vid.videoWidth && vid.videoHeight) { setPreview(prev => prev ? { ...prev, dimensions: { width: vid.videoWidth, height: vid.videoHeight } } : null); } }} /> : <a href={preview.url} target="_blank" rel="noreferrer" className="font-semibold text-emerald-800 underline">Open file in a new tab</a>}</div><p className="mt-3 break-all text-xs text-slate-600">{preview.url} · {formatMediaSize(preview.sizeBytes)} · {preview.storage}{preview.dimensions ? ` · Intrinsic ${preview.dimensions.width} × ${preview.dimensions.height} px` : ''}{renderedSizes[preview.relativePath] ? ` · Frontend ${renderedSizes[preview.relativePath].renderedWidth} × ${renderedSizes[preview.relativePath].renderedHeight} px` : ''}</p></div></div>}
+    {preview && (
+      <ModalPortal>
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Media preview"
+          className="fixed inset-0 z-[99999] flex items-center justify-center bg-slate-950/75 p-4 backdrop-blur-xs animate-in fade-in duration-150"
+          onMouseDown={e => { if (e.target === e.currentTarget) setPreview(null); }}
+        >
+          <div className="w-full max-w-3xl rounded-2xl bg-white p-5 shadow-xl">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <h3 className="truncate font-bold text-[#092a35]">{preview.name}</h3>
+              <button type="button" aria-label="Close preview" onClick={() => setPreview(null)} className="rounded-lg p-2 hover:bg-slate-100 cursor-pointer">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="flex max-h-[65vh] min-h-40 items-center justify-center overflow-hidden rounded-xl bg-slate-100">
+              {preview.mimeType.startsWith('image/') ? (
+                <img src={preview.url} alt={preview.name} className="max-h-[65vh] w-full object-contain" />
+              ) : preview.mimeType.startsWith('video/') ? (
+                <video
+                  src={preview.url}
+                  controls
+                  className="max-h-[65vh] w-full object-contain"
+                  onLoadedMetadata={event => {
+                    const vid = event.currentTarget;
+                    if (!preview.dimensions && vid.videoWidth && vid.videoHeight) {
+                      setPreview(prev => prev ? { ...prev, dimensions: { width: vid.videoWidth, height: vid.videoHeight } } : null);
+                    }
+                  }}
+                />
+              ) : (
+                <a href={preview.url} target="_blank" rel="noreferrer" className="font-semibold text-emerald-800 underline">
+                  Open file in a new tab
+                </a>
+              )}
+            </div>
+            <p className="mt-3 break-all text-xs text-slate-600">
+              {preview.url} · {formatMediaSize(preview.sizeBytes)} · {preview.storage}
+              {preview.dimensions ? ` · Intrinsic ${preview.dimensions.width} × ${preview.dimensions.height} px` : ''}
+              {renderedSizes[preview.relativePath] ? ` · Frontend ${renderedSizes[preview.relativePath].renderedWidth} × ${renderedSizes[preview.relativePath].renderedHeight} px` : ''}
+            </p>
+          </div>
+        </div>
+      </ModalPortal>
+    )}
   </div>;
 }

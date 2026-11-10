@@ -53,6 +53,7 @@ import { Field, FieldLabel } from '@/components/ui/field';
 import { Switch } from '@/components/ui/switch';
 import ConfirmModal, { ConfirmModalConfig } from '@/components/ui/ConfirmModal';
 import GlassNotificationModal from '@/components/ui/GlassNotificationModal';
+import ModalPortal from '@/components/ui/ModalPortal';
 import {
   Trash2,
   Upload,
@@ -3666,228 +3667,230 @@ export default function AdminSettingsPage() {
 
               {/* Add / Edit User Modal */}
               {userModalOpen && (
-                <div className="fixed inset-0 z-[9999] bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
-                  <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-md p-6 relative flex flex-col gap-4">
-                    <div className="flex justify-between items-center border-b border-slate-100 pb-3">
-                      <h3 className="text-base font-extrabold text-slate-900 m-0">
-                        {userModalMode === 'create' ? 'Add New User' : 'Edit User'}
-                      </h3>
-                      <button
-                        type="button"
-                        onClick={() => setUserModalOpen(false)}
-                        className="text-ink-lt hover:text-slate-600 p-1 border-none bg-transparent cursor-pointer"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-
-                    <form onSubmit={handleSaveUser} className="flex flex-col gap-4">
-                      <div>
-                        <label className="block text-xs font-bold text-slate-700 mb-1">Full Name</label>
-                        <input
-                          type="text"
-                          required
-                          value={userFormData.name}
-                          onChange={(e) => setUserFormData({ ...userFormData, name: e.target.value })}
-                          className="w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs font-semibold"
-                          placeholder="e.g. Abdullah Khan"
-                        />
+                <ModalPortal>
+                  <div className="fixed inset-0 z-[99999] bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-150">
+                    <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-md p-6 relative flex flex-col gap-4">
+                      <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+                        <h3 className="text-base font-extrabold text-slate-900 m-0">
+                          {userModalMode === 'create' ? 'Add New User' : 'Edit User'}
+                        </h3>
+                        <button
+                          type="button"
+                          onClick={() => setUserModalOpen(false)}
+                          className="text-ink-lt hover:text-slate-600 p-1 border-none bg-transparent cursor-pointer"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
                       </div>
 
-                      <div>
-                        <label className="block text-xs font-bold text-slate-700 mb-1">Email Address</label>
-                        <input
-                          type="email"
-                          required
-                          value={userFormData.email}
-                          onChange={(e) => setUserFormData({ ...userFormData, email: e.target.value })}
-                          className="w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs font-semibold"
-                          placeholder="user@britishhajjtravel.com"
-                        />
-                      </div>
-
-                      <div>
-                        <div className="flex justify-between items-center mb-1">
-                          <label className="text-xs font-bold text-slate-700">
-                            {userModalMode === 'edit' ? 'Password (Leave blank to keep unchanged)' : 'Password'}
-                          </label>
-                          <button
-                            type="button"
-                            onClick={handleGeneratePassword}
-                            className="text-xs font-bold text-primary hover:underline bg-transparent border-none cursor-pointer flex items-center gap-1"
-                          >
-                            <Key className="w-3 h-3" /> Auto-generate
-                          </button>
-                        </div>
-                        <div className="relative flex items-center">
+                      <form onSubmit={handleSaveUser} className="flex flex-col gap-4">
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 mb-1">Full Name</label>
                           <input
-                            type={showModalPassword ? 'text' : 'password'}
-                            value={userFormData.password}
-                            onChange={(e) => setUserFormData({ ...userFormData, password: e.target.value })}
-                            className="w-full p-2.5 pr-10 rounded-xl border border-slate-300 bg-slate-50 text-xs font-semibold"
-                            placeholder="••••••••"
+                            type="text"
+                            required
+                            value={userFormData.name}
+                            onChange={(e) => setUserFormData({ ...userFormData, name: e.target.value })}
+                            className="w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs font-semibold"
+                            placeholder="e.g. Abdullah Khan"
                           />
-                          <button
-                            type="button"
-                            onClick={() => setShowModalPassword(!showModalPassword)}
-                            className="absolute right-3 text-ink-lt hover:text-slate-600 border-none bg-transparent cursor-pointer"
-                          >
-                            {showModalPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                          </button>
-                        </div>
-
-                        {/* Password Strength Indicator */}
-                        {userFormData.password && userFormData.password.length > 0 && (() => {
-                          const pw = userFormData.password;
-                          let strength = 0;
-                          if (pw.length >= 8) strength += 1;
-                          if (/[a-z]/.test(pw) && /[A-Z]/.test(pw)) strength += 1;
-                          if (/\d/.test(pw)) strength += 1;
-                          if (/[^a-zA-Z\d]/.test(pw)) strength += 1;
-
-                          let label = 'Weak';
-                          let percent = 25;
-                          let color = 'bg-red-500';
-                          let textColor = 'text-red-500';
-
-                          if (strength === 2) {
-                            label = 'Average';
-                            percent = 50;
-                            color = 'bg-orange-500';
-                            textColor = 'text-orange-500';
-                          } else if (strength === 3) {
-                            label = 'Normal';
-                            percent = 75;
-                            color = 'bg-yellow-500';
-                            textColor = 'text-yellow-600';
-                          } else if (strength >= 4) {
-                            label = 'Strong';
-                            percent = 100;
-                            color = 'bg-primary';
-                            textColor = 'text-emerald-700';
-                          }
-
-                          return (
-                            <div className="mt-2.5">
-                              <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
-                                <div
-                                  className={`h-full transition-all duration-300 ${color}`}
-                                  style={{ width: `${percent}%` }}
-                                ></div>
-                              </div>
-                              <div className="flex justify-between items-center text-[10px] uppercase font-extrabold tracking-wider mt-1">
-                                <span className={textColor}>{label}</span>
-                                <span className="text-ink-lt font-semibold lowercase">{percent}% secure</span>
-                              </div>
-                            </div>
-                          );
-                        })()}
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-xs font-bold text-slate-700 mb-1">Role Assignment</label>
-                          <select
-                            value={userFormData.role}
-                            onChange={(e) => setUserFormData({ ...userFormData, role: e.target.value })}
-                            className="w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs font-semibold"
-                          >
-                            <option value="admin">Full Admin</option>
-                            <option value="content_editor">Restricted Editor</option>
-                            <option value="enquiry_manager">Enquiry Manager</option>
-                            <option value="seo_manager">SEO Manager</option>
-                          </select>
                         </div>
 
                         <div>
-                          <label className="block text-xs font-bold text-slate-700 mb-1">Account Status</label>
-                          <select
-                            value={userFormData.active ? 'active' : 'disabled'}
-                            onChange={(e) => setUserFormData({ ...userFormData, active: e.target.value === 'active' })}
+                          <label className="block text-xs font-bold text-slate-700 mb-1">Email Address</label>
+                          <input
+                            type="email"
+                            required
+                            value={userFormData.email}
+                            onChange={(e) => setUserFormData({ ...userFormData, email: e.target.value })}
                             className="w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs font-semibold"
-                          >
-                            <option value="active">Active (Allowed)</option>
-                            <option value="disabled">Disabled (Blocked)</option>
-                          </select>
+                            placeholder="user@britishhajjtravel.com"
+                          />
                         </div>
-                      </div>
 
-                      <div className="pt-2 border-t border-slate-100 flex flex-col gap-2">
-                        <div className="flex justify-between items-center">
-                          <label className="text-xs font-bold text-slate-700">User Badge Custom Colors</label>
-                          <div className="flex items-center gap-1.5 text-xs font-bold text-slate-600">
-                            <span>Preview:</span>
-                            <span
-                              className="px-2.5 py-0.5 rounded-md text-xs font-bold transition-colors"
-                              ref={(el) => {
-                                if (el) {
-                                  el.style.backgroundColor = userFormData.badgeBg || '#0F766E';
-                                  el.style.color = userFormData.badgeTextColor || '#FFFFFF';
-                                }
-                              }}
+                        <div>
+                          <div className="flex justify-between items-center mb-1">
+                            <label className="text-xs font-bold text-slate-700">
+                              {userModalMode === 'edit' ? 'Password (Leave blank to keep unchanged)' : 'Password'}
+                            </label>
+                            <button
+                              type="button"
+                              onClick={handleGeneratePassword}
+                              className="text-xs font-bold text-primary hover:underline bg-transparent border-none cursor-pointer flex items-center gap-1"
                             >
-                              {userFormData.name || 'User'}
-                            </span>
+                              <Key className="w-3 h-3" /> Auto-generate
+                            </button>
                           </div>
+                          <div className="relative flex items-center">
+                            <input
+                              type={showModalPassword ? 'text' : 'password'}
+                              value={userFormData.password}
+                              onChange={(e) => setUserFormData({ ...userFormData, password: e.target.value })}
+                              className="w-full p-2.5 pr-10 rounded-xl border border-slate-300 bg-slate-50 text-xs font-semibold"
+                              placeholder="••••••••"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowModalPassword(!showModalPassword)}
+                              className="absolute right-3 text-ink-lt hover:text-slate-600 border-none bg-transparent cursor-pointer"
+                            >
+                              {showModalPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            </button>
+                          </div>
+
+                          {/* Password Strength Indicator */}
+                          {userFormData.password && userFormData.password.length > 0 && (() => {
+                            const pw = userFormData.password;
+                            let strength = 0;
+                            if (pw.length >= 8) strength += 1;
+                            if (/[a-z]/.test(pw) && /[A-Z]/.test(pw)) strength += 1;
+                            if (/\d/.test(pw)) strength += 1;
+                            if (/[^a-zA-Z\d]/.test(pw)) strength += 1;
+
+                            let label = 'Weak';
+                            let percent = 25;
+                            let color = 'bg-red-500';
+                            let textColor = 'text-red-500';
+
+                            if (strength === 2) {
+                              label = 'Average';
+                              percent = 50;
+                              color = 'bg-orange-500';
+                              textColor = 'text-orange-500';
+                            } else if (strength === 3) {
+                              label = 'Normal';
+                              percent = 75;
+                              color = 'bg-yellow-500';
+                              textColor = 'text-yellow-600';
+                            } else if (strength >= 4) {
+                              label = 'Strong';
+                              percent = 100;
+                              color = 'bg-primary';
+                              textColor = 'text-emerald-700';
+                            }
+
+                            return (
+                              <div className="mt-2.5">
+                                <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                                  <div
+                                    className={`h-full transition-all duration-300 ${color}`}
+                                    style={{ width: `${percent}%` }}
+                                  ></div>
+                                </div>
+                                <div className="flex justify-between items-center text-[10px] uppercase font-extrabold tracking-wider mt-1">
+                                  <span className={textColor}>{label}</span>
+                                  <span className="text-ink-lt font-semibold lowercase">{percent}% secure</span>
+                                </div>
+                              </div>
+                            );
+                          })()}
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-[11px] font-semibold text-slate-600 mb-1">Badge Background</label>
-                            <div className="flex items-center gap-2">
-                              <input
-                                type="color"
-                                value={userFormData.badgeBg || '#0F766E'}
-                                onChange={(e) => setUserFormData({ ...userFormData, badgeBg: e.target.value })}
-                                className="w-8 h-8 rounded border border-slate-300 cursor-pointer"
-                              />
-                              <input
-                                type="text"
-                                value={userFormData.badgeBg || '#0F766E'}
-                                onChange={(e) => setUserFormData({ ...userFormData, badgeBg: e.target.value })}
-                                className="w-full p-1.5 rounded-lg border border-slate-300 text-xs font-mono"
-                              />
-                            </div>
+                            <label className="block text-xs font-bold text-slate-700 mb-1">Role Assignment</label>
+                            <select
+                              value={userFormData.role}
+                              onChange={(e) => setUserFormData({ ...userFormData, role: e.target.value })}
+                              className="w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs font-semibold"
+                            >
+                              <option value="admin">Full Admin</option>
+                              <option value="content_editor">Restricted Editor</option>
+                              <option value="enquiry_manager">Enquiry Manager</option>
+                              <option value="seo_manager">SEO Manager</option>
+                            </select>
                           </div>
 
                           <div>
-                            <label className="block text-[11px] font-semibold text-slate-600 mb-1">Badge Text Color</label>
-                            <div className="flex items-center gap-2">
-                              <input
-                                type="color"
-                                value={userFormData.badgeTextColor || '#FFFFFF'}
-                                onChange={(e) => setUserFormData({ ...userFormData, badgeTextColor: e.target.value })}
-                                className="w-8 h-8 rounded border border-slate-300 cursor-pointer"
-                              />
-                              <input
-                                type="text"
-                                value={userFormData.badgeTextColor || '#FFFFFF'}
-                                onChange={(e) => setUserFormData({ ...userFormData, badgeTextColor: e.target.value })}
-                                className="w-full p-1.5 rounded-lg border border-slate-300 text-xs font-mono"
-                              />
+                            <label className="block text-xs font-bold text-slate-700 mb-1">Account Status</label>
+                            <select
+                              value={userFormData.active ? 'active' : 'disabled'}
+                              onChange={(e) => setUserFormData({ ...userFormData, active: e.target.value === 'active' })}
+                              className="w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs font-semibold"
+                            >
+                              <option value="active">Active (Allowed)</option>
+                              <option value="disabled">Disabled (Blocked)</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div className="pt-2 border-t border-slate-100 flex flex-col gap-2">
+                          <div className="flex justify-between items-center">
+                            <label className="text-xs font-bold text-slate-700">User Badge Custom Colors</label>
+                            <div className="flex items-center gap-1.5 text-xs font-bold text-slate-600">
+                              <span>Preview:</span>
+                              <span
+                                className="px-2.5 py-0.5 rounded-md text-xs font-bold transition-colors"
+                                ref={(el) => {
+                                  if (el) {
+                                    el.style.backgroundColor = userFormData.badgeBg || '#0F766E';
+                                    el.style.color = userFormData.badgeTextColor || '#FFFFFF';
+                                  }
+                                }}
+                              >
+                                {userFormData.name || 'User'}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-[11px] font-semibold text-slate-600 mb-1">Badge Background</label>
+                              <div className="flex items-center gap-2">
+                                <input
+                                  type="color"
+                                  value={userFormData.badgeBg || '#0F766E'}
+                                  onChange={(e) => setUserFormData({ ...userFormData, badgeBg: e.target.value })}
+                                  className="w-8 h-8 rounded border border-slate-300 cursor-pointer"
+                                />
+                                <input
+                                  type="text"
+                                  value={userFormData.badgeBg || '#0F766E'}
+                                  onChange={(e) => setUserFormData({ ...userFormData, badgeBg: e.target.value })}
+                                  className="w-full p-1.5 rounded-lg border border-slate-300 text-xs font-mono"
+                                />
+                              </div>
+                            </div>
+
+                            <div>
+                              <label className="block text-[11px] font-semibold text-slate-600 mb-1">Badge Text Color</label>
+                              <div className="flex items-center gap-2">
+                                <input
+                                  type="color"
+                                  value={userFormData.badgeTextColor || '#FFFFFF'}
+                                  onChange={(e) => setUserFormData({ ...userFormData, badgeTextColor: e.target.value })}
+                                  className="w-8 h-8 rounded border border-slate-300 cursor-pointer"
+                                />
+                                <input
+                                  type="text"
+                                  value={userFormData.badgeTextColor || '#FFFFFF'}
+                                  onChange={(e) => setUserFormData({ ...userFormData, badgeTextColor: e.target.value })}
+                                  className="w-full p-1.5 rounded-lg border border-slate-300 text-xs font-mono"
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
 
-                      <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
-                        <button
-                          type="button"
-                          onClick={() => setUserModalOpen(false)}
-                          className="px-4 py-2 rounded-full border border-red-300 text-red text-xs font-bold hover:bg-red-50 cursor-pointer"
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          type="submit"
-                          className="px-5 py-2 rounded-full bg-primary text-white text-xs font-bold hover:bg-white hover:text-primary cursor-pointer"
-                        >
-                          {userModalMode === 'create' ? 'Create User' : 'Update User'}
-                        </button>
-                      </div>
-                    </form>
+                        <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+                          <button
+                            type="button"
+                            onClick={() => setUserModalOpen(false)}
+                            className="px-4 py-2 rounded-full border border-red-300 text-red text-xs font-bold hover:bg-red-50 cursor-pointer"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            type="submit"
+                            className="px-5 py-2 rounded-full bg-primary text-white text-xs font-bold hover:bg-white hover:text-primary cursor-pointer"
+                          >
+                            {userModalMode === 'create' ? 'Create User' : 'Update User'}
+                          </button>
+                        </div>
+                      </form>
+                    </div>
                   </div>
-                </div>
+                </ModalPortal>
               )}
             </div>
           )}
@@ -4931,8 +4934,14 @@ export default function AdminSettingsPage() {
                                 <td className="py-3 px-4 font-mono font-medium text-slate-600 whitespace-nowrap">{dateStr}</td>
                                 <td className="py-3 px-4 font-mono font-bold text-emerald-800">{log.formId}</td>
                                 <td className="py-3 px-4 whitespace-nowrap">
-                                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${log.status === 'Delivered' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
-                                    • {log.status}
+                                  <span
+                                    className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-2 py-0.5 rounded-full border ${log.status === 'Delivered'
+                                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                        : 'bg-red-50 text-red-700 border-red-200'
+                                      }`}
+                                  >
+                                    <span className="w-1.5 h-1.5 rounded-full bg-current" />
+                                    {log.status}
                                   </span>
                                 </td>
                                 <td className="py-3 px-4 font-mono text-slate-700">{log.sentTo}</td>
@@ -4968,101 +4977,103 @@ export default function AdminSettingsPage() {
 
       {/* Navigation Item Edit Modal */}
       {isModalOpen && editingItem && (
-        <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-md z-[9999] flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full border border-slate-100 shadow-2xl flex flex-col gap-5 animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-base font-bold text-slate-900 m-0 flex items-center gap-2">
-                <Pencil className="w-4 h-4 text-primary" /> Edit Navigation Item
-              </h3>
-              <button
-                type="button"
-                onClick={() => { setIsModalOpen(false); setEditingItem(null); }}
-                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center border-none cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="flex flex-col gap-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Page / Menu Title</label>
-                <input
-                  type="text"
-                  value={editingItem.label || ''}
-                  onChange={(e) => setEditingItem({ ...editingItem, label: e.target.value })}
-                  placeholder="e.g. About Us, Licenses, Hajj Packages"
-                  className="w-full p-3 rounded-xl border border-slate-200 text-xs outline-none focus:border-primary"
-                />
+        <ModalPortal>
+          <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-md z-[99999] flex items-center justify-center p-4 animate-in fade-in duration-150">
+            <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full border border-slate-100 shadow-2xl flex flex-col gap-5 animate-in fade-in zoom-in-95 duration-200">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 className="text-base font-bold text-slate-900 m-0 flex items-center gap-2">
+                  <Pencil className="w-4 h-4 text-primary" /> Edit Navigation Item
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => { setIsModalOpen(false); setEditingItem(null); }}
+                  className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center border-none cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Page URL / Slug Path</label>
-                <input
-                  type="text"
-                  value={editingItem.url || ''}
-                  onChange={(e) => setEditingItem({ ...editingItem, url: e.target.value })}
-                  placeholder="e.g. /about, /certified-travel-agency-in-uk"
-                  className="w-full p-3 rounded-xl border border-slate-200 text-xs outline-none focus:border-primary font-mono"
-                />
+              <div className="flex flex-col gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Page / Menu Title</label>
+                  <input
+                    type="text"
+                    value={editingItem.label || ''}
+                    onChange={(e) => setEditingItem({ ...editingItem, label: e.target.value })}
+                    placeholder="e.g. About Us, Licenses, Hajj Packages"
+                    className="w-full p-3 rounded-xl border border-slate-200 text-xs outline-none focus:border-primary"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Page URL / Slug Path</label>
+                  <input
+                    type="text"
+                    value={editingItem.url || ''}
+                    onChange={(e) => setEditingItem({ ...editingItem, url: e.target.value })}
+                    placeholder="e.g. /about, /certified-travel-agency-in-uk"
+                    className="w-full p-3 rounded-xl border border-slate-200 text-xs outline-none focus:border-primary font-mono"
+                  />
+                </div>
+
+                {editingItem.parentId && navTree.some((item: any) => item.id === editingItem.parentId && item.label?.toLowerCase() === 'destinations') && destinationsList.length > 0 && (
+                  <div>
+                    <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Or Select Destination</label>
+                    <select
+                      value={editingItem.id?.startsWith('destination-') ? editingItem.id : ''}
+                      onChange={(e) => {
+                        const selected = destinationsList.find((destination: any) => `destination-${destination.id}` === e.target.value);
+                        if (selected) setEditingItem({ ...editingItem, id: `destination-${selected.id}`, label: selected.title, url: `/destinations/${selected.slug}` });
+                      }}
+                      className="w-full p-2.5 rounded-xl border border-slate-200 text-xs outline-none cursor-pointer bg-slate-50"
+                    >
+                      <option value="">-- Choose Destination --</option>
+                      {destinationsList.map((destination: any) => <option key={destination.id} value={`destination-${destination.id}`}>{destination.title}</option>)}
+                    </select>
+                  </div>
+                )}
+
+                {pagesList && pagesList.length > 0 && (
+                  <div>
+                    <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Or Select Existing Website Page</label>
+                    <select
+                      value=""
+                      onChange={(e) => {
+                        const selected = pagesList.find(p => p.slug === e.target.value);
+                        if (selected) {
+                          setEditingItem({ ...editingItem, label: selected.title, url: selected.slug });
+                        }
+                      }}
+                      className="w-full p-2.5 rounded-xl border border-slate-200 text-xs outline-none cursor-pointer bg-slate-50"
+                    >
+                      <option value="">-- Choose Page --</option>
+                      {pagesList.map(p => (
+                        <option key={p.id} value={p.slug}>{p.title} ({p.slug})</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
               </div>
 
-              {editingItem.parentId && navTree.some((item: any) => item.id === editingItem.parentId && item.label?.toLowerCase() === 'destinations') && destinationsList.length > 0 && (
-                <div>
-                  <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Or Select Destination</label>
-                  <select
-                    value={editingItem.id?.startsWith('destination-') ? editingItem.id : ''}
-                    onChange={(e) => {
-                      const selected = destinationsList.find((destination: any) => `destination-${destination.id}` === e.target.value);
-                      if (selected) setEditingItem({ ...editingItem, id: `destination-${selected.id}`, label: selected.title, url: `/destinations/${selected.slug}` });
-                    }}
-                    className="w-full p-2.5 rounded-xl border border-slate-200 text-xs outline-none cursor-pointer bg-slate-50"
-                  >
-                    <option value="">-- Choose Destination --</option>
-                    {destinationsList.map((destination: any) => <option key={destination.id} value={`destination-${destination.id}`}>{destination.title}</option>)}
-                  </select>
-                </div>
-              )}
-
-              {pagesList && pagesList.length > 0 && (
-                <div>
-                  <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Or Select Existing Website Page</label>
-                  <select
-                    value=""
-                    onChange={(e) => {
-                      const selected = pagesList.find(p => p.slug === e.target.value);
-                      if (selected) {
-                        setEditingItem({ ...editingItem, label: selected.title, url: selected.slug });
-                      }
-                    }}
-                    className="w-full p-2.5 rounded-xl border border-slate-200 text-xs outline-none cursor-pointer bg-slate-50"
-                  >
-                    <option value="">-- Choose Page --</option>
-                    {pagesList.map(p => (
-                      <option key={p.id} value={p.slug}>{p.title} ({p.slug})</option>
-                    ))}
-                  </select>
-                </div>
-              )}
-            </div>
-
-            <div className="flex justify-end gap-3 pt-2 border-t border-slate-100">
-              <button
-                type="button"
-                onClick={() => { setIsModalOpen(false); setEditingItem(null); }}
-                className="px-4 py-2.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold hover:bg-slate-200 border-none cursor-pointer"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={() => handleSaveNavItem(editingItem)}
-                className="px-6 py-2.5 rounded-xl bg-primary hover:bg-white hover:text-primary text-white text-xs font-extrabold border-none cursor-pointer shadow-md"
-              >
-                Save &amp; Apply
-              </button>
+              <div className="flex justify-end gap-3 pt-2 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => { setIsModalOpen(false); setEditingItem(null); }}
+                  className="px-4 py-2.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold hover:bg-slate-200 border-none cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleSaveNavItem(editingItem)}
+                  className="px-6 py-2.5 rounded-xl bg-primary hover:bg-white hover:text-primary text-white text-xs font-extrabold border-none cursor-pointer shadow-md"
+                >
+                  Save &amp; Apply
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        </ModalPortal>
       )}
 
       {/* Confirmation Modal */}
@@ -5079,134 +5090,136 @@ export default function AdminSettingsPage() {
 
       {/* Drawer for Inbox Message */}
       {activeInboxMsg && (
-        <div className="fixed inset-0 z-[100] flex justify-end">
-          <div className="absolute inset-0 bg-slate-900/20 backdrop-blur-sm transition-opacity" onClick={() => setActiveInboxMsg(null)} />
-          <div className="relative w-full max-w-2xl bg-slate-50 h-full shadow-2xl animate-in slide-in-from-right duration-300 flex flex-col border-l border-slate-200">
+        <ModalPortal>
+          <div className="fixed inset-0 z-[99999] flex justify-end">
+            <div className="absolute inset-0 bg-slate-900/20 backdrop-blur-sm transition-opacity" onClick={() => setActiveInboxMsg(null)} />
+            <div className="relative w-full max-w-2xl bg-slate-50 h-full shadow-2xl animate-in slide-in-from-right duration-300 flex flex-col border-l border-slate-200">
 
-            {/* Drawer Header Toolbar */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-white shrink-0">
-              <h3 className="font-bold text-slate-900 m-0 text-base">Message Details</h3>
-              <button onClick={() => setActiveInboxMsg(null)} className="p-2 bg-slate-50 rounded-full text-gray-500 hover:text-slate-900 shadow-sm border border-slate-200 cursor-pointer transition-colors">
-                <X className="w-4 h-4" />
-              </button>
-            </div>
+              {/* Drawer Header Toolbar */}
+              <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-white shrink-0">
+                <h3 className="font-bold text-slate-900 m-0 text-base">Message Details</h3>
+                <button onClick={() => setActiveInboxMsg(null)} className="p-2 bg-slate-50 rounded-full text-gray-500 hover:text-slate-900 shadow-sm border border-slate-200 cursor-pointer transition-colors">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
 
-            {/* Drawer Body - Email Template Design */}
-            <div className="flex-1 overflow-y-auto p-4 md:p-8">
-              <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden max-w-xl mx-auto flex flex-col font-sans">
+              {/* Drawer Body - Email Template Design */}
+              <div className="flex-1 overflow-y-auto p-4 md:p-8">
+                <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden max-w-xl mx-auto flex flex-col font-sans">
 
-                {/* Email Header */}
-                <div className="bg-primary px-8 py-10 flex flex-col items-center text-center">
-                  <span className="text-[10px] font-bold text-[#E7BE6E] border border-[#E7BE6E] rounded-full px-4 py-1.5 uppercase tracking-widest mb-6">
-                    INQUIRY RECEIVED
-                  </span>
-                  <div className="mb-2">
-                    <img
-                      src="/images_BHT/logos/2026-08/logo.png"
-                      alt="British Hajj Travel UK"
-                      className="h-8 md:h-10 w-auto object-contain mx-auto"
-                    />
-                  </div>
-                  <p className="text-[#a5d6c8] text-sm m-0 font-medium tracking-wide">
-                    Licensed Hajj &amp; Umrah Travel Operator
-                  </p>
-                </div>
-
-                {/* Email Content */}
-                <div className="p-8 pb-10">
-                  <h2 className="text-slate-900 font-bold text-xl m-0 mb-4">
-                    {activeInboxMsg.type === 'quote_request' ? 'New Quote Request Received' : 'New Inquiry Received'}
-                  </h2>
-                  <p className="text-slate-600 text-sm leading-relaxed m-0 mb-8">
-                    A new inquiry has been received via the website form. The submission details and lead contact information are listed below:
-                  </p>
-
-                  {/* Date Box */}
-                  <div className="bg-slate-50 border border-slate-200 rounded-xl px-5 py-4 flex items-center gap-3 mb-8 text-sm">
-                    <span className="text-lg">📅</span>
-                    <span className="text-slate-600 font-medium">Date: <strong className="text-slate-900 ml-1">{new Date(activeInboxMsg.createdAt || new Date()).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</strong></span>
+                  {/* Email Header */}
+                  <div className="bg-primary px-8 py-10 flex flex-col items-center text-center">
+                    <span className="text-[10px] font-bold text-[#E7BE6E] border border-[#E7BE6E] rounded-full px-4 py-1.5 uppercase tracking-widest mb-6">
+                      INQUIRY RECEIVED
+                    </span>
+                    <div className="mb-2">
+                      <img
+                        src="/images_BHT/logos/2026-08/logo.png"
+                        alt="British Hajj Travel UK"
+                        className="h-8 md:h-10 w-auto object-contain mx-auto"
+                      />
+                    </div>
+                    <p className="text-[#a5d6c8] text-sm m-0 font-medium tracking-wide">
+                      Licensed Hajj &amp; Umrah Travel Operator
+                    </p>
                   </div>
 
-                  {/* Details Section */}
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="text-lg">📋</span>
-                    <h3 className="font-bold text-primary text-sm uppercase tracking-wider m-0">
-                      SUBMITTED FORM DETAILS
-                    </h3>
+                  {/* Email Content */}
+                  <div className="p-8 pb-10">
+                    <h2 className="text-slate-900 font-bold text-xl m-0 mb-4">
+                      {activeInboxMsg.type === 'quote_request' ? 'New Quote Request Received' : 'New Inquiry Received'}
+                    </h2>
+                    <p className="text-slate-600 text-sm leading-relaxed m-0 mb-8">
+                      A new inquiry has been received via the website form. The submission details and lead contact information are listed below:
+                    </p>
+
+                    {/* Date Box */}
+                    <div className="bg-slate-50 border border-slate-200 rounded-xl px-5 py-4 flex items-center gap-3 mb-8 text-sm">
+                      <span className="text-lg">📅</span>
+                      <span className="text-slate-600 font-medium">Date: <strong className="text-slate-900 ml-1">{new Date(activeInboxMsg.createdAt || new Date()).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</strong></span>
+                    </div>
+
+                    {/* Details Section */}
+                    <div className="flex items-center gap-2 mb-4">
+                      <span className="text-lg">📋</span>
+                      <h3 className="font-bold text-primary text-sm uppercase tracking-wider m-0">
+                        SUBMITTED FORM DETAILS
+                      </h3>
+                    </div>
+
+                    <div className="border border-slate-200 rounded-xl overflow-hidden divide-y divide-slate-200 text-sm">
+                      <div className="flex flex-col sm:flex-row sm:items-center">
+                        <div className="w-full sm:w-1/3 bg-slate-50 px-5 py-4 font-bold text-slate-800 border-b sm:border-b-0 sm:border-r border-slate-200">Ticket Reference #</div>
+                        <div className="w-full sm:w-2/3 px-5 py-4 text-slate-600 font-mono text-xs">{activeInboxMsg.enquiryNumber || activeInboxMsg.ticketNumber || (activeInboxMsg.id ? `TKT-${activeInboxMsg.id}` : 'Not available')}</div>
+                      </div>
+                      <div className="flex flex-col sm:flex-row sm:items-center">
+                        <div className="w-full sm:w-1/3 bg-slate-50 px-5 py-4 font-bold text-slate-800 border-b sm:border-b-0 sm:border-r border-slate-200">Full Name</div>
+                        <div className="w-full sm:w-2/3 px-5 py-4 text-slate-600">{activeInboxMsg.fullName || 'N/A'}</div>
+                      </div>
+                      <div className="flex flex-col sm:flex-row sm:items-center">
+                        <div className="w-full sm:w-1/3 bg-slate-50 px-5 py-4 font-bold text-slate-800 border-b sm:border-b-0 sm:border-r border-slate-200">Email Address</div>
+                        <div className="w-full sm:w-2/3 px-5 py-4 text-[#0066cc] hover:underline cursor-pointer break-all">
+                          <a href={`mailto:${activeInboxMsg.email}`}>{activeInboxMsg.email}</a>
+                        </div>
+                      </div>
+                      <div className="flex flex-col sm:flex-row sm:items-center">
+                        <div className="w-full sm:w-1/3 bg-slate-50 px-5 py-4 font-bold text-slate-800 border-b sm:border-b-0 sm:border-r border-slate-200">Phone Number</div>
+                        <div className="w-full sm:w-2/3 px-5 py-4 text-slate-600">{activeInboxMsg.phone || 'N/A'}</div>
+                      </div>
+                      {activeInboxMsg.whatsapp && (
+                        <div className="flex flex-col sm:flex-row sm:items-center">
+                          <div className="w-full sm:w-1/3 bg-slate-50 px-5 py-4 font-bold text-slate-800 border-b sm:border-b-0 sm:border-r border-slate-200">WhatsApp Number</div>
+                          <div className="w-full sm:w-2/3 px-5 py-4 text-slate-600">{activeInboxMsg.whatsapp}</div>
+                        </div>
+                      )}
+                      {(activeInboxMsg.city || activeInboxMsg.province) && (
+                        <div className="flex flex-col sm:flex-row sm:items-center">
+                          <div className="w-full sm:w-1/3 bg-slate-50 px-5 py-4 font-bold text-slate-800 border-b sm:border-b-0 sm:border-r border-slate-200">Location</div>
+                          <div className="w-full sm:w-2/3 px-5 py-4 text-slate-600">{[activeInboxMsg.city, activeInboxMsg.province].filter(Boolean).join(', ')}</div>
+                        </div>
+                      )}
+                      <div className="flex flex-col sm:flex-row sm:items-center">
+                        <div className="w-full sm:w-1/3 bg-slate-50 px-5 py-4 font-bold text-slate-800 border-b sm:border-b-0 sm:border-r border-slate-200">Selected Package / Service</div>
+                        <div className="w-full sm:w-2/3 px-5 py-4 text-slate-600">{activeInboxMsg.preferredPackageType || 'General Inquiry'}</div>
+                      </div>
+                      {activeInboxMsg.departureMonth && (
+                        <div className="flex flex-col sm:flex-row sm:items-center">
+                          <div className="w-full sm:w-1/3 bg-slate-50 px-5 py-4 font-bold text-slate-800 border-b sm:border-b-0 sm:border-r border-slate-200">Departure</div>
+                          <div className="w-full sm:w-2/3 px-5 py-4 text-slate-600">{activeInboxMsg.departureMonth}</div>
+                        </div>
+                      )}
+                      {(activeInboxMsg.adults > 0 || activeInboxMsg.children > 0) && (
+                        <div className="flex flex-col sm:flex-row sm:items-center">
+                          <div className="w-full sm:w-1/3 bg-slate-50 px-5 py-4 font-bold text-slate-800 border-b sm:border-b-0 sm:border-r border-slate-200">Passengers</div>
+                          <div className="w-full sm:w-2/3 px-5 py-4 text-slate-600">Adults: {activeInboxMsg.adults || 0}, Children: {activeInboxMsg.children || 0}, Infants: {activeInboxMsg.infants || 0}</div>
+                        </div>
+                      )}
+                      <div className="flex flex-col sm:flex-row">
+                        <div className="w-full sm:w-1/3 bg-slate-50 px-5 py-4 font-bold text-slate-800 border-b sm:border-b-0 sm:border-r border-slate-200">Message</div>
+                        <div className="w-full sm:w-2/3 px-5 py-4 text-slate-600 whitespace-pre-wrap">{activeInboxMsg.message || 'N/A'}</div>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="border border-slate-200 rounded-xl overflow-hidden divide-y divide-slate-200 text-sm">
-                    <div className="flex flex-col sm:flex-row sm:items-center">
-                      <div className="w-full sm:w-1/3 bg-slate-50 px-5 py-4 font-bold text-slate-800 border-b sm:border-b-0 sm:border-r border-slate-200">Ticket Reference #</div>
-                      <div className="w-full sm:w-2/3 px-5 py-4 text-slate-600 font-mono text-xs">{activeInboxMsg.enquiryNumber || activeInboxMsg.ticketNumber || (activeInboxMsg.id ? `TKT-${activeInboxMsg.id}` : 'Not available')}</div>
-                    </div>
-                    <div className="flex flex-col sm:flex-row sm:items-center">
-                      <div className="w-full sm:w-1/3 bg-slate-50 px-5 py-4 font-bold text-slate-800 border-b sm:border-b-0 sm:border-r border-slate-200">Full Name</div>
-                      <div className="w-full sm:w-2/3 px-5 py-4 text-slate-600">{activeInboxMsg.fullName || 'N/A'}</div>
-                    </div>
-                    <div className="flex flex-col sm:flex-row sm:items-center">
-                      <div className="w-full sm:w-1/3 bg-slate-50 px-5 py-4 font-bold text-slate-800 border-b sm:border-b-0 sm:border-r border-slate-200">Email Address</div>
-                      <div className="w-full sm:w-2/3 px-5 py-4 text-[#0066cc] hover:underline cursor-pointer break-all">
-                        <a href={`mailto:${activeInboxMsg.email}`}>{activeInboxMsg.email}</a>
-                      </div>
-                    </div>
-                    <div className="flex flex-col sm:flex-row sm:items-center">
-                      <div className="w-full sm:w-1/3 bg-slate-50 px-5 py-4 font-bold text-slate-800 border-b sm:border-b-0 sm:border-r border-slate-200">Phone Number</div>
-                      <div className="w-full sm:w-2/3 px-5 py-4 text-slate-600">{activeInboxMsg.phone || 'N/A'}</div>
-                    </div>
-                    {activeInboxMsg.whatsapp && (
-                      <div className="flex flex-col sm:flex-row sm:items-center">
-                        <div className="w-full sm:w-1/3 bg-slate-50 px-5 py-4 font-bold text-slate-800 border-b sm:border-b-0 sm:border-r border-slate-200">WhatsApp Number</div>
-                        <div className="w-full sm:w-2/3 px-5 py-4 text-slate-600">{activeInboxMsg.whatsapp}</div>
-                      </div>
-                    )}
-                    {(activeInboxMsg.city || activeInboxMsg.province) && (
-                      <div className="flex flex-col sm:flex-row sm:items-center">
-                        <div className="w-full sm:w-1/3 bg-slate-50 px-5 py-4 font-bold text-slate-800 border-b sm:border-b-0 sm:border-r border-slate-200">Location</div>
-                        <div className="w-full sm:w-2/3 px-5 py-4 text-slate-600">{[activeInboxMsg.city, activeInboxMsg.province].filter(Boolean).join(', ')}</div>
-                      </div>
-                    )}
-                    <div className="flex flex-col sm:flex-row sm:items-center">
-                      <div className="w-full sm:w-1/3 bg-slate-50 px-5 py-4 font-bold text-slate-800 border-b sm:border-b-0 sm:border-r border-slate-200">Selected Package / Service</div>
-                      <div className="w-full sm:w-2/3 px-5 py-4 text-slate-600">{activeInboxMsg.preferredPackageType || 'General Inquiry'}</div>
-                    </div>
-                    {activeInboxMsg.departureMonth && (
-                      <div className="flex flex-col sm:flex-row sm:items-center">
-                        <div className="w-full sm:w-1/3 bg-slate-50 px-5 py-4 font-bold text-slate-800 border-b sm:border-b-0 sm:border-r border-slate-200">Departure</div>
-                        <div className="w-full sm:w-2/3 px-5 py-4 text-slate-600">{activeInboxMsg.departureMonth}</div>
-                      </div>
-                    )}
-                    {(activeInboxMsg.adults > 0 || activeInboxMsg.children > 0) && (
-                      <div className="flex flex-col sm:flex-row sm:items-center">
-                        <div className="w-full sm:w-1/3 bg-slate-50 px-5 py-4 font-bold text-slate-800 border-b sm:border-b-0 sm:border-r border-slate-200">Passengers</div>
-                        <div className="w-full sm:w-2/3 px-5 py-4 text-slate-600">Adults: {activeInboxMsg.adults || 0}, Children: {activeInboxMsg.children || 0}, Infants: {activeInboxMsg.infants || 0}</div>
-                      </div>
-                    )}
-                    <div className="flex flex-col sm:flex-row">
-                      <div className="w-full sm:w-1/3 bg-slate-50 px-5 py-4 font-bold text-slate-800 border-b sm:border-b-0 sm:border-r border-slate-200">Message</div>
-                      <div className="w-full sm:w-2/3 px-5 py-4 text-slate-600 whitespace-pre-wrap">{activeInboxMsg.message || 'N/A'}</div>
-                    </div>
+                  {/* Email Footer */}
+                  <div className="bg-[#111827] px-8 py-10 flex flex-col items-center text-center">
+                    <h3 className="text-white font-bold m-0 mb-3 text-sm">British Hajj Travel UK Ltd.</h3>
+                    <p className="text-ink-lt text-[11px] leading-relaxed m-0 mb-6 max-w-sm">
+                      1325 Eglinton Ave E Suite Number 218, Mississauga, ON L4W 4L9, UK<br />
+                      TICO &amp; IATA Licensed Pilgrimage &amp; Flight Operator
+                    </p>
+                    <a href="#" className="text-[#E7BE6E] text-xs font-bold hover:underline mb-8">
+                      Visit Official Website →
+                    </a>
+                    <p className="text-gray-500 text-[10px] m-0">
+                      © {new Date().getFullYear()} British Hajj Travel UK Ltd. All Rights Reserved.
+                    </p>
                   </div>
-                </div>
-
-                {/* Email Footer */}
-                <div className="bg-[#111827] px-8 py-10 flex flex-col items-center text-center">
-                  <h3 className="text-white font-bold m-0 mb-3 text-sm">British Hajj Travel UK Ltd.</h3>
-                  <p className="text-ink-lt text-[11px] leading-relaxed m-0 mb-6 max-w-sm">
-                    1325 Eglinton Ave E Suite Number 218, Mississauga, ON L4W 4L9, UK<br />
-                    TICO &amp; IATA Licensed Pilgrimage &amp; Flight Operator
-                  </p>
-                  <a href="#" className="text-[#E7BE6E] text-xs font-bold hover:underline mb-8">
-                    Visit Official Website →
-                  </a>
-                  <p className="text-gray-500 text-[10px] m-0">
-                    © {new Date().getFullYear()} British Hajj Travel UK Ltd. All Rights Reserved.
-                  </p>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </ModalPortal>
       )}
     </AdminLayout>
   );

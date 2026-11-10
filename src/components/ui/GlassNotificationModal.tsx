@@ -2,6 +2,7 @@
 
 import React, { useEffect, useId, useRef } from "react";
 import { CheckCircle2, AlertTriangle, XCircle, Info, X } from "lucide-react";
+import ModalPortal from "@/components/ui/ModalPortal";
 
 export interface GlassNotificationProps {
   isOpen: boolean;
@@ -93,8 +94,9 @@ export default function GlassNotificationModal({
   const theme = getTheme();
 
   return (
-    <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center overflow-y-auto p-4 bg-slate-950/70 backdrop-blur-md animate-in fade-in duration-200"
+    <ModalPortal>
+      <div
+        className="fixed inset-0 z-[99999] flex items-center justify-center overflow-y-auto p-4 bg-slate-950/70 backdrop-blur-md animate-in fade-in duration-200"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
@@ -175,5 +177,6 @@ export default function GlassNotificationModal({
         </button>
       </div>
     </div>
+    </ModalPortal>
   );
 }

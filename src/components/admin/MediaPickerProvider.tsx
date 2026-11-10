@@ -2,6 +2,7 @@
 
 import {createContext,useCallback,useContext,useEffect,useState,type ReactNode} from 'react';
 import MediaLibrary,{type MediaItem} from './MediaLibrary';
+import ModalPortal from '@/components/ui/ModalPortal';
 
 type PickerArgs = {onSelect:(items:MediaItem[])=>void;multiple?:boolean;accept?:string};
 const PickerContext = createContext<((args:PickerArgs)=>void)|null>(null);
@@ -44,6 +45,35 @@ export default function MediaPickerProvider({children}:{children:ReactNode}) {
   },[picker]);
   return <PickerContext.Provider value={openPicker}>
     {children}
-    {picker&&<div role="dialog" aria-modal="true" aria-label="Choose media" className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-950/65 p-3 backdrop-blur-sm" onMouseDown={e=>{if(e.target===e.currentTarget)setPicker(null);}}><div className="max-h-[94vh] w-full max-w-6xl overflow-y-auto rounded-3xl bg-[#f1f6f5] p-5 shadow-2xl sm:p-7"><MediaLibrary multiple={picker.multiple} accept={picker.accept} onClose={()=>setPicker(null)} onSelect={items=>{try{Promise.resolve(picker.onSelect(items)).then(()=>setPicker(null)).catch(e=>window.alert(e instanceof Error?e.message:'Media selection failed'));}catch(e){window.alert(e instanceof Error?e.message:'Media selection failed');}}}/></div></div>}
+    {picker && (
+      <ModalPortal>
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Choose media"
+          className="fixed inset-0 z-[99999] flex items-center justify-center bg-slate-950/70 p-3 backdrop-blur-xs animate-in fade-in duration-150"
+          onMouseDown={e => {
+            if (e.target === e.currentTarget) setPicker(null);
+          }}
+        >
+          <div className="max-h-[94vh] w-full max-w-6xl overflow-y-auto rounded-3xl bg-[#f1f6f5] p-5 shadow-2xl sm:p-7">
+            <MediaLibrary
+              multiple={picker.multiple}
+              accept={picker.accept}
+              onClose={() => setPicker(null)}
+              onSelect={items => {
+                try {
+                  Promise.resolve(picker.onSelect(items))
+                    .then(() => setPicker(null))
+                    .catch(e => window.alert(e instanceof Error ? e.message : 'Media selection failed'));
+                } catch (e) {
+                  window.alert(e instanceof Error ? e.message : 'Media selection failed');
+                }
+              }}
+            />
+          </div>
+        </div>
+      </ModalPortal>
+    )}
   </PickerContext.Provider>;
 }

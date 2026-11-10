@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { createVisaService, deleteVisaServiceAction, duplicateVisaServiceAction, getVisaAdminServicesList, toggleVisaPublicationAction, updateVisaServiceAction } from '@/actions/visaActions';
 import ConfirmModal, { ConfirmModalConfig } from '@/components/ui/ConfirmModal';
+import ModalPortal from '@/components/ui/ModalPortal';
 import { Trash2, Edit2, Plus, Copy, Eye, EyeOff } from 'lucide-react';
 
 interface VisasClientProps {
@@ -21,6 +22,15 @@ export default function VisasClient({ initialVisas }: VisasClientProps) {
       .then(setVisas)
       .catch((error) => alert(error?.message || 'Failed to load all visa services.'));
   }, []);
+
+  useEffect(() => {
+    if (!editingVisa) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setEditingVisa(null);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [editingVisa]);
 
   const [newVisa, setNewVisa] = useState({
     title: '',
@@ -214,77 +224,86 @@ export default function VisasClient({ initialVisas }: VisasClientProps) {
       )}
 
       {editingVisa && (
-        <div className="fixed inset-0 z-50 bg-black/45 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl border border-slate-200 animate-in zoom-in-95">
-            <div className="flex justify-between items-center pb-3 border-b border-slate-100 mb-4">
-              <h3 className="text-base font-extrabold text-slate-900 m-0 flex items-center gap-2">
-                <Edit2 className="w-4 h-4 text-red" /> Edit Visa Category
-              </h3>
-              <button
-                type="button"
-                onClick={() => setEditingVisa(null)}
-                className="text-gray-500 hover:text-slate-600 bg-transparent border-none text-base cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
-            <form onSubmit={handleUpdate} className="flex flex-col gap-3">
-              <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Visa Title</label>
-                <input
-                  type="text"
-                  value={editingVisa.title}
-                  onChange={(e) => setEditingVisa({ ...editingVisa, title: e.target.value })}
-                  required
-                  className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs outline-none focus:border-primary"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Processing Time</label>
-                <input
-                  type="text"
-                  value={editingVisa.processingTime}
-                  onChange={(e) => setEditingVisa({ ...editingVisa, processingTime: e.target.value })}
-                  required
-                  className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs outline-none focus:border-primary"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Short Description</label>
-                <input
-                  type="text"
-                  value={editingVisa.shortDescription || ''}
-                  onChange={(e) => setEditingVisa({ ...editingVisa, shortDescription: e.target.value })}
-                  className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs outline-none focus:border-primary"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Full Description</label>
-                <textarea
-                  rows={3}
-                  value={editingVisa.fullDescription || ''}
-                  onChange={(e) => setEditingVisa({ ...editingVisa, fullDescription: e.target.value })}
-                  className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs outline-none focus:border-primary"
-                />
-              </div>
-              <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+        <ModalPortal>
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Edit Visa Category"
+            className="fixed inset-0 z-[99999] bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-150"
+            onMouseDown={e => { if (e.target === e.currentTarget) setEditingVisa(null); }}
+          >
+            <div className="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl border border-slate-200 animate-in zoom-in-95">
+              <div className="flex justify-between items-center pb-3 border-b border-slate-100 mb-4">
+                <h3 className="text-base font-extrabold text-slate-900 m-0 flex items-center gap-2">
+                  <Edit2 className="w-4 h-4 text-red" /> Edit Visa Category
+                </h3>
                 <button
                   type="button"
+                  aria-label="Close"
                   onClick={() => setEditingVisa(null)}
-                  className="px-5 py-2 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border-none cursor-pointer"
+                  className="rounded-full p-1.5 text-white bg-red hover:bg-red-700 cursor-pointer"
                 >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-6 py-2 rounded-full text-xs font-extrabold bg-primary text-white border-none cursor-pointer shadow-md"
-                >
-                  Save Changes
+                  ✕
                 </button>
               </div>
-            </form>
+              <form onSubmit={handleUpdate} className="flex flex-col gap-3">
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">Visa Title</label>
+                  <input
+                    type="text"
+                    value={editingVisa.title}
+                    onChange={(e) => setEditingVisa({ ...editingVisa, title: e.target.value })}
+                    required
+                    className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs outline-none focus:border-primary"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">Processing Time</label>
+                  <input
+                    type="text"
+                    value={editingVisa.processingTime}
+                    onChange={(e) => setEditingVisa({ ...editingVisa, processingTime: e.target.value })}
+                    required
+                    className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs outline-none focus:border-primary"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">Short Description</label>
+                  <input
+                    type="text"
+                    value={editingVisa.shortDescription || ''}
+                    onChange={(e) => setEditingVisa({ ...editingVisa, shortDescription: e.target.value })}
+                    className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs outline-none focus:border-primary"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">Full Description</label>
+                  <textarea
+                    rows={3}
+                    value={editingVisa.fullDescription || ''}
+                    onChange={(e) => setEditingVisa({ ...editingVisa, fullDescription: e.target.value })}
+                    className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs outline-none focus:border-primary"
+                  />
+                </div>
+                <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => setEditingVisa(null)}
+                    className="px-5 py-2 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border-none cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-6 py-2 rounded-full text-xs font-extrabold bg-primary text-white border-none cursor-pointer shadow-md"
+                  >
+                    Save Changes
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
+        </ModalPortal>
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
