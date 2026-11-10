@@ -4929,6 +4929,10 @@ export default function AdminSettingsPage() {
                         {emailLogs.length > 0 ? (
                           emailLogs.map((log: any, idx: number) => {
                             const dateStr = new Date(log.createdAt).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+                            const sentToList = (log.sentTo || '')
+                              .split(/[,;\n]+/)
+                              .map((e: string) => e.trim())
+                              .filter(Boolean);
                             return (
                               <tr key={idx} className="hover:bg-slate-50/50 transition-colors">
                                 <td className="py-3 px-4 font-mono font-medium text-slate-600 whitespace-nowrap">{dateStr}</td>
@@ -4944,7 +4948,22 @@ export default function AdminSettingsPage() {
                                     {log.status}
                                   </span>
                                 </td>
-                                <td className="py-3 px-4 font-semibold text-primary bg-blue-lt rounded-full border border-primary">{log.sentTo}</td>
+                                <td className="py-3 px-4">
+                                  <div className="flex flex-wrap items-center gap-1.5">
+                                    {sentToList.length > 0 ? (
+                                      sentToList.map((email: string, emailIdx: number) => (
+                                        <span
+                                          key={emailIdx}
+                                          className="inline-flex items-center px-2.5 py-1 text-xs font-semibold text-primary bg-blue-lt rounded-full border border-primary"
+                                        >
+                                          {email}
+                                        </span>
+                                      ))
+                                    ) : (
+                                      <span className="text-gray-400 font-normal">—</span>
+                                    )}
+                                  </div>
+                                </td>
                                 <td className="py-3 px-4 text-gray-500 max-w-[250px]" title={log.details || ''}>{log.details}</td>
                               </tr>
                             );
