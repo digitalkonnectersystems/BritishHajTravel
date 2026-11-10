@@ -501,7 +501,7 @@ export default function PackageDetailPageClient({
             {overviewArray.length > 0 && (
               <div>
                 <h3 className="text-xl sm:text-2xl font-bold font-serif text-primary mb-5">
-                  Package Inluded
+                  Package Included
                 </h3>
                 <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-md space-y-6">
                   {overviewArray.map((block: any, bIdx: number) => {
@@ -536,14 +536,14 @@ export default function PackageDetailPageClient({
             {/* 3. Package Highlights & Eligibility (Side-by-Side Cards) */}
             {(highlightsList.length > 0 || eligibilityList.length > 0) && (
               <div>
-                <h3 className="text-xl sm:text-2xl font-bold font-serif text-slate-800 mb-5">
+                <h3 className="text-xl sm:text-2xl font-bold font-serif mb-5">
                   Highlights & Eligibility
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Highlights */}
                   {highlightsList.length > 0 && (
                     <div className="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-md">
-                      <h4 className="text-lg font-bold font-serif text-primary mb-4 flex items-center gap-2">
+                      <h4 className="text-lg font-bold font-serif mb-4 flex items-center gap-2">
                         ⭐️
                         Package Highlights
                       </h4>
@@ -593,7 +593,7 @@ export default function PackageDetailPageClient({
               <div>
                 <div className="flex items-end justify-between gap-4 mb-5">
                   <div>
-                    <h3 className="text-xl sm:text-2xl font-bold font-serif text-slate-800">
+                    <h3 className="text-xl sm:text-2xl font-bold font-serif">
                       Package Gallery
                     </h3>
                     <p className="text-xs text-gray-500 mt-1">

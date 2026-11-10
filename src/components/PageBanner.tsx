@@ -74,46 +74,49 @@ export default function PageBanner({
     <section
       style={{
         backgroundImage: isInnerBanner
-          ? `linear-gradient(90deg, rgba(3, 19, 65, 0.98) 0%, rgb(2 14 67) 100%)${cleanBg ? `, url("${cleanBg}")` : ""}`
+          ? `linear-gradient(90deg, rgba(3, 19, 65, 0.98) 40%, rgb(2, 14, 67, 0.2) 100%)${cleanBg ? `, url("${cleanBg}")` : ""}`
           : `linear-gradient(rgba(2, 14, 67, 0.45), rgba(2, 14, 67, 1)), url("${cleanBg}")`,
         backgroundPosition: activePos,
         backgroundSize: activeSize,
+        backgroundColor: '#021c43',
       }}
       className={`relative text-white overflow-hidden bg-no-repeat ${isInnerBanner
         ? 'min-h-[155px] sm:min-h-[200px] min-[1025px]:h-[200px] xl:h-[250px] flex items-center py-5 sm:py-4 xl:py-4'
         : 'text-center py-20 !px-5 h-[420px] max-h-[420px] flex flex-col items-center justify-center'}`}
     >
       <div className={`w-full z-10 mx-auto ${isInnerBanner ? 'max-w-[1400px] px-5' : ''}`}>
-        <h1
-          className={isInnerBanner ? 'page-header-title' : 'page-header-title'}
-          dangerouslySetInnerHTML={{ __html: title }}
-        />
-        {description && (
-          <p
-            className={isInnerBanner ? 'page-header-leadtxt saudi-visa-banner-copy' : 'page-header-leadtxt'}
-          >
-            {description}
-          </p>
-        )}
-        {isInnerBanner && showHeroSupport && saudiFeatures.length > 0 && (
-          <div className="mt-4 flex max-w-[760px] flex-wrap items-center gap-3 text-left sm:mt-7 sm:gap-5 min-[1025px]:mt-9 min-[1025px]:gap-7 max-sm:gap-3">
-            {saudiFeatures.map(({ icon = 'document', first = '', second = '' }, index: number) => (
-              <React.Fragment key={`${icon}-${index}`}>
-                {index > 0 && <span className="h-8 w-px bg-white/25 max-sm:hidden" />}
-                <div className="flex min-w-0 items-center gap-1 sm:gap-2">
-                  <span className="flex h-8 w-8 xl:h-9 xl:w-9 shrink-0 items-center justify-center rounded-full bg-[#12357f] text-white shadow-inner">
-                    <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current" strokeWidth="1.8">
-                      {icon === 'document' && <><path d="M6 3h9l3 3v15H6z" /><path d="M9 10h6M9 14h6M9 18h4" /></>}
-                      {icon === 'people' && <><circle cx="9" cy="8" r="3" /><circle cx="17" cy="9" r="2.5" /><path d="M3.5 20c.5-3.2 2.4-5 5.5-5s5 1.8 5.5 5M14 15c3.2-.4 5.3 1.3 6 4" /></>}
-                      {icon === 'shield' && <><path d="m12 3 7 3v5c0 4.5-2.8 7.7-7 10-4.2-2.3-7-5.5-7-10V6z" /><path d="m8.5 12 2.2 2.2 4.8-5" /></>}
-                    </svg>
-                  </span>
-                  <span className="text-xs sm:text-xs xl:text-sm leading-tight text-white/90">{first}<br />{second}</span>
-                </div>
-              </React.Fragment>
-            ))}
-          </div>
-        )}
+        <div className={`saudi-visa-banner-copy`}>
+          <h1
+            className={isInnerBanner ? 'page-header-title' : 'page-header-title'}
+            dangerouslySetInnerHTML={{ __html: title }}
+          />
+          {description && (
+            <p
+              className={isInnerBanner ? 'page-header-leadtxt' : 'page-header-leadtxt'}
+            >
+              {description}
+            </p>
+          )}
+          {isInnerBanner && showHeroSupport && saudiFeatures.length > 0 && (
+            <div className="mt-4 flex max-w-[760px] flex-wrap items-center gap-3 text-left sm:mt-4 sm:gap-5 min-[1025px]:mt-6 min-[1025px]:gap-7 max-sm:gap-3">
+              {saudiFeatures.map(({ icon = 'document', first = '', second = '' }, index: number) => (
+                <React.Fragment key={`${icon}-${index}`}>
+                  {index > 0 && <span className="h-8 w-px bg-white/25 max-sm:hidden" />}
+                  <div className="flex min-w-0 items-center gap-1 sm:gap-2">
+                    <span className="flex h-8 w-8 xl:h-9 xl:w-9 shrink-0 items-center justify-center rounded-full bg-[#12357f] text-white shadow-inner">
+                      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current" strokeWidth="1.8">
+                        {icon === 'document' && <><path d="M6 3h9l3 3v15H6z" /><path d="M9 10h6M9 14h6M9 18h4" /></>}
+                        {icon === 'people' && <><circle cx="9" cy="8" r="3" /><circle cx="17" cy="9" r="2.5" /><path d="M3.5 20c.5-3.2 2.4-5 5.5-5s5 1.8 5.5 5M14 15c3.2-.4 5.3 1.3 6 4" /></>}
+                        {icon === 'shield' && <><path d="m12 3 7 3v5c0 4.5-2.8 7.7-7 10-4.2-2.3-7-5.5-7-10V6z" /><path d="m8.5 12 2.2 2.2 4.8-5" /></>}
+                      </svg>
+                    </span>
+                    <span className="text-xs sm:text-xs xl:text-sm leading-tight text-white/90">{first}<br />{second}</span>
+                  </div>
+                </React.Fragment>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );

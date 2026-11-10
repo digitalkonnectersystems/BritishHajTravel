@@ -30,7 +30,7 @@ export default function Banner4GridsSection({
   const inline = data?.placement === 'inline' || (data?.placement !== 'overlap' && isInnerBanner);
 
   return (
-    <div className="w-full -mt-2 md:-mt-6">
+    <div className="w-full -mt-2 md:-mt-6 bg-white">
       <section className={inline
         ? 'relative z-10 w-full max-w-[1400px] mx-auto !p-4 !pt-0'
         : 'relative -mt-6 sm:-mt-10 md:-mt-16 lg:-mt-21 z-10 max-w-4xl w-[calc(100%-3rem)] md:w-full mx-auto !pb-0'}>
