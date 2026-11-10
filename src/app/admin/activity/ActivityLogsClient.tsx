@@ -45,6 +45,7 @@ export default function ActivityLogsClient({ initialActivities }: ActivityLogsCl
   const [selectedType, setSelectedType] = useState('all');
   const [selectedUser, setSelectedUser] = useState('all');
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [activityError, setActivityError] = useState('');
   const [justRefreshed, setJustRefreshed] = useState(false);
   const [expandedActivityId, setExpandedActivityId] = useState<string | number | null>(null);
 
@@ -86,8 +87,12 @@ export default function ActivityLogsClient({ initialActivities }: ActivityLogsCl
 
   const handleClearLogs = async () => {
     if (confirm('Are you sure you want to clear all audit activity logs? This cannot be undone.')) {
-      await clearActivityLogsAction();
-      setActivities([]);
+      setActivityError('');
+      try {
+        const result = await clearActivityLogsAction();
+        if (!result.success) { setActivityError(result.error || 'Unable to clear the audit logs.'); return; }
+        setActivities([]);
+      } catch { setActivityError('Unable to clear the audit logs. Please retry.'); }
     }
   };
 
@@ -123,6 +128,7 @@ export default function ActivityLogsClient({ initialActivities }: ActivityLogsCl
 
   return (
     <div className="flex flex-col gap-6">
+      {activityError && <p role="alert" className="rounded-lg border border-red-200 bg-red-50 p-3 text-xs font-semibold text-red-800">{activityError}</p>}
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>

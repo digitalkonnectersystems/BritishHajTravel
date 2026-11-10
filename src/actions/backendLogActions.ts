@@ -3,6 +3,7 @@ import { db } from '@/db';
 import { backendLogs } from '@/db/schema';
 import { requireAdmin } from '@/lib/requireAdmin';
 import { writeBackendLog } from '@/lib/backendLogger';
+import { logAdminActivityAction } from '@/actions/activityActions';
 import { and, desc, eq, isNull } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 
@@ -22,6 +23,7 @@ export async function updateBackendLogStatusAction(id:number,status:'open'|'ackn
  if (!Number.isInteger(id) || id <= 0 || !['open','acknowledged','resolved'].includes(status)) return {success:false,error:'Invalid log status or ID.'};
  try {
   await db.update(backendLogs).set({status,updatedAt:new Date()}).where(and(eq(backendLogs.id,id),isNull(backendLogs.deletedAt)));
+  await logAdminActivityAction({type:'settings',action:'Updated Backend Log Status',details:`Diagnostic event #${id} marked ${status}`});
   revalidatePath('/admin/backend-logs');
   return {success:true};
  } catch {return {success:false,error:'Unable to update diagnostic status.'};}
@@ -31,6 +33,7 @@ export async function deleteBackendLogAction(id:number) {
  if (!Number.isInteger(id) || id <= 0) return {success:false,error:'Invalid log ID.'};
  try {
   await db.update(backendLogs).set({deletedAt:new Date(),updatedAt:new Date()}).where(and(eq(backendLogs.id,id),isNull(backendLogs.deletedAt)));
+  await logAdminActivityAction({type:'settings',action:'Archived Backend Log',details:`Diagnostic event #${id} archived`});
   revalidatePath('/admin/backend-logs');
   return {success:true};
  } catch {return {success:false,error:'Unable to archive diagnostic event.'};}

@@ -279,6 +279,8 @@ export async function clearActivityLogsAction() {
       .update(activityLogs)
       .set({ deletedAt: new Date(), updatedAt: new Date() })
       .where(isNull(activityLogs.deletedAt));
+    // Preserve an audit entry for the act of clearing history.
+    await logAdminActivityAction({ type:'settings', action:'Cleared Activity Logs', details:'Archived prior administrative audit entries' });
     revalidatePath('/admin/dashboard');
     revalidatePath('/admin/activity');
     return { success: true };

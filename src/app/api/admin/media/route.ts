@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
 import { mediaFiles } from '@/db/schema';
-import { asc, count, desc, eq, like, or, and, gt, gte } from 'drizzle-orm';
+import { asc, count, desc, eq, like, or, and, gt, gte, inArray } from 'drizzle-orm';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { getCurrentSession } from '@/lib/auth';
 import { logAdminActivityAction } from '@/actions/activityActions';
 import { getMediaDirectories, getMediaRoot, hashBuffer, imageType, MAX_OPTIMIZED_BYTES, safeMediaPath, validMediaPath, walkMediaFiles } from '@/lib/mediaStorage';
 import sharp from 'sharp';
+import { intrinsicMediaDimensions, resizeMediaToMeasuredBounds, type RenderedSizeRequest } from '@/lib/renderedMediaStorage';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -44,7 +45,12 @@ export async function GET(req: NextRequest) {
       db.select({value:count()}).from(mediaFiles).where(eq(mediaFiles.status,'active')),
       db.select({value:count()}).from(mediaFiles).where(eq(mediaFiles.status,'trash')),
     ]);
-    return NextResponse.json({success:true,items:rows.map(({contentHash,...row}) => ({...row,url:(row.storage==='remote'||row.storage==='blob')&&/^https:\/\//.test(row.relativePath)?row.relativePath:mimeOf(row.relativePath)==='image/svg+xml'?`/media/${row.relativePath}`:`/images_BHT/${row.relativePath}`})),total:totals[0]?.value||0,active:activeCounts[0]?.value||0,trash:trashCounts[0]?.value||0,page,limit});
+    const items = await Promise.all(rows.map(async ({contentHash, ...row}) => ({
+      ...row,
+      url:(row.storage==='remote'||row.storage==='blob')&&/^https:\/\//.test(row.relativePath)?row.relativePath:mimeOf(row.relativePath)==='image/svg+xml'?`/media/${row.relativePath}`:`/images_BHT/${row.relativePath}`,
+      dimensions: row.mimeType.startsWith('image/') ? await intrinsicMediaDimensions(row) : null,
+    })));
+    return NextResponse.json({success:true,items,total:totals[0]?.value||0,active:activeCounts[0]?.value||0,trash:trashCounts[0]?.value||0,page,limit});
   } catch(error) { return jsonError(error); }
 }
 
@@ -80,7 +86,7 @@ export async function POST(req: NextRequest) {
       const cursor = Math.max(0,Math.floor(Number(body.cursor)||0));
       const entries = [] as {root:string;storage:'local'|'public';relative:string;size:number}[];
       for (const {root,storage} of getMediaDirectories()) {
-        for (const file of await walkMediaFiles(root)) entries.push({...file,root,storage:storage as 'local'|'public'});
+        for (const file of await walkMediaFiles(root)) entries.push({...file,root,storage});
       }
       const batch = entries.slice(cursor,cursor+40);
       for (const file of batch) {
@@ -98,6 +104,83 @@ export async function POST(req: NextRequest) {
       await logAdminActivityAction({type:'media',action:action==='trash'?'Moved Media to Trash':'Restored Media',details:`${ids.length} media records`,newEntry:{ids}});
       // Never unlink shared media here: a URL may be used by many pages.
       return NextResponse.json({success:true,updated:ids.length});
+    }
+    if (action === 'rendered-sizing') {
+      // These dimensions are measured in real page iframes by an authenticated
+      // administrator. Never take filesystem paths from requests directly.
+      const raw = body.measurements;
+      if (!Array.isArray(raw) || raw.length < 1 || raw.length > 8) {
+        return NextResponse.json({success:false,error:'Provide 1 to 8 measured images per batch'}, {status:400});
+      }
+      const measurements = new Map<string, RenderedSizeRequest>();
+      for (const item of raw) {
+        const relativePath = String(item?.relativePath || '');
+        const renderedWidth = Number(item?.renderedWidth);
+        const renderedHeight = Number(item?.renderedHeight);
+        if (!validMediaPath(relativePath) || !imageType(path.extname(relativePath)) ||
+            ![renderedWidth, renderedHeight].every(n => Number.isFinite(n) && n >= 1 && n <= 8192)) {
+          return NextResponse.json({success:false,error:'Invalid frontend image dimensions or path'}, {status:400});
+        }
+        const previous = measurements.get(relativePath);
+        measurements.set(relativePath, {relativePath,
+          renderedWidth:Math.max(previous?.renderedWidth || 0, renderedWidth),
+          renderedHeight:Math.max(previous?.renderedHeight || 0, renderedHeight)});
+      }
+      const paths = [...measurements.keys()];
+      const rows = await db.select().from(mediaFiles).where(and(
+        eq(mediaFiles.status,'active'), inArray(mediaFiles.relativePath, paths)
+      ));
+      const byPath = new Map(rows.map(row => [row.relativePath, row]));
+      // Existing public images sometimes predate the Media Library index.
+      // Index only measured files, not unrelated assets in the media folder.
+      for (const relativePath of paths) {
+        if (byPath.has(relativePath)) continue;
+        for (const {root,storage} of getMediaDirectories()) {
+          try {
+            const target = safeMediaPath(root,relativePath);
+            const stat = await fs.stat(target);
+            if (!stat.isFile()) continue;
+            const original = await fs.readFile(target);
+            await db.insert(mediaFiles).values({
+              name:path.basename(relativePath),relativePath,
+              contentHash:hashBuffer(original),mimeType:mimeOf(relativePath),
+              sizeBytes:stat.size,storage,
+            }).onDuplicateKeyUpdate({set:{sizeBytes:stat.size,storage,updatedAt:new Date()}});
+            const [indexed] = await db.select().from(mediaFiles).where(and(
+              eq(mediaFiles.relativePath,relativePath),eq(mediaFiles.status,'active')
+            )).limit(1);
+            if (indexed) byPath.set(relativePath,indexed);
+            break;
+          } catch(error) {
+            if ((error as NodeJS.ErrnoException).code === 'ENOENT') continue;
+            throw error;
+          }
+        }
+      }
+      const stats = {checked:paths.length,resized:0,skipped:0,failed:0,bytesSaved:0,details:[] as string[]};
+      for (const relativePath of paths) {
+        const row = byPath.get(relativePath);
+        if (!row || !['local','public'].includes(row.storage)) {stats.skipped++;continue;}
+        try {
+          const result = await resizeMediaToMeasuredBounds(row, measurements.get(relativePath)!, async (sizeBytes, contentHash) => {
+            await db.update(mediaFiles).set({sizeBytes,contentHash,updatedAt:new Date()}).where(eq(mediaFiles.id,row.id));
+          });
+          if (result.status === 'resized') {
+            stats.resized++;
+            stats.bytesSaved += result.bytesSaved;
+            stats.details.push(`${relativePath}: ${result.before?.width}x${result.before?.height} to ${result.after?.width}x${result.after?.height}`);
+          } else stats.skipped++;
+        } catch(error) {
+          stats.failed++;
+          stats.details.push(`${relativePath}: ${error instanceof Error ? error.message : 'Resize failed'}`);
+        }
+      }
+      if (stats.resized > 0) await logAdminActivityAction({
+        type:'media', action:'Rendered Sizing',
+        details:`Resized ${stats.resized} frontend images; saved ${stats.bytesSaved} bytes`,
+        newEntry:{resized:stats.resized,failed:stats.failed,bytesSaved:stats.bytesSaved},
+      });
+      return NextResponse.json({success:true,...stats});
     }
     if (action === 'optimize') {
       const id = Number(body.id || 0);
