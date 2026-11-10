@@ -49,8 +49,8 @@ export default function RealtimeAnalytics({ initial, onSnapshot }: { initial: An
     </div>
     {error && <p role="status" className="mb-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">{error}</p>}
     <div className="mb-5 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-9">
-      {items.map(([label, value], i) => <div key={label} className="relative overflow-hidden rounded-2xl border border-slate-100 bg-gradient-to-br from-white via-slate-50 to-sky-50 p-3 shadow-[0_10px_28px_-24px_rgba(15,23,42,.55)]">
-        <span className="absolute inset-x-0 top-0 h-[3px]" style={{ background: ['linear-gradient(90deg,#0d9488,#38bdf8)', 'linear-gradient(90deg,#3b82f6,#8b5cf6)', 'linear-gradient(90deg,#ec4899,#f59e0b)'][i % 3] }} />
+      {items.map(([label, value], i) => <div key={label} className="relative overflow-hidden rounded-2xl border border-slate-100 bg-slate-50 p-3 shadow-[0_10px_28px_-24px_rgba(15,23,42,.55)]">
+        <span className="absolute inset-x-0 top-0 h-[3px]" style={{ backgroundColor: ['#0d9488', '#3b82f6', '#ec4899'][i % 3] }} />
         <p className="text-[10px] font-bold text-gray-500">{label}</p><p className="mt-1 text-2xl font-black tabular-nums text-slate-900">{value}</p>
       </div>)}
     </div>

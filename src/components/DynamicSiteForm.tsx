@@ -214,7 +214,7 @@ export default function DynamicSiteForm({
           packageType,
           numberOfPilgrims: parseNumberSafe(getVal(["adults", "passengers"], "1"), 1),
           message,
-          sourceFormName: formKey === 'hajjCustomizeForm' ? 'Hajj Customize Form' : 'Get a Free Quote Form',
+          sourceFormName: formKey === 'hajjCustomizeForm' ? 'Hajj Page Customize Form' : 'Get a Free Quote Form',
         });
       } else if (formKey === "packageDetailForm" || formKey === "hajjPackageDetailForm" || formKey === "packageInquiry") {
         res = await submitPackageBookingEnquiryAction({
@@ -249,7 +249,7 @@ export default function DynamicSiteForm({
           subject: getVal(formKey === 'contact' ? ['subject', 'subjectLine', 'subject_line', '4'] : ['subject', 'subjectLine', 'subject_line']),
           packageType,
           message,
-          sourceFormName: formKey === 'dropUsMessage' ? 'Drop Us A Message Form' : 'Contact Inquiry Form',
+          sourceFormName: formKey === 'dropUsMessage' ? 'Get In Touch Form' : 'Contact Form',
         });
       }
 

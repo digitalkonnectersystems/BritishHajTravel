@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useId } from 'react';
+import React from 'react';
 
 export type WaveSeries = {
   name: string;
@@ -55,7 +55,7 @@ export function WaveAnalyticsChart({
   emptyText?: string;
   compact?: boolean;
 }) {
-  const chartId = useId().replace(/:/g, '');
+
   const count = labels.length;
   const active = series.filter(s => s.values.length === count && count > 0);
   const maxValue = Math.max(0, ...active.flatMap(s => s.values.map(v => Number.isFinite(v) ? Math.max(0, v) : 0)));
@@ -76,20 +76,11 @@ export function WaveAnalyticsChart({
         <div>{title && <h3 className="m-0 text-base font-extrabold tracking-tight text-slate-900">{title}</h3>}{description && <p className="mt-1 text-xs leading-5 text-gray-500">{description}</p>}</div>
         <span className="rounded-full border border-teal-100 bg-teal-50 px-3 py-1 text-[10px] font-extrabold uppercase tracking-wide text-teal-700">{mode === 'timeline' ? 'Daily activity' : 'Category snapshot'}</span>
       </div>}
-      <div className="rounded-[20px] border border-slate-100 bg-gradient-to-br from-[#f7fbff] via-[#f8f7ff] to-[#f0fbf6] p-3 sm:p-4">
+      <div className="rounded-[20px] border border-slate-100 bg-slate-50 p-3 sm:p-4">
         <div className="flex flex-wrap gap-x-5 gap-y-2" aria-label="Chart series">
-          {active.map((s, i) => <div key={`${s.name}-${i}`} className="inline-flex items-center gap-2 text-[11px] font-bold text-slate-600"><span className="h-2.5 w-2.5 rounded-full shadow-sm" style={{ background: `linear-gradient(90deg, ${(s.colors || WAVE_PALETTES[i % WAVE_PALETTES.length]).join(', ')})` }} />{s.name}</div>)}
+          {active.map((s, i) => <div key={`${s.name}-${i}`} className="inline-flex items-center gap-2 text-[11px] font-bold text-slate-600"><span className="h-2.5 w-2.5 rounded-full shadow-sm" style={{ backgroundColor: (s.colors || WAVE_PALETTES[i % WAVE_PALETTES.length])[0] }} />{s.name}</div>)}
         </div>
         <svg className="mt-3 block w-full" viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`} role="img" aria-label={`${title || 'Analytics'}: ${active.map(s => `${s.name}: ${s.values.join(', ')}`).join('; ')}`}>
-          <defs>
-            {active.map((s, i) => {
-              const colors = s.colors || WAVE_PALETTES[i % WAVE_PALETTES.length];
-              return <React.Fragment key={`${chartId}-${i}`}>
-                <linearGradient id={`${chartId}-line-${i}`} x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor={colors[0]}/><stop offset="50%" stopColor={colors[1]}/><stop offset="100%" stopColor={colors[2]}/></linearGradient>
-                <linearGradient id={`${chartId}-shade-${i}`} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={colors[1]} stopOpacity=".24"/><stop offset="50%" stopColor={colors[0]} stopOpacity=".10"/><stop offset="100%" stopColor={colors[2]} stopOpacity="0"/></linearGradient>
-              </React.Fragment>;
-            })}
-          </defs>
           {[0, 0.25, 0.5, 0.75, 1].map((step, i) => {
             const y = baseY - step * chartHeight;
             return <g key={step}>
@@ -101,15 +92,15 @@ export function WaveAnalyticsChart({
           {active.map((s, i) => {
             if (noData) return null;
             const points = coords(s.values);
+            const color = (s.colors || WAVE_PALETTES[i % WAVE_PALETTES.length])[0];
             const line = monotoneCurve(points);
             const area = `${line} L ${points[points.length - 1].x} ${baseY} L ${points[0].x} ${baseY} Z`;
-            return <g key={`${chartId}-series-${i}`}>
-              <path d={area} fill={`url(#${chartId}-shade-${i})`} />
-              <path d={line} fill="none" stroke={`url(#${chartId}-line-${i})`} strokeWidth="9" opacity=".12" strokeLinecap="round" />
-              <path d={line} fill="none" stroke={`url(#${chartId}-line-${i})`} strokeWidth="3.8" strokeLinecap="round" />
+            return <g key={`${s.name}-${i}`}>
+              <path d={area} fill={color} fillOpacity=".08" />
+              <path d={line} fill="none" stroke={color} strokeWidth="3.5" strokeLinecap="round" />
               {(count <= 10 ? points : [points[0], points[points.length - 1]]).map((p, j) => {
                 const idx = count <= 10 ? j : j === 0 ? 0 : count - 1;
-                return <circle key={idx} cx={p.x} cy={p.y} r="4.5" fill={(s.colors || WAVE_PALETTES[i % WAVE_PALETTES.length])[0]} stroke="white" strokeWidth="2.5"><title>{`${labels[idx]}: ${s.name} ${s.values[idx]}`}</title></circle>;
+                return <circle key={idx} cx={p.x} cy={p.y} r="4.5" fill={color} stroke="white" strokeWidth="2.5"><title>{`${labels[idx]}: ${s.name} ${s.values[idx]}`}</title></circle>;
               })}
             </g>;
           })}

@@ -13,6 +13,7 @@ import { eq, desc, inArray } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { dispatchFormEmails, type FormEmailAudit } from '@/lib/emailService';
 import { logAdminActivityAction } from '@/actions/activityActions';
+import { enquiryFormLabel } from '@/lib/formEnquiryCatalog';
 
 const validEmail = (email: unknown) => typeof email === 'string' && email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 const validName = (name: unknown) => typeof name === 'string' && name.trim().length >= 2 && name.trim().length <= 255;
@@ -33,7 +34,7 @@ async function saveEnquiryEmailAudit(enquiryNumber: string, audit?: FormEmailAud
   if (!audit) return;
   try {
     await db.update(enquiries).set({
-      sourceForm: audit.formName,
+      sourceForm: enquiryFormLabel(audit.formName),
       emailTo: audit.to.join(', '),
       emailCc: audit.cc.join(', '),
       emailBcc: audit.bcc.join(', '),
@@ -321,6 +322,8 @@ export async function submitQuoteEnquiryAction(data: {
     }
 
     if (!countOk(numberOfPilgrims,1) || (message||'').length > 5000) return {success:false,error:'Check the number of pilgrims and message length.'};
+    const formName = allowedFormName(sourceFormName,
+      ['Get a Free Quote', 'Get a Free Quote Form', 'Hajj Customize Form', 'Hajj Page Customize Form'], 'Get a Free Quote Form');
     const enquiryNumber = enquiryReference('QT');
 
     // 1. Insert into dedicated quote_enquiries table. Keep the dedicated
@@ -346,15 +349,16 @@ export async function submitQuoteEnquiryAction(data: {
       preferredPackageType: packageType,
       adults: numberOfPilgrims,
       message,
+      sourceForm: enquiryFormLabel(formName),
       status: 'new',
     });
     });
 
-    await recordPublicEnquiry('Get a Free Quote',enquiryNumber);
+    await recordPublicEnquiry(enquiryFormLabel(formName),enquiryNumber);
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
     const emailResult = await dispatchAndStoreEnquiryEmail(enquiryNumber, 
-      allowedFormName(sourceFormName, ['Get a Free Quote Form', 'Hajj Customize Form'], 'Get a Free Quote Form'),
+      formName,
       {
         enquiryNumber,
         fullName,
@@ -424,6 +428,10 @@ export async function submitPackageBookingEnquiryAction(data: {
     if (typeof message !== 'string' || message.length > 5000) {
       return { success: false, error: 'Your additional message must be 5,000 characters or fewer.' };
     }
+    const formName = allowedFormName(sourceFormName,
+      ['Package Detail Page Booking Form', 'Umrah Package Booking Form', 'Hajj Package Booking Form',
+        'Package Inquiry Form', 'Blog Detail Page', 'Destination Form', 'Plan Your Journey Form',
+        'Book Umrah Package', 'Book Hajj'], 'Package Detail Page Booking Form');
     const bookingNumber = enquiryReference('BK');
 
     // 1. Insert into dedicated package_booking_enquiries table.
@@ -457,6 +465,7 @@ export async function submitPackageBookingEnquiryAction(data: {
       infants,
       departureMonth: startDate,
       status: 'new',
+      sourceForm: enquiryFormLabel(formName),
       message,
     });
     });
@@ -465,7 +474,7 @@ export async function submitPackageBookingEnquiryAction(data: {
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
     const emailResult = await dispatchAndStoreEnquiryEmail(bookingNumber, 
-      allowedFormName(sourceFormName, ['Package Detail Page Booking Form', 'Umrah Package Booking Form', 'Hajj Package Booking Form', 'Package Inquiry Form', 'Blog Detail Page', 'Destination Form'], 'Package Detail Page Booking Form'),
+      formName,
       {
         bookingNumber,
         packageName,
@@ -519,6 +528,8 @@ export async function submitContactEnquiryAction(data: {
     if (phone && phone !== '+44' && !isValidUkPhone(phone)) return {success:false,error:'Phone must use +44 followed by exactly 10 digits.'};
 
     if ((message||'').length > 5000) return {success:false,error:'Message must be 5000 characters or fewer.'};
+    const formName = allowedFormName(sourceFormName,
+      ['Contact Us Form', 'Contact Form', 'Get In Touch Form', 'Drop Us A Message Form', 'Contact Inquiry Form'], 'Contact Form');
     const ticketNumber = enquiryReference('TKT');
 
     // 1. Insert into dedicated contact_enquiries table.
@@ -543,6 +554,7 @@ export async function submitContactEnquiryAction(data: {
       phone: phone || 'N/A',
       preferredPackageType: packageType || 'General Contact',
       message: savedMessage,
+      sourceForm: enquiryFormLabel(formName),
       status: 'new',
     });
     });
@@ -550,7 +562,7 @@ export async function submitContactEnquiryAction(data: {
     await recordPublicEnquiry('Contact Form',ticketNumber);
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
-    const emailResult = await dispatchAndStoreEnquiryEmail(ticketNumber, allowedFormName(sourceFormName, ['Contact Us Form', 'Contact Form', 'Get In Touch Form', 'Drop Us A Message Form', 'Contact Inquiry Form'], 'Contact Us Form'), {
+    const emailResult = await dispatchAndStoreEnquiryEmail(ticketNumber, formName, {
       ticketNumber,
       fullName,
       email,
@@ -608,6 +620,7 @@ export async function submitVisaEnquiryAction(data: {
     }
 
     if (!countOk(travelersCount,1) || (message||'').length > 5000) return {success:false,error:'Check traveller count or message length.'};
+    const formName = allowedFormName(sourceFormName, ['Visa Consultation Form', 'Umrah Visa Order Form'], 'Visa Consultation Form');
     const enquiryNumber = enquiryReference('VSA');
 
     await db.transaction(async (tx) => {
@@ -634,6 +647,7 @@ export async function submitVisaEnquiryAction(data: {
       preferredPackageType: visaTitle,
       adults: travelersCount,
       message,
+      sourceForm: enquiryFormLabel(formName),
       status: 'new',
     });
     });
@@ -641,7 +655,7 @@ export async function submitVisaEnquiryAction(data: {
     await recordPublicEnquiry('Visa Enquiry',enquiryNumber);
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
-    const emailResult = await dispatchAndStoreEnquiryEmail(enquiryNumber, allowedFormName(sourceFormName, ['Visa Consultation Form', 'Umrah Visa Order Form'], 'Visa Consultation Form'), {
+    const emailResult = await dispatchAndStoreEnquiryEmail(enquiryNumber, formName, {
       enquiryNumber,
       visaTitle,
       fullName,
@@ -761,6 +775,7 @@ export async function submitFlightInquiry(data: {
     }
 
     if (!countOk(passengers,1) || (message||'').length > 5000) return {success:false,error:'Check passenger count or message length.'};
+    const formName = allowedFormName(sourceFormName, ['Flight Booking Form', 'Flights Booking Inquiry Form'], 'Flight Booking Form');
     const enquiryNumber = enquiryReference('FLT');
 
     await db.transaction(async (tx) => {
@@ -790,6 +805,7 @@ export async function submitFlightInquiry(data: {
       adults: passengers,
       departureMonth: departureDate,
       message,
+      sourceForm: enquiryFormLabel(formName),
       status: 'new',
     });
     });
@@ -797,7 +813,7 @@ export async function submitFlightInquiry(data: {
     await recordPublicEnquiry('Flight Enquiry',enquiryNumber);
 
     // Dispatch Dual Emails (Admin Notification + User Confirmation)
-    const emailResult = await dispatchAndStoreEnquiryEmail(enquiryNumber, allowedFormName(sourceFormName, ['Flight Booking Form', 'Flights Booking Inquiry Form'], 'Flight Booking Form'), {
+    const emailResult = await dispatchAndStoreEnquiryEmail(enquiryNumber, formName, {
       enquiryNumber,
       fullName,
       email,

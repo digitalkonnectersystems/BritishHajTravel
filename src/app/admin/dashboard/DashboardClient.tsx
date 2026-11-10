@@ -76,7 +76,7 @@ function DistributionWaveCard({
           <p className="mt-1 text-xs text-gray-500">{subtitle}</p></div>
         <Link href={linkHref} className="rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-800 hover:bg-emerald-100">{linkLabel} ↗</Link>
       </div>
-      <div className="mt-5 rounded-2xl bg-gradient-to-br from-slate-50 to-emerald-50/60 p-4 border border-slate-100">
+      <div className="mt-5 rounded-2xl bg-slate-50 p-4 border border-slate-100">
         <div className="flex justify-between items-baseline"><span className="text-xs font-semibold text-gray-500">{totalLabel} · current database snapshot</span><strong className="text-2xl font-black text-slate-900 tabular-nums">{totalCount}</strong></div>
         <WaveAnalyticsChart
           compact

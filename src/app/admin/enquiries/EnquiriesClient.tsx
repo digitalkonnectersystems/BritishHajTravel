@@ -5,6 +5,7 @@ import { updateEnquiryStatus, deleteEnquiryAction, getEnquiriesList } from '@/ac
 import ConfirmModal, { ConfirmModalConfig } from '@/components/ui/ConfirmModal';
 import { Trash2, Search, Filter, Eye, X, Mail } from 'lucide-react';
 import { WaveAnalyticsChart, chartDays, dailySeries } from '@/components/admin/WaveAnalyticsChart';
+import { ENQUIRY_FORM_CATALOG, enquiryFormKey, enquiryFormLabel } from '@/lib/formEnquiryCatalog';
 
 interface EnquiriesClientProps {
   initialEnquiries: any[];
@@ -53,10 +54,13 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
       (e.enquiryNumber && e.enquiryNumber.toLowerCase().includes(q)) ||
       (e.fullName && e.fullName.toLowerCase().includes(q)) ||
       (e.email && e.email.toLowerCase().includes(q)) ||
-      (e.phone && e.phone.toLowerCase().includes(q));
+      (e.phone && e.phone.toLowerCase().includes(q)) ||
+      (e.sourceForm && e.sourceForm.toLowerCase().includes(q)) ||
+      (e.message && e.message.toLowerCase().includes(q));
 
     const matchesStatus = statusFilter === 'all' || e.status === statusFilter;
-    const matchesFormTab = formTypeTab === 'all' || e.type === formTypeTab;
+    const matchesFormTab = formTypeTab === 'all' ||
+      (formTypeTab === 'legacy' ? !enquiryFormKey(e.sourceForm) : enquiryFormKey(e.sourceForm) === formTypeTab);
     return matchesSearch && matchesStatus && matchesFormTab;
   });
 
@@ -118,25 +122,26 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
       </div>
 
       {/* Form Tabs Bar */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-100">
+      <div className="flex flex-wrap items-center gap-2 pb-2 border-b border-slate-100" aria-label="Filter enquiries by form">
         {[
-          { key: 'all', label: 'All Forms Queries' },
-          { key: 'quote_request', label: 'Quote Requests (quote_enquiries)' },
-          { key: 'package_enquiry', label: 'Package Bookings (package_booking_enquiries)' },
-          { key: 'general_contact', label: 'Contact Messages (contact_enquiries)' },
-          { key: 'visa_enquiry', label: 'Visa Requests (visa_enquiries)' },
-          { key: 'flight_enquiry', label: 'Flight Requests (flight_enquiries)' },
+          { key: 'all', label: 'All Forms', count: enquiries.length },
+          ...ENQUIRY_FORM_CATALOG.map(form => ({
+            key: form.key, label: form.label,
+            count: enquiries.filter(item => enquiryFormKey(item.sourceForm) === form.key).length,
+          })),
+          { key: 'legacy', label: 'Legacy / Unidentified', count: enquiries.filter(item => !enquiryFormKey(item.sourceForm)).length },
         ].map((tab) => (
           <button
             key={tab.key}
             type="button"
             onClick={() => setFormTypeTab(tab.key)}
-            className={`px-4 py-2 rounded-full text-xs font-extrabold transition-all border cursor-pointer whitespace-nowrap ${formTypeTab === tab.key
+            aria-pressed={formTypeTab === tab.key}
+            className={`px-3 py-2 rounded-full text-xs font-extrabold transition-all border cursor-pointer whitespace-normal text-left ${formTypeTab === tab.key
               ? 'bg-primary text-white border-primary shadow-md'
               : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
               }`}
           >
-            {tab.label}
+            {tab.label} <span className="opacity-70">({tab.count})</span>
           </button>
         ))}
       </div>
@@ -164,6 +169,8 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
             <option value="all">All Statuses</option>
             <option value="new">● New Queries</option>
             <option value="contacted">● Contacted</option>
+                          <option value="qualified">● Qualified</option>
+                          <option value="followup_required">● Follow-up Required</option>
             <option value="quotation_sent">● Quotation Sent</option>
             <option value="booked">● Booked</option>
             <option value="closed">● Closed</option>
@@ -181,8 +188,8 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
 
       {/* Table Card */}
       <div className="bg-white rounded-3xl border border-slate-100 shadow-2xs overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
+        <div className="min-w-0">
+          <table className="hidden lg:table w-full table-fixed text-left text-xs border-collapse break-words">
             <thead>
               <tr className="bg-slate-900 text-slate-300 font-extrabold text-[10px] uppercase tracking-wider">
                 <th className="py-3 px-4">Ref ID</th>
@@ -214,11 +221,11 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
                       <td className="py-3.5 px-4 font-mono font-extrabold text-amber-600 text-xs">
                         {item.enquiryNumber || `QT-${item.id}`}
                       </td>
-                      <td className="py-3.5 px-4">
+                      <td className="py-3.5 px-2 break-words">
                         <span
                           className={`text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider border ${tagInfo.bg} ${tagInfo.text} ${tagInfo.border}`}
                         >
-                          ● {tagInfo.label}
+                          ● {enquiryFormLabel(item.sourceForm)}
                         </span>
                       </td>
                       <td className="py-3.5 px-4">
@@ -229,7 +236,7 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
                       </td>
                       <td className="py-3.5 px-4">
                         <div className="font-semibold text-slate-800">{item.phone}</div>
-                        <div className="text-[10px] text-gray-500">{item.email}</div>
+                        <div className="text-[10px] break-all text-gray-500">{item.email}</div>
                       </td>
                       <td className="py-3.5 px-4 font-extrabold text-primary">
                         {item.preferredPackageType || item.type}
@@ -247,6 +254,8 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
                         >
                           <option value="new">● New</option>
                           <option value="contacted">● Contacted</option>
+                          <option value="qualified">● Qualified</option>
+                          <option value="followup_required">● Follow-up Required</option>
                           <option value="quotation_sent">● Quote Sent</option>
                           <option value="booked">● Booked</option>
                           <option value="closed">● Closed</option>
@@ -279,6 +288,24 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
               )}
             </tbody>
           </table>
+          <div className="lg:hidden divide-y divide-slate-100">
+            {filtered.length === 0 && <p className="p-5 text-xs text-gray-500">No form queries found.</p>}
+            {filtered.map(item => <article key={item.id} className="p-4 space-y-2 text-xs min-w-0 break-words">
+              <div className="flex flex-wrap items-start justify-between gap-2">
+                <div><strong className="block text-slate-900">{item.fullName}</strong><span className="font-mono text-amber-700">{item.enquiryNumber}</span></div>
+                <span className="rounded-full bg-slate-100 px-2 py-1 font-semibold text-slate-700">{enquiryFormLabel(item.sourceForm)}</span>
+              </div>
+              <p className="break-all text-slate-600">{item.email} · {item.phone}</p>
+              <p className="text-slate-600">{item.preferredPackageType || 'No package provided'}</p>
+              <div className="flex flex-wrap items-center gap-2">
+                <select aria-label={`Status for ${item.enquiryNumber}`} value={item.status || 'new'} onChange={e => void handleStatusChange(item.id, e.target.value)} className="min-w-0 rounded-lg border border-slate-200 bg-white p-2">
+                  {['new','contacted','qualified','quotation_sent','followup_required','booked','closed','spam'].map(status => <option key={status} value={status}>{status.replace(/_/g, ' ')}</option>)}
+                </select>
+                <button type="button" onClick={() => setSelectedEnquiry(item)} className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 font-bold text-blue-800">View</button>
+                <button type="button" onClick={() => handleDelete(item.id, item.enquiryNumber)} className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 font-bold text-red-800">Delete</button>
+              </div>
+            </article>)}
+          </div>
         </div>
       </div>
 

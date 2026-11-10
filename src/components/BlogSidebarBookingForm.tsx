@@ -214,7 +214,7 @@ export default function BlogSidebarBookingForm({ blogTitle }: { blogTitle?: stri
         infants: parseInt(infantsCount, 10),
         startDate: selectedDate,
         totalPrice: formattedTotalPrice,
-        sourceFormName: 'Blog Detail Page',
+        sourceFormName: 'Plan Your Journey Form',
       });
 
       if (res.success) {
