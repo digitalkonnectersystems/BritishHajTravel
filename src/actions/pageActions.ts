@@ -1,6 +1,8 @@
 'use server';
 
 import { requireAdmin } from '@/lib/requireAdmin';
+import { validateSeoText } from '@/lib/seoLimits';
+import { validateCanonicalOverride } from '@/lib/seoMetadata';
 
 import { db } from '@/db';
 import { sitePages, siteSettings } from '@/db/schema';
@@ -280,6 +282,9 @@ export async function savePageAction(formData: FormData) {
       }
     }
 
+    const metaError = validateSeoText({ metaTitle, metaDescription }) || validateSeoText(parsedSeoSettings) || validateCanonicalOverride(parsedSeoSettings?.canonicalUrl);
+    if (metaError) return { success: false, error: metaError };
+
     const duplicate = await db
       .select({ id: sitePages.id, title: sitePages.title })
       .from(sitePages)
@@ -406,6 +411,8 @@ export async function saveGuideAction(formData: FormData) {
   const metaDescription = String(formData.get('metaDescription') || '').trim();
 
   if (!title) return { success: false, error: 'Guide title is required.' };
+  const guideSeoError = validateSeoText({ metaDescription });
+  if (guideSeoError) return { success: false, error: guideSeoError };
   if (!guideCategory) return { success: false, error: 'Select Hajj or Umrah as the guide category.' };
   if (!rawSlug || slug === '/') return { success: false, error: 'Guide slug is required.' };
   if (slug.length > 128) return { success: false, error: 'The guide slug must be 128 characters or fewer.' };
@@ -424,7 +431,7 @@ export async function saveGuideAction(formData: FormData) {
       guideCardData,
       sections,
       richText: null,
-      metaTitle: title,
+      metaTitle: title.length <= 60 ? title : `${title.slice(0, 59).trimEnd()}…`,
       metaDescription: metaDescription || null,
       showInMenu: false,
       updatedAt: new Date(),
@@ -1852,6 +1859,8 @@ export async function savePageSeoAction(pageId: number | string, seoData: any) {
 
   try {
     const numId = Number(pageId);
+    const seoError = validateSeoText(seoData) || validateCanonicalOverride(seoData?.canonicalUrl);
+    if (seoError) return { success: false, error: seoError };
     if (!Number.isInteger(numId) || numId <= 0) {
       return { success: false, error: 'Invalid page ID. Package/blog SEO must use the entity SEO action.' };
     }

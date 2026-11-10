@@ -188,7 +188,8 @@ function GuideEditorContent() {
                   <input value={slug} onChange={(event) => setSlug(event.target.value)} className="mt-1 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-primary" />
                 </label>
                 <label className="text-[10px] font-extrabold uppercase tracking-wider text-gray-500">Page description / SEO description
-                  <textarea value={description} onChange={(event) => setDescription(event.target.value)} rows={3} className="mt-1 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs outline-none focus:border-primary" />
+                  <textarea value={description} maxLength={160} onChange={(event) => setDescription(event.target.value)} rows={3} className="mt-1 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs outline-none focus:border-primary" />
+                  <span className={`mt-1 block text-[10px] font-semibold ${description.length > 160 ? 'text-red-700' : description.length >= 70 ? 'text-emerald-700' : 'text-amber-700'}`}>{description.length}/160 characters</span>
                 </label>
               </div>
             </div>

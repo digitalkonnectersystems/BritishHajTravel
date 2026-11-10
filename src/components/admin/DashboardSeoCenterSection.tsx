@@ -24,12 +24,11 @@ interface DashboardSeoCenterSectionProps {
 /** Multi-color progress visualization: x axis is coverage percentage, not time. */
 function MetricWave({ value, label }: { value: number; label: string }) {
   const pct = Math.max(0, Math.min(100, Number(value) || 0));
-  const id = `metric-${label.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
   const end = 4 + pct * 1.92;
+  const color = pct >= 80 ? '#059669' : pct >= 50 ? '#ca8a04' : '#dc2626';
   return <svg className="h-7 w-full" viewBox="0 0 200 28" role="img" aria-label={`${label}: ${pct} percent complete`}>
-    <defs><linearGradient id={`${id}-stroke`} x1="0" y1="0" x2="1" y2="0"><stop stopColor="#14b8a6" /><stop offset=".36" stopColor="#3b82f6" /><stop offset=".7" stopColor="#8b5cf6" /><stop offset="1" stopColor="#f59e0b" /></linearGradient><linearGradient id={`${id}-shade`} x1="0" y1="0" x2="0" y2="1"><stop stopColor="#14b8a6" stopOpacity=".18" /><stop offset="1" stopColor="#14b8a6" stopOpacity="0" /></linearGradient></defs>
     <path d="M 4 15 L 196 15" stroke="#cbd5e1" strokeWidth="2" strokeLinecap="round" strokeDasharray="2 5" />
-    {pct > 0 && <><path d={`M 4 15 Q ${4 + pct * .48} 9 ${end} 15 L ${end} 27 L 4 27 Z`} fill={`url(#${id}-shade)`} /><path d={`M 4 15 Q ${4 + pct * .48} 9 ${end} 15`} stroke={`url(#${id}-stroke)`} strokeWidth="4" fill="none" strokeLinecap="round" /><circle cx={end} cy="15" r="3" fill="#059669" stroke="white" strokeWidth="1" /></>}
+    {pct > 0 && <><path d={`M 4 15 Q ${4 + pct * .48} 9 ${end} 15`} stroke={color} strokeWidth="4" fill="none" strokeLinecap="round" /><circle cx={end} cy="15" r="3" fill={color} stroke="white" strokeWidth="1" /></>}
   </svg>;
 }
 
@@ -238,11 +237,10 @@ export default function DashboardSeoCenterSection({ pages, audit = [] }: Dashboa
         </div>
 
         {/* A single measured score, not fabricated historical data. */}
-        <div className="rounded-2xl border border-slate-100 bg-gradient-to-b from-[#f8fbff] to-[#eefaf5] px-5 py-4">
+        <div className="rounded-2xl border border-slate-100 bg-slate-50 px-5 py-4">
           <div className="mb-1 flex items-baseline justify-between"><span className="text-xs font-bold text-slate-600">Current measured audit score</span><span className="text-2xl font-black text-primary">{healthRating}%</span></div>
           <div className="relative mt-5 mb-6 overflow-hidden rounded-full bg-slate-200/75 h-5" role="meter" aria-label="Current SEO audit score" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.max(0, Math.min(100, healthRating))}>
-            <div className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-teal-500 via-sky-400 to-violet-500 opacity-25 blur-sm" style={{ width: `${Math.max(0, Math.min(100, healthRating))}%` }} />
-            <div className="relative h-full rounded-full shadow-[0_4px_16px_rgba(56,189,248,.32)] transition-[width] duration-500" style={{ width: `${Math.max(0, Math.min(100, healthRating))}%`, background: "linear-gradient(90deg,#0d9488 0%,#38bdf8 28%,#6366f1 62%,#a855f7 80%,#f59e0b 100%)" }} />
+            <div className="relative h-full rounded-full shadow-[0_4px_16px_rgba(56,189,248,.32)] transition-[width] duration-500" style={{ width: `${Math.max(0, Math.min(100, healthRating))}%`, backgroundColor: healthRating >= 80 ? '#059669' : healthRating >= 50 ? '#ca8a04' : '#dc2626' }} />
           </div>
           <div className="flex justify-between text-[10px] font-bold text-gray-500"><span>0 · Needs attention</span><span>50 · Improving</span><span>100 · Excellent</span></div>
           <p className="mt-1 text-[11px] text-gray-500">Current snapshot only. Historical comparisons will be available when dated audit snapshots are stored.</p>

@@ -3,10 +3,11 @@
 import { getSeoIntelligenceSettings } from '@/actions/pageActions';
 import { resolveCanonicalPublicOrigin } from '@/lib/urlResolver';
 import { requireAdmin } from '@/lib/requireAdmin';
+import { validateSeoText } from '@/lib/seoLimits';
 
 import { db } from '@/db';
 import { blogPosts, destinations, packages, sitePages, siteSettings, visaServices } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, like } from 'drizzle-orm';
 import { revalidatePath, updateTag } from 'next/cache';
 import { getCurrentSession } from '@/lib/auth';
 import { logAdminActivityAction } from '@/actions/activityActions';
@@ -14,6 +15,7 @@ import {
   buildEntityMetadata,
   metadataSnapshot,
   parseSeoSettings,
+  validateCanonicalOverride,
   type SeoEntityType,
 } from '@/lib/seoMetadata';
 
@@ -53,9 +55,7 @@ export type SeoAuditItem = {
 };
 
 async function requireAdminSession() {
-  const session = await getCurrentSession();
-  if (!session) throw new Error('Unauthorized.');
-  return session;
+  return requireAdmin(['admin', 'seo_manager', 'content_editor']);
 }
 
 function toNumberId(value: number | string): number {
@@ -124,6 +124,8 @@ export async function saveEntitySeoAction(entityType: SeoEntityType, rawId: numb
       ...parseSeoSettings(seoData),
       updatedAt: new Date().toISOString(),
     };
+    const seoError = validateSeoText(cleanSeo) || validateCanonicalOverride(cleanSeo.canonicalUrl);
+    if (seoError) return { success: false, error: seoError };
 
     let entityTitle = `${entityType} #${id}`;
     let publicPath = '/';
@@ -202,7 +204,7 @@ function auditSingleItem(item: Omit<SeoAuditItem, 'score' | 'issues'>): SeoAudit
 
   if (!title.trim()) issues.push({ code: 'missing_title', severity: 'error', message: 'Missing metadata title.' });
   else if (title.length < 30) issues.push({ code: 'short_title', severity: 'warning', message: `Title is short (${title.length} characters). Aim for about 30-60.` });
-  else if (title.length > 65) issues.push({ code: 'long_title', severity: 'warning', message: `Title is long (${title.length} characters). Keep it around 60.` });
+  else if (title.length > 60) issues.push({ code: 'long_title', severity: 'warning', message: `Title is long (${title.length} characters). Keep it at 60 or fewer.` });
 
   if (!description.trim()) issues.push({ code: 'missing_description', severity: 'error', message: 'Missing meta description.' });
   else if (description.length < 70) issues.push({ code: 'short_description', severity: 'warning', message: `Description is short (${description.length} characters).` });
@@ -236,6 +238,8 @@ function auditSingleItem(item: Omit<SeoAuditItem, 'score' | 'issues'>): SeoAudit
   if (m.keywords.length === 0) issues.push({ code: 'meta_keywords_empty', severity: 'info', message: 'No meta keywords are configured (optional).' });
 
   const seo = item.seoData || {};
+  const canonicalIssue = validateCanonicalOverride(seo.canonicalUrl);
+  if (canonicalIssue) issues.push({code:'invalid_saved_canonical',severity:'error',message:canonicalIssue});
   if (!seo.schemaType && !seo.jsonLdPayload) issues.push({ code: 'schema_missing', severity: 'info', message: 'No custom schema type/JSON-LD is configured.' });
   if (!seo.heroAlt) issues.push({ code: 'hero_alt_missing', severity: 'info', message: 'Hero image alt text is not configured in SEO Center.' });
 
@@ -244,23 +248,22 @@ function auditSingleItem(item: Omit<SeoAuditItem, 'score' | 'issues'>): SeoAudit
 }
 
 export async function getSeoAuditReportAction(): Promise<SeoAuditItem[]> {
-  await requireAdmin(['admin', 'content_editor', 'seo_manager']);
-
   await requireAdminSession();
 
-  const [pageRows, packageRows, blogRows, destinationRows] = await Promise.all([
+  const [pageRows, packageRows, blogRows, destinationRows, legacySeoRows] = await Promise.all([
     db.select().from(sitePages),
     db.select().from(packages),
     db.select().from(blogPosts),
     db.select().from(destinations),
+    db.select({key:siteSettings.key,value:siteSettings.value}).from(siteSettings).where(like(siteSettings.key, 'page\\_seo\\_%')),
   ]);
+  const legacySeoById = new Map(legacySeoRows.filter(row => /^page_seo_\d+$/.test(row.key)).map(row => [Number(row.key.replace(/^page_seo_/, '')), row.value]));
 
   const canonicalOrigin = resolveCanonicalPublicOrigin(await getSeoIntelligenceSettings());
   const items: SeoAuditItem[] = [];
 
   for (const row of pageRows) {
-    const legacy = await getLegacyPageSeo(row.id);
-    const seoData = mergePageSeo(row, legacy);
+    const seoData = mergePageSeo(row, legacySeoById.get(row.id));
     const entity = { ...row, seoData };
     const metadata = metadataSnapshot(buildEntityMetadata('page', entity), canonicalOrigin);
     items.push(auditSingleItem({

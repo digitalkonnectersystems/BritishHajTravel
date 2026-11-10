@@ -32,12 +32,34 @@ export function normalizeRoutePath(pathname: string): string {
   return path || '/';
 }
 
-export function toCanonicalUrl(_value: unknown, fallbackPath = '/'): string {
-  // Canonical path is determined by the actual published route, not the
-  // source-domain URL imported into seo_settings.canonicalUrl.
-  // Next.js resolves this relative canonical using root metadataBase,
-  // which is read from Admin > Settings > SEO Intelligence.
-  return normalizeRoutePath(fallbackPath);
+const OWNED_CANONICAL_HOSTS = new Set([
+  'britishhajtravel.com', 'www.britishhajtravel.com', 'new.britishhajtravel.com',
+]);
+/** A canonical may point to another page on this site, but never to a different domain. */
+export function validateCanonicalOverride(value: unknown): string | null {
+  const raw = typeof value === 'string' ? value.trim() : '';
+  if (!raw) return null;
+  if (raw.startsWith('/') && !raw.startsWith('//') && !raw.includes('\\') && !/[\r\n]/.test(raw)) return null;
+  try {
+    const url = new URL(raw);
+    if (url.protocol === 'https:' && OWNED_CANONICAL_HOSTS.has(url.hostname.toLowerCase()) && !url.username && !url.password)
+      return null;
+  } catch { /* Invalid or non-URL input */ }
+  return 'Canonical must be an internal path or a URL on britishhajtravel.com / new.britishhajtravel.com.';
+}
+
+export function toCanonicalUrl(value: unknown, fallbackPath = '/'): string {
+  // Return a site-relative path, leaving the deployment-specific canonical
+  // origin to the root Next.js metadataBase setting.
+  if (validateCanonicalOverride(value)) return normalizeRoutePath(fallbackPath);
+  const raw = typeof value === 'string' ? value.trim() : '';
+  if (!raw) return normalizeRoutePath(fallbackPath);
+  try {
+    const parsed = new URL(raw, 'https://britishhajtravel.com');
+    return normalizeRoutePath(parsed.pathname);
+  } catch {
+    return normalizeRoutePath(fallbackPath);
+  }
 }
 
 export function toAbsoluteUrl(value: unknown, fallbackPath = '/', configuredOrigin?: string): string {
@@ -88,7 +110,7 @@ function buildTitle(base: string, explicit?: unknown, extra?: string): string {
   if (extra && !cleanBase.toLowerCase().includes(extra.toLowerCase())) parts.push(extra);
   let title = parts.join(' ');
   if (!title.toLowerCase().includes(BRAND.toLowerCase())) title = `${title} | ${BRAND}`;
-  return fitText(title, 65);
+  return fitText(title, 60);
 }
 
 function buildDescription(explicit: unknown, fallback: string): string {
