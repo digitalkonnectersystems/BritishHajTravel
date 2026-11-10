@@ -208,8 +208,12 @@ export default function TiptapEditor({
   minHeight = '220px',
   maxHeight = '420px',
 }: TiptapEditorProps) {
-  // Track whether the editor has been initialised so we don't re-set content
-  // on the very first render (it was already provided via `content:`).
+  // Track whether the component has mounted. Used to guard Tiptap callbacks
+  // (onSelectionUpdate, onTransaction) that can fire synchronously during
+  // editor initialisation — before React has committed the first render —
+  // which would trigger the "Can't perform a React state update on a component
+  // that hasn't mounted yet" warning.
+  // Also used to skip re-setting the initial content value on the first effect run.
   const isMounted = useRef(false);
 
   const [sourceMode, setSourceMode] = useState(false);
@@ -292,15 +296,25 @@ export default function TiptapEditor({
       onChange(ed.isEmpty ? '' : ed.getHTML());
     },
     onSelectionUpdate() {
-      // Auto-detect formatting on cursor move / text selection (MS Word style)
-      setSelectionTick((t) => t + 1);
+      // Auto-detect formatting on cursor move / text selection (MS Word style).
+      // Guard against calling setState before the component has mounted — Tiptap
+      // can fire these callbacks synchronously during editor initialisation
+      // before React has committed the first render.
+      if (isMounted.current) setSelectionTick((t) => t + 1);
     },
     onTransaction() {
-      setSelectionTick((t) => t + 1);
+      if (isMounted.current) setSelectionTick((t) => t + 1);
     },
     // Avoid SSR/hydration mismatch in Next.js
     immediatelyRender: false,
   });
+
+  // Mark the component as mounted after the first commit so the Tiptap
+  // callbacks (onSelectionUpdate / onTransaction) are allowed to call setState.
+  useEffect(() => {
+    isMounted.current = true;
+    return () => { isMounted.current = false; };
+  }, []);
 
   // Sync when the `value` prop changes externally (e.g. DB load after mount).
   // Skip the first run — content was already set via `content:` above.
@@ -308,7 +322,6 @@ export default function TiptapEditor({
     if (!editor || sourceMode) return;
 
     if (!isMounted.current) {
-      isMounted.current = true;
       return; // skip — initial value already applied by useEditor
     }
 

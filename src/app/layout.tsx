@@ -169,9 +169,12 @@ export default async function RootLayout({
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
-                gtag('config', '${gaId}', {
-                  page_path: window.location.pathname,
-                });
+                // Same-origin Media Library previews must not inflate GA4 pageviews.
+                if (!new URLSearchParams(window.location.search).has('__bht_media_scan')) {
+                  gtag('config', '${gaId}', {
+                    page_path: window.location.pathname,
+                  });
+                }
               `}
             </Script>
           </>

@@ -3,6 +3,8 @@
 import { db } from '@/db';
 import { visaProcessing } from '@/db/schema';
 import { requireAdmin } from '@/lib/requireAdmin';
+import { validateSeoText } from '@/lib/seoLimits';
+import { validateCanonicalOverride } from '@/lib/seoMetadata';
 import { logAdminActivityAction } from '@/actions/activityActions';
 import { eq, desc, and } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
@@ -64,6 +66,10 @@ export async function saveVisaProcessingAction(fd: FormData): Promise<{success:b
     if (!Array.isArray(parsedSections) || parsedSections.length > 100 || parsedSections.some(s => !s || typeof s !== 'object' || typeof s.type !== 'string')) throw new Error('invalid sections');
     if (!parsedSeo || typeof parsedSeo !== 'object' || Array.isArray(parsedSeo)) throw new Error('invalid SEO');
   } catch {return {success:false,error:'Invalid section or SEO JSON. Reload the editor and retry.'};}
+  const seoError = validateSeoText({metaTitle: fd.get('metaTitle'),metaDescription: fd.get('metaDescription')})
+    || validateSeoText(parsedSeo as Record<string, unknown>)
+    || validateCanonicalOverride((parsedSeo as Record<string, unknown>).canonicalUrl);
+  if (seoError) return {success:false,error:seoError};
   const str = (key: string, max=10000) => String(fd.get(key) || '').slice(0,max);
   const value = {
     title, slug, status: (fd.get('status') === 'draft' ? 'draft':'published') as 'draft'|'published',
@@ -73,8 +79,8 @@ export async function saveVisaProcessingAction(fd: FormData): Promise<{success:b
     guideCardData: str('guideCardData',20000) || null,
     sections: JSON.stringify(parsedSections),
     richText: str('richText',1000000) || null,
-    metaTitle: str('metaTitle',255) || null,
-    metaDescription: str('metaDescription',2000) || null,
+    metaTitle: str('metaTitle',60) || null,
+    metaDescription: str('metaDescription',160) || null,
     bannerBgImage: str('bannerBgImage',2000) || null,
     bannerPosition: str('bannerPosition',50) || 'center center',
     bannerSize: str('bannerSize',50) || 'cover',

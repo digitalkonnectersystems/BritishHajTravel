@@ -4936,7 +4936,7 @@ export default function AdminSettingsPage() {
                                   </span>
                                 </td>
                                 <td className="py-3 px-4 font-mono text-slate-700">{log.sentTo}</td>
-                                <td className="py-3 px-4 text-gray-500 max-w-[250px] truncate" title={log.details || ''}>{log.details}</td>
+                                <td className="py-3 px-4 text-gray-500 max-w-[250px]" title={log.details || ''}>{log.details}</td>
                               </tr>
                             );
                           })

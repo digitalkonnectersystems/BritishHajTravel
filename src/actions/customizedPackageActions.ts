@@ -72,7 +72,7 @@ export async function submitCustomizedPackageAction(raw: CustomizedEnquiryInput)
       await tx.insert(enquiries).values({
         enquiryNumber, type: 'package_enquiry', fullName, email, phone: raw.phone,
         preferredPackageType: `${raw.category.toUpperCase()} Customized`, adults: raw.adults,
-        children: raw.children, infants: raw.infants, sourceForm: `Customized ${raw.category.toUpperCase()} Package`,
+        children: raw.children, infants: raw.infants, sourceForm: raw.category === 'hajj' ? 'Customized Hajj Package Form' : 'Customized Umrah Package Form',
         message: `Reference: ${enquiryNumber}. View full preferences in Customized Enquiries.`, status: 'new',
       });
     });
