@@ -6,7 +6,7 @@ import { buildPageMetadata } from "@/lib/seoMetadata";
 
 export async function generateMetadata(): Promise<Metadata> {
   const pageData = await getPageBySlug("/about").catch(() => null);
-  return buildPageMetadata(pageData || { title: "About British Hajj Travel UK" }, "/about");
+  return buildPageMetadata(pageData || { title: "About British Haj Travel UK" }, "/about");
 }
 
 export default async function AboutPage() {

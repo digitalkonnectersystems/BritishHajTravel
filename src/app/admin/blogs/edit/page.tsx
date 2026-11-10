@@ -34,7 +34,7 @@ function BlogEditorInner() {
     content: '',
     featuredImage: '',
     category: 'Pilgrimage Guide',
-    authorName: 'British Hajj Travel Editorial',
+    authorName: 'British Haj Travel Editorial',
     isPublished: true,
     publishedAt: '',
   });
@@ -54,7 +54,7 @@ function BlogEditorInner() {
         content: b.content || '',
         featuredImage: b.featuredImage || '',
         category: b.category || 'Pilgrimage Guide',
-        authorName: b.authorName || 'British Hajj Travel Editorial',
+        authorName: b.authorName || 'British Haj Travel Editorial',
         isPublished: b.isPublished ?? true,
         publishedAt: b.publishedAt ? new Date(b.publishedAt).toISOString().split('T')[0] : '',
       });

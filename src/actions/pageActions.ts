@@ -633,7 +633,7 @@ export async function getDefaultFooterData() {
       { text: 'saudivisa@britishhajjtravel.com', url: 'mailto:saudivisa@britishhajjtravel.com', openInNewTab: false },
       { text: 'Mon–Sat, 9am – 7pm EST', url: '', openInNewTab: false },
     ],
-    copyrightText: '© 2026 British Hajj Travel LTD. All Rights Reserved.',
+    copyrightText: '© 2026 British Haj Travel LTD. All Rights Reserved.',
     developerText: 'Design & Developed by DKS',
     developerUrl: 'https://www.dks.com.pk',
   };
@@ -873,12 +873,12 @@ export async function duplicateGuideAction(id: number) {
 
 export async function getDefaultSiteIdentity() {
   return {
-    siteName: 'British Hajj Travel',
+    siteName: 'British Haj Travel',
     tagline: 'Trusted Hajj & Umrah Pilgrimage Travel Agency in UK',
     logo: '/images_BHT/bht-logo.png',
-    logoAlt: 'British Hajj Travel Logo',
+    logoAlt: 'British Haj Travel Logo',
     favicon: '/images_BHT/bht-fav-logo.png',
-    faviconAlt: 'British Hajj Travel Favicon',
+    faviconAlt: 'British Haj Travel Favicon',
   };
 }
 
@@ -1169,7 +1169,7 @@ export async function getDefaultLoginAuthSettings() {
   return {
     backgroundImage: '',
     backgroundAlt: 'Login screen background image',
-    footerText: '© 2026 British Hajj Travel LTD. All Rights Reserved.',
+    footerText: '© 2026 British Haj Travel LTD. All Rights Reserved.',
     maintenanceMode: false,
     maintenanceScope: 'entire_site',
     maintenancePaths: [],
@@ -1559,7 +1559,7 @@ const DEFAULT_FORMS_DATA: Record<string, any> = {
 const DEFAULT_EMAIL_CONFIGS: any = {
   sendToEmail: '',
   emailSubjectLine: '[form_name]',
-  fromName: 'British Hajj Travel UK',
+  fromName: 'British Haj Travel UK',
   fromEmail: '',
   replyTo: '',
   successHeading: 'Request Received Successfully!',
@@ -2145,7 +2145,7 @@ ${outputSchema}`;
 
 function getLocalTemplateFallback(section: string, context: SeoGenerationContext): any {
   const { pageTitle, pageSlug, schemaType, siteContext } = context;
-  const title = (pageTitle || 'British Hajj Travel UK').trim();
+  const title = (pageTitle || 'British Haj Travel UK').trim();
   const cleanSlug = pageSlug === '/' ? '' : pageSlug.startsWith('/') ? pageSlug : `/${pageSlug}`;
 
   if (section === 'traditional') {

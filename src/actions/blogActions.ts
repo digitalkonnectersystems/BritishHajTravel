@@ -30,7 +30,7 @@ export async function getBlogsList(publishedOnly = false) {
         if (orderSetting && orderSetting.length > 0) {
           try {
             orderIds = JSON.parse(orderSetting[0].value);
-          } catch (e) {}
+          } catch (e) { }
         }
         if (Array.isArray(orderIds) && orderIds.length > 0) {
           const orderMap = new Map(orderIds.map((id, index) => [id, index]));
@@ -227,7 +227,7 @@ export async function saveBlogAction(data: BlogSavePayload) {
     content,
     featuredImage,
     category = 'Pilgrimage Guide',
-    authorName = 'British Hajj Travel Editorial',
+    authorName = 'British Haj Travel Editorial',
     isPublished = true,
     publishedAt,
   } = data;
@@ -327,7 +327,7 @@ export async function deleteBlogAction(id: number) {
       if (found && found.length > 0) {
         blogTitle = `"${found[0].title}"`;
       }
-    } catch (e) {}
+    } catch (e) { }
 
     await db.delete(blogPosts).where(eq(blogPosts.id, id));
 
@@ -438,8 +438,8 @@ export async function saveBlogSeoAction(blogId: number, seoData: any) {
       seoSettings: seoData,
       updatedAt: new Date(),
     }).where(eq(blogPosts.id, blogId));
-    
-    await logAdminActivityAction({type:'blogs',action:'Updated Blog SEO',details:`Updated SEO metadata for blog #${blogId}`,newEntry:{id:blogId}});
+
+    await logAdminActivityAction({ type: 'blogs', action: 'Updated Blog SEO', details: `Updated SEO metadata for blog #${blogId}`, newEntry: { id: blogId } });
     revalidatePath('/admin/blogs');
     updateTag('blogs');
     updateTag(`blog-seo-${blogId}`);

@@ -82,7 +82,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     metadataBase: new URL(resolveCanonicalPublicOrigin(seoSettings)),
-    title: identity?.siteName || "British Hajj Travel UK",
+    title: identity?.siteName || "British Haj Travel UK",
     description: identity?.tagline || "",
     icons: {
       icon: faviconUrl,
@@ -184,15 +184,15 @@ export default async function RootLayout({
       <body suppressHydrationWarning>
         <FaviconSync faviconUrl={faviconUrl} />
         <CurrencyProvider initial={currencySettings}>
-        <FrontendMaintenanceWrapper initialMaintenanceMode={initialMaintenanceMode} initialMaintenanceScope={initialMaintenanceScope} initialMaintenancePaths={initialMaintenancePaths}>
-          <Header initialNavItems={liveNavItems} initialIdentity={identity} />
-          {children}
-          <Footer initialFooterData={visibleFooterData} />
-          <WhatsAppFloat initialIdentity={identity} />
-          <FloatingShareBar />
-          <RevealOnScroll />
-          <DisclaimerPopupModal />
-        </FrontendMaintenanceWrapper>
+          <FrontendMaintenanceWrapper initialMaintenanceMode={initialMaintenanceMode} initialMaintenanceScope={initialMaintenanceScope} initialMaintenancePaths={initialMaintenancePaths}>
+            <Header initialNavItems={liveNavItems} initialIdentity={identity} />
+            {children}
+            <Footer initialFooterData={visibleFooterData} />
+            <WhatsAppFloat initialIdentity={identity} />
+            <FloatingShareBar />
+            <RevealOnScroll />
+            <DisclaimerPopupModal />
+          </FrontendMaintenanceWrapper>
         </CurrencyProvider>
       </body>
     </html>

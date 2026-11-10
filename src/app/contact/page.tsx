@@ -8,8 +8,8 @@ import { buildPageMetadata } from "@/lib/seoMetadata";
 export async function generateMetadata(): Promise<Metadata> {
   const pageData = await getPageBySlug("/contact").catch(() => null);
   return buildPageMetadata(pageData || {
-    title: "Contact British Hajj Travel UK",
-    metaDescription: "Contact British Hajj Travel UK for Hajj, Umrah, Saudi visa and flight enquiries.",
+    title: "Contact British Haj Travel UK",
+    metaDescription: "Contact British Haj Travel UK for Hajj, Umrah, Saudi visa and flight enquiries.",
   }, "/contact");
 }
 
@@ -20,7 +20,7 @@ export default async function ContactPage() {
   const contactFormConfig = formsConfig?.contact || null;
 
   let sections: any[] = [];
-  try { const parsed = typeof pageData?.sections === 'string' ? JSON.parse(pageData.sections) : pageData?.sections; sections = Array.isArray(parsed) ? parsed : []; } catch {}
+  try { const parsed = typeof pageData?.sections === 'string' ? JSON.parse(pageData.sections) : pageData?.sections; sections = Array.isArray(parsed) ? parsed : []; } catch { }
   const sectionContext = await loadCmsSectionContext(sections);
   return <ContactPageClient initialPageData={pageData} initialFormConfig={contactFormConfig} sectionContext={sectionContext} />;
 }

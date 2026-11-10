@@ -19,7 +19,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const enquiryNumber = `KT-CT-${randomUUID().replace(/-/g,'').slice(0,20).toUpperCase()}`;
+    const enquiryNumber = `KT-CT-${randomUUID().replace(/-/g, '').slice(0, 20).toUpperCase()}`;
 
     try {
       await db.insert(enquiries).values({
@@ -34,11 +34,11 @@ export async function POST(request: Request) {
       });
     } catch (dbErr) {
       console.error('[api/contact] Save failed:', dbErr);
-      await writeBackendLog({severity:'error',category:'Form Submissions',source:'api/contact',message:`Database submission failed (${databaseErrorCode(dbErr)})`});
-      return NextResponse.json({success:false,error:'Unable to save your enquiry. Please try again.'},{status:503});
+      await writeBackendLog({ severity: 'error', category: 'Form Submissions', source: 'api/contact', message: `Database submission failed (${databaseErrorCode(dbErr)})` });
+      return NextResponse.json({ success: false, error: 'Unable to save your enquiry. Please try again.' }, { status: 503 });
     }
 
-    await recordPublicEnquiry('API Contact Form',enquiryNumber);
+    await recordPublicEnquiry('API Contact Form', enquiryNumber);
     // Legacy API callers must receive the same admin/customer mail handling as CMS forms.
     const delivery = await dispatchFormEmails('Contact Form', {
       enquiryNumber, ticketNumber: enquiryNumber, fullName, email, phone: phone || '',
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
       success: true,
       enquiryNumber,
       emailWarning: delivery.error,
-      message: 'Thank you for contacting British Hajj Travel. We will reach out shortly!',
+      message: 'Thank you for contacting British Haj Travel. We will reach out shortly!',
     });
   } catch (error) {
     console.error('Contact submission error:', error);

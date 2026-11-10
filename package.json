@@ -2,8 +2,8 @@
   "name": "british-hajj-travel",
   "version": "1.0.0",
   "private": true,
-  "description": "British Hajj Travel pilgrimage, visa, and airline travel services",
-  "author": "British Hajj Travel LTD",
+  "description": "British Haj Travel pilgrimage, visa, and airline travel services",
+  "author": "British Haj Travel LTD",
   "scripts": {
     "dev": "next dev --webpack",
     "dev:turbo": "next dev --turbopack",

@@ -126,8 +126,8 @@ export default function AdminSettingsPage() {
   };
 
   // Form states
-  const [siteName, setSiteName] = useState('British Hajj Travel UK');
-  const [altText, setAltText] = useState('Official British Hajj Travel UK Logo');
+  const [siteName, setSiteName] = useState('British Haj Travel UK');
+  const [altText, setAltText] = useState('Official British Haj Travel UK Logo');
   const [showSearchBar, setShowSearchBar] = useState(true);
   const [customCss, setCustomCss] = useState('/* Add custom CSS rules here */');
 
@@ -187,12 +187,12 @@ export default function AdminSettingsPage() {
 
   // Site Identity State
   const [identityData, setIdentityData] = useState<any>({
-    siteName: 'British Hajj Travel UK',
+    siteName: 'British Haj Travel UK',
     tagline: '',
     logo: '/img/logo.png',
-    logoAlt: 'British Hajj Travel UK Logo',
+    logoAlt: 'British Haj Travel UK Logo',
     favicon: '/img/favicon.ico',
-    faviconAlt: 'British Hajj Travel Favicon',
+    faviconAlt: 'British Haj Travel Favicon',
   });
   const [identitySaveMsg, setIdentitySaveMsg] = useState<string | null>(null);
 
@@ -281,7 +281,7 @@ export default function AdminSettingsPage() {
   const [loginAuthData, setLoginAuthData] = useState<any>({
     backgroundImage: '',
     backgroundAlt: '',
-    footerText: '© 2026 British Hajj Travel LTD. All Rights Reserved.',
+    footerText: '© 2026 British Haj Travel LTD. All Rights Reserved.',
     maintenanceMode: false,
     maintenanceScope: 'entire_site',
     maintenancePaths: [],
@@ -585,7 +585,7 @@ export default function AdminSettingsPage() {
   }>({
     sendToEmail: '',
     emailSubjectLine: '[form_name]',
-    fromName: 'British Hajj Travel UK',
+    fromName: 'British Haj Travel UK',
     fromEmail: '',
     replyTo: '',
     successHeading: 'Request Received Successfully!',
@@ -3987,7 +3987,7 @@ export default function AdminSettingsPage() {
                       value={loginAuthData.footerText || ''}
                       onChange={(e) => setLoginAuthData({ ...loginAuthData, footerText: e.target.value })}
                       className="w-full p-3 rounded-xl border border-slate-300 bg-emerald-50/20 text-xs font-semibold outline-none focus:border-primary"
-                      placeholder="© 2026 British Hajj Travel LTD. All Rights Reserved."
+                      placeholder="© 2026 British Haj Travel LTD. All Rights Reserved."
                     />
                   </div>
                 </div>
@@ -4181,7 +4181,7 @@ export default function AdminSettingsPage() {
                     FORMS MANAGEMENT
                   </span>
                   <p className="text-xs text-ink-lt mt-1 mb-0">
-                    Configure titles, email routing, notification templates, submission inbox, and form field inputs across British Hajj Travel.
+                    Configure titles, email routing, notification templates, submission inbox, and form field inputs across British Haj Travel.
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
@@ -4936,15 +4936,15 @@ export default function AdminSettingsPage() {
                                 <td className="py-3 px-4 whitespace-nowrap">
                                   <span
                                     className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-2 py-0.5 rounded-full border ${log.status === 'Delivered'
-                                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                                        : 'bg-red-50 text-red-700 border-red-200'
+                                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                      : 'bg-red-50 text-red-700 border-red-200'
                                       }`}
                                   >
                                     <span className="w-1.5 h-1.5 rounded-full bg-current" />
                                     {log.status}
                                   </span>
                                 </td>
-                                <td className="py-3 px-4 font-mono text-slate-700">{log.sentTo}</td>
+                                <td className="py-3 px-4 font-semibold text-primary bg-blue-lt rounded-full border border-primary">{log.sentTo}</td>
                                 <td className="py-3 px-4 text-gray-500 max-w-[250px]" title={log.details || ''}>{log.details}</td>
                               </tr>
                             );
@@ -5115,7 +5115,7 @@ export default function AdminSettingsPage() {
                     <div className="mb-2">
                       <img
                         src="/images_BHT/logos/2026-08/logo.png"
-                        alt="British Hajj Travel UK"
+                        alt="British Haj Travel UK"
                         className="h-8 md:h-10 w-auto object-contain mx-auto"
                       />
                     </div>
@@ -5203,7 +5203,7 @@ export default function AdminSettingsPage() {
 
                   {/* Email Footer */}
                   <div className="bg-[#111827] px-8 py-10 flex flex-col items-center text-center">
-                    <h3 className="text-white font-bold m-0 mb-3 text-sm">British Hajj Travel UK Ltd.</h3>
+                    <h3 className="text-white font-bold m-0 mb-3 text-sm">British Haj Travel UK Ltd.</h3>
                     <p className="text-ink-lt text-[11px] leading-relaxed m-0 mb-6 max-w-sm">
                       1325 Eglinton Ave E Suite Number 218, Mississauga, ON L4W 4L9, UK<br />
                       TICO &amp; IATA Licensed Pilgrimage &amp; Flight Operator
@@ -5212,7 +5212,7 @@ export default function AdminSettingsPage() {
                       Visit Official Website →
                     </a>
                     <p className="text-gray-500 text-[10px] m-0">
-                      © {new Date().getFullYear()} British Hajj Travel UK Ltd. All Rights Reserved.
+                      © {new Date().getFullYear()} British Haj Travel UK Ltd. All Rights Reserved.
                     </p>
                   </div>
                 </div>

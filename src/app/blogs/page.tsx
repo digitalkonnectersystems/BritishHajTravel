@@ -12,7 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const pageData = await getPageBySlug('/blogs').catch(() => null);
   return buildPageMetadata(pageData || {
     title: 'Blog & Travel Guides',
-    metaDescription: 'Explore Hajj and Umrah guides, Saudi visa information and pilgrimage travel advice from British Hajj Travel UK.',
+    metaDescription: 'Explore Hajj and Umrah guides, Saudi visa information and pilgrimage travel advice from British Haj Travel UK.',
   }, '/blogs');
 }
 
@@ -55,7 +55,7 @@ export default async function BlogsListingPage() {
     <>
       <PageBanner
         title={pageData?.bannerTitle || pageData?.title || 'Our <em>Blog</em> & Travel Guides'}
-        description={pageData?.bannerDescription || "Insights, tips, and inspiration for your pilgrimage journey — written by the British Hajj Travel UK team."}
+        description={pageData?.bannerDescription || "Insights, tips, and inspiration for your pilgrimage journey — written by the British Haj Travel UK team."}
         bgImage={pageData?.bannerBgImage}
         position={pageData?.bannerPosition}
         size={pageData?.bannerSize}
@@ -107,7 +107,7 @@ export default async function BlogsListingPage() {
                     <span className="w-7 h-7 rounded-full bg-primary flex items-center justify-center text-white font-bold text-[10px]">
                       {featured.authorName?.charAt(0) || 'K'}
                     </span>
-                    <span className="font-semibold text-slate-600">{featured.authorName || 'British Hajj Travel Editorial'}</span>
+                    <span className="font-semibold text-slate-600">{featured.authorName || 'British Haj Travel Editorial'}</span>
                     {(featured.publishedAt || featured.createdAt) && (
                       <>
                         <span className="text-slate-300">·</span>

@@ -174,7 +174,7 @@ export default function DashboardClient({
               Welcome Back, {session?.name || 'Super Admin'} 👋
             </h1>
             <p className="text-xs text-emerald-100/70 mt-1 mb-0 font-medium">
-              British Hajj Travel Real-Time Pilgrimage CRM &amp; Dynamic Content Engine
+              British Haj Travel Real-Time Pilgrimage CRM &amp; Dynamic Content Engine
             </p>
           </div>
         </div>

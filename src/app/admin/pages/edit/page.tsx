@@ -1196,15 +1196,15 @@ function PageBuilderContent() {
 
                     type: 'Intro',
 
-                    title: 'Intro (About British Hajj Travel)',
+                    title: 'Intro (About British Haj Travel)',
 
                     data: {
 
                       eyebrow: 'ABOUT',
 
-                      title: 'British Hajj Travel',
+                      title: 'British Haj Travel',
 
-                      description: "For over 20 years, British Hajj Travel has been a trusted travel agency in UK, offering Hajj and Umrah services, airline ticketing, and visa processing with unmatched expertise. We are UK's No. 1 authorized PIA seller agency and an official agent licensed by the Ministry of Hajj & Umrah, IATA, TICO, OCTA, and ASTA."
+                      description: "For over 20 years, British Haj Travel has been a trusted travel agency in UK, offering Hajj and Umrah services, airline ticketing, and visa processing with unmatched expertise. We are UK's No. 1 authorized PIA seller agency and an official agent licensed by the Ministry of Hajj & Umrah, IATA, TICO, OCTA, and ASTA."
 
                     }
 
@@ -1224,7 +1224,7 @@ function PageBuilderContent() {
 
                       title: 'Your Trusted Partner for Pilgrimage & Global Travel',
 
-                      description: "Serving Ontario travelers for years, British Hajj Travel LTD is certified by IATA, ACTA, TICO, ASTA, ATAC, and the Saudi Ministry of Hajj & Umrah. We've arranged thousands of successful journeys with fast response times and secure ID checks for every booking.",
+                      description: "Serving Ontario travelers for years, British Haj Travel LTD is certified by IATA, ACTA, TICO, ASTA, ATAC, and the Saudi Ministry of Hajj & Umrah. We've arranged thousands of successful journeys with fast response times and secure ID checks for every booking.",
 
                       image: "https://images.unsplash.com/photo-1542856391-010fb87dcfed?auto=format&fit=crop&w=800&q=80"
 
@@ -1290,15 +1290,15 @@ function PageBuilderContent() {
 
                 type: 'Intro',
 
-                title: 'Intro (About British Hajj Travel)',
+                title: 'Intro (About British Haj Travel)',
 
                 data: {
 
                   eyebrow: 'ABOUT',
 
-                  title: 'British Hajj Travel',
+                  title: 'British Haj Travel',
 
-                  description: "For over 20 years, British Hajj Travel has been a trusted travel agency in UK, offering Hajj and Umrah services, airline ticketing, and visa processing with unmatched expertise."
+                  description: "For over 20 years, British Haj Travel has been a trusted travel agency in UK, offering Hajj and Umrah services, airline ticketing, and visa processing with unmatched expertise."
 
                 }
 
@@ -1318,7 +1318,7 @@ function PageBuilderContent() {
 
                   title: 'Your Trusted Partner for Pilgrimage & Global Travel',
 
-                  description: "Serving Ontario travelers for years, British Hajj Travel LTD is certified by IATA, ACTA, TICO, ASTA, ATAC, and the Saudi Ministry of Hajj & Umrah.",
+                  description: "Serving Ontario travelers for years, British Haj Travel LTD is certified by IATA, ACTA, TICO, ASTA, ATAC, and the Saudi Ministry of Hajj & Umrah.",
 
                   image: "https://images.unsplash.com/photo-1542856391-010fb87dcfed?auto=format&fit=crop&w=800&q=80"
 
@@ -1551,13 +1551,13 @@ function PageBuilderContent() {
 
           { id: 1, name: "tamim rahimi", time: "3 months ago", avatar: "/img/tamim.png", text: "I’m a man of few words. It was an amazing experience with the Umrah package in March 2026. Everything went as expected, with no surprises. There will be a huge list if I name everyone, so a big thanks to everyone. JazakAllah khair!" },
 
-          { id: 2, name: "Hiba M", time: "3 months ago", avatar: "/img/h.png", text: "My daughter and I just came back from a twelve day Umrah trip organized by British Hajj Travel. The trip was well planned and structured. We were very fortunate to have Imam Ismail Fetic as our guide who provided a wealth of knowledge and insights. The accomodation and the food were really nice. I highly recommend booking with British Hajj Travel." },
+          { id: 2, name: "Hiba M", time: "3 months ago", avatar: "/img/h.png", text: "My daughter and I just came back from a twelve day Umrah trip organized by British Haj Travel. The trip was well planned and structured. We were very fortunate to have Imam Ismail Fetic as our guide who provided a wealth of knowledge and insights. The accomodation and the food were really nice. I highly recommend booking with British Haj Travel." },
 
-          { id: 3, name: "Yusra Khan", time: "3 months ago", avatar: "/img/y.png", text: "It was a very nice experience going with British Hajj Travel, imam Ismail Fetic was extremely helpful answering all of our questions and giving us lectures/stories about all the places we were going to. Would highly recommend this agency for Umrah." },
+          { id: 3, name: "Yusra Khan", time: "3 months ago", avatar: "/img/y.png", text: "It was a very nice experience going with British Haj Travel, imam Ismail Fetic was extremely helpful answering all of our questions and giving us lectures/stories about all the places we were going to. Would highly recommend this agency for Umrah." },
 
-          { id: 4, name: "Zeba H", time: "3 months ago", avatar: "/img/z.png", text: "We recently traveled with British Hajj Travels. Allhamdolilah it was amazing. No complains. They kept all the promises that were made to us. The 3 meals that were provided to us everyday were amazing. Our Imam Ismail Fetic and Br Irfan were amazing. Always available if help needed. Over all great group of people. Inshallah will travel with them again." },
+          { id: 4, name: "Zeba H", time: "3 months ago", avatar: "/img/z.png", text: "We recently traveled with British Haj Travels. Allhamdolilah it was amazing. No complains. They kept all the promises that were made to us. The 3 meals that were provided to us everyday were amazing. Our Imam Ismail Fetic and Br Irfan were amazing. Always available if help needed. Over all great group of people. Inshallah will travel with them again." },
 
-          { id: 5, name: "Musaibah Doola", time: "3 months ago", avatar: "/img/m.png", text: "I recently booked my Umrah with British Hajj Travels. It was an amazing experience. Starting with the price of the package it was very reasonable. They gave the best accommodations and food at both locations. Best was meeting with very good knowledgeable Imams and guided. Everything went well." }
+          { id: 5, name: "Musaibah Doola", time: "3 months ago", avatar: "/img/m.png", text: "I recently booked my Umrah with British Haj Travels. It was an amazing experience. Starting with the price of the package it was very reasonable. They gave the best accommodations and food at both locations. Best was meeting with very good knowledgeable Imams and guided. Everything went well." }
 
         ]
 
@@ -1651,7 +1651,7 @@ function PageBuilderContent() {
 
         eyebrow: 'GALLERY',
 
-        title: 'Highlights from British Hajj Travel',
+        title: 'Highlights from British Haj Travel',
 
         description: '',
 
@@ -1719,7 +1719,7 @@ function PageBuilderContent() {
 
             question: 'How do I book Hajj Packages for 2027 via the Nusuk platform?',
 
-            answer: 'Step-by-step process for Hajj packages:\n\n1. Visit nusuk.sa and create your account\n2. Complete your profile with passport details and UK residency proof\n3. Select “Hajj 2027” and browse authorised Hajj packages\n4. Choose your preferred Hajj package\n5. Complete payment via the secure Nusuk gateway\n6. Receive your Hajj permit and visa documentation\n\nPro Tip: British Hajj Travel provides free guidance through each step for your Hajj packages. Contact us before registering to ensure you select the best package for your needs.'
+            answer: 'Step-by-step process for Hajj packages:\n\n1. Visit nusuk.sa and create your account\n2. Complete your profile with passport details and UK residency proof\n3. Select “Hajj 2027” and browse authorised Hajj packages\n4. Choose your preferred Hajj package\n5. Complete payment via the secure Nusuk gateway\n6. Receive your Hajj permit and visa documentation\n\nPro Tip: British Haj Travel provides free guidance through each step for your Hajj packages. Contact us before registering to ensure you select the best package for your needs.'
 
           },
 
@@ -1757,9 +1757,9 @@ function PageBuilderContent() {
 
         eyebrow: 'ABOUT',
 
-        title: 'British Hajj Travel',
+        title: 'British Haj Travel',
 
-        description: "For over 20 years, British Hajj Travel has been a trusted travel agency in UK..."
+        description: "For over 20 years, British Haj Travel has been a trusted travel agency in UK..."
 
       };
 
@@ -2092,7 +2092,7 @@ function PageBuilderContent() {
     } else if (type === 'Umrah Visa Order Form') {
       defaultData = { formKey: 'umrahVisaOrder', formTitle: 'Umrah Visa Order Form', formDescription: 'Please fill in your information to order your Umrah Visa', formFields: DEFAULT_UMRAH_VISA_FORM_FIELDS, submitLabel: 'Request Umrah Visa' };
     } else if (type === 'Umrah Visa Services Overview') {
-      defaultData = { title: 'British Hajj Travel Limited – Umrah Visa Services', subtitle: 'Approved by Ministry of Hajj / Umrah | Saudi Arabia Visa Services Overview', image: '/img/saudi-visa-2.webp', rows: [] };
+      defaultData = { title: 'British Haj Travel Limited – Umrah Visa Services', subtitle: 'Approved by Ministry of Hajj / Umrah | Saudi Arabia Visa Services Overview', image: '/img/saudi-visa-2.webp', rows: [] };
     } else if (type === 'Umrah Visa Document Guide') {
       defaultData = { title: 'Document / Passport <span>Correct Format</span>', subtitle: 'Please check the examples below to make sure your document is clear and complete.', cards: [] };
 
@@ -9087,7 +9087,7 @@ function PageBuilderContent() {
                                     rows={4}
                                     value={(sec.data?.importantNotes || [
                                       'The Umrah visa & E Waiver visa process is online; no need to submit the passport physically.',
-                                      'British Hajj Travel is the Ministry of Umrah & Hajj approved Umrah visa agency in UK.',
+                                      'British Haj Travel is the Ministry of Umrah & Hajj approved Umrah visa agency in UK.',
                                       'Females above the age of 60 can perform Umrah without a Mahram.',
                                       'All non-UK passport holders must be resident in the UK.',
                                     ]).join('\n')}
@@ -9103,7 +9103,7 @@ function PageBuilderContent() {
                                 <span className="text-[11px] font-extrabold text-primary uppercase">Umrah Visa Services Overview</span>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                                   {[
-                                    ['title', 'TITLE', 'British Hajj Travel Limited – Umrah Visa Services'],
+                                    ['title', 'TITLE', 'British Haj Travel Limited – Umrah Visa Services'],
                                     ['subtitle', 'SUBTITLE', 'Approved by Ministry of Hajj / Umrah | Saudi Arabia Visa Services Overview'],
                                     ['image', 'DOCUMENT IMAGE URL', '/img/saudi-visa-2.webp'],
                                   ].map(([field, label, placeholder]) => (
