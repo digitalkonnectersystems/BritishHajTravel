@@ -3402,7 +3402,7 @@ hr {
 }
 
 .guide-section {
-  background: #fff;
+  /* background: #fff; */
 }
 
 .guide-section__card {
@@ -3411,10 +3411,10 @@ hr {
   align-items: flex-start;
   gap: 28px;
   padding: 26px 28px;
-  border: 2px solid #102f57;
+  /* border: 1px solid #102f57; */
   border-radius: 10px;
   background: #fff;
-  color: #102f57;
+  color: var(--ink);
   box-shadow: 0 5px 18px rgba(3, 31, 76, .04);
   transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
 }
@@ -3460,7 +3460,7 @@ hr {
   height: 2.5em;
   overflow: hidden;
   margin: 0;
-  color: #102f57;
+  /* color: #102f57; */
   font-size: clamp(1.1rem, 1.45vw, 1.45rem);
   font-weight: 800;
   line-height: 1.25;
@@ -3471,7 +3471,7 @@ hr {
   overflow: hidden;
   max-width: 290px;
   margin: 7px 0 16px;
-  color: #536174;
+  color: var(--ink-soft);
   font-size: .98rem;
   line-height: 1.45;
 }
@@ -3514,7 +3514,7 @@ hr {
 
 @media (max-width: 640px) {
   .guide-section {
-    padding-top: 28px;
+    /* padding-top: 28px; */
     padding-bottom: 28px;
   }
 
@@ -3555,14 +3555,14 @@ hr {
   }
 
   .guide-section__icon {
-    width: 68px;
-    height: 68px;
-    flex-basis: 68px;
+    width: 50px;
+    height: 50px;
+    flex-basis: 50px;
   }
 
   .guide-section__icon svg {
-    width: 42px;
-    height: 42px;
+    width: 28px;
+    height: 28px;
   }
 
   .guide-section__step {

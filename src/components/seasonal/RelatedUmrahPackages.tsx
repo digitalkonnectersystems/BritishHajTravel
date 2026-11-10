@@ -21,8 +21,8 @@ export default function RelatedUmrahPackages({
   });
 
   return (
-    <section className="bg-white py-10 md:py-16" aria-labelledby="other-umrah-packages-heading">
-      <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
+    <section className="bg-white py-6 md:py-10" aria-labelledby="other-umrah-packages-heading">
+      <div className="mx-auto max-w-[1400px] px-5 sm:px-6">
         <div className="mb-7 flex flex-col items-start justify-between gap-5 md:flex-row md:items-end">
           <div>
             <p className="eyebrow">EXPLORE MORE</p>

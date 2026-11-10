@@ -341,7 +341,7 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
                     {activeHighlights.map((hl: any, idx: number) => {
                       const isNotIncluded = hl.isCross;
                       return (
-                        <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700">
+                        <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-ink">
                           {isNotIncluded ? (
                             <span className="text-red-500 font-bold shrink-0 text-base leading-none">✕</span>
                           ) : (
@@ -363,7 +363,7 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
                   </h3>
                   <ul className="space-y-3">
                     {activeEligibility.map((el: string, idx: number) => (
-                      <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700">
+                      <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-ink">
                         <span className="text-primary font-bold shrink-0 text-base leading-none">✓</span>
                         <span className="font-medium">{el}</span>
                       </li>

@@ -374,7 +374,7 @@ export default function PackageDetailPageClient({
   const importantNotice = detailData.importantNotice || detailData.importantBooking || pkg.importantNotice ||
     (isHajjPkg
       ? "To secure your Hajj visa slot, please make sure your British passport is valid for at least 6 months beyond travel dates, and you have completed all mandatory immunizations required by the Saudi Ministry of Hajj."
-      : "Umrah packages and seat availability are subject to confirmation at the time of booking. Ensure your passport has minimum 6 months validity. Contact British Hajj Travel for custom flight dates and family room occupancy options.");
+      : "Umrah packages and seat availability are subject to confirmation at the time of booking. Ensure your passport has minimum 6 months validity. Contact British Haj Travel for custom flight dates and family room occupancy options.");
 
   // Gallery is intentionally Umrah-only. Existing Hajj pages are unchanged.
   const rawPackagesGallery = pkg.packagesGallery ?? [];
@@ -446,15 +446,15 @@ export default function PackageDetailPageClient({
   }
 
   return (
-    <div className="bg-[#faf7f2] min-h-screen text-slate-800">
+    <div className="bg-blue-lt min-h-screen text-slate-800">
       {pkg?.status === 'sold_out' && (
         <div className="bg-red-800 text-white flex flex-wrap items-center justify-center gap-5 p-4 text-center font-bold">
           <SoldOutBadge /><span>This package is SOLD OUT and is no longer available for booking.</span>
         </div>
       )}
       {/* ================= FULL-WIDTH HEADER BANNER ================= */}
-      <div className="w-full bg-primary text-white py-10 sm:py-14 shadow-lg border-b border-primary">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-10 relative">
+      <div className="relative text-white overflow-hidden bg-no-repeat min-h-[155px] sm:min-h-[200px] min-[1025px]:h-[200px] xl:h-[250px] flex items-center py-5 sm:py-4 xl:py-4 bg-primary">
+        <div className="w-full z-10 mx-auto max-w-[1400px] px-5 relative">
           <div className="max-w-4xl">
             <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold tracking-tight uppercase text-white font-serif mb-2.5 leading-tight">
               {title}
@@ -463,17 +463,17 @@ export default function PackageDetailPageClient({
               DURATION: {durationText}
             </p>
             <div className="flex flex-wrap items-center gap-4 text-xs font-bold text-white">
-              <span className="flex items-center gap-1.5 bg-white/10 px-3.5 py-2 rounded-xl border border-white/20">
+              <span className="flex items-center gap-1.5 bg-[#12357f] px-3.5 py-2 rounded-md border border-white/20">
                 <Plane className="w-4 h-4 text-white" /> DEPARTURE: <strong className="text-white">{departure}</strong>
               </span>
-              <span className="flex items-center gap-1.5 bg-white/10 px-3.5 py-2 rounded-xl border border-white/20">
+              <span className="flex items-center gap-1.5 bg-[#12357f] px-3.5 py-2 rounded-md border border-white/20">
                 <Plane className="w-4 h-4 text-white" /> DESTINATION: <strong className="text-white">{destination}</strong>
               </span>
             </div>
           </div>
 
           {/* Price Box Overlay on Right */}
-          <div className="mt-8 md:mt-0 md:absolute md:top-1/2 md:-translate-y-1/2 md:right-10 bg-red border-2 border-dashed border-red rounded-2xl p-5 text-center min-w-[220px] backdrop-blur-md shadow-xl">
+          <div className="mt-8 md:mt-0 md:absolute md:top-1/2 md:-translate-y-1/2 md:right-4 bg-red border-2 border-dashed border-red rounded-2xl p-5 text-center min-w-[220px] backdrop-blur-md shadow-xl">
             <span className="text-[10px] font-extrabold uppercase tracking-widest text-white block mb-1">
               {exclusiveBadge}
             </span>
@@ -488,8 +488,8 @@ export default function PackageDetailPageClient({
       </div>
 
       {/* ================= MAIN CONTENT BODY (2-COL GRID) ================= */}
-      <div className="max-w-7xl mx-auto pb-16">
-        <div className="p-4 sm:p-8 md:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-10 items-start">
+      <div className="max-w-[1400px] mx-auto px-5">
+        <div className="py-4 sm:py-8 md:py-10 grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-10 items-start">
 
           {/* LEFT COLUMN: Accommodations, Overview, Highlights, Eligibility, FAQs */}
           <div className="lg:col-span-8 flex flex-col gap-10">
@@ -551,7 +551,7 @@ export default function PackageDetailPageClient({
                         {highlightsList.map((hl: any, idx: number) => {
                           const isCross = !!hl.isCross;
                           return (
-                            <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700">
+                            <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-ink">
                               {isCross ? (
                                 <span className="text-red-500 font-bold shrink-0 text-base leading-none">✕</span>
                               ) : (
@@ -576,7 +576,7 @@ export default function PackageDetailPageClient({
                       </h4>
                       <ul className="space-y-3">
                         {eligibilityList.map((el: string, idx: number) => (
-                          <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700">
+                          <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-ink">
                             <span className="text-primary font-bold shrink-0 text-base leading-none">✓</span>
                             <span className="font-medium">{el}</span>
                           </li>
@@ -631,7 +631,7 @@ export default function PackageDetailPageClient({
             {/* 5. Important Booking Notice */}
             {importantNotice && (
               <div className="bg-red-soft border border-red-lt rounded-2xl p-5 sm:p-6 flex items-start gap-4 shadow-sm">
-                <div className="p-2.5 bg-red-soft rounded-xl shrink-0">
+                <div className="bg-red-soft rounded-xl shrink-0">
                   <AlertCircle className="w-6 h-6 text-red" />
                 </div>
                 <div className="space-y-1">

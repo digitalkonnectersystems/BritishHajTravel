@@ -34,8 +34,8 @@ export default function GuideSection({ data = {} }: { data?: any }) {
   const buttonLabel = data.buttonLabel || "Learn More";
 
   return (
-    <section className="guide-section bg-white py-10 md:py-14">
-      <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-5 px-5 md:grid-cols-2 lg:grid-cols-3">
+    <section className="guide-section">
+      <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-5 px-5 md:p-6 md:grid-cols-2 lg:grid-cols-3">
         {steps.map((step, index) => {
           const number = step.number || index + 1;
           const detail = step.detail || step.description || "";
@@ -48,7 +48,7 @@ export default function GuideSection({ data = {} }: { data?: any }) {
                 <p className="guide-section__step">Step {number}</p>
                 <h3 className="guide-section__title">{step.title || "Guide step"}</h3>
                 <p className="guide-section__detail">{detail}</p>
-                <span className="guide-section__button">
+                <span className="flex justify-center items-center self-start py-3 px-4 gap-2 text-center text-xs font-black rounded-md uppercase tracking-widest transition-colors block border-2 border-transparent cursor-pointer bg-red hover:bg-white hover:border-red text-white hover:text-red">
                   {step.buttonLabel || buttonLabel}
                   <span aria-hidden="true">→</span>
                 </span>
@@ -57,11 +57,11 @@ export default function GuideSection({ data = {} }: { data?: any }) {
           );
 
           return step.slug && step.slug !== "#" ? (
-            <Link href={step.slug} key={`${step.title || "step"}-${index}`} className="guide-section__card">
+            <Link href={step.slug} key={`${step.title || "step"}-${index}`} className="guide-section__card rounded-2xl border border-slate-200">
               {content}
             </Link>
           ) : (
-            <article key={`${step.title || "step"}-${index}`} className="guide-section__card">
+            <article key={`${step.title || "step"}-${index}`} className="guide-section__card rounded-2xl border border-slate-200">
               {content}
             </article>
           );
