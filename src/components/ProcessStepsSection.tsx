@@ -20,7 +20,7 @@ export default function ProcessStepsSection({ data = {} }: { data?: any }) {
       <div className="relative z-10 mx-auto grid max-w-[1400px] grid-cols-1 items-center gap-10 px-5 md:grid-cols-2">
         <div className="space-y-6">
           <span className="eyebrow">{data.eyebrow || "IN 3 EASY STEPS"}</span>
-          <h2 className="text-3xl font-serif text-primary">{data.title || "Get Your Saudi Visa"}</h2>
+          <h2 className="text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98] text-primary">{data.title || "Get Your Saudi Visa"}</h2>
           <p className="text-md text-primary font-bold leading-relaxed opacity-90">{data.description || "Our Saudi visa services cover everything from application to approval. With expert guidance and fast processing, we make the process simple and stress-free."}</p>
           {(data.email || data.phone) && <div className="space-y-2 font-bold text-md">{data.email && <a className="block text-primary hover:!text-red-700 hover:underline" href={`mailto:${data.email}`}>{data.email}</a>}{data.phone && <a className="block text-primary hover:!text-red-700 hover:underline" href={`tel:${data.phone}`}>{data.phone}</a>}</div>}
         </div>
@@ -28,7 +28,7 @@ export default function ProcessStepsSection({ data = {} }: { data?: any }) {
           {steps.map((step: any, index: number) => (
             <div key={`${step.number || index}-${step.title || "step"}`} className="flex items-start gap-4 rounded-2xl bg-white p-5 shadow-md">
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-red font-extrabold text-white">{step.number || index + 1}</div>
-              <div><h3 className="mb-1 text-lg font-semibold text-primary">{step.title}</h3><p className="text-xs leading-relaxed text-slate-600">{step.description || step.detail}</p></div>
+              <div><h3 className="mb-1 text-lg font-semibold text-primary">{step.title}</h3><p className="text-sm leading-relaxed text-slate-600">{step.description || step.detail}</p></div>
             </div>
           ))}
         </div>
