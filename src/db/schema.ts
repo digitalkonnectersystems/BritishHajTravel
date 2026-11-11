@@ -394,6 +394,23 @@ export const visaProcessing = mysqlTable('visa_processing', {
 });
 
 
+// 10a. Reusable UK-GLOBAL Hajj Guide cards (detail pages use site_pages guides).
+export const hajjGuideGridItems = mysqlTable('hajj_guide_grid_items', {
+  id: int('id').autoincrement().primaryKey(),
+  title: varchar('title', { length: 180 }).notNull(),
+  imageUrl: text('image_url'),
+  altText: varchar('alt_text', { length: 255 }),
+  targetUrl: text('target_url'),
+  guidePageId: int('guide_page_id').references(() => sitePages.id, { onDelete: 'set null' }),
+  displayOrder: int('display_order').notNull().default(0),
+  status: mysqlEnum('status', ['published', 'draft']).notNull().default('draft'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow().onUpdateNow(),
+  deletedAt: timestamp('deleted_at'),
+}, (table) => ({
+  visibleOrder: index('hajj_guide_grid_visible_order').on(table.status, table.deletedAt, table.displayOrder),
+}));
+
 // 10a. Hotel Directory
 export const hotelCategories = mysqlTable('hotel_categories', {
   id: int('id').autoincrement().primaryKey(),

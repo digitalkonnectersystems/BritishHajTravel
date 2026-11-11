@@ -38,6 +38,8 @@ import LatestBlogsSection from '@/components/LatestBlogsSection';
 import AvailableFlightsSection from '@/components/AvailableFlightsSection';
 import AvailableSeatsSection from '@/components/AvailableSeatsSection';
 import GuideSection from '@/components/GuideSection';
+import HajjGuideGridSection from '@/components/HajjGuideGridSection';
+import type { HajjGuideGridItem } from '@/actions/hajjGuideGridActions';
 import FlightAccommodationSection from '@/components/FlightAccommodationSection';
 import ProcessStepsSection from '@/components/ProcessStepsSection';
 import GuideVideoSection from '@/components/GuideVideoSection';
@@ -50,7 +52,7 @@ import FlightEnquirySection from '@/components/FlightEnquirySection';
 import CmsBasicSection from '@/components/CmsBasicSections';
 import type { DirectoryCategory } from '@/lib/hotelSectionSelection';
 import { useEffect, useRef, useState } from "react";
-export default function PageSectionsRenderer({ sections, pageData, initialPackageData, initialDestinationData, initialBlogData, initialGuideData, publishedVisaCards, publishedSitePaths, initialHotelDirectory = [], socialLinks = [] }: { sections: any[], pageData?: any, initialPackageData?: any, initialDestinationData?: any[], initialBlogData?: any[], initialGuideData?: any[], publishedVisaCards?: { slug: string; title: string }[], publishedSitePaths?: string[], initialHotelDirectory?: DirectoryCategory[], socialLinks?: { name: string; url: string; icon?: string; openInNewTab?: boolean }[] }) {
+export default function PageSectionsRenderer({ sections, pageData, initialPackageData, initialDestinationData, initialBlogData, initialGuideData, initialHajjGuideGrids, publishedVisaCards, publishedSitePaths, initialHotelDirectory = [], socialLinks = [] }: { sections: any[], pageData?: any, initialPackageData?: any, initialDestinationData?: any[], initialBlogData?: any[], initialGuideData?: any[], initialHajjGuideGrids?: HajjGuideGridItem[], publishedVisaCards?: { slug: string; title: string }[], publishedSitePaths?: string[], initialHotelDirectory?: DirectoryCategory[], socialLinks?: { name: string; url: string; icon?: string; openInNewTab?: boolean }[] }) {
   if (!sections || !Array.isArray(sections)) return null;
 
   const whoWeAreSection = sections.find((section: any) =>
@@ -129,6 +131,9 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         }
         if (sec.type === 'Umrah Visa Document Guide') {
           return <UmrahVisaDocumentGuideSection key={idx} data={sec.data || {}} />;
+        }
+        if (sec.type === 'UK-GLOBAL HAJJ GUIDE 2027') {
+          return <HajjGuideGridSection key={sec.id || idx} data={sec.data || {}} items={initialHajjGuideGrids} />;
         }
         if (sec.type === 'Guide') {
           return <GuideSection key={idx} data={{ ...(sec.data || {}), guides: initialGuideData || [] }} />;

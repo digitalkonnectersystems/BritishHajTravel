@@ -20,6 +20,19 @@ interface ConfirmModalProps {
 }
 
 export default function ConfirmModal({ config, onClose }: ConfirmModalProps) {
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+  useEffect(() => {
+    if (!config) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !isSubmitting) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [config, onClose, isSubmitting]);
+
   if (!config) return null;
 
   const {
@@ -32,19 +45,8 @@ export default function ConfirmModal({ config, onClose }: ConfirmModalProps) {
     onConfirm,
   } = config;
 
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && !isSubmitting) {
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose, isSubmitting]);
-
   const handleConfirm = async () => {
+    if (!onConfirm) return;
     setIsSubmitting(true);
     try {
       await onConfirm();
@@ -78,13 +80,13 @@ export default function ConfirmModal({ config, onClose }: ConfirmModalProps) {
         };
       case 'success':
         return {
-          bgGradient: 'from-[#071F19]/95 via-[#0A3328]/95 to-primary/95',
-          border: 'border-emerald-500/40',
+          bgGradient: 'primary-lt',
+          border: 'border-primary',
           glow: 'shadow-[0_0_60px_rgba(16,185,129,0.35)]',
-          iconBg: 'bg-emerald-500/20 border-emerald-400/40 text-emerald-400',
+          iconBg: 'bg-emerald-600/20 border-emerald-400/40 text-emerald-400',
           defaultIcon: <CheckCircle2 className="w-8 h-8 text-emerald-400 animate-pulse" />,
-          buttonBg: 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black',
-          titleColor: 'text-emerald-300',
+          buttonBg: 'bg-primary hover:bg-emerald-400 text-slate-950 font-black',
+          titleColor: 'text-white',
         };
       case 'primary':
       default:

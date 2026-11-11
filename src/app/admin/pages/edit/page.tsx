@@ -6,7 +6,7 @@ import { Fragment, useState, useEffect, useRef, Suspense } from 'react';
 
 import Link from 'next/link';
 
-import { useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import AdminLayout from '@/components/admin/AdminLayout';
 
 import { Field, FieldLabel } from '@/components/ui/field';
@@ -14,6 +14,7 @@ import { Field, FieldLabel } from '@/components/ui/field';
 import { Switch } from '@/components/ui/switch';
 
 import { getPageById, getGuidesList, savePageAction, type GuideCategory } from '@/actions/pageActions';
+import { getHajjGuideGridAdminItems, type HajjGuideGridItem } from '@/actions/hajjGuideGridActions';
 import { getVisaProcessingById, saveVisaProcessingAction } from '@/actions/visaProcessingActions';
 
 import { getAllPackages } from '@/actions/packageActions';
@@ -383,6 +384,7 @@ const SECTION_CATALOG: SectionCategory[] = [
       { type: 'FAQ', description: 'Responsive accordion FAQ block with editable questions and answers.', pages: ['Any Page'] },
 
       { type: 'Guide', description: 'Responsive step-by-step guide cards with selectable SVG icons and Learn More links.', pages: ['Any Page', 'Homepage'] },
+      { type: 'UK-GLOBAL HAJJ GUIDE 2027', description: 'Four-column Hajj guide image tiles. Select exactly which managed grid cards appear, with URLs set in Hajj Guide Grids.', pages: ['Any Page', 'Homepage'] },
 
       { type: 'Services Grid', description: 'Icon + heading + description service tiles in a responsive grid.', pages: ['About', 'Any Page'] },
 
@@ -514,6 +516,7 @@ interface SectionItem {
 function PageBuilderContent() {
 
   const searchParams = useSearchParams();
+  const guideEditorMode = usePathname().startsWith('/admin/guides/edit');
   const processingMode = searchParams.get('table') === 'visa_processing';
 
   const pageId = searchParams.get('id') ? Number(searchParams.get('id')) : null;
@@ -593,12 +596,21 @@ function PageBuilderContent() {
 
   const [status, setStatus] = useState<'published' | 'draft'>('published');
 
-  const [showInMenu, setShowInMenu] = useState(true);
+  const [showInMenu, setShowInMenu] = useState(!guideEditorMode);
 
   const [parentPage, setParentPage] = useState('');
   const [guideCategory, setGuideCategory] = useState<GuideCategory | ''>('');
   const [guideCardData, setGuideCardData] = useState({ number: 1, icon: 'FileText', detail: '', buttonLabel: 'Learn More' });
   const [guideOptions, setGuideOptions] = useState<any[]>([]);
+  const [hajjGuideGridOptions, setHajjGuideGridOptions] = useState<HajjGuideGridItem[]>([]);
+  const [hajjGuideGridError, setHajjGuideGridError] = useState('');
+  useEffect(() => {
+    getHajjGuideGridAdminItems().then(setHajjGuideGridOptions).catch((error: unknown) => {
+      console.error('Failed to load Hajj guide grids', error);
+      setHajjGuideGridError('Hajj Guide Grids unavailable. Check SQL migration or database.');
+    });
+  }, []);
+
 
   const [richText, setRichText] = useState('');
 
@@ -625,7 +637,10 @@ function PageBuilderContent() {
   const [sectionSearch, setSectionSearch] = useState('');
 
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const guideCategoryParam = searchParams.get('guideCategory') as GuideCategory | null;
+  // Existing Guides links use ?category=hajj|umrah; the Pages editor uses ?guideCategory=.
+  // Support both so a newly created guide retains its category on first save.
+  const guideCategoryParam = (searchParams.get('guideCategory') ||
+    (guideEditorMode ? searchParams.get('category') : null)) as GuideCategory | null;
 
   useEffect(() => {
     if (guideCategoryParam === 'hajj' || guideCategoryParam === 'umrah') setGuideCategory(guideCategoryParam);
@@ -1693,6 +1708,11 @@ function PageBuilderContent() {
           { number: 3, title: 'Sit Back & Get Your Visa', description: 'We handle the complete visa processing on your behalf.' },
         ],
       };
+    } else if (type === 'UK-GLOBAL HAJJ GUIDE 2027') {
+      defaultData = {
+        title: 'UK-GLOBAL HAJJ GUIDE 2027',
+        selectedGridIds: [], // Empty means show none, never silently show all.
+      };
     } else if (type === 'Guide') {
 
       defaultData = {
@@ -2181,16 +2201,20 @@ function PageBuilderContent() {
 
 
   const handleSave = async (draft = false) => {
+    if (guideEditorMode && (!title.trim() || !slug.trim() || slug.trim() === '/' || !guideCategory)) {
+      setMessage('❌ Enter a guide title, a unique page slug, and select Hajj or Umrah.');
+      return;
+    }
 
     setConfirmConfig({
 
       icon: '💾',
 
-      title: draft ? 'Save Draft' : 'Update Page',
+      title: draft ? 'Save Draft' : guideEditorMode ? 'Update Guide' : 'Update Page',
 
-      message: draft ? 'Would you like to save this page as a draft?' : 'Would you like to publish and apply these changes to the live website?',
+      message: draft ? `Would you like to save this ${guideEditorMode ? 'guide' : 'page'} as a draft?` : 'Would you like to publish and apply these changes to the live website?',
 
-      confirmText: draft ? 'Save Draft' : 'Update Page',
+      confirmText: draft ? 'Save Draft' : guideEditorMode ? 'Update Guide' : 'Update Page',
 
       cancelText: 'Not now',
 
@@ -2345,7 +2369,11 @@ function PageBuilderContent() {
           if (res.success) {
 
             setSections(updatedSections);
-            setMessage('✅ Page Saved Successfully!');
+            setMessage(guideEditorMode ? '✅ Guide Saved Successfully!' : '✅ Page Saved Successfully!');
+            if (guideEditorMode && !pageId && 'pageId' in res && typeof res.pageId === 'number') {
+              // Subsequent saves must update the newly created guide, not insert duplicates.
+              window.history.replaceState(null, '', `/admin/guides/edit?id=${res.pageId}&category=${guideCategory || 'hajj'}`);
+            }
 
             setTimeout(() => setMessage(null), 3000);
 
@@ -2389,19 +2417,19 @@ function PageBuilderContent() {
 
           <Link
 
-            href={processingMode ? "/admin/visa-processing" : "/admin/pages"}
+            href={guideEditorMode ? '/admin/guides' : processingMode ? '/admin/visa-processing' : '/admin/pages'}
 
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-200/90 text-slate-700 hover:border-primary hover:bg-primary hover:text-white text-xs font-bold transition-all shadow-2xs no-underline"
 
           >
 
-            {processingMode ? "← Back to Visa Processing" : "← Back to Pages"}
+            {guideEditorMode ? '← Back to Guides' : processingMode ? '← Back to Visa Processing' : '← Back to Pages'}
 
           </Link>
 
           <span className="text-slate-300">|</span>
 
-          <h1 className="text-lg font-black text-slate-900 m-0 tracking-tight">{title || 'Page Editor'}</h1>
+          <h1 className="text-lg font-black text-slate-900 m-0 tracking-tight">{title || (guideEditorMode ? 'Guide Editor' : 'Page Editor')}</h1>
 
         </div>
 
@@ -2487,7 +2515,7 @@ function PageBuilderContent() {
 
           >
 
-            {saving ? 'Saving...' : '✓ Update'}
+            {saving ? 'Saving...' : guideEditorMode ? '✓ Save Guide' : '✓ Update'}
 
           </button>
 
@@ -4422,7 +4450,7 @@ function PageBuilderContent() {
 
       {/* ── Main 2-Column Workspace ── */}
 
-      <div className="grid grid-cols-[1fr_340px] gap-5 items-start">
+      <div className="grid min-w-0 grid-cols-1 xl:grid-cols-[minmax(0,1fr)_340px] gap-5 items-start">
 
 
 
@@ -4513,7 +4541,7 @@ function PageBuilderContent() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                   <label className="block text-[10px] font-extrabold text-gray-500 uppercase tracking-wider">GUIDE CATEGORY
                     <select value={guideCategory} onChange={(e) => setGuideCategory(e.target.value as GuideCategory)} className="mt-1 w-full px-3 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs">
-                      <option value="">Select category</option><option value="hajj">Hajj Guides</option><option value="umrah">Umrah Guides</option>
+                      {!guideEditorMode && <option value="">Select category</option>}<option value="hajj">Hajj Guides</option><option value="umrah">Umrah Guides</option>
                     </select>
                   </label>
                   <label className="block text-[10px] font-extrabold text-gray-500 uppercase tracking-wider">CARD NUMBER
@@ -4550,7 +4578,7 @@ function PageBuilderContent() {
 
               {[
 
-                { key: 'sections', label: '🧱 Page Sections (Dynamic)' },
+                { key: 'sections', label: guideEditorMode ? '🧱 Guide Page Sections' : '🧱 Page Sections (Dynamic)' },
 
                 { key: 'richtext', label: '📝 Rich Text' },
 
@@ -4590,9 +4618,9 @@ function PageBuilderContent() {
 
                     <div>
 
-                      <h3 className="text-base font-extrabold m-0 text-slate-900">Page Sections</h3>
+                      <h3 className="text-base font-extrabold m-0 text-slate-900">{guideEditorMode ? 'Guide Page Sections' : 'Page Sections'}</h3>
 
-                      <p className="text-xs text-soft-ink mt-1 m-0">Build page layout with reorderable sections</p>
+                      <p className="text-xs text-soft-ink mt-1 m-0">{guideEditorMode ? 'Use the same section catalog, editors and ordering controls as Edit Pages.' : 'Build page layout with reorderable sections'}</p>
 
                     </div>
 
@@ -4627,151 +4655,78 @@ function PageBuilderContent() {
 
 
                       {dropdownOpen && (
-
-                        <div className="absolute right-0 top-full mt-2 w-80 flex flex-col bg-white rounded-2xl border border-slate-200 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 overflow-hidden">
-
-
+                        <div className="absolute right-0 top-full mt-2 z-50 flex flex-col w-[270px] bg-white rounded-2xl border border-slate-200 shadow-2xl animate-in fade-in slide-in-from-top-2 overflow-hidden">
 
                           {/* Search */}
-
-                          <div className="p-2 pb-2 border-b border-slate-100">
-
+                          <div className="p-2 border-b border-slate-100">
                             <input
-
                               type="text"
-
                               autoFocus
-
                               placeholder="🔍 Search sections..."
-
                               value={sectionSearch}
-
                               onChange={(e) => setSectionSearch(e.target.value)}
-
                               className="w-full px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-800 outline-none focus:border-primary"
-
                             />
-
                           </div>
-
-
 
                           {/* Grouped / Filtered List */}
-
                           <div className="overflow-y-auto max-h-[420px] p-1.5 space-y-1">
-
                             {sectionSearch.trim() !== '' ? (
-
-                              /* Flat Search Results */
-
                               (() => {
-
-                                const results = SECTION_CATALOG.flatMap(cat =>
-
+                                const results = SECTION_CATALOG.flatMap((cat) =>
                                   cat.items
-
-                                    .filter(item => item.type.toLowerCase().includes(sectionSearch.toLowerCase()))
-
-                                    .map(item => ({ ...item, catIcon: cat.icon }))
-
+                                    .filter((item) => item.type.toLowerCase().includes(sectionSearch.toLowerCase()))
+                                    .map((item) => ({ ...item, catIcon: cat.icon }))
                                 );
-
                                 return results.length === 0 ? (
-
                                   <div className="px-3 py-4 text-xs text-soft-ink font-medium text-center">
-
                                     No sections match &quot;{sectionSearch}&quot;
-
                                   </div>
-
-                                ) : results.map((item, itemIndex) => (
-
-                                  <button
-
-                                    key={`search-${item.type}-${itemIndex}`}
-
-                                    type="button"
-
-                                    onClick={() => { addSection(item.type); setDropdownOpen(false); }}
-
-                                    className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-primary hover:bg-emerald-50 transition-colors border-none cursor-pointer flex items-center justify-between group"
-
-                                  >
-
-                                    <span className="flex items-center gap-2">
-
-                                      <span className="text-base">{item.catIcon}</span>
-
-                                      <span className="truncate max-w-[200px]">{item.type}</span>
-
-                                    </span>
-
-                                    <span className="text-primary opacity-0 group-hover:opacity-100 text-xs font-black transition-opacity shrink-0">+ Add</span>
-
-                                  </button>
-
-                                ));
-
-                              })()
-
-                            ) : (
-
-                              /* Grouped by Category */
-
-                              SECTION_CATALOG.map(cat => (
-
-                                <div key={cat.category}>
-
-                                  <div className="flex items-center bg-ink/5 p-2 rounded-md gap-1.5 px-2 py-1 mt-1">
-
-                                    <span className="text-sm">{cat.icon}</span>
-
-                                    <span className="text-[12px] font-extrabold uppercase tracking-widest text-ink">{cat.category}</span>
-
-                                  </div>
-
-                                  {cat.items.map((item, itemIndex) => (
-
+                                ) : (
+                                  results.map((item, itemIndex) => (
                                     <button
-
-                                      key={`${cat.category}-${item.type}-${itemIndex}`}
-
+                                      key={`search-${item.type}-${itemIndex}`}
                                       type="button"
-
                                       onClick={() => { addSection(item.type); setDropdownOpen(false); }}
-
-                                      className="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-primary hover:bg-emerald-50 transition-colors border-none cursor-pointer flex items-center justify-between group"
-
+                                      className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-primary hover:bg-emerald-50 transition-colors border-none cursor-pointer flex items-center justify-between gap-3 group"
                                     >
-
-                                      <span className="truncate max-w-[210px]">{item.type}</span>
-
-                                      <div className="flex items-center gap-1.5 shrink-0">
-
-                                        {item.pages.slice(0, 1).map(pg => (
-
-                                          <span key={pg} className="hidden group-hover:inline-block text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">{pg}</span>
-
-                                        ))}
-
-                                        <span className="text-primary opacity-0 group-hover:opacity-100 text-xs font-black transition-opacity">+ Add</span>
-
-                                      </div>
-
+                                      <span className="flex items-center gap-2 min-w-0">
+                                        <span className="text-base shrink-0">{item.catIcon}</span>
+                                        <span className="truncate">{item.type}</span>
+                                      </span>
+                                      <span className="text-primary opacity-0 group-hover:opacity-100 text-xs font-black transition-opacity shrink-0">+ Add</span>
                                     </button>
-
+                                  ))
+                                );
+                              })()
+                            ) : (
+                              SECTION_CATALOG.map((cat) => (
+                                <div key={cat.category}>
+                                  <div className="flex items-center gap-1.5 bg-ink/5 px-2 py-1 mt-1 rounded-md">
+                                    <span className="text-sm shrink-0">{cat.icon}</span>
+                                    <span className="text-[12px] font-extrabold uppercase tracking-widest text-ink whitespace-nowrap">{cat.category}</span>
+                                  </div>
+                                  {cat.items.map((item, itemIndex) => (
+                                    <button
+                                      key={`${cat.category}-${item.type}-${itemIndex}`}
+                                      type="button"
+                                      onClick={() => { addSection(item.type); setDropdownOpen(false); }}
+                                      className="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-primary hover:bg-emerald-50 transition-colors border-none cursor-pointer flex items-center justify-between gap-3 group"
+                                    >
+                                      <span className="truncate">{item.type}</span>
+                                      <div className="flex items-center gap-1.5 shrink-0">
+                                        {item.pages.slice(0, 1).map((pg) => (
+                                          <span key={pg} className="hidden group-hover:inline-block text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 whitespace-nowrap">{pg}</span>
+                                        ))}
+                                        <span className="text-primary opacity-0 group-hover:opacity-100 text-xs font-black transition-opacity">+ Add</span>
+                                      </div>
+                                    </button>
                                   ))}
-
                                 </div>
-
                               ))
-
                             )}
-
                           </div>
-
                         </div>
-
                       )}
 
                     </div>
@@ -9130,6 +9085,35 @@ function PageBuilderContent() {
                               </div>
                             )}
 
+                            {sec.type === 'UK-GLOBAL HAJJ GUIDE 2027' && (
+                              <div className="mt-2 flex min-w-0 flex-col gap-3 rounded-xl border border-slate-200 bg-white p-4">
+                                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                                  <div>
+                                    <p className="text-xs font-extrabold uppercase text-[#020e43]">UK-GLOBAL HAJJ GUIDE 2027</p>
+                                    <p className="mt-1 text-[11px] text-slate-500">Select only the image cards this section should show. Each card's URL is managed separately.</p>
+                                  </div>
+                                  <Link href="/admin/hajj-guide" target="_blank" className="rounded-lg bg-[#020e43] px-3 py-2 text-[11px] font-bold text-white">Manage Hajj Guide Grids</Link>
+                                </div>
+                                <label className="text-[11px] font-bold text-[#020e43]">Section heading
+                                  <input type="text" value={sec.data?.title ?? 'UK-GLOBAL HAJJ GUIDE 2027'} onChange={(e) => updateSectionData(sec.id, 'title', e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-xs" />
+                                </label>
+                                <p className="text-[11px] font-semibold text-slate-500">Selected: {(Array.isArray(sec.data?.selectedGridIds) ? sec.data.selectedGridIds : []).length}</p>
+                                {hajjGuideGridError && <p role="alert" className="rounded-lg bg-red-50 p-3 text-[11px] text-red-700">{hajjGuideGridError}</p>}
+                                <div className="grid min-w-0 grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-3">
+                                  {hajjGuideGridOptions.map((card) => {
+                                    const ids = Array.isArray(sec.data?.selectedGridIds) ? sec.data.selectedGridIds.map(Number) : [];
+                                    return <label key={card.id} className="flex min-w-0 items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-xs">
+                                      <input type="checkbox" checked={ids.includes(card.id)} onChange={(e) => updateSectionData(sec.id, 'selectedGridIds', e.target.checked ? [...ids, card.id] : ids.filter((id: number) => id !== card.id))} className="h-4 w-4 shrink-0 accent-[#020e43]" />
+                                      {card.imageUrl ? <img src={card.imageUrl} alt="" className="h-10 w-12 shrink-0 rounded bg-white object-contain" /> : <span className="flex h-10 w-12 shrink-0 items-center justify-center rounded bg-slate-200 text-[9px]">Image</span>}
+                                      <span className="min-w-0"><span className="block break-words font-semibold text-[#020e43]">{card.title}</span><span className="text-[10px] text-slate-500">{card.status === 'published' ? 'Published' : 'Draft (not visible)'}</span></span>
+                                    </label>;
+                                  })}
+                                </div>
+                                {!hajjGuideGridOptions.length && !hajjGuideGridError && <p className="text-[11px] text-slate-500">No grid cards yet. Create them under Guides &gt; Hajj Guide Grids.</p>}
+                                <p className="text-[11px] text-slate-500">Only checked, published cards appear on the frontend. Display order comes from Hajj Guide Grids, not checkbox order.</p>
+                              </div>
+                            )}
+
                             {sec.type === 'Guide' && (
                               <div className="bg-white border border-slate-200 rounded-xl p-3 flex flex-col gap-3 mt-1">
                                 <div className="flex items-center justify-between border-b border-slate-100 pb-2">
@@ -13214,7 +13198,7 @@ function PageBuilderContent() {
 
               <div>
 
-                <span className="text-xs font-extrabold text-slate-900 uppercase tracking-wider block">PAGE STATUS</span>
+                <span className="text-xs font-extrabold text-slate-900 uppercase tracking-wider block">{guideEditorMode ? 'GUIDE STATUS' : 'PAGE STATUS'}</span>
 
                 <span className="text-[11px] text-white">Visibility on live website</span>
 

@@ -368,7 +368,7 @@ export default function WhoWeAreSection({ data }: { data: any }) {
                         h-[52px]
                         shrink-0
                         rounded-full
-                        bg-primary
+                        bg-red
                         text-white
                         flex items-center
                         justify-center
