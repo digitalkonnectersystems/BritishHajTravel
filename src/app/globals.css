@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 /* Public typography overrides section styles; important Tailwind utilities can opt out. */
+/* 
 body:has(#bht-public-header) p {
   font-size: 14px !important;
 
@@ -15,7 +16,7 @@ body:has(#bht-public-header) h4 {
   @variant md {
     font-size: 18px !important;
   }
-}
+} */
 
 /* ============ DESIGN TOKENS ============ */
 :root {
@@ -194,7 +195,7 @@ input[type="date"]:not(.opacity-0):not([class*="opacity-0"])::-webkit-calendar-p
 }
 
 .contact-info {
-  font-size: 18px;
+  /* font-size: 18px; */
 }
 
 .contact-info h4 {

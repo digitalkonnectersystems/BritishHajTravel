@@ -245,7 +245,7 @@ export default function WhatWeProvideSection({ data }: { data: any }) {
       {/* soft white overlay */}
       <div className="absolute inset-0 bg-white/25" />
 
-      <div className="relative max-w-[1400px] mx-auto px-5 md:px-8">
+      <div className="relative max-w-[1400px] mx-auto px-5">
         <div
           className="
             grid
@@ -556,7 +556,7 @@ export default function WhatWeProvideSection({ data }: { data: any }) {
                         className="
                           text-primary
                           font-bold
-                          text-[17px]
+                          text-base
                           md:text-[18px]
                           leading-tight
                         "
@@ -566,10 +566,9 @@ export default function WhatWeProvideSection({ data }: { data: any }) {
 
                       <p
                         className="
-                          text-gray-500
+                          text-ink-soft
                           text-xs
-                          font-medium
-                          md:text-[14px]
+                          md:text-sm
                           leading-5
                           mt-1
                         "

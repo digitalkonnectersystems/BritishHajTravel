@@ -41,7 +41,7 @@ export default function AvailableSeatsSection({ data }: { data?: AvailableSeatsD
   return (
     <section className="relative overflow-hidden bg-[#f1f9ff] px-4 py-8 md:py-10 pt-0 md:pt-0">
       <div className="mx-auto max-w-7xl">
-        <div className="section-head center text-center mb-8">
+        <div className="center text-center mb-8">
           {data?.eyebrow ? <span className="eyebrow mx-auto block">{data.eyebrow}</span> : null}
           {data?.title ? <h2 className="font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">{data.title}</h2> : null}
           {data?.subtitle ? <p className="mt-2 text-sm text-gray-500 font-medium">{data.subtitle}</p> : null}
@@ -55,11 +55,11 @@ export default function AvailableSeatsSection({ data }: { data?: AvailableSeatsD
                 </div>
                 <span className="pt-1 text-lg font-bold text-primary">{card.flightLabel || `Flight ${index + 1}`}</span>
               </div>
-              <div className="mt-3 space-y-2 text-s text-primary">
-                <p>▣ <span className="ml-1">Depart: {card.departure || ""} {card.route || ""}</span></p>
-                <p>↪ <span className="ml-1">Return: {card.returnDate || ""} {card.route ? card.route.split(" - ").reverse().join(" - ") : ""}</span></p>
-                <p>♧ <span className="ml-1">{card.seats || "Seats Available"}</span></p>
-                <p>▣ <span className="ml-1">{card.baggage || "Baggage allowance"}</span></p>
+              <div className="mt-3 space-y-2 !text-sm text-primary">
+                <p>▣ <span className="ml-1 !text-sm">Depart: {card.departure || ""} {card.route || ""}</span></p>
+                <p>↪ <span className="ml-1 !text-sm">Return: {card.returnDate || ""} {card.route ? card.route.split(" - ").reverse().join(" - ") : ""}</span></p>
+                <p>♧ <span className="ml-1 !text-sm">{card.seats || "Seats Available"}</span></p>
+                <p>▣ <span className="ml-1 !text-sm">{card.baggage || "Baggage allowance"}</span></p>
               </div>
               <div className="mt-4 flex items-center justify-between gap-3">
                 <span className="rounded-lg bg-[#fff1f5] px-3 py-3 text-xs font-bold text-red">{card.price ? card.price.replace(/^(?:£|CAD|GBP|USD|EUR|\$)\s*/i, `${currency.symbol} `) : "TBC / Person"}</span>

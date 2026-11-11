@@ -323,7 +323,7 @@ export default function UpcomingUmrahPackages({
           <div className="flex justify-center">
             <a
               href="/umrah-packages"
-              className="px-8 py-3.5 border-2 border-red text-red font-bold text-xs uppercase tracking-widest rounded-md hover:bg-red hover:text-white transition-all flex items-center gap-3"
+              className="px-8 py-3.5 border-2 border-red text-red font-bold text-xs uppercase tracking-widest rounded-md hover:bg-red hover:text-white transition-all flex items-center gap-3 mb-8"
             >
               SEE ALL PACKAGES <span>→</span>
             </a>

@@ -99,8 +99,8 @@ function Segment({ point, fallbackCode }: { point?: FlightPoint; fallbackCode: s
   return (
     <div className="min-w-0 text-center">
       <div className="text-base font-bold tracking-wide text-ink sm:text-lg md:text-xl">{point?.code || fallbackCode}</div>
-      <div className="truncate !text-[10px] text-gray-500">{point?.city || ""}</div>
-      <div className="whitespace-nowrap !text-[10px] text-gray-500 sm:text-[11px]">{point?.time || ""}</div>
+      <div className="truncate !text-[10px] text-ink-soft font-medium">{point?.city || ""}</div>
+      <div className="whitespace-nowrap !text-[10px] text-ink-soft sm:text-[11px] font-bold">{point?.time || ""}</div>
     </div>
   );
 }
@@ -139,17 +139,17 @@ function DirectionBlock({ label, direction, fallbackFirst, fallbackSecond }: {
 }) {
   return (
     <div className="space-y-2">
-      <div className="flex items-center justify-between gap-2 text-[10px] font-semibold uppercase tracking-wider text-gray-500 sm:text-[11px]">
+      <div className="flex items-center justify-between gap-2 text-[10px] font-semibold uppercase tracking-wider text-ink sm:text-[11px]">
         <span>{label}</span>
-        <span className="normal-case text-ink">{formatFlightDateRange(direction.date, direction.dateEnd)}</span>
+        <span className="normal-case ">{formatFlightDateRange(direction.date, direction.dateEnd)}</span>
       </div>
       {direction.via ? (
         <>
           <RouteRow first={direction.first} second={direction.via} className={direction.first?.className || direction.className} flightNumber={direction.first?.flightNumber} fallbackFirst={fallbackFirst} fallbackSecond={direction.via.code || fallbackSecond} />
           {direction.layoverText || direction.layoverDuration ? (
-            <div className="flex items-center justify-between gap-2 rounded bg-[#fff0f2] px-2 py-1 text-[10px] text-ink sm:px-3 sm:text-[11px]">
+            <div className="flex items-center justify-between gap-2 rounded bg-[#fff0f2] px-2 py-1 text-[10px] text-ink sm:px-3 sm:text-[11px] font-semibold">
               <span>{direction.layoverText || "Layover"}</span>
-              <span className="font-semibold">{direction.layoverDuration || ""}</span>
+              <span>{direction.layoverDuration || ""}</span>
             </div>
           ) : null}
           <RouteRow first={direction.via} second={direction.second} className={direction.second?.className || direction.className} flightNumber={direction.second?.flightNumber} fallbackFirst={direction.via.code || fallbackFirst} fallbackSecond={fallbackSecond} />
@@ -197,7 +197,7 @@ export default function AvailableFlightsSection({ data, bookingTarget }: { data?
                     )}
                     <div className="min-w-0">
                       <h3 className="truncate text-sm font-bold text-ink sm:text-base md:text-xl">{flight.name || "Airline flight"}</h3>
-                      <p className="!text-[10px] text-gray-500">{flight.operatedBy || ""}</p>
+                      <p className="!text-[10px] text-ink-soft font-medium">{flight.operatedBy || ""}</p>
                     </div>
                   </div>
                   <span className="shrink-0 rounded border border-red px-1.5 py-1 text-[10px] font-bold text-red sm:px-2 sm:text-xs">{flight.badgeText || ""}</span>
@@ -209,7 +209,7 @@ export default function AvailableFlightsSection({ data, bookingTarget }: { data?
                   </div>
                 </div>
                 <div className="mt-3 flex flex-col items-start gap-3 border-t border-slate-200 pt-3 sm:mt-4 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="flex min-w-0 items-center gap-2 text-[10px]! text-slate-600 sm:text-[11px]">
+                  <p className="flex min-w-0 items-center gap-2 text-[10px]! text-ink sm:text-[11px]">
                     <span className="text-base text-ink" aria-hidden="true">♿</span>
                     <span><strong className="font-semibold">Available Seats:</strong> {flight.seatsValue || flight.seatsText?.replace(/^available seats:\s*/i, "") || ""}</span>
                   </p>

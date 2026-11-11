@@ -216,7 +216,7 @@ export default function WhoWeAreSection({ data }: { data: any }) {
       {/* light overlay */}
       <div className="absolute inset-0 bg-white/20" />
 
-      <div className="relative max-w-[1400px] mx-auto px-5 md:px-8">
+      <div className="relative max-w-[1400px] mx-auto px-5">
         <div
           className="
             grid grid-cols-1
@@ -273,7 +273,7 @@ export default function WhoWeAreSection({ data }: { data: any }) {
 
             <p
               className="
-                text-ink-soft text-sm leading-relaxed 
+                text-ink text-sm md:text-base leading-relaxed 
                 max-w-[820px]
               "
             >
@@ -323,7 +323,7 @@ export default function WhoWeAreSection({ data }: { data: any }) {
 
                     <div
                       className="
-                        text-[#35567e]
+                        text-ink-soft
                         text-[12px]
                         sm:text-[13px]
                         mt-2
@@ -398,7 +398,7 @@ export default function WhoWeAreSection({ data }: { data: any }) {
 
                       <p
                         className="
-                          text-gray-500
+                          text-ink-soft
                           text-xs
                           font-medium
                           md:text-[14px]
