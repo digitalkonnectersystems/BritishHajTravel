@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { getHajjGuideGridItems, type HajjGuideGridItem } from '@/actions/hajjGuideGridActions';
 
 interface Props {
-  data?: { title?: string; selectedGridIds?: number[] };
+  data?: { eyebrow?: string; title?: string; description?: string; subtitle?: string; selectedGridIds?: number[] };
   items?: HajjGuideGridItem[];
 }
 
@@ -25,18 +25,22 @@ export default function HajjGuideGridSection({ data, items }: Props) {
   const selected = useMemo(() => new Set(
     (Array.isArray(data?.selectedGridIds) ? data.selectedGridIds : [])
       .map(Number).filter((id) => Number.isInteger(id) && id > 0),
-  ), [data?.selectedGridIds]);
+  ), [data]);
 
   const cards = (items ?? fallbackItems).filter((item) => item.status === 'published' && selected.has(item.id));
-  if (!cards.length) return null; // Do not show every grid when the editor selected none.
+  const description = data?.description || data?.subtitle;
 
   return (
     <section className="w-full bg-primary px-4 py-9 sm:px-6 sm:py-12" aria-label={data?.title || 'UK-GLOBAL HAJJ GUIDE 2027'}>
       <div className="mx-auto w-full max-w-[1360px]">
-        <h2 className="mb-5 text-center font-sans text-[19px] font-extrabold uppercase tracking-[0.01em] text-white sm:text-[23px]">
-          <span className="font-serif text-white text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">{data?.title || 'UK-GLOBAL HAJJ GUIDE 2027'}</span>
-        </h2>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+        <div className="mb-5 text-center">
+          {data?.eyebrow && <p className="mb-2 text-xs font-bold uppercase tracking-widest text-white/75">{data.eyebrow}</p>}
+          <h2 className="font-sans text-[19px] font-extrabold uppercase tracking-[0.01em] text-white sm:text-[23px]">
+            <span className="font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">{data?.title || 'UK-GLOBAL HAJJ GUIDE 2027'}</span>
+          </h2>
+          {description && <p className="mx-auto mt-3 max-w-2xl text-sm font-medium leading-relaxed text-white/80">{description}</p>}
+        </div>
+        {cards.length > 0 && <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
           {cards.map((card) => {
             // Manual URL takes precedence; a linked Hajj guide page is the fallback.
             const destination = card.targetUrl || card.guideSlug || '';
@@ -64,7 +68,7 @@ export default function HajjGuideGridSection({ data, items }: Props) {
             if (isExternal) return <a key={card.id} href={destination} target="_blank" rel="noopener noreferrer" aria-label={`Open ${card.title}`} className={cls}>{body}</a>;
             return <Link key={card.id} href={destination} className={cls} aria-label={`View ${card.title}`}>{body}</Link>;
           })}
-        </div>
+        </div>}
       </div>
     </section>
   );
