@@ -33,8 +33,8 @@ export default function HajjGuideGridSection({ data, items }: Props) {
   return (
     <section className="w-full bg-primary px-4 py-9 sm:px-6 sm:py-12" aria-label={data?.title || 'UK-GLOBAL HAJJ GUIDE 2027'}>
       <div className="mx-auto w-full max-w-[1360px]">
-        <div className="mb-5 text-center">
-          {data?.eyebrow && <p className="mb-2 text-xs font-bold uppercase tracking-widest text-white/75">{data.eyebrow}</p>}
+        <div className="text-center mb-8">
+          {data?.eyebrow && <p className="eyebrow justify-center">{data.eyebrow}</p>}
           <h2 className="font-sans text-[19px] font-extrabold uppercase tracking-[0.01em] text-white sm:text-[23px]">
             <span className="font-serif text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">{data?.title || 'UK-GLOBAL HAJJ GUIDE 2027'}</span>
           </h2>
