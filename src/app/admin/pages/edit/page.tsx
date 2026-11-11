@@ -4655,151 +4655,78 @@ function PageBuilderContent() {
 
 
                       {dropdownOpen && (
-
-                        <div className="absolute right-0 top-full mt-2 w-[min(20rem,calc(100vw-3.5rem))] max-w-full flex flex-col bg-white rounded-2xl border border-slate-200 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 overflow-hidden">
-
-
+                        <div className="absolute right-0 top-full mt-2 z-50 flex flex-col w-[270px] bg-white rounded-2xl border border-slate-200 shadow-2xl animate-in fade-in slide-in-from-top-2 overflow-hidden">
 
                           {/* Search */}
-
-                          <div className="p-2 pb-2 border-b border-slate-100">
-
+                          <div className="p-2 border-b border-slate-100">
                             <input
-
                               type="text"
-
                               autoFocus
-
                               placeholder="🔍 Search sections..."
-
                               value={sectionSearch}
-
                               onChange={(e) => setSectionSearch(e.target.value)}
-
                               className="w-full px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-800 outline-none focus:border-primary"
-
                             />
-
                           </div>
-
-
 
                           {/* Grouped / Filtered List */}
-
                           <div className="overflow-y-auto max-h-[420px] p-1.5 space-y-1">
-
                             {sectionSearch.trim() !== '' ? (
-
-                              /* Flat Search Results */
-
                               (() => {
-
-                                const results = SECTION_CATALOG.flatMap(cat =>
-
+                                const results = SECTION_CATALOG.flatMap((cat) =>
                                   cat.items
-
-                                    .filter(item => item.type.toLowerCase().includes(sectionSearch.toLowerCase()))
-
-                                    .map(item => ({ ...item, catIcon: cat.icon }))
-
+                                    .filter((item) => item.type.toLowerCase().includes(sectionSearch.toLowerCase()))
+                                    .map((item) => ({ ...item, catIcon: cat.icon }))
                                 );
-
                                 return results.length === 0 ? (
-
                                   <div className="px-3 py-4 text-xs text-soft-ink font-medium text-center">
-
                                     No sections match &quot;{sectionSearch}&quot;
-
                                   </div>
-
-                                ) : results.map((item, itemIndex) => (
-
-                                  <button
-
-                                    key={`search-${item.type}-${itemIndex}`}
-
-                                    type="button"
-
-                                    onClick={() => { addSection(item.type); setDropdownOpen(false); }}
-
-                                    className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-primary hover:bg-emerald-50 transition-colors border-none cursor-pointer flex items-center justify-between group"
-
-                                  >
-
-                                    <span className="flex items-center gap-2">
-
-                                      <span className="text-base">{item.catIcon}</span>
-
-                                      <span className="truncate max-w-[200px]">{item.type}</span>
-
-                                    </span>
-
-                                    <span className="text-primary opacity-0 group-hover:opacity-100 text-xs font-black transition-opacity shrink-0">+ Add</span>
-
-                                  </button>
-
-                                ));
-
-                              })()
-
-                            ) : (
-
-                              /* Grouped by Category */
-
-                              SECTION_CATALOG.map(cat => (
-
-                                <div key={cat.category}>
-
-                                  <div className="flex items-center bg-ink/5 p-2 rounded-md gap-1.5 px-2 py-1 mt-1">
-
-                                    <span className="text-sm">{cat.icon}</span>
-
-                                    <span className="text-[12px] font-extrabold uppercase tracking-widest text-ink">{cat.category}</span>
-
-                                  </div>
-
-                                  {cat.items.map((item, itemIndex) => (
-
+                                ) : (
+                                  results.map((item, itemIndex) => (
                                     <button
-
-                                      key={`${cat.category}-${item.type}-${itemIndex}`}
-
+                                      key={`search-${item.type}-${itemIndex}`}
                                       type="button"
-
                                       onClick={() => { addSection(item.type); setDropdownOpen(false); }}
-
-                                      className="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-primary hover:bg-emerald-50 transition-colors border-none cursor-pointer flex items-center justify-between group"
-
+                                      className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-primary hover:bg-emerald-50 transition-colors border-none cursor-pointer flex items-center justify-between gap-3 group"
                                     >
-
-                                      <span className="truncate max-w-[210px]">{item.type}</span>
-
-                                      <div className="flex items-center gap-1.5 shrink-0">
-
-                                        {item.pages.slice(0, 1).map(pg => (
-
-                                          <span key={pg} className="hidden group-hover:inline-block text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">{pg}</span>
-
-                                        ))}
-
-                                        <span className="text-primary opacity-0 group-hover:opacity-100 text-xs font-black transition-opacity">+ Add</span>
-
-                                      </div>
-
+                                      <span className="flex items-center gap-2 min-w-0">
+                                        <span className="text-base shrink-0">{item.catIcon}</span>
+                                        <span className="truncate">{item.type}</span>
+                                      </span>
+                                      <span className="text-primary opacity-0 group-hover:opacity-100 text-xs font-black transition-opacity shrink-0">+ Add</span>
                                     </button>
-
+                                  ))
+                                );
+                              })()
+                            ) : (
+                              SECTION_CATALOG.map((cat) => (
+                                <div key={cat.category}>
+                                  <div className="flex items-center gap-1.5 bg-ink/5 px-2 py-1 mt-1 rounded-md">
+                                    <span className="text-sm shrink-0">{cat.icon}</span>
+                                    <span className="text-[12px] font-extrabold uppercase tracking-widest text-ink whitespace-nowrap">{cat.category}</span>
+                                  </div>
+                                  {cat.items.map((item, itemIndex) => (
+                                    <button
+                                      key={`${cat.category}-${item.type}-${itemIndex}`}
+                                      type="button"
+                                      onClick={() => { addSection(item.type); setDropdownOpen(false); }}
+                                      className="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-primary hover:bg-emerald-50 transition-colors border-none cursor-pointer flex items-center justify-between gap-3 group"
+                                    >
+                                      <span className="truncate">{item.type}</span>
+                                      <div className="flex items-center gap-1.5 shrink-0">
+                                        {item.pages.slice(0, 1).map((pg) => (
+                                          <span key={pg} className="hidden group-hover:inline-block text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 whitespace-nowrap">{pg}</span>
+                                        ))}
+                                        <span className="text-primary opacity-0 group-hover:opacity-100 text-xs font-black transition-opacity">+ Add</span>
+                                      </div>
+                                    </button>
                                   ))}
-
                                 </div>
-
                               ))
-
                             )}
-
                           </div>
-
                         </div>
-
                       )}
 
                     </div>
