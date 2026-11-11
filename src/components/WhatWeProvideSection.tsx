@@ -245,7 +245,7 @@ export default function WhatWeProvideSection({ data }: { data: any }) {
       {/* soft white overlay */}
       <div className="absolute inset-0 bg-white/25" />
 
-      <div className="relative max-w-[1400px] mx-auto px-5 md:px-8">
+      <div className="relative max-w-[1360px] mx-auto px-5">
         <div
           className="
             grid

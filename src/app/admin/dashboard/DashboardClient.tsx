@@ -3,6 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { getDashboardRealtimeAction, getDashboardRecentEnquiriesAction } from '@/actions/dashboardRealtimeActions';
 import { getRecentActivities } from '@/actions/activityActions';
+import { getActivityAnalyticsAction } from '@/actions/activityAnalyticsActions';
+import ActivityBreakdownChart, { type ActivityAnalytics } from '@/components/admin/ActivityBreakdownChart';
+import type { ActivityPeriod } from '@/lib/activityAnalytics';
 import Link from 'next/link';
 import DashboardSeoCenterSection from '@/components/admin/DashboardSeoCenterSection';
 import RealtimeAnalytics from '@/components/admin/RealtimeAnalytics';
@@ -38,6 +41,7 @@ interface DashboardClientProps {
   initialActivities: ActivityItem[];
   initialSeoAudit?: SeoAuditItem[];
   initialRealtime: AnalyticsSnapshot | null;
+  initialActivityAnalytics: ActivityAnalytics | null;
 }
 
 const TYPE_CONFIG: Record<string, { label: string; bg: string; text: string; dot: string; border: string }> = {
@@ -108,15 +112,37 @@ export default function DashboardClient({
   initialActivities,
   initialSeoAudit = [],
   initialRealtime,
+  initialActivityAnalytics,
 }: DashboardClientProps) {
   const [timeRange, setTimeRange] = useState<'Today' | '7 Days' | '30 Days'>('Today');
   const [filterMenuOpen, setFilterMenuOpen] = useState(false);
+  const [activityPeriod, setActivityPeriod] = useState<ActivityPeriod>('14d');
+  const [activityAnalytics, setActivityAnalytics] = useState<ActivityAnalytics | null>(initialActivityAnalytics);
+  const [activityBusy, setActivityBusy] = useState(false);
+  const [activityError, setActivityError] = useState('');
   const [liveSnapshot, setLiveSnapshot] = useState<AnalyticsSnapshot | null>(initialRealtime);
   const [recentEnquiries, setRecentEnquiries] = useState(initialEnquiries);
   const [recentActivities, setRecentActivities] = useState(initialActivities);
   useEffect(() => setLiveSnapshot(initialRealtime), [initialRealtime]);
   useEffect(() => setRecentEnquiries(initialEnquiries), [initialEnquiries]);
   useEffect(() => setRecentActivities(initialActivities), [initialActivities]);
+
+  useEffect(() => {
+    let alive = true;
+    async function syncAnalytics() {
+      if (!alive || (document.visibilityState !== 'visible')) return;
+      setActivityBusy(true);
+      try {
+        const result = await getActivityAnalyticsAction(activityPeriod);
+        if (alive) { setActivityAnalytics(result); setActivityError(''); }
+      } catch {
+        if (alive) setActivityError('Unable to load activity data for this reporting period.');
+      } finally { if (alive) setActivityBusy(false); }
+    }
+    if (activityPeriod !== '14d' || !initialActivityAnalytics) void syncAnalytics();
+    const timer = window.setInterval(() => void syncAnalytics(), 60000);
+    return () => { alive = false; window.clearInterval(timer); };
+  }, [activityPeriod, initialActivityAnalytics]);
 
   // Update the KPI/chart snapshot and recent activity without navigating or reloading.
   useEffect(() => {
@@ -182,6 +208,9 @@ export default function DashboardClient({
 
       {initialRealtime ? <RealtimeAnalytics initial={initialRealtime} onSnapshot={setLiveSnapshot} /> :
         <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-semibold text-red-700" role="alert">Dashboard database statistics are unavailable. Figures below should not be treated as live totals. Check the application and database logs.</div>}
+
+      {activityError && <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">{activityError}</p>}
+      {activityAnalytics && <ActivityBreakdownChart data={activityAnalytics} period={activityPeriod} onPeriodChange={setActivityPeriod} busy={activityBusy} />}
 
       {/* ── SEO Center Global Audit Dashboard with Monthly Bar Graph ── */}
       <DashboardSeoCenterSection pages={initialPages} audit={initialSeoAudit} />

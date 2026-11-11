@@ -4,7 +4,8 @@ import { requireAdmin } from '@/lib/requireAdmin';
 
 import { db } from '@/db';
 import { activityLogs, users } from '@/db/schema';
-import { desc, isNull, inArray } from 'drizzle-orm';
+import { desc, isNull, inArray, and, gte, lt } from 'drizzle-orm';
+import { reportBounds, type ActivityPeriod } from '@/lib/activityAnalytics';
 import { revalidatePath, unstable_noStore } from 'next/cache';
 import { headers } from 'next/headers';
 import { getCurrentSession } from '@/lib/auth';
@@ -142,16 +143,17 @@ async function getRequestIp(): Promise<string | null> {
   }
 }
 
-export async function getRecentActivities(limit: number = 100): Promise<ActivityItem[]> {
+export async function getRecentActivities(limit: number = 100, period?: ActivityPeriod): Promise<ActivityItem[]> {
   await requireAdmin();
 
   unstable_noStore();
   try {
     const safeLimit = Math.min(500, Math.max(1, Number(limit) || 100));
+    const bounds = period ? reportBounds(period) : null;
     const rows = await db
       .select()
       .from(activityLogs)
-      .where(isNull(activityLogs.deletedAt))
+      .where(bounds ? and(isNull(activityLogs.deletedAt), gte(activityLogs.createdAt, bounds.start), lt(activityLogs.createdAt, bounds.endExclusive)) : isNull(activityLogs.deletedAt))
       .orderBy(desc(activityLogs.createdAt))
       .limit(safeLimit);
 

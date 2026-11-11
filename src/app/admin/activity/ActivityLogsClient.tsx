@@ -2,11 +2,15 @@
 
 import { Fragment, useState, useEffect } from 'react';
 import { ActivityItem, getRecentActivities, clearActivityLogsAction } from '@/actions/activityActions';
-import { Search, Filter, RefreshCw, Check, Users, Activity, ChevronDown, ChevronUp } from 'lucide-react';
-import { WaveAnalyticsChart, chartDays, dailySeries } from '@/components/admin/WaveAnalyticsChart';
+import { Search, Filter, RefreshCw, Check, Users, Activity, ChevronDown, ChevronUp, Download } from 'lucide-react';
+import ActivityBreakdownChart, { type ActivityAnalytics } from '@/components/admin/ActivityBreakdownChart';
+import { getActivityAnalyticsAction } from '@/actions/activityAnalyticsActions';
+import { type ActivityPeriod, pakistanYesterday } from '@/lib/activityAnalytics';
 
 interface ActivityLogsClientProps {
   initialActivities: ActivityItem[];
+  initialAnalytics: ActivityAnalytics | null;
+  canExport: boolean;
 }
 
 function formatAuditValue(value: unknown): string {
@@ -32,6 +36,7 @@ const TYPE_CONFIG: Record<string, { label: string; bg: string; text: string; dot
   hotels: { label: 'Hotels', bg: '#EFF6FF', text: '#1D4ED8', dot: '#60A5FA', border: '#BFDBFE' },
   media: { label: 'Media Library', bg: '#F0FDFA', text: '#0F766E', dot: '#14B8A6', border: '#99F6E4' },
   guides: { label: 'Guides', bg: '#FDF4FF', text: '#A21CAF', dot: '#D946EF', border: '#F5D0FE' },
+  hajj_guide: { label: 'Hajj Guide Grids', bg: '#FDF4FF', text: '#A21CAF', dot: '#D946EF', border: '#F5D0FE' },
   visa_processing: { label: 'Visa Processing', bg: '#EFF6FF', text: '#0369A1', dot: '#0EA5E9', border: '#BAE6FD' },
   baan: { label: 'BAAN Holding Hajj', bg: '#FFFBEB', text: '#B45309', dot: '#F59E0B', border: '#FDE68A' },
   seo: { label: 'SEO', bg: '#F0FDFA', text: '#0F766E', dot: '#14B8A6', border: '#99F6E4' },
@@ -39,9 +44,41 @@ const TYPE_CONFIG: Record<string, { label: string; bg: string; text: string; dot
   menus: { label: 'Menus', bg: '#F0FDFA', text: '#0F766E', dot: '#14B8A6', border: '#99F6E4' },
 };
 
-export default function ActivityLogsClient({ initialActivities }: ActivityLogsClientProps) {
+export default function ActivityLogsClient({ initialActivities, initialAnalytics, canExport }: ActivityLogsClientProps) {
   const [activities, setActivities] = useState<ActivityItem[]>(initialActivities);
   const [search, setSearch] = useState('');
+  const [period, setPeriod] = useState<ActivityPeriod>('14d');
+  const [overview, setOverview] = useState<ActivityAnalytics | null>(initialAnalytics);
+  const [rangeBusy, setRangeBusy] = useState(false);
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
+  const [exportFormat, setExportFormat] = useState<'csv' | 'pdf'>('csv');
+  const [exportBusy, setExportBusy] = useState(false);
+  const yesterday = pakistanYesterday();
+  const exportInvalid = !fromDate || !toDate || !exportFormat || fromDate > toDate || toDate > yesterday || fromDate > yesterday;
+  const exportLogs = async () => {
+    if (exportInvalid || exportBusy) return;
+    setExportBusy(true);
+    setActivityError('');
+    try {
+      const params = new URLSearchParams({ from: fromDate, to: toDate, format: exportFormat });
+      const response = await fetch(`/api/admin/activity/export?${params}`, { credentials: 'same-origin', cache: 'no-store' });
+      if (!response.ok) {
+        const result = await response.json().catch(() => ({}));
+        throw new Error(result.error || 'Activity export failed');
+      }
+      const blob = await response.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = objectUrl;
+      link.download = `BHT-activity-logs_${fromDate}_to_${toDate}.${exportFormat}`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(objectUrl), 30000);
+    } catch (error) { setActivityError(error instanceof Error ? error.message : 'Unable to download logs'); }
+    finally { setExportBusy(false); }
+  };
   const [selectedType, setSelectedType] = useState('all');
   const [selectedUser, setSelectedUser] = useState('all');
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -49,41 +86,41 @@ export default function ActivityLogsClient({ initialActivities }: ActivityLogsCl
   const [justRefreshed, setJustRefreshed] = useState(false);
   const [expandedActivityId, setExpandedActivityId] = useState<string | number | null>(null);
 
+  // Query the selected period, not just the latest 150 entries.
+  useEffect(() => {
+    let alive = true;
+    const reload = async () => {
+      if (!alive || document.visibilityState !== 'visible') return;
+      setIsRefreshing(true);
+      setRangeBusy(true);
+      try {
+        const [entries, analytics] = await Promise.all([
+          getRecentActivities(300, period), getActivityAnalyticsAction(period),
+        ]);
+        if (alive) { setActivities(entries); setOverview(analytics); setActivityError(''); setJustRefreshed(true); }
+      } catch {
+        if (alive) setActivityError('Failed to load activity for this period. Existing results are shown.');
+      } finally { if (alive) { setIsRefreshing(false); setRangeBusy(false); } }
+    };
+    if (period !== '14d' || !initialAnalytics) void reload();
+    const timer = window.setInterval(() => void reload(), 60000);
+    return () => { alive = false; window.clearInterval(timer); };
+  }, [period, initialAnalytics]);
+
   const refreshLogs = async () => {
     setIsRefreshing(true);
     setJustRefreshed(false);
     try {
-      const startTime = Date.now();
-      const data = await getRecentActivities(150);
-      setActivities(data);
-
-      // Ensure minimum 400ms feedback animation
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 400) {
-        await new Promise((r) => setTimeout(r, 400 - elapsed));
-      }
-
+      const [entries, analytics] = await Promise.all([
+        getRecentActivities(300, period), getActivityAnalyticsAction(period),
+      ]);
+      setActivities(entries);
+      setOverview(analytics);
+      setActivityError('');
       setJustRefreshed(true);
-      setTimeout(() => setJustRefreshed(false), 2000);
-    } catch (err) {
-      console.error('Failed to refresh activity logs:', err);
-    } finally {
-      setIsRefreshing(false);
-    }
+    } catch { setActivityError('Failed to refresh activity logs.'); }
+    finally { setIsRefreshing(false); }
   };
-
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      if (document.visibilityState !== 'visible') return;
-      try {
-        const data = await getRecentActivities(150);
-        setActivities(data);
-      } catch (err) {
-        console.error('Failed to refresh activity logs:', err);
-      }
-    }, 60000);
-    return () => clearInterval(interval);
-  }, []);
 
   const handleClearLogs = async () => {
     if (confirm('Are you sure you want to clear all audit activity logs? This cannot be undone.')) {
@@ -118,13 +155,6 @@ export default function ActivityLogsClient({ initialActivities }: ActivityLogsCl
     const matchesUser = selectedUser === 'all' || act.user.toLowerCase() === selectedUser.toLowerCase();
     return matchesSearch && matchesType && matchesUser;
   });
-
-  const activityDays = chartDays(14);
-  const activityCharts = [
-    { name: 'All matching actions', values: dailySeries(filtered, activityDays.keys, item => item.timestamp) },
-    { name: 'User sign-ins', values: dailySeries(filtered, activityDays.keys, item => item.timestamp, item => /log(?:ged)?\s*in|sign[ -]?in/i.test(item.action)) },
-    { name: 'Content updates', values: dailySeries(filtered, activityDays.keys, item => item.timestamp, item => /updat|edit|publish/i.test(item.action)) },
-  ];
 
   return (
     <div className="flex flex-col gap-6">
@@ -173,6 +203,42 @@ export default function ActivityLogsClient({ initialActivities }: ActivityLogsCl
           </button>
         </div>
       </div>
+
+      {canExport && <section className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-sm">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="m-0 text-sm font-extrabold text-[#020e43]">Download Activity Logs</h2>
+            <p className="mt-1 text-xs text-slate-500">Choose both dates and CSV or PDF. Today's activity is excluded; yesterday is the latest permitted date (Asia/Karachi).</p>
+          </div>
+          <span className="rounded-full bg-[#020e43]/5 px-3 py-1 text-[11px] font-bold text-[#020e43]">Latest: {yesterday}</span>
+        </div>
+        <div className="mt-4 flex flex-wrap items-end gap-3">
+          <label className="flex min-w-[150px] flex-col gap-1 text-[11px] font-bold text-[#020e43]">From Date
+            <input type="date" value={fromDate} max={yesterday} onChange={e => setFromDate(e.target.value)}
+              className="rounded-xl border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 focus:border-[#020e43] focus:outline-none" />
+          </label>
+          <label className="flex min-w-[150px] flex-col gap-1 text-[11px] font-bold text-primary cursor-pointer">To Date
+            <input type="date" value={toDate} min={fromDate || undefined} max={yesterday} onChange={e => setToDate(e.target.value)}
+              className="rounded-xl border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 focus:border-[#020e43] focus:outline-none" />
+          </label>
+
+          <label className="flex min-w-[130px] flex-col gap-1 text-[11px] font-bold text-[#020e43]">
+            Format
+            <select
+              value={exportFormat}
+              onChange={(e) => setExportFormat(e.target.value as 'csv' | 'pdf')}
+              className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm font-semibold text-slate-700 focus:border-[#020e43] focus:outline-none"
+            >
+              <option value="csv">CSV</option>
+              <option value="pdf">PDF</option>
+            </select>
+          </label>
+          <button type="button" onClick={() => void exportLogs()} disabled={exportInvalid || exportBusy}
+            className="inline-flex items-center gap-2 rounded-xl bg-primary hover:bg-primary-light px-4 py-2.5 text-xs font-bold text-white disabled:cursor-not-allowed disabled:opacity-40">
+            <Download className="h-4 w-4" />{exportBusy ? 'Preparing Download...' : 'Download Activity Logs'}
+          </button>
+        </div>
+      </section>}
 
       {/* Search & Filter Bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex-wrap">
@@ -224,6 +290,7 @@ export default function ActivityLogsClient({ initialActivities }: ActivityLogsCl
               <option value="hotels">Hotels</option>
               <option value="media">Media Library</option>
               <option value="guides">Guides</option>
+              <option value="hajj_guide">Hajj Guide Grids</option>
               <option value="visa_processing">Visa Processing</option>
               <option value="baan">BAAN Holding Hajj</option>
               <option value="seo">SEO</option>
@@ -282,12 +349,9 @@ export default function ActivityLogsClient({ initialActivities }: ActivityLogsCl
         })}
       </div>
 
-      <WaveAnalyticsChart
-        title="Administrative activity overview"
-        description="Last 14 UTC days from the loaded audit entries. Search, entity and user filters also update the chart; counts are limited to the loaded log records."
-        labels={activityDays.labels}
-        series={activityCharts}
-      />
+      {overview ? <ActivityBreakdownChart data={overview} period={period} onPeriodChange={setPeriod} busy={rangeBusy} /> :
+        <p role="alert" className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-xs text-amber-900">Activity chart is unavailable. Check the backend diagnostics.</p>}
+      <p className="text-xs text-slate-500">Showing the latest {activities.length} audit records in this period. Chart totals use the full recorded period, rather than this table's 300-record limit.</p>
 
       {/* Activity Table */}
       <div className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-xs">

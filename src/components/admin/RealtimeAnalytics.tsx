@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { getDashboardRealtimeAction } from '@/actions/dashboardRealtimeActions';
-import { WaveAnalyticsChart } from '@/components/admin/WaveAnalyticsChart';
 
 export type AnalyticsSnapshot = Awaited<ReturnType<typeof getDashboardRealtimeAction>>;
 
@@ -37,14 +36,9 @@ export default function RealtimeAnalytics({ initial, onSnapshot }: { initial: An
     ['404 paths', snapshot.counts.brokenPaths],
     ['Active redirects', snapshot.counts.redirects],
   ] as const;
-  const average = snapshot.enquiryTrend.map((_, i, entries) => {
-    const window = entries.slice(Math.max(0, i - 2), i + 1);
-    return Number((window.reduce((sum, v) => sum + v, 0) / window.length).toFixed(2));
-  });
-  const labels = snapshot.days.map(date => new Date(`${date}T00:00:00Z`).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', timeZone: 'UTC' }));
   return <section className="rounded-[28px] border border-slate-200/80 bg-white p-5 sm:p-6 shadow-[0_16px_40px_-30px_rgba(15,23,42,.45)]">
     <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
-      <div><h2 className="m-0 text-lg font-extrabold text-slate-900">Project Visual Analytics</h2><p className="mt-1 text-xs text-gray-500">Live database totals and actual daily counts over the last 14 days. Refreshes every 30 seconds while visible.</p></div>
+      <div><h2 className="m-0 text-lg font-extrabold text-slate-900">Project Visual Analytics</h2><p className="mt-1 text-xs text-gray-500">Live CRM database totals. Detailed frontend/backend activity and period selection appear in the section below. Refreshes every 30 seconds while visible.</p></div>
       <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[11px] font-bold text-gray-500">Synced {new Date(snapshot.refreshedAt).toLocaleTimeString('en-GB')}</span>
     </div>
     {error && <p role="status" className="mb-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">{error}</p>}
@@ -54,15 +48,5 @@ export default function RealtimeAnalytics({ initial, onSnapshot }: { initial: An
         <p className="text-[10px] font-bold text-gray-500">{label}</p><p className="mt-1 text-2xl font-black tabular-nums text-slate-900">{value}</p>
       </div>)}
     </div>
-    <WaveAnalyticsChart
-      title="Enquiries & administrative activity"
-      description="Daily counts share one scale; the third line is the actual three-day rolling average of enquiries."
-      labels={labels}
-      series={[
-        { name: 'Enquiries', values: snapshot.enquiryTrend },
-        { name: 'Admin activities', values: snapshot.activityTrend },
-        { name: 'Enquiries · 3-day average', values: average },
-      ]}
-    />
   </section>;
 }

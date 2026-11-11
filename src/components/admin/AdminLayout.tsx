@@ -97,6 +97,11 @@ const navItems = [
     icon: <BookOpen className="w-4 h-4" />,
   },
   {
+    label: 'Hajj Guide Grids',
+    href: '/admin/hajj-guide',
+    icon: <BookOpen className="w-4 h-4" />,
+  },
+  {
     label: 'SEO Center',
     href: '/admin/seo',
     icon: <Search className="w-4 h-4" />,
@@ -193,6 +198,30 @@ export default function AdminLayout({ children, activeNavHref }: AdminLayoutProp
     };
   }, []);
 
+  const [modalActive, setModalActive] = useState(false);
+
+  // Automatically track when any modal, popup, or dialog is mounted across the entire workspace
+  useEffect(() => {
+    const updateModalState = () => {
+      const active = Boolean(
+        document.querySelector(
+          '[role="dialog"], [aria-modal="true"], main > .fixed.inset-0, main .fixed.inset-0'
+        )
+      );
+      setModalActive(active);
+    };
+
+    updateModalState();
+    const observer = new MutationObserver(updateModalState);
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['role', 'aria-modal', 'class'],
+    });
+    return () => observer.disconnect();
+  }, []);
+
   const logoSrc = identity?.logo || '/img/logo.png';
   const logoAlt = identity?.logoAlt || 'British Hajj Travel UK Logo';
 
@@ -261,9 +290,9 @@ export default function AdminLayout({ children, activeNavHref }: AdminLayoutProp
       </aside>
 
       {/* ── Right Panel ── */}
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+      <div className={`flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden relative ${modalActive ? 'has-active-modal' : ''} has-[[role="dialog"]]:[--header-z:0] has-[[aria-modal="true"]]:[--header-z:0] has-[.fixed.inset-0]:[--header-z:0] has-[[role="dialog"]]:[--main-z:40] has-[[aria-modal="true"]]:[--main-z:40] has-[.fixed.inset-0]:[--main-z:40]`}>
         {/* ── Redesigned Sleek Top Header Bar ── */}
-        <header className="flex shrink-0 flex-wrap items-center justify-between gap-3 overflow-visible bg-white/95 backdrop-blur-xl border-b border-slate-200 px-4 py-3 shadow-xs relative z-30 sm:px-6">
+        <header className={`flex shrink-0 flex-wrap items-center justify-between gap-3 overflow-visible bg-white/95 backdrop-blur-xl border-b border-slate-200 px-4 py-3 shadow-xs relative transition-all duration-150 sm:px-6 ${modalActive ? 'z-0 pointer-events-none opacity-50' : 'z-30 z-[var(--header-z,30)]'}`}>
           <button type="button" aria-label="Open navigation" onClick={() => setSidebarOpen(true)} className="rounded-lg border border-slate-200 p-2 text-slate-700 md:hidden">
             {sidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
@@ -438,7 +467,7 @@ export default function AdminLayout({ children, activeNavHref }: AdminLayoutProp
         </header>
 
         {/* Main scrollable content — light canvas */}
-        <main className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto bg-gradient-to-br from-[#f2f7fb] via-[#eef4f8] to-[#e8f3ef] p-4 text-slate-800 sm:p-7 sm:px-8">
+        <main className={`min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto bg-gradient-to-br from-[#f2f7fb] via-[#eef4f8] to-[#e8f3ef] p-4 text-slate-800 sm:p-7 sm:px-8 ${modalActive ? 'relative z-40' : 'relative z-[var(--main-z,auto)]'}`}>
           {children}
         </main>
       </div>
