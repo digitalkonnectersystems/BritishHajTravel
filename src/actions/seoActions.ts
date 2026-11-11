@@ -124,7 +124,7 @@ export async function saveEntitySeoAction(entityType: SeoEntityType, rawId: numb
       ...parseSeoSettings(seoData),
       updatedAt: new Date().toISOString(),
     };
-    const seoError = validateSeoText(cleanSeo) || validateCanonicalOverride(cleanSeo.canonicalUrl);
+    const seoError = (entityType === 'page' ? null : validateSeoText(cleanSeo)) || validateCanonicalOverride(cleanSeo.canonicalUrl);
     if (seoError) return { success: false, error: seoError };
 
     let entityTitle = `${entityType} #${id}`;

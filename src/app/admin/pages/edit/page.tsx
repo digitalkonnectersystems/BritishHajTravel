@@ -13148,8 +13148,7 @@ function PageBuilderContent() {
 
                       <label className="block font-extrabold text-gray-500 text-xs mb-1">META TITLE</label>
 
-                      <input type="text" maxLength={60} value={metaTitle || ''} onChange={(e) => setMetaTitle(e.target.value)} className="w-full p-2 border border-slate-200 rounded-lg outline-none focus:border-primary" />
-                      <p className={`mt-1 text-xs font-semibold ${metaTitle.length > 60 ? 'text-red-700' : metaTitle.length >= 30 ? 'text-emerald-700' : 'text-amber-700'}`}>{metaTitle.length}/60 characters</p>
+                      <input type="text" value={metaTitle || ''} onChange={(e) => setMetaTitle(e.target.value)} className="w-full p-2 border border-slate-200 rounded-lg outline-none focus:border-primary" />
 
                     </div>
 
@@ -13157,8 +13156,7 @@ function PageBuilderContent() {
 
                       <label className="block font-extrabold text-gray-500 text-xs mb-1">META DESCRIPTION</label>
 
-                      <textarea rows={3} maxLength={160} value={metaDescription || ''} onChange={(e) => setMetaDescription(e.target.value)} className="w-full p-2 border border-slate-200 rounded-lg outline-none focus:border-primary" />
-                      <p className={`mt-1 text-xs font-semibold ${metaDescription.length > 160 ? 'text-red-700' : metaDescription.length >= 70 ? 'text-emerald-700' : 'text-amber-700'}`}>{metaDescription.length}/160 characters</p>
+                      <textarea rows={3} value={metaDescription || ''} onChange={(e) => setMetaDescription(e.target.value)} className="w-full p-2 border border-slate-200 rounded-lg outline-none focus:border-primary" />
 
                     </div>
 

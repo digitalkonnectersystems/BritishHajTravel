@@ -282,7 +282,7 @@ export async function savePageAction(formData: FormData) {
       }
     }
 
-    const metaError = validateSeoText({ metaTitle, metaDescription }) || validateSeoText(parsedSeoSettings) || validateCanonicalOverride(parsedSeoSettings?.canonicalUrl);
+    const metaError = validateCanonicalOverride(parsedSeoSettings?.canonicalUrl);
     if (metaError) return { success: false, error: metaError };
 
     const duplicate = await db

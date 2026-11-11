@@ -58,6 +58,7 @@ export default function SeoCenterModal({
   >('traditional');
 
   const mainRef = useRef<HTMLDivElement>(null);
+  const isPageEntity = !pageData?.entityType || pageData.entityType === 'page';
 
   // Form State
   const [metaTitle, setMetaTitle] = useState('');
@@ -431,7 +432,7 @@ export default function SeoCenterModal({
   if (!isOpen || !pageData) return null;
 
   const handleSaveSeo = async () => {
-    const invalid = validateSeoText({ metaTitle, metaDescription });
+    const invalid = isPageEntity ? null : validateSeoText({ metaTitle, metaDescription });
     if (invalid) { setSaveToast(invalid); setActiveTab('traditional'); return; }
     setIsSaving(true);
     setSaveToast('');
@@ -676,15 +677,15 @@ export default function SeoCenterModal({
                   <div className="flex justify-between text-xs mb-1">
                     <label className="font-extrabold text-slate-700">Meta Title</label>
                     <span
-                      className={`font-mono text-[11px] font-bold ${seoTextIndicator(metaTitle, SEO_TITLE_LIMIT, 30) === 'green' ? 'text-emerald-700' : seoTextIndicator(metaTitle, SEO_TITLE_LIMIT, 30) === 'red' ? 'text-red-700' : 'text-amber-600'}` }
+                      className={`font-mono text-[11px] font-bold ${!isPageEntity && seoTextIndicator(metaTitle, SEO_TITLE_LIMIT, 30) === 'green' ? 'text-emerald-700' : !isPageEntity && seoTextIndicator(metaTitle, SEO_TITLE_LIMIT, 30) === 'red' ? 'text-red-700' : 'text-amber-600'}` }
                     >
-                      {metaTitle.length}/{SEO_TITLE_LIMIT} characters {isTitleOk ? '· Good' : metaTitle.length > SEO_TITLE_LIMIT ? '· Too long' : '· Improve'}
+                      {isPageEntity ? `${metaTitle.length} characters` : `${metaTitle.length}/${SEO_TITLE_LIMIT} characters ${isTitleOk ? '· Good' : metaTitle.length > SEO_TITLE_LIMIT ? '· Too long' : '· Improve'}`}
                     </span>
                   </div>
                   <input
                     type="text"
                     value={metaTitle}
-                    maxLength={SEO_TITLE_LIMIT}
+                    maxLength={isPageEntity ? undefined : SEO_TITLE_LIMIT}
                     onChange={(e) => setMetaTitle(e.target.value)}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs text-slate-800 font-semibold focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                     placeholder="Enter meta title..."
@@ -696,15 +697,15 @@ export default function SeoCenterModal({
                   <div className="flex justify-between text-xs mb-1">
                     <label className="font-extrabold text-slate-700">Meta Description</label>
                     <span
-                      className={`font-mono text-[11px] font-bold ${seoTextIndicator(metaDescription, SEO_DESCRIPTION_LIMIT, 70) === 'green' ? 'text-emerald-700' : seoTextIndicator(metaDescription, SEO_DESCRIPTION_LIMIT, 70) === 'red' ? 'text-red-700' : 'text-amber-600'}` }
+                      className={`font-mono text-[11px] font-bold ${!isPageEntity && seoTextIndicator(metaDescription, SEO_DESCRIPTION_LIMIT, 70) === 'green' ? 'text-emerald-700' : !isPageEntity && seoTextIndicator(metaDescription, SEO_DESCRIPTION_LIMIT, 70) === 'red' ? 'text-red-700' : 'text-amber-600'}` }
                     >
-                      {metaDescription.length}/{SEO_DESCRIPTION_LIMIT} characters {isDescOk ? '· Good' : metaDescription.length > SEO_DESCRIPTION_LIMIT ? '· Too long' : '· Improve'}
+                      {isPageEntity ? `${metaDescription.length} characters` : `${metaDescription.length}/${SEO_DESCRIPTION_LIMIT} characters ${isDescOk ? '· Good' : metaDescription.length > SEO_DESCRIPTION_LIMIT ? '· Too long' : '· Improve'}`}
                     </span>
                   </div>
                   <textarea
                     rows={3}
                     value={metaDescription}
-                    maxLength={SEO_DESCRIPTION_LIMIT}
+                    maxLength={isPageEntity ? undefined : SEO_DESCRIPTION_LIMIT}
                     onChange={(e) => setMetaDescription(e.target.value)}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs text-slate-800 font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                     placeholder="Enter meta description..."
