@@ -7,6 +7,7 @@ import { blogPosts, siteSettings } from '@/db/schema';
 import { eq, desc, ne, and } from 'drizzle-orm';
 import { revalidatePath, updateTag, unstable_cache } from 'next/cache';
 import { logAdminActivityAction } from '@/actions/activityActions';
+import { normalizeBlogFaqs, validateBlogFaqs, type BlogFaqSection } from '@/lib/blogFaq';
 
 // ─── Auto-slugify title ────────────────────────────────────────────────────
 export async function slugifyBlogTitle(title: string): Promise<string> {
@@ -209,6 +210,7 @@ export interface BlogSavePayload {
   slug: string;
   excerpt?: string | null;
   content: string;
+  faqs?: BlogFaqSection | null;
   featuredImage?: string | null;
   category?: string;
   authorName?: string;
@@ -225,12 +227,18 @@ export async function saveBlogAction(data: BlogSavePayload) {
     slug,
     excerpt,
     content,
+    faqs,
     featuredImage,
     category = 'Pilgrimage Guide',
     authorName = 'British Haj Travel Editorial',
     isPublished = true,
     publishedAt,
   } = data;
+
+  // No incomplete or duplicate FAQ may appear on the page or inside JSON-LD.
+  const faqValidationError = faqs === undefined ? null : validateBlogFaqs(faqs);
+  if (faqValidationError) return { success: false, error: faqValidationError };
+  const cleanedFaqs = faqs === undefined ? undefined : normalizeBlogFaqs(faqs);
 
   let parsedPublishedAt: Date | null = null;
   if (typeof publishedAt === 'string' && publishedAt.trim() !== '') {
@@ -255,6 +263,8 @@ export async function saveBlogAction(data: BlogSavePayload) {
         isPublished,
         updatedAt: new Date(),
       };
+      // Legacy callers that do not provide FAQs must not erase existing Q&As.
+      if (cleanedFaqs !== undefined) updateData.faqs = cleanedFaqs;
       // Editing an existing blog without selecting a new date must not
       // silently replace its original publish date with today's date.
       updateData.publishedAt = parsedPublishedAt ?? previousEntry?.publishedAt ?? new Date();
@@ -272,6 +282,12 @@ export async function saveBlogAction(data: BlogSavePayload) {
 
       revalidatePath('/blogs');
       revalidatePath(`/blogs/${slug}`);
+      // Root-level blog details are the canonical published routes.
+      revalidatePath(`/${slug}`);
+      if (previousEntry?.slug && previousEntry.slug !== slug) {
+        revalidatePath(`/${previousEntry.slug}`);
+        updateTag(`blog-${previousEntry.slug}`);
+      }
       revalidatePath('/admin/blogs');
       updateTag('blogs');
       updateTag(`blog-${slug}`);
@@ -282,6 +298,7 @@ export async function saveBlogAction(data: BlogSavePayload) {
         slug,
         excerpt: excerpt ?? '',
         content: content ?? '',
+        faqs: cleanedFaqs ?? normalizeBlogFaqs(null),
         featuredImage: featuredImage ?? null,
         category,
         authorName,
@@ -305,6 +322,7 @@ export async function saveBlogAction(data: BlogSavePayload) {
       });
 
       revalidatePath('/blogs');
+      revalidatePath(`/${slug}`);
       revalidatePath('/admin/blogs');
       updateTag('blogs');
       updateTag(`blog-${slug}`);
@@ -322,10 +340,12 @@ export async function deleteBlogAction(id: number) {
 
   try {
     let blogTitle = `ID #${id}`;
+    let deletedSlug: string | null = null;
     try {
       const found = await db.select().from(blogPosts).where(eq(blogPosts.id, id)).limit(1);
       if (found && found.length > 0) {
         blogTitle = `"${found[0].title}"`;
+        deletedSlug = found[0].slug;
       }
     } catch (e) { }
 
@@ -338,6 +358,10 @@ export async function deleteBlogAction(id: number) {
       details: `Removed blog article: ${blogTitle}`,
     });
 
+    if (deletedSlug) {
+      revalidatePath(`/${deletedSlug}`);
+      updateTag(`blog-${deletedSlug}`);
+    }
     revalidatePath('/blogs');
     revalidatePath('/admin/blogs');
     updateTag('blogs');
@@ -370,6 +394,7 @@ export async function toggleBlogPublicationAction(id: number, isPublished: boole
     updateTag('blogs');
     if (previousEntry.slug) {
       revalidatePath(`/blogs/${previousEntry.slug}`);
+      revalidatePath(`/${previousEntry.slug}`);
       updateTag(`blog-${previousEntry.slug}`);
     }
     return { success: true };
@@ -419,6 +444,7 @@ export async function duplicateBlogAction(id: number) {
     });
     revalidatePath('/blogs');
     revalidatePath(`/blogs/${slug}`);
+    revalidatePath(`/${slug}`);
     revalidatePath('/admin/blogs');
     updateTag('blogs');
     updateTag(`blog-${slug}`);
@@ -434,12 +460,15 @@ export async function saveBlogSeoAction(blogId: number, seoData: any) {
   await requireAdmin(['admin', 'content_editor', 'seo_manager']);
 
   try {
+    const currentBlog = (await db.select({ slug: blogPosts.slug }).from(blogPosts).where(eq(blogPosts.id, blogId)).limit(1))[0];
+    if (!currentBlog) return { success: false, error: 'Blog not found.' };
     await db.update(blogPosts).set({
       seoSettings: seoData,
       updatedAt: new Date(),
     }).where(eq(blogPosts.id, blogId));
 
     await logAdminActivityAction({ type: 'blogs', action: 'Updated Blog SEO', details: `Updated SEO metadata for blog #${blogId}`, newEntry: { id: blogId } });
+    if (currentBlog.slug) revalidatePath(`/${currentBlog.slug}`);
     revalidatePath('/admin/blogs');
     updateTag('blogs');
     updateTag(`blog-seo-${blogId}`);

@@ -14,6 +14,8 @@ import CustomDatePicker from '@/components/ui/CustomDatePicker';
 import { Save, Upload, ArrowLeft, Sliders, Eye } from 'lucide-react';
 
 import CategoryDropdown from '@/components/admin/CategoryDropdown';
+import BlogFaqEditor from '@/components/admin/BlogFaqEditor';
+import { EMPTY_BLOG_FAQS, normalizeBlogFaqs, validateBlogFaqs } from '@/lib/blogFaq';
 
 function BlogEditorInner() {
   const searchParams = useSearchParams();
@@ -32,6 +34,7 @@ function BlogEditorInner() {
     slug: '',
     excerpt: '',
     content: '',
+    faqs: EMPTY_BLOG_FAQS,
     featuredImage: '',
     category: 'Pilgrimage Guide',
     authorName: 'British Haj Travel Editorial',
@@ -52,6 +55,7 @@ function BlogEditorInner() {
         slug: b.slug || '',
         excerpt: b.excerpt || '',
         content: b.content || '',
+        faqs: normalizeBlogFaqs(b.faqs),
         featuredImage: b.featuredImage || '',
         category: b.category || 'Pilgrimage Guide',
         authorName: b.authorName || 'British Haj Travel Editorial',
@@ -88,6 +92,8 @@ function BlogEditorInner() {
     e.preventDefault();
     if (!form.title.trim()) { notify('Validation', 'Title is required.', 'warning'); return; }
     if (!form.slug.trim()) { notify('Validation', 'Slug is required.', 'warning'); return; }
+    const faqError = validateBlogFaqs(form.faqs);
+    if (faqError) { notify('FAQ Validation', faqError, 'warning'); return; }
     setSaving(true);
     const res = await saveBlogAction({
       id: blogId,
@@ -95,6 +101,7 @@ function BlogEditorInner() {
       slug: form.slug,
       excerpt: form.excerpt || null,
       content: form.content,
+      faqs: form.faqs,
       featuredImage: form.featuredImage || null,
       category: form.category,
       authorName: form.authorName,
@@ -225,6 +232,9 @@ function BlogEditorInner() {
               />
               <p className="text-[10px] text-slate-300 mt-1.5">{form.content.length} characters</p>
             </div>
+
+            {/* Reuse the same visible FAQ component as the CMS page builder. */}
+            <BlogFaqEditor value={form.faqs} onChange={(faqs) => setForm((current) => ({ ...current, faqs }))} />
           </div>
 
           {/* Right Column — Meta */}

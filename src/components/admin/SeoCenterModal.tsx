@@ -913,6 +913,12 @@ export default function SeoCenterModal({
                   <p className="text-xs text-gray-500 m-0 mt-0.5">
                     Manage structured data to help search engines understand page context.
                   </p>
+                  {pageData?.entityType === 'blog' && (
+                    <p className="mt-2 text-xs leading-relaxed text-emerald-800">
+                      FAQs from the Blog FAQs editor generate FAQPage JSON-LD automatically.
+                      They are merged with this custom schema on the published blog, so do not add a second FAQPage here.
+                    </p>
+                  )}
                 </div>
                 <button
                   type="button"

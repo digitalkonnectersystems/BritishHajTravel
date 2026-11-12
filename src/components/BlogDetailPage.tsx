@@ -5,6 +5,12 @@ import BlogSidebarBookingForm from '@/components/BlogSidebarBookingForm';
 import { getPackagesByType } from '@/actions/packageActions';
 import { RICH_TEXT_PROSE_CLASS } from '@/lib/richTextProseClass';
 import { getBlogFeaturedImage } from '@/lib/blogImages';
+import { getSeoIntelligenceSettings } from '@/actions/pageActions';
+import { resolveCanonicalPublicOrigin } from '@/lib/urlResolver';
+import { getBlogCanonicalRoute, toAbsoluteUrl } from '@/lib/seoMetadata';
+import { normalizeBlogFaqs, getVisibleBlogFaqs } from '@/lib/blogFaq';
+import { buildBlogStructuredData, serializeBlogStructuredData } from '@/lib/blogStructuredData';
+import FaqSection from '@/components/FaqSection';
 
 const CATEGORY_COLORS: Record<string, string> = {
   'Pilgrimage Guide': 'bg-emerald-100 text-emerald-700 border-emerald-200',
@@ -24,18 +30,6 @@ function formatDate(d: any) {
 function formatDateShort(d: any) {
   if (!d) return null;
   return new Date(d).toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' });
-}
-
-function toSafeISOString(value: any): string | undefined {
-  if (!value) return undefined;
-
-  const date = value instanceof Date ? value : new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return undefined;
-  }
-
-  return date.toISOString();
 }
 
 export default async function BlogDetailPage({ blog, slug }: { blog: any; slug: string }) {
@@ -59,30 +53,22 @@ export default async function BlogDetailPage({ blog, slug }: { blog: any; slug: 
   const displayDate = formatDate(blog.publishedAt || blog.createdAt);
   const catClass = CATEGORY_COLORS[blog.category ?? ''] ?? 'bg-emerald-100 text-emerald-700 border-emerald-200';
 
-  // JSON-LD Article structured data
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: blog.title,
-    description: blog.excerpt || '',
-    image: getBlogFeaturedImage(blog.featuredImage),
-    author: { '@type': 'Person', name: blog.authorName || 'British Hajj Travel Editorial' },
-    publisher: {
-      '@type': 'Organization',
-      name: 'British Hajj Travel UK',
-      logo: { '@type': 'ImageObject', url: '/img/logo.png' },
-    },
-    datePublished:
-      toSafeISOString(blog.publishedAt) ||
-      toSafeISOString(blog.createdAt),
-
-    dateModified: toSafeISOString(blog.updatedAt),
-    mainEntityOfPage: { '@type': 'WebPage', '@id': `/${slug}` },
-  };
+  const faqSection = normalizeBlogFaqs(blog.faqs);
+  const visibleFaqs = getVisibleBlogFaqs(faqSection);
+  const seoIntelligence = await getSeoIntelligenceSettings();
+  const origin = resolveCanonicalPublicOrigin(seoIntelligence);
+  const pagePath = getBlogCanonicalRoute(blog, slug);
+  const pageUrl = toAbsoluteUrl(pagePath, `/${slug}`, origin);
+  const jsonLd = buildBlogStructuredData({
+    blog,
+    pageUrl,
+    imageUrl: toAbsoluteUrl(getBlogFeaturedImage(blog.featuredImage), '/', origin),
+    logoUrl: toAbsoluteUrl('/img/logo.png', '/', origin),
+  });
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeBlogStructuredData(jsonLd) }} />
 
       {/* ── Hero Banner ── */}
       <div className="relative w-full h-[360px] overflow-hidden">
@@ -145,6 +131,13 @@ export default async function BlogDetailPage({ blog, slug }: { blog: any; slug: 
                 className={`${RICH_TEXT_PROSE_CLASS} bg-white rounded-3xl shadow-sm p-8 md:p-10 overflow-hidden [&_table]:w-full [&_table]:border-collapse [&_table]:my-6 [&_td]:border [&_td]:border-slate-200 [&_td]:px-3 [&_td]:py-2 [&_td]:text-sm [&_th]:border [&_th]:border-slate-200 [&_th]:px-3 [&_th]:py-2 [&_th]:text-sm [&_th]:bg-slate-50 [&_th]:font-bold`}
                 dangerouslySetInnerHTML={{ __html: blog.content || '<p>Content coming soon.</p>' }}
               />
+
+              {/* Render FAQs only when at least one complete Q&A exists. */}
+              {visibleFaqs.length > 0 && (
+                <div className="mt-8 overflow-hidden rounded-3xl bg-white shadow-sm">
+                  <FaqSection data={{ ...faqSection, items: visibleFaqs }} />
+                </div>
+              )}
 
               {/* Tags footer */}
               <div className="mt-8 flex flex-wrap items-center gap-3">

@@ -327,6 +327,8 @@ export const blogPosts = mysqlTable('blog_posts', {
   slug: varchar('slug', { length: 128 }).unique(),
   excerpt: text('excerpt'),
   content: text('content').notNull(),
+  // CMS-page-compatible FAQ section stored separately from hand-edited SEO JSON-LD.
+  faqs: json('faqs').$type<import('@/lib/blogFaq').BlogFaqSection>(),
   featuredImage: text('featured_image'),
   category: varchar('category', { length: 100 }).default('Pilgrimage Guide'),
   authorName: varchar('author_name', { length: 100 }).default('British Hajj Travel Editorial'),

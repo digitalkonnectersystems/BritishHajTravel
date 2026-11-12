@@ -226,17 +226,23 @@ export function buildPackageMetadata(pkg: any, slug?: string): Metadata {
   });
 }
 
-export function buildBlogMetadata(blog: any, slug?: string): Metadata {
+/** Used by both Next metadata and the blog JSON-LD graph. */
+export function getBlogCanonicalRoute(blog: any, slug?: string): string {
   const seo = parseSeoSettings(blog?.seoData ?? blog?.seoSettings);
   const cleanSlug = String(slug || blog?.slug || '').replace(/^\/+/, '');
   const path = `/${cleanSlug}`;
   const legacyBlogPath = `/blogs/${cleanSlug}`;
   const configuredCanonical = String(seo.canonicalUrl || '').trim();
-  // /blogs/[slug] is a permanent redirect in this project, so never emit that
-  // redirect URL as canonical for a root-level blog detail page.
+  // /blogs/[slug] permanently redirects to the root-level blog URL.
   const canonicalSource = configuredCanonical === legacyBlogPath || configuredCanonical.endsWith(legacyBlogPath)
     ? path
     : configuredCanonical;
+  return toCanonicalUrl(canonicalSource, path);
+}
+
+export function buildBlogMetadata(blog: any, slug?: string): Metadata {
+  const seo = parseSeoSettings(blog?.seoData ?? blog?.seoSettings);
+  const cleanSlug = String(slug || blog?.slug || '').replace(/^\/+/, '');
   const title = buildTitle(blog?.title || 'Travel Guide', seo.metaTitle);
   const description = buildDescription(
     seo.metaDescription,
@@ -246,7 +252,7 @@ export function buildBlogMetadata(blog: any, slug?: string): Metadata {
   return metadataFromParts({
     title,
     description,
-    canonical: toCanonicalUrl(canonicalSource, path),
+    canonical: getBlogCanonicalRoute(blog, cleanSlug),
     image: seo.ogImageUrl || getBlogFeaturedImage(blog?.featuredImage),
     imageAlt: seo.ogCardAlt || seo.heroAlt || blog?.title,
     keywords: seo.metaKeywords || seo.keywords,
