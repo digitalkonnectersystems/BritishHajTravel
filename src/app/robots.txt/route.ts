@@ -7,6 +7,13 @@ export const revalidate = 0;
 export async function GET(request: NextRequest) {
   try {
     const seoSettings = await getSeoIntelligenceSettings();
+    console.info('[ROBOTS SEO DIAGNOSTIC]', {
+      hostname: request.nextUrl.hostname,
+      requestHost: request.headers.get('host'),
+      siteEnvironment: seoSettings?.siteEnvironment,
+      siteIndexingEnabled: seoSettings?.siteIndexingEnabled,
+      isProductionHost: isProductionSiteHost(request.nextUrl.hostname),
+    });
     // Do not depend on the database's selected SEO environment alone. Staging and
     // production may share settings, so a production setting must never expose
     // the staging hostname to crawlers.
