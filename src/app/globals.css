@@ -2942,7 +2942,7 @@ select {
 }
 
 .page-header-leadtxt {
-  @apply text-sm md:text-[1.2rem] opacity-90 max-w-6xl mx-auto font-light leading-relaxed text-white/90;
+  @apply text-[14px] md:text-base opacity-90 max-w-6xl mx-auto font-light leading-relaxed text-white/90;
 }
 
 .saudi-visa-banner-title {
@@ -3861,7 +3861,7 @@ hr {
   }
 
   body:has(#bht-public-header) .page-header-leadtxt {
-    font-size: clamp(.85rem, 1.5vw, 1rem);
+    font-size: 1rem;
     line-height: 1.5;
   }
 
@@ -3988,7 +3988,7 @@ hr {
   }
 
   body:has(#bht-public-header) .page-header-leadtxt {
-    font-size: .875rem;
+    font-size: 14px;
     line-height: 1.45;
   }
 
