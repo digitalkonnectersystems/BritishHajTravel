@@ -1417,7 +1417,6 @@ function PageBuilderContent() {
       defaultData = {
         image: '',
         alt: '',
-        width: 180,
       };
     } else if (type === 'Featured Travel Experiences') {
       // Store the default copy in the section JSON, rather than hard-coding it on the frontend.
@@ -5150,17 +5149,6 @@ function PageBuilderContent() {
                                         value={sec.data?.alt || ''}
                                         onChange={(e) => updateSectionData(sec.id, 'alt', e.target.value)}
                                         placeholder="e.g. BAAN Holding Hajj"
-                                        className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-2.5 py-2 text-xs font-normal text-slate-900"
-                                      />
-                                    </label>
-                                    <label className="block text-[10px] font-bold text-slate-600">
-                                      LOGO WIDTH (PX)
-                                      <input
-                                        type="number"
-                                        min="60"
-                                        max="400"
-                                        value={sec.data?.width ?? 180}
-                                        onChange={(e) => updateSectionData(sec.id, 'width', Number(e.target.value))}
                                         className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-2.5 py-2 text-xs font-normal text-slate-900"
                                       />
                                     </label>

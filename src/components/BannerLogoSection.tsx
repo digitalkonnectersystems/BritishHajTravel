@@ -3,13 +3,6 @@
 export interface BannerLogoData {
   image?: string;
   alt?: string;
-  width?: number | string;
-}
-
-function normalizeWidth(value: BannerLogoData['width']) {
-  const parsed = typeof value === 'number' ? value : Number.parseInt(String(value || ''), 10);
-  if (!Number.isFinite(parsed)) return 180;
-  return Math.min(400, Math.max(60, parsed));
 }
 
 /**
@@ -28,7 +21,6 @@ export default function BannerLogoSection({ data }: { data?: BannerLogoData | nu
       <img
         src={image}
         alt={typeof data?.alt === 'string' ? data.alt : ''}
-        style={{ width: `${normalizeWidth(data?.width)}px` }}
         className="mx-auto h-auto max-h-[90px] max-w-full object-contain"
       />
     </div>
