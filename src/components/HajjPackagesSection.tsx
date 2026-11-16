@@ -247,7 +247,7 @@ export default function HajjPackagesSection({
                 );
                 const quadPrice = Array.isArray(cd.packagePrices) ? cd.packagePrices.find((item: any) => /quad/i.test(item.packageType || item.type || "")) : null;
                 const price = isTbcPrice(pkg.startingPrice, quadPrice?.priceStatus)
-                  ? "TBC"
+                  ? "Coming Soon"
                   : pkg.startingPrice
                     ? Number(pkg.startingPrice).toLocaleString("en-CA", {
                       minimumFractionDigits: 0,

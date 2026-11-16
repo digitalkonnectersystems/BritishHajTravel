@@ -220,7 +220,7 @@ export default function UmrahPackagesPageClient({ initialPageData, packages = []
               const heroImage = card.thumbnail || card.heroImage || "https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=1170&auto=format&fit=crop";
               const title = card.title || "Umrah Package 2026";
               const rawPrice = (card.startingPrice || card.price || "12,995").toString();
-              const price = rawPrice.toLowerCase() === "tbc" ? "TBC" : `${currencySettings.symbol} ${rawPrice.replace(/^(?:£|CAD|GBP|USD|EUR|\$)\s*/i, "").trim()}`;
+              const price = rawPrice.toLowerCase() === "tbc" ? "Coming Soon" : `${currencySettings.symbol} ${rawPrice.replace(/^(?:£|CAD|GBP|USD|EUR|\$)\s*/i, "").trim()}`;
 
               const makkahHotel = card.detailPageData?.makkahHotel || card.makkahHotel || { name: "5 Star Hotel", location: "Near Haram", image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=300&q=80", badge: "Breakfast", nights: "5 Nights" };
               const madinahHotel = card.detailPageData?.madinahHotel || card.madinahHotel || { name: "5 Star Hotel", location: "Near Masjid", image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=300&q=80", badge: "Breakfast", nights: "5 Nights" };

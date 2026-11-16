@@ -75,7 +75,7 @@ export default function PackageDetailPageClient({
         infants: parseInt(infantsCount, 10),
         startDate: selectedDate,
         totalPrice: estimatedTotalFormatted ? `${currencyCode} ${estimatedTotalFormatted}` :
-          (isTbcPrice(minPriceItem.price, minPriceItem.priceStatus) ? 'TBC' : String(pkg?.startingPrice ?? pkg?.price ?? "")),
+          (isTbcPrice(minPriceItem.price, minPriceItem.priceStatus) ? 'Coming Soon' : String(pkg?.startingPrice ?? pkg?.price ?? "")),
         sourceFormName: isDestination ? 'Destination Form' : pkg?.type === 'hajj' ? 'Hajj Package Booking Form' : 'Umrah Package Booking Form',
       });
 
@@ -190,7 +190,7 @@ export default function PackageDetailPageClient({
   const departure = detailData.departure || cardData.departure || pkg.departure || "UK";
   const destination = detailData.destination || cardData.destination || pkg.destination || "SAUDIA";
 
-  const minFormattedPrice = isTbcPrice(minPriceItem.price, minPriceItem.priceStatus) ? "TBC" : minPriceItem.price.toLocaleString("en-CA", {
+  const minFormattedPrice = isTbcPrice(minPriceItem.price, minPriceItem.priceStatus) ? "Coming Soon" : minPriceItem.price.toLocaleString("en-CA", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   });
@@ -478,7 +478,7 @@ export default function PackageDetailPageClient({
               {exclusiveBadge}
             </span>
             <div className="text-3xl font-black text-white font-serif">
-              {currencyCode}{price}
+              {price === "Coming Soon" ? "" : currencyCode}{price}
             </div>
             <span className="text-[10px] font-medium text-white/90 uppercase tracking-wide block mt-1">
               {priceSubtext}
@@ -889,7 +889,7 @@ export default function PackageDetailPageClient({
                       >
                         {packagePrices.map((item, idx) => (
                           <option key={idx} value={item.packageType} className="bg-white text-ink py-1">
-                            {isTbcPrice(item.price, item.priceStatus) ? 'TBC' : `${currencyCode} ${item.price.toLocaleString('en-GB')}`} - {item.packageType}
+                            {isTbcPrice(item.price, item.priceStatus) ? 'Coming Soon' : `${currencyCode} ${item.price.toLocaleString('en-GB')}`} - {item.packageType}
                           </option>
                         ))}
                       </select>

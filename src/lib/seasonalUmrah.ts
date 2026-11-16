@@ -82,7 +82,7 @@ export const seasonalUmrahPages: Record<'march' | 'august', SeasonalUmrahPageDat
         makkahNights: '5 nights',
         madinahNights: '5 nights',
         board: 'BB',
-        roomStatus: 'TBC',
+        roomStatus: 'Coming Soon',
         facilities: emptyInclusions,
       },
     ],

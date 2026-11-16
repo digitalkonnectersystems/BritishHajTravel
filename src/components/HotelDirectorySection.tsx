@@ -64,7 +64,7 @@ export default function HotelDirectorySection({
               {/* Right-side price/actions stay beside the description at desktop widths. */}
               <div className="flex min-w-0 flex-col items-center justify-center gap-5 border-t border-[#e5ebf4] bg-white px-5 py-6 text-center sm:flex-row sm:justify-between md:col-span-2 md:px-7 lg:col-span-1 lg:my-8 lg:flex-col lg:justify-around lg:gap-6 lg:border-l lg:border-t-0 lg:px-5 lg:py-0">
                 <div>
-                  <p className="text-2xl font-extrabold leading-tight text-primary">{hotel.priceLabel || 'TBC'}</p>
+                  <p className="text-2xl font-extrabold leading-tight text-primary">{String(hotel.priceLabel || '').trim().toLowerCase() === 'tbc' || !hotel.priceLabel ? 'Coming Soon' : hotel.priceLabel}</p>
                   <p className="mt-3 text-sm font-medium text-ink-soft">{hotel.pricePeriod || 'per Night'}</p>
                 </div>
                 {/^(https?:\/\/)/i.test(hotel.websiteUrl) && (

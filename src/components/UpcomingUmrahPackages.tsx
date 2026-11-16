@@ -167,7 +167,7 @@ export default function UpcomingUmrahPackages({
               const packagePrices = Array.isArray(cd.packagePrices) ? cd.packagePrices : [];
               const quadPrice = packagePrices.find((item: any) => /quad/i.test(item.packageType || item.type || ""));
               const price = (quadPrice?.priceStatus === "tbc" || String(pkg.startingPrice || "").toLowerCase() === "tbc")
-                ? "TBC"
+                ? "Coming Soon"
                 : pkg.startingPrice
                   ? Number(pkg.startingPrice).toLocaleString("en-CA", {
                     minimumFractionDigits: 0,
@@ -231,7 +231,7 @@ export default function UpcomingUmrahPackages({
                       className={`${isGold ? "text-white" : "text-red"
                         } flex items-center gap-2 mb-4 text-lg font-black`}
                     >
-                      {price === "TBC" ? "" : currencySettings.symbol} {price}{" "}
+                      {price === "Coming Soon" ? "" : currencySettings.symbol} {price}{" "}
                       <span
                         className={`text-sm font-medium ${isGold ? "text-white/80" : "text-ink-soft"
                           }`}

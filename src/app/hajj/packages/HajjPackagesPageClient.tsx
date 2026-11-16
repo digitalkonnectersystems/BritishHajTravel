@@ -78,7 +78,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
               const title = card.title || cd.packageTitle || "Hajj Package 2027";
               const rawPrice = String(card.startingPrice ?? card.price ?? cd.price ?? "").trim();
               const quadPrice = Array.isArray(cd.packagePrices) ? cd.packagePrices.find((p: any) => /quad/i.test(p.packageType || p.type || "")) : null;
-              const price = isTbcPrice(rawPrice, quadPrice?.priceStatus) ? "TBC" : rawPrice ? `${currencySettings.symbol} ${Number.isFinite(Number(rawPrice.replace(/[,£$A-Z\s]/g, ""))) ? Number(rawPrice.replace(/[,£$A-Z\s]/g, "")).toLocaleString(currencySettings.locale) : rawPrice}` : "";
+              const price = isTbcPrice(rawPrice, quadPrice?.priceStatus) ? "Coming Soon" : rawPrice ? `${currencySettings.symbol} ${Number.isFinite(Number(rawPrice.replace(/[,£$A-Z\s]/g, ""))) ? Number(rawPrice.replace(/[,£$A-Z\s]/g, "")).toLocaleString(currencySettings.locale) : rawPrice}` : "";
               const priceSubtext = cd.priceSubtext || card.priceSubtext || "";
               const operatorName = cd.operatorName || card.operatorName || "";
               const operatorRating = cd.operatorRating || card.operatorRating || "";

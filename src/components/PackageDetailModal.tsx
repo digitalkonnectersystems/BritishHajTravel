@@ -146,7 +146,7 @@ export default function PackageDetailModal({ isOpen, onClose, pkg }: PackageDeta
   const departure = detailData.departure || cardData.departure || pkg.departure || "UK";
   const destination = detailData.destination || cardData.destination || pkg.destination || "SAUDIA";
 
-  const minFormattedPrice = isTbcPrice(minPriceItem.price, minPriceItem.priceStatus) ? "TBC" : minPriceItem.price.toLocaleString("en-CA", {
+  const minFormattedPrice = isTbcPrice(minPriceItem.price, minPriceItem.priceStatus) ? "Coming Soon" : minPriceItem.price.toLocaleString("en-CA", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   });
@@ -221,7 +221,7 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
 
   const handleBookingSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const formattedPriceStr = estimatedTotalFormatted ? `${currencyCode} ${estimatedTotalFormatted}` : `${currencyCode} ${price}`;
+    const formattedPriceStr = estimatedTotalFormatted ? `${currencyCode} ${estimatedTotalFormatted}` : price === 'Coming Soon' ? price : `${currencyCode} ${price}`;
     const msg = `Hi British Hajj Travel! I want to book: ${title} (${formattedPriceStr}). Departure: ${departure}, Date: ${selectedDate || "Flexible"}, Package Type: ${effectivePackageType || "Standard"}.`;
     window.open(`https://wa.me/19056248344?text=${encodeURIComponent(msg)}`, "_blank");
   };
@@ -275,7 +275,7 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
               {exclusiveBadge}
             </span>
             <div className="text-3xl font-black text-white font-serif">
-              {currencyCode}{price}
+              {price === "Coming Soon" ? "" : currencyCode}{price}
             </div>
             <span className="text-[10px] font-medium text-emerald-200 uppercase tracking-wide block mt-1">
               {priceSubtext}

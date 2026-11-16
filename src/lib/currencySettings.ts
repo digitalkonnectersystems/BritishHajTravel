@@ -18,7 +18,7 @@ export function normalizeCurrency(input: unknown): CurrencySettings {
 export function formatConfiguredPrice(value: unknown, currency: CurrencySettings = DEFAULT_CURRENCY): string {
   const stringValue = String(value ?? '').trim();
   if (!stringValue) return '';
-  if (/^(tbc|on request|price on request)$/i.test(stringValue)) return stringValue.toUpperCase() === 'TBC' ? 'TBC' : stringValue;
+  if (/^(tbc|on request|price on request)$/i.test(stringValue)) return stringValue.toUpperCase() === 'TBC' ? 'Coming Soon' : stringValue;
   const numberValue = Number(stringValue.replace(/[^0-9.-]/g, ''));
   if (!Number.isFinite(numberValue)) return stringValue;
   return `${currency.symbol} ${numberValue.toLocaleString(currency.locale, { maximumFractionDigits: 2 })}`;

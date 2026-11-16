@@ -51,7 +51,7 @@ export default function PackageDetailBlocksSection({ data }: { data: any }) {
         {Array.isArray(prices) && prices.length > 0 ? <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {prices.map((entry: any, i: number) => <div key={i} className="bg-slate-50 rounded-lg p-4">
             <p className="text-sm">{entry.packageType || entry.type || 'Package'}</p>
-            <p className="font-bold text-xl">{isTbcPrice(entry.price, entry.priceStatus) ? 'TBC' : formatPrice(entry.price)}</p>
+            <p className="font-bold text-xl">{isTbcPrice(entry.price, entry.priceStatus) ? 'Coming Soon' : formatPrice(entry.price)}</p>
           </div>)}
         </div> : <p className="font-bold">{formatPrice(pkg.startingPrice) || 'Price on request'}</p>}
       </div>}

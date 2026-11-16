@@ -62,7 +62,7 @@ export default function AvailableSeatsSection({ data }: { data?: AvailableSeatsD
                 <p>▣ <span className="ml-1 !text-sm">{card.baggage || "Baggage allowance"}</span></p>
               </div>
               <div className="mt-4 flex items-center justify-between gap-3">
-                <span className="rounded-lg bg-[#fff1f5] px-3 py-3 text-xs font-bold text-red">{card.price ? card.price.replace(/^(?:£|CAD|GBP|USD|EUR|\$)\s*/i, `${currency.symbol} `) : "TBC / Person"}</span>
+                <span className="rounded-lg bg-[#fff1f5] px-3 py-3 text-xs font-bold text-red">{card.price ? (/\btbc\b/i.test(card.price) ? card.price.replace(/^(?:£|CAD|GBP|USD|EUR|\$)\s*/i, '').replace(/\btbc\b/gi, 'Coming Soon') : card.price.replace(/^(?:£|CAD|GBP|USD|EUR|\$)\s*/i, `${currency.symbol} `)) : "Coming Soon / Person"}</span>
                 <a href={card.bookingUrl || "/contact"} className="rounded-sm border border-red px-4 py-2 text-xs font-bold text-red transition hover:bg-red hover:text-white">{card.bookingLabel || "Book Now"} →</a>
               </div>
             </article>

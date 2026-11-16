@@ -183,7 +183,7 @@ export default function PackageBookingModal({
 
         startDate: selectedDate,
 
-        totalPrice: selectedPriceIsTbc ? "TBC" : estimatedTotalFormatted ? `${currencyCode} ${estimatedTotalFormatted}` : String(pkg?.startingPrice ?? pkg?.price ?? "7,499"),
+        totalPrice: selectedPriceIsTbc ? "Coming Soon" : estimatedTotalFormatted ? `${currencyCode} ${estimatedTotalFormatted}` : String(pkg?.startingPrice ?? pkg?.price ?? "7,499"),
         sourceFormName: pkg?.type === 'hajj' ? 'Hajj Package Booking Form' : 'Umrah Package Booking Form',
       });
 
@@ -581,7 +581,7 @@ export default function PackageBookingModal({
                     >
                       {packagePrices.map((item, idx) => (
                         <option key={idx} value={item.packageType} className="bg-white text-ink">
-                          {item.priceStatus === "tbc" ? "TBC" : `${currencyCode} ${item.price.toLocaleString("en-GB")}`} - {item.packageType}
+                          {item.priceStatus === "tbc" ? "Coming Soon" : `${currencyCode} ${item.price.toLocaleString("en-GB")}`} - {item.packageType}
                         </option>
                       ))}
                     </select>
@@ -612,7 +612,7 @@ export default function PackageBookingModal({
                 </span>
 
                 <span className="text-xl font-black text-primary font-serif">
-                  {selectedPriceIsTbc ? "TBC" : estimatedTotalFormatted ? `${currencyCode} ${estimatedTotalFormatted}` : "—"}
+                  {selectedPriceIsTbc ? "Coming Soon" : estimatedTotalFormatted ? `${currencyCode} ${estimatedTotalFormatted}` : "—"}
                 </span>
 
               </div>
