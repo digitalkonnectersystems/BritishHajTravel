@@ -328,7 +328,7 @@ export default function Header({ initialNavItems = DEFAULT_NAV_ITEMS, initialIde
         aria-label="Close navigation menu"
         tabIndex={menuActive ? 0 : -1}
         onClick={closeMenu}
-        className={`fixed inset-0 z-[999] bg-black/50 backdrop-blur-sm transition-opacity duration-300 xl:hidden ${
+        className={`fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 xl:hidden ${
           menuActive ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         }`}
       />
