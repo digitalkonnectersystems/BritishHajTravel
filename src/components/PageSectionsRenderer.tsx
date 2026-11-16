@@ -68,6 +68,8 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
       {sections.map((sec: any, idx: number) => {
         if (!sec || !sec.type) return null;
         if (sec.hidden === true || sec.visible === false) return null;
+        // This section is consumed by PageBanner and intentionally has no body output.
+        if (sec.type === 'Banner Logo') return null;
         // Legacy custom-builder data is intentionally not rendered after removal.
         if (sec.type === 'Custom Layout Builder') return null;
         if (['Stats Grid', 'Intro', 'Image+Text', 'Intro (Text + Image)', 'Why Choose Us', 'Services Grid', 'Accreditations Bar', 'Badges Cards'].includes(sec.type)) {

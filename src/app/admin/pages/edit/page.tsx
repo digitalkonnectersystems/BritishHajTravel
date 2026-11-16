@@ -390,6 +390,8 @@ const SECTION_CATALOG: SectionCategory[] = [
 
       { type: 'Banner 4 Grids', description: 'Reusable responsive icon and title cards. Editable items, order and positioning; works on any CMS page.', pages: ['Any Page', 'Homepage', 'Hajj Packages', 'Umrah Packages'] },
 
+      { type: 'Banner Logo', description: 'Upload a page-specific logo and display it inside this page\'s shared hero banner.', pages: ['Any Page'] },
+
       { type: 'Umrah Enquiry 2026-27 Form', description: 'Reusable nine-field Umrah enquiry section with separate admin/customer email templates.', pages: ['Any Page', 'Umrah Packages', 'Homepage'] },
 
       { type: 'Hajj 2027 Registration Form', description: 'Reusable 10-field Hajj enquiry form with global form fields and separate admin/customer email templates. Place and reorder on any CMS page.', pages: ['Any Page', 'Hajj Packages', 'Homepage'] },
@@ -1411,7 +1413,13 @@ function PageBuilderContent() {
 
 
 
-    if (type === 'Featured Travel Experiences') {
+    if (type === 'Banner Logo') {
+      defaultData = {
+        image: '',
+        alt: '',
+        width: 180,
+      };
+    } else if (type === 'Featured Travel Experiences') {
       // Store the default copy in the section JSON, rather than hard-coding it on the frontend.
       defaultData = JSON.parse(JSON.stringify(DEFAULT_FEATURED_TRAVEL_SECTION));
     } else if (type === 'Makkah Hotels Directory' || type === 'Madinah Hotels Directory') {
@@ -5119,7 +5127,49 @@ function PageBuilderContent() {
 
                             {/* Universal Section Header Block (Eyebrow, Heading, Description) - Hidden for Blog sections */}
 
-                            {sec.type !== 'Latest Blogs Grid' && sec.type !== 'Blog Posts Carousel' && sec.type !== 'Testimonials' && sec.type !== 'Hajj Services Grid' && sec.type !== 'Elegant Text Content' && sec.type !== 'Pilgrimage Offers & Quick Links' && sec.type !== 'Text Block (Rich Text)' && sec.type !== 'Packages Content (Rich Text)' && sec.type !== 'Plan Your Own Package Form' && sec.type !== 'Flight Enquiry Form' && sec.type !== 'Hajj 2027 Registration Form' && sec.type !== 'YOSR Al Mashaer Hajj Form' && sec.type !== 'Umrah Enquiry 2026-27 Form' && !['Package Detail Blocks', 'Package Flight Details', 'Package Hotel Details', 'Package Occupancy Prices', 'Package Inclusions', 'Package Detail Gallery'].includes(sec.type) && (
+                            {sec.type === 'Banner Logo' && (
+                              <div className="rounded-xl border border-slate-200 bg-white p-4">
+                                <div className="mb-3">
+                                  <h4 className="m-0 text-sm font-extrabold text-primary">Banner Logo</h4>
+                                  <p className="mt-1 mb-0 text-xs text-slate-500">This image appears in a highlighted card on the right side of this page&apos;s hero banner. It does not affect other pages.</p>
+                                </div>
+                                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                  <div>
+                                    <label className="mb-1 block text-[10px] font-bold text-slate-600">LOGO IMAGE</label>
+                                    <ImageUploadWidget
+                                      value={sec.data?.image || ''}
+                                      onChange={(url) => updateSectionData(sec.id, 'image', url)}
+                                      subfolder="banners"
+                                    />
+                                  </div>
+                                  <div className="flex flex-col gap-3">
+                                    <label className="block text-[10px] font-bold text-slate-600">
+                                      ALT TEXT
+                                      <input
+                                        type="text"
+                                        value={sec.data?.alt || ''}
+                                        onChange={(e) => updateSectionData(sec.id, 'alt', e.target.value)}
+                                        placeholder="e.g. BAAN Holding Hajj"
+                                        className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-2.5 py-2 text-xs font-normal text-slate-900"
+                                      />
+                                    </label>
+                                    <label className="block text-[10px] font-bold text-slate-600">
+                                      LOGO WIDTH (PX)
+                                      <input
+                                        type="number"
+                                        min="60"
+                                        max="400"
+                                        value={sec.data?.width ?? 180}
+                                        onChange={(e) => updateSectionData(sec.id, 'width', Number(e.target.value))}
+                                        className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-2.5 py-2 text-xs font-normal text-slate-900"
+                                      />
+                                    </label>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
+                            {sec.type !== 'Banner Logo' && sec.type !== 'Latest Blogs Grid' && sec.type !== 'Blog Posts Carousel' && sec.type !== 'Testimonials' && sec.type !== 'Hajj Services Grid' && sec.type !== 'Elegant Text Content' && sec.type !== 'Pilgrimage Offers & Quick Links' && sec.type !== 'Text Block (Rich Text)' && sec.type !== 'Packages Content (Rich Text)' && sec.type !== 'Plan Your Own Package Form' && sec.type !== 'Flight Enquiry Form' && sec.type !== 'Hajj 2027 Registration Form' && sec.type !== 'YOSR Al Mashaer Hajj Form' && sec.type !== 'Umrah Enquiry 2026-27 Form' && !['Package Detail Blocks', 'Package Flight Details', 'Package Hotel Details', 'Package Occupancy Prices', 'Package Inclusions', 'Package Detail Gallery'].includes(sec.type) && (
 
                               <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 flex flex-col gap-2">
 

@@ -106,6 +106,9 @@ export default async function DynamicPage({
 
   const sectionContext = await loadCmsSectionContext(sections);
   const isGalleryPage = sections.some((sec: any) => sec?.type === 'Gallery');
+  const bannerLogoSection = sections.find((sec: any) =>
+    sec?.type === 'Banner Logo' && sec.hidden !== true && sec.visible !== false
+  );
   if (slugPath === '/about-umrah') {
     return <AboutPageClient initialPageData={page} sectionContext={sectionContext} />;
   }
@@ -141,6 +144,7 @@ export default async function DynamicPage({
         position={page.bannerPosition || undefined}
         size={page.bannerSize || undefined}
         heroSettings={page.seoSettings}
+        logo={bannerLogoSection?.data}
       />
 
       {sections.length > 0 ? (

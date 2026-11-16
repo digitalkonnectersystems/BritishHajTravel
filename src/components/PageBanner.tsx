@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import BannerLogoSection, { type BannerLogoData } from '@/components/BannerLogoSection';
 
 interface PageBannerProps {
   title: string;
@@ -14,6 +15,7 @@ interface PageBannerProps {
   heroSettings?: unknown;
   fallbackBgImage?: string;
   localOnly?: boolean;
+  logo?: BannerLogoData | null;
 }
 
 interface PageBannerFeature {
@@ -44,6 +46,7 @@ export default function PageBanner({
   heroSettings,
   fallbackBgImage,
   localOnly = false,
+  logo,
 }: PageBannerProps) {
   const hasUsableBg = bgImage && bgImage.trim() !== '' && ((!localOnly && variant !== 'saudiVisa') || bgImage.startsWith('/images_BHT/') || bgImage.startsWith('/img/'));
   const activeBg = hasUsableBg
@@ -51,6 +54,7 @@ export default function PageBanner({
     : fallbackBgImage || (variant === 'saudiVisa' ? SAUDI_VISA_BANNER_BG : DEFAULT_BANNER_BG);
   const activePos = position || 'center center';
   const activeSize = size || 'cover';
+  const hasBannerLogo = typeof logo?.image === 'string' && logo.image.trim() !== '';
 
   const cleanBg = activeBg.replace(/"/g, "'");
   const isInnerBanner = true;
@@ -84,8 +88,8 @@ export default function PageBanner({
         ? 'min-h-[155px] sm:min-h-[200px] min-[1025px]:h-[200px] xl:h-[250px] flex items-center py-5 sm:py-4 xl:py-4'
         : 'text-center py-20 !px-5 h-[420px] max-h-[420px] flex flex-col items-center justify-center'}`}
     >
-      <div className={`w-full z-10 mx-auto ${isInnerBanner ? 'max-w-[1400px] px-5' : ''}`}>
-        <div className={`saudi-visa-banner-copy`}>
+      <div className={`relative z-10 mx-auto w-full ${isInnerBanner ? 'max-w-[1400px] px-5' : ''}`}>
+        <div className={`saudi-visa-banner-copy ${hasBannerLogo ? 'max-w-4xl md:pr-6' : ''}`}>
           <h1
             className={isInnerBanner ? 'page-header-title' : 'page-header-title'}
             dangerouslySetInnerHTML={{ __html: title }}
@@ -117,6 +121,7 @@ export default function PageBanner({
             </div>
           )}
         </div>
+        <BannerLogoSection data={logo} />
       </div>
     </section>
   );
