@@ -7,16 +7,21 @@ import type { NextRequest } from 'next/server';
  * Admin session verification is performed by the protected server-side code.
  */
 export function proxy(request: NextRequest) {
-  // Canonicalize the public host before any path redirects. This preserves
-  // paths and query parameters and leaves the staging host untouched.
-  if (request.nextUrl.hostname.toLowerCase() === 'britishhajtravel.com') {
+  const { pathname } = request.nextUrl;
+
+  // Machine SEO endpoints should be served directly without redirect loops or auth barriers.
+  if (pathname === '/robots.txt' || pathname === '/sitemap.xml' || pathname === '/llms.txt') {
+    return NextResponse.next();
+  }
+
+  // Canonicalize to non-www for Google Search Console consistency (www -> non-www).
+  const host = (request.headers.get('host') || request.nextUrl.hostname || '').toLowerCase().replace(/:\d+$/, '');
+  if (host === 'www.britishhajtravel.com' || request.nextUrl.hostname.toLowerCase() === 'www.britishhajtravel.com') {
     const destination = request.nextUrl.clone();
-    destination.hostname = 'www.britishhajtravel.com';
+    destination.hostname = 'britishhajtravel.com';
     destination.protocol = 'https:';
     return NextResponse.redirect(destination, 308);
   }
-
-  const { pathname } = request.nextUrl;
   const normalizedPath = pathname.replace(/\/+$/, '') || '/';
 
   if (normalizedPath === '/airlines') {

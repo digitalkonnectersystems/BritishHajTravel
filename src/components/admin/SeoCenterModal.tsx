@@ -156,7 +156,7 @@ export default function SeoCenterModal({
       try {
         const siteSettings = await getSeoIntelligenceSettings();
         configuredOrigin = siteSettings?.siteEnvironment === 'production'
-          ? 'https://www.britishhajtravel.com'
+          ? 'https://britishhajtravel.com'
           : 'https://new.britishhajtravel.com';
       } catch (error) {
         console.warn('Could not load SEO environment; defaulting preview to staging.', error);
