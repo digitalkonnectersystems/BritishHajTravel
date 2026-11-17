@@ -5,7 +5,7 @@
  */
 
 export const STAGING_SITE_ORIGIN = 'https://new.britishhajtravel.com';
-export const PRODUCTION_SITE_ORIGIN = 'https://britishhajtravel.com';
+export const PRODUCTION_SITE_ORIGIN = 'https://www.britishhajtravel.com';
 export type SiteEnvironment = 'staging' | 'production';
 
 /** Never expose the staging hostname when production settings share the same DB. */
@@ -112,6 +112,5 @@ export function deriveSeoUrls(canonicalOrigin: string | null) {
     websiteUrl: `${cleanOrigin}/`,
     robotsUrl: `${cleanOrigin}/robots.txt`,
     sitemapUrl: `${cleanOrigin}/sitemap.xml`,
-    llmsUrl: `${cleanOrigin}/llms.txt`,
   };
 }

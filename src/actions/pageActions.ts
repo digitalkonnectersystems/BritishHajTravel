@@ -1930,11 +1930,6 @@ export async function getDefaultSeoIntelligence() {
     googleAnalyticsEnabled: true,
     sitemapLastGenerated: null,
     sitemapTotalUrls: 0,
-    aiSearchCrawlersEnabled: true,
-    cohereAiCrawlerEnabled: true,
-    aiTrainingCrawlersEnabled: false,
-    llmsLastGenerated: null,
-    llmsTotalUrls: 0,
   };
 }
 
@@ -1987,7 +1982,7 @@ export async function saveSeoIntelligenceSettingsAction(settings: any) {
       ...settings,
       siteEnvironment,
       canonicalSiteUrl: siteEnvironment === 'production'
-        ? 'https://britishhajtravel.com'
+        ? 'https://www.britishhajtravel.com'
         : 'https://new.britishhajtravel.com',
     };
     const value = JSON.stringify(valueObject);
@@ -2002,14 +1997,13 @@ export async function saveSeoIntelligenceSettingsAction(settings: any) {
     await logAdminActivityAction({
       type: 'settings',
       action: 'Updated SEO Intelligence',
-      details: 'Updated site indexing, Google Search Console, Google Analytics, AI crawler access policies, and Sitemap configurations.',
+      details: 'Updated site indexing, Google Search Console, Google Analytics, and Sitemap configurations.',
     });
 
     updateTag('seo-intelligence');
     revalidatePath('/', 'layout');
     revalidatePath('/sitemap.xml');
     revalidatePath('/robots.txt');
-    revalidatePath('/llms.txt');
 
     return { success: true };
   } catch (err: any) {

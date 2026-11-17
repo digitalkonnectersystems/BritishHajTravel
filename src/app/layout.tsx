@@ -75,11 +75,13 @@ export async function generateMetadata(): Promise<Metadata> {
     getSeoIntelligenceSettings(),
   ]);
   const faviconUrl = identity?.favicon || "/img/favicon.png";
-  const canonicalOrigin = resolveCanonicalPublicOrigin(seoSettings) || 'https://britishhajtravel.com';
-  const isIndexingEnabled = getSiteEnvironment(seoSettings) === 'production' && (seoSettings?.siteIndexingEnabled ?? true);
+  // SEO settings may be shared by the live and staging deployments. The actual
+  // request host must be production before metadata can become indexable.
+  const requestHost = (await headers()).get('host');
+  const isIndexingEnabled = isProductionSiteHost(requestHost) && getSiteEnvironment(seoSettings) === 'production' && (seoSettings?.siteIndexingEnabled ?? true);
 
   return {
-    metadataBase: new URL(canonicalOrigin),
+    metadataBase: new URL(resolveCanonicalPublicOrigin(seoSettings)),
     title: identity?.siteName || "British Haj Travel UK",
     description: identity?.tagline || "",
     icons: {
@@ -87,7 +89,7 @@ export async function generateMetadata(): Promise<Metadata> {
       shortcut: faviconUrl,
       apple: faviconUrl,
     },
-    robots: !isIndexingEnabled ? { index: false, follow: false } : { index: true, follow: true },
+    robots: !isIndexingEnabled ? { index: false, follow: false } : undefined,
     verification: seoSettings?.googleSearchConsoleCode ? {
       google: seoSettings.googleSearchConsoleCode,
     } : undefined,

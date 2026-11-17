@@ -31,20 +31,8 @@ function normalizeImageUrl(imgUrl: string, baseUrl: string): string {
   return `${cleanBase}${cleanPath}`;
 }
 
-function normalizeBaseUrl(url: string): string {
-  if (!url) return 'https://britishhajtravel.com';
-  let clean = url.trim().replace(/\/+$/, '');
-  // Enforce non-www for britishhajtravel.com as required by Google Search Console property
-  clean = clean.replace(/^https?:\/\/www\.britishhajtravel\.com/i, 'https://britishhajtravel.com');
-  if (clean.startsWith('http://britishhajtravel.com')) {
-    clean = clean.replace('http://britishhajtravel.com', 'https://britishhajtravel.com');
-  }
-  return clean;
-}
-
 export async function generateSitemapXml(baseUrl: string): Promise<string> {
-  const normalizedBase = normalizeBaseUrl(baseUrl);
-  const items = await gatherAllSitemapItems(normalizedBase);
+  const items = await gatherAllSitemapItems(baseUrl);
   
   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
   xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n`;
@@ -74,7 +62,6 @@ export async function generateSitemapXml(baseUrl: string): Promise<string> {
 }
 
 export async function gatherAllSitemapItems(baseUrl: string): Promise<SitemapItem[]> {
-  const cleanBase = normalizeBaseUrl(baseUrl);
   let configs: any[] = [];
   try {
     configs = await db.select().from(sitemapConfigs);
@@ -99,40 +86,6 @@ export async function gatherAllSitemapItems(baseUrl: string): Promise<SitemapIte
   }
 
   const items: SitemapItem[] = [];
-
-  // Core public static routes guaranteed on the site
-  const coreStaticRoutes = [
-    { path: '/', priority: '1.0', changefreq: 'weekly' },
-    { path: '/about', priority: '0.8', changefreq: 'monthly' },
-    { path: '/hajj', priority: '0.9', changefreq: 'weekly' },
-    { path: '/hajj-packages', priority: '0.9', changefreq: 'weekly' },
-    { path: '/umrah', priority: '0.9', changefreq: 'weekly' },
-    { path: '/saudi-visa', priority: '0.8', changefreq: 'monthly' },
-    { path: '/visa-processing', priority: '0.8', changefreq: 'monthly' },
-    { path: '/hotels', priority: '0.8', changefreq: 'weekly' },
-    { path: '/flights', priority: '0.8', changefreq: 'weekly' },
-    { path: '/blogs', priority: '0.8', changefreq: 'weekly' },
-    { path: '/destinations', priority: '0.8', changefreq: 'monthly' },
-    { path: '/contact', priority: '0.7', changefreq: 'monthly' },
-    { path: '/august-umrah-packages-2026', priority: '0.8', changefreq: 'weekly' },
-    { path: '/december-umrah-packages-2026', priority: '0.8', changefreq: 'weekly' },
-    { path: '/march-umrah-packages-2026', priority: '0.8', changefreq: 'weekly' },
-    { path: '/october-umrah-packages-2026', priority: '0.8', changefreq: 'weekly' },
-    { path: '/deluxe-hajj-2027', priority: '0.9', changefreq: 'weekly' },
-    { path: '/economy-hajj-2027', priority: '0.9', changefreq: 'weekly' },
-    { path: '/nusuk-umrah-guide', priority: '0.8', changefreq: 'monthly' },
-    { path: '/ramadan-umrah-2027', priority: '0.9', changefreq: 'weekly' },
-  ];
-
-  const nowIsoDate = new Date().toISOString().split('T')[0];
-  for (const r of coreStaticRoutes) {
-    items.push({
-      loc: `${cleanBase}${r.path === '/' ? '/' : r.path}`,
-      lastmod: nowIsoDate,
-      changefreq: r.changefreq,
-      priority: r.priority,
-    });
-  }
 
   // Helper to parse seoSettings JSON
   const parseSeoSettings = (jsonStr: any) => {
@@ -332,15 +285,11 @@ export async function gatherAllSitemapItems(baseUrl: string): Promise<SitemapIte
   // A single canonical path must appear only once, even if multiple data sources include it.
   const unique = new Map<string, SitemapItem>();
   for (const item of items) {
-    try {
-      const url = new URL(item.loc, cleanBase);
-      const normalizedPath = url.pathname === '/' ? '/' : url.pathname.replace(/\/+$/, '');
-      const key = normalizedPath.toLowerCase();
-      const loc = `${cleanBase}${normalizedPath === '/' ? '/' : normalizedPath}`;
-      unique.set(key, { ...item, loc });
-    } catch {
-      // Ignore malformed URL
-    }
+    const url = new URL(item.loc, baseUrl);
+    const normalizedPath = url.pathname === '/' ? '/' : url.pathname.replace(/\/+$/, '');
+    const key = normalizedPath.toLowerCase();
+    const loc = `${baseUrl.replace(/\/+$/, '')}${normalizedPath === '/' ? '/' : normalizedPath}`;
+    if (!unique.has(key)) unique.set(key, { ...item, loc });
   }
   return [...unique.values()];
 }

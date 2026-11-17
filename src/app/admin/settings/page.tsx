@@ -78,7 +78,6 @@ import {
   ShieldCheck,
   ShieldAlert,
   Sparkles,
-  Bot,
   AlertCircle,
   CheckCircle2,
 } from 'lucide-react';
@@ -246,41 +245,18 @@ export default function AdminSettingsPage() {
     googleAnalyticsEnabled: true,
     sitemapLastGenerated: null,
     sitemapTotalUrls: 0,
-    aiSearchCrawlersEnabled: true,
-    cohereAiCrawlerEnabled: true,
-    aiTrainingCrawlersEnabled: false,
-    llmsLastGenerated: null,
-    llmsTotalUrls: 0,
   });
   const activeSeoOrigin = seoData.siteEnvironment === 'production'
-    ? 'https://britishhajtravel.com'
+    ? 'https://www.britishhajtravel.com'
     : 'https://new.britishhajtravel.com';
   const seoIndexingActive = seoData.siteEnvironment === 'production' && Boolean(seoData.siteIndexingEnabled ?? true);
   const [seoSaveMsg, setSeoSaveMsg] = useState<string | null>(null);
   const [savingSeo, setSavingSeo] = useState(false);
-
-  // 300s Refresh Cooldown Timers & 24h Auto-Refresh Scheduler
-  const [sitemapCooldown, setSitemapCooldown] = useState(0);
-  const [robotsCooldown, setRobotsCooldown] = useState(0);
-  const [llmsCooldown, setLlmsCooldown] = useState(0);
-  const [autoRefreshCountdown, setAutoRefreshCountdown] = useState<string>('24h');
-
   const [sitemapLoading, setSitemapLoading] = useState(false);
   const [sitemapActionMsg, setSitemapActionMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [sitemapStats, setSitemapStats] = useState<{ totalUrls: number; sizeKb: string; lastGenerated: string | null }>({
     totalUrls: 0,
     sizeKb: '0',
-    lastGenerated: null,
-  });
-
-  const [robotsLoading, setRobotsLoading] = useState(false);
-  const [robotsActionMsg, setRobotsActionMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-
-  const [llmsLoading, setLlmsLoading] = useState(false);
-  const [llmsActionMsg, setLlmsActionMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-  const [llmsStats, setLlmsStats] = useState<{ eligibleUrls: number; format: string; lastGenerated: string | null }>({
-    eligibleUrls: 480,
-    format: 'Markdown',
     lastGenerated: null,
   });
 
@@ -748,22 +724,12 @@ export default function AdminSettingsPage() {
           ...prev,
           ...data,
           siteIndexingEnabled: data.siteIndexingEnabled !== undefined ? Boolean(data.siteIndexingEnabled) : (prev.siteIndexingEnabled ?? true),
-          aiSearchCrawlersEnabled: data.aiSearchCrawlersEnabled !== undefined ? Boolean(data.aiSearchCrawlersEnabled) : (prev.aiSearchCrawlersEnabled ?? true),
-          cohereAiCrawlerEnabled: data.cohereAiCrawlerEnabled !== undefined ? Boolean(data.cohereAiCrawlerEnabled) : (prev.cohereAiCrawlerEnabled ?? true),
-          aiTrainingCrawlersEnabled: data.aiTrainingCrawlersEnabled !== undefined ? Boolean(data.aiTrainingCrawlersEnabled) : (prev.aiTrainingCrawlersEnabled ?? false),
         }));
         if (data.sitemapTotalUrls || data.sitemapLastGenerated) {
           setSitemapStats({
             totalUrls: data.sitemapTotalUrls || 0,
             sizeKb: data.sitemapSizeKb || '0',
             lastGenerated: data.sitemapLastGenerated || null,
-          });
-        }
-        if (data.llmsTotalUrls || data.llmsLastGenerated) {
-          setLlmsStats({
-            eligibleUrls: data.llmsTotalUrls || data.sitemapTotalUrls || 480,
-            format: 'Markdown',
-            lastGenerated: data.llmsLastGenerated || null,
           });
         }
       }
@@ -798,91 +764,6 @@ export default function AdminSettingsPage() {
     });
   }, []);
 
-  // 24-Hour Auto-Refresh Background Execution for Sitemap, Robots, and LLMs
-  const executeAutoRefresh24h = async () => {
-    try {
-      const res = await fetch('/api/seo/auto-refresh', { method: 'POST' });
-      const data = await res.json();
-      if (data.success) {
-        const now = Date.now();
-        localStorage.setItem('bht_seo_last_auto_refresh', now.toString());
-        const nowStr = new Date().toLocaleString('en-CA', {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: true,
-        });
-
-        if (data.entities?.sitemap) {
-          setSitemapStats({
-            totalUrls: data.entities.sitemap.totalUrls,
-            sizeKb: data.entities.sitemap.sizeKb,
-            lastGenerated: nowStr,
-          });
-        }
-        if (data.entities?.llms) {
-          setLlmsStats({
-            eligibleUrls: data.entities.llms.eligibleUrls,
-            format: 'Markdown',
-            lastGenerated: nowStr,
-          });
-        }
-
-        setSeoData((prev: any) => ({
-          ...prev,
-          sitemapLastGenerated: nowStr,
-          sitemapTotalUrls: data.entities?.sitemap?.totalUrls || prev.sitemapTotalUrls,
-          sitemapSizeKb: data.entities?.sitemap?.sizeKb || prev.sitemapSizeKb,
-          robotsLastGenerated: nowStr,
-          llmsLastGenerated: nowStr,
-          llmsTotalUrls: data.entities?.llms?.eligibleUrls || prev.llmsTotalUrls,
-          lastAutoRefreshAt: nowStr,
-        }));
-      }
-    } catch (err) {
-      console.warn('Auto-refresh 24h background task warning:', err);
-    }
-  };
-
-  // Synchronize 300s cooldown timers and 24-hour auto-refresh scheduler
-  useEffect(() => {
-    const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
-
-    const updateTimers = () => {
-      const now = Date.now();
-      const sUntil = Number(localStorage.getItem('bht_sitemap_refresh_until') || '0');
-      const rUntil = Number(localStorage.getItem('bht_robots_refresh_until') || '0');
-      const lUntil = Number(localStorage.getItem('bht_llms_refresh_until') || '0');
-
-      setSitemapCooldown(sUntil > now ? Math.ceil((sUntil - now) / 1000) : 0);
-      setRobotsCooldown(rUntil > now ? Math.ceil((rUntil - now) / 1000) : 0);
-      setLlmsCooldown(lUntil > now ? Math.ceil((lUntil - now) / 1000) : 0);
-
-      // 24-Hour Auto-Refresh Countdown & Auto-Trigger
-      let lastAuto = Number(localStorage.getItem('bht_seo_last_auto_refresh') || '0');
-      if (!lastAuto) {
-        lastAuto = now;
-        localStorage.setItem('bht_seo_last_auto_refresh', now.toString());
-      }
-
-      const elapsed = now - lastAuto;
-      if (elapsed >= TWENTY_FOUR_HOURS_MS) {
-        executeAutoRefresh24h();
-      } else {
-        const remainingMs = TWENTY_FOUR_HOURS_MS - elapsed;
-        const hours = Math.floor(remainingMs / (1000 * 60 * 60));
-        const mins = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60));
-        setAutoRefreshCountdown(hours > 0 ? `${hours}h ${mins}m` : `${mins}m`);
-      }
-    };
-
-    updateTimers();
-    const interval = setInterval(updateTimers, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
   const handleSaveSeoSettings = async () => {
     setSavingSeo(true);
     setSeoSaveMsg(null);
@@ -908,7 +789,6 @@ export default function AdminSettingsPage() {
   };
 
   const handleRefreshSitemap = async () => {
-    if (sitemapLoading || sitemapCooldown > 0) return;
     setSitemapLoading(true);
     setSitemapActionMsg(null);
     try {
@@ -936,10 +816,7 @@ export default function AdminSettingsPage() {
           sitemapLastGenerated: nowStr,
         };
         setSeoData(updatedSeo);
-
-        const cooldownUntil = Date.now() + 300 * 1000;
-        localStorage.setItem('bht_sitemap_refresh_until', cooldownUntil.toString());
-        setSitemapCooldown(300);
+        await saveSeoIntelligenceSettingsAction(updatedSeo);
 
         setSitemapActionMsg({
           type: 'success',
@@ -951,16 +828,11 @@ export default function AdminSettingsPage() {
           'success'
         );
       } else {
-        if (data.cooldownRemaining) {
-          const cooldownUntil = Date.now() + data.cooldownRemaining * 1000;
-          localStorage.setItem('bht_sitemap_refresh_until', cooldownUntil.toString());
-          setSitemapCooldown(data.cooldownRemaining);
-        }
         setSitemapActionMsg({
           type: 'error',
-          text: data.error || 'Failed to generate sitemap',
+          text: `Failed to generate sitemap: ${data.error || 'Unknown error'}`,
         });
-        showNotification('Sitemap Notice', data.error || 'Failed to generate sitemap', 'error');
+        showNotification('Sitemap Error', data.error || 'Failed to generate sitemap', 'error');
       }
     } catch (err: any) {
       setSitemapActionMsg({
@@ -971,109 +843,6 @@ export default function AdminSettingsPage() {
     } finally {
       setSitemapLoading(false);
       setTimeout(() => setSitemapActionMsg(null), 5000);
-    }
-  };
-
-  const handleRefreshRobots = async () => {
-    if (robotsLoading || robotsCooldown > 0) return;
-    setRobotsLoading(true);
-    setRobotsActionMsg(null);
-    try {
-      const res = await fetch('/api/robots/refresh', { method: 'POST' });
-      const data = await res.json();
-      if (data.success) {
-        const cooldownUntil = Date.now() + 300 * 1000;
-        localStorage.setItem('bht_robots_refresh_until', cooldownUntil.toString());
-        setRobotsCooldown(300);
-        setRobotsActionMsg({
-          type: 'success',
-          text: 'Robots.txt directives refreshed and cache revalidated.',
-        });
-        showNotification('Robots.txt Refreshed', 'Robots.txt directives refreshed and cache revalidated.', 'success');
-      } else {
-        if (data.cooldownRemaining) {
-          const cooldownUntil = Date.now() + data.cooldownRemaining * 1000;
-          localStorage.setItem('bht_robots_refresh_until', cooldownUntil.toString());
-          setRobotsCooldown(data.cooldownRemaining);
-        }
-        setRobotsActionMsg({
-          type: 'error',
-          text: data.error || 'Failed to refresh robots.txt',
-        });
-        showNotification('Robots Notice', data.error || 'Failed to refresh robots.txt', 'error');
-      }
-    } catch (err: any) {
-      setRobotsActionMsg({
-        type: 'error',
-        text: `Error refreshing robots: ${err.message}`,
-      });
-    } finally {
-      setRobotsLoading(false);
-      setTimeout(() => setRobotsActionMsg(null), 5000);
-    }
-  };
-
-  const handleRefreshLlms = async () => {
-    if (llmsLoading || llmsCooldown > 0) return;
-    setLlmsLoading(true);
-    setLlmsActionMsg(null);
-    try {
-      const res = await fetch('/api/llms/generate', { method: 'POST' });
-      const data = await res.json();
-      if (data.success) {
-        const nowStr = new Date().toLocaleString('en-CA', {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: true,
-        });
-        setLlmsStats({
-          eligibleUrls: data.urlCount,
-          format: 'Markdown',
-          lastGenerated: nowStr,
-        });
-        const updatedSeo = {
-          ...seoData,
-          llmsTotalUrls: data.urlCount,
-          llmsLastGenerated: nowStr,
-        };
-        setSeoData(updatedSeo);
-
-        const cooldownUntil = Date.now() + 300 * 1000;
-        localStorage.setItem('bht_llms_refresh_until', cooldownUntil.toString());
-        setLlmsCooldown(300);
-
-        setLlmsActionMsg({
-          type: 'success',
-          text: `llms.txt manifest successfully updated with ${data.urlCount} eligible URLs.`,
-        });
-        showNotification(
-          'llms.txt Refreshed',
-          `AI content discovery directory updated with ${data.urlCount} URLs.`,
-          'success'
-        );
-      } else {
-        if (data.cooldownRemaining) {
-          const cooldownUntil = Date.now() + data.cooldownRemaining * 1000;
-          localStorage.setItem('bht_llms_refresh_until', cooldownUntil.toString());
-          setLlmsCooldown(data.cooldownRemaining);
-        }
-        setLlmsActionMsg({
-          type: 'error',
-          text: data.error || 'Failed to generate llms.txt',
-        });
-        showNotification('LLMs Notice', data.error || 'Failed to generate llms.txt', 'error');
-      }
-    } catch (err: any) {
-      setLlmsActionMsg({
-        type: 'error',
-        text: `Error refreshing llms.txt: ${err.message}`,
-      });
-    } finally {
-      setLlmsLoading(false);
-      setTimeout(() => setLlmsActionMsg(null), 5000);
     }
   };
 
@@ -2679,496 +2448,240 @@ export default function AdminSettingsPage() {
                 </div>
               </div>
 
-              {/* Technical Crawling & AI Discovery Cards (2 Columns: Left = Sitemap + LLMs, Right = Robots) */}
+              {/* 2x2 Grid of Management Cards */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
 
-                {/* Left Column: XML Sitemap & LLMs.txt stacked to match Robots.txt height */}
-                <div className="flex flex-col gap-6">
-                  {/* 1. XML Sitemap Management Card */}
-                  <div className="p-6 rounded-3xl bg-slate-50/80 border border-slate-200 flex flex-col gap-5 shadow-2xs">
-                    <div className="flex items-center justify-between border-b border-slate-200/80 pb-3">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">
-                          🗺️
-                        </div>
-                        <div>
-                          <h3 className="text-sm font-bold text-slate-900 m-0">XML Sitemap</h3>
-                          <p className="text-[11px] text-gray-500 m-0">Dynamically generated XML sitemap for search engine crawlers.</p>
-                        </div>
+                {/* 1. XML Sitemap Management Card */}
+                <div className="p-6 rounded-3xl bg-slate-50/80 border border-slate-200 flex flex-col gap-5 shadow-2xs">
+                  <div className="flex items-center justify-between border-b border-slate-200/80 pb-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">
+                        🗺️
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span
-                          className="hidden sm:inline-flex items-center gap-1.5 text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/90 px-2.5 py-1 rounded-full shadow-2xs"
-                          title={`Auto-refreshes daily every 24 hours. Next run in ~${autoRefreshCountdown}`}
-                        >
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                          24h Auto
-                        </span>
-                        <button
-                          type="button"
-                          disabled={sitemapLoading || sitemapCooldown > 0}
-                          onClick={handleRefreshSitemap}
-                          className="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-100 transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs disabled:opacity-50 disabled:cursor-not-allowed"
-                          title={sitemapCooldown > 0 ? `Available in ${sitemapCooldown}s` : `Regenerate XML Sitemap (Auto-refreshes every 24h • next in ${autoRefreshCountdown})`}
-                        >
-                          <RefreshCw className={`w-3 h-3 ${sitemapLoading ? 'animate-spin text-primary' : ''}`} />
-                          {sitemapLoading ? 'Regenerating...' : sitemapCooldown > 0 ? `Refresh in ${sitemapCooldown}s` : 'Refresh Sitemap'}
-                        </button>
+                      <div>
+                        <h3 className="text-sm font-bold text-slate-900 m-0">XML Sitemap</h3>
+                        <p className="text-[11px] text-gray-500 m-0">Dynamically generated XML sitemap for search engine crawlers.</p>
                       </div>
                     </div>
-
-                    {sitemapActionMsg && (
-                      <div className={`p-3 rounded-xl text-xs font-semibold flex items-center gap-2 ${sitemapActionMsg.type === 'success'
-                        ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
-                        : 'bg-red-50 border border-red-200 text-red-800'
-                        }`}>
-                        {sitemapActionMsg.type === 'success' ? <CheckCircle2 className="w-4 h-4 shrink-0" /> : <AlertCircle className="w-4 h-4 shrink-0" />}
-                        <span>{sitemapActionMsg.text}</span>
-                      </div>
-                    )}
-
-                    {/* Sitemap Live URL Display & Actions */}
-                    <div>
-                      <div className="flex items-center justify-between mb-1.5">
-                        <label className="text-xs font-bold text-slate-700">Canonical Sitemap Endpoint</label>
-                        <span className="text-[10px] font-bold text-ink-lt uppercase">
-                          Type: XML URLSET
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="flex-1 bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-mono font-semibold text-slate-800 select-all truncate">
-                          {`${activeSeoOrigin}/sitemap.xml`}
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const url = `${activeSeoOrigin}/sitemap.xml`;
-                            navigator.clipboard.writeText(url);
-                            showNotification('Copied', 'Sitemap URL copied to clipboard!', 'success');
-                          }}
-                          className="p-2.5 bg-white border border-slate-300 hover:bg-slate-100 rounded-xl text-slate-700 text-xs font-bold transition-colors flex items-center justify-center cursor-pointer shadow-2xs"
-                          title="Copy Sitemap URL"
-                        >
-                          <Copy className="w-4 h-4" />
-                        </button>
-                        <a
-                          href="/sitemap.xml"
-                          target="_blank"
-                          rel="noreferrer"
-                          className="p-2.5 bg-primary hover:bg-white hover:text-primary text-white rounded-xl text-xs font-bold transition-colors flex items-center justify-center cursor-pointer shadow-2xs"
-                          title="Open Sitemap in new tab"
-                        >
-                          <ExternalLink className="w-4 h-4" />
-                        </a>
-                      </div>
-                    </div>
-
-                    {/* Sitemap Metrics Bar */}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-1">
-                      <div className="p-3 bg-white rounded-xl border border-slate-200/80">
-                        <span className="text-[10px] font-bold text-ink-lt uppercase block mb-0.5">ELIGIBLE URLS</span>
-                        <span className="text-sm font-extrabold text-slate-900 font-mono">
-                          {sitemapStats.totalUrls > 0 ? sitemapStats.totalUrls : (seoData.sitemapTotalUrls || '480')}
-                        </span>
-                      </div>
-                      <div className="p-3 bg-white rounded-xl border border-slate-200/80">
-                        <span className="text-[10px] font-bold text-ink-lt uppercase block mb-0.5">SITEMAP SIZE</span>
-                        <span className="text-sm font-extrabold text-slate-900 font-mono">
-                          {sitemapStats.sizeKb && sitemapStats.sizeKb !== '0' ? `${sitemapStats.sizeKb} KB` : (seoData.sitemapSizeKb ? `${seoData.sitemapSizeKb} KB` : '138.9 KB')}
-                        </span>
-                      </div>
-                      <div className="p-3 bg-white rounded-xl border border-slate-200/80 col-span-2 sm:col-span-1">
-                        <span className="text-[10px] font-bold text-ink-lt uppercase block mb-0.5">LAST GENERATED</span>
-                        <span className="text-xs font-semibold text-slate-700 block truncate" title={sitemapStats.lastGenerated || seoData.sitemapLastGenerated || 'Dynamic on crawler request'}>
-                          {sitemapStats.lastGenerated || seoData.sitemapLastGenerated || 'Nov 17, 2026, 02:29 p.m.'}
-                        </span>
-                        <span className="text-[9px] font-bold text-emerald-700 flex items-center gap-1 mt-0.5" title={`24h auto-refresh cycle active. Next: in ~${autoRefreshCountdown}`}>
-                          <span className="w-1 h-1 rounded-full bg-emerald-500"></span>
-                          Auto-refreshes every 24h
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* <div className="bg-emerald-50/50 p-3.5 rounded-xl border border-emerald-100 text-[11px] text-slate-600 leading-relaxed">
-                      <span className="font-bold text-emerald-900 block mb-0.5">✓ Automatic Multi-Entity Coverage</span>
-                      Includes published CMS pages, available Umrah &amp; Hajj packages, live visa service offerings, and published blog posts with clean non-www URLs. Automatically excludes drafts and pages marked no-index.
-                    </div> */}
+                    <button
+                      type="button"
+                      disabled={sitemapLoading}
+                      onClick={handleRefreshSitemap}
+                      className="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-100 transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs disabled:opacity-50"
+                      title="Regenerate XML Sitemap"
+                    >
+                      <RefreshCw className={`w-3 h-3 ${sitemapLoading ? 'animate-spin text-primary' : ''}`} />
+                      {sitemapLoading ? 'Regenerating...' : 'Refresh Sitemap'}
+                    </button>
                   </div>
 
-                  {/* 2. LLMs.txt AI Content Discovery & Readability Card (Unified Light UI matching Sitemap & Robots) */}
-                  <div className="p-6 rounded-3xl bg-slate-50/80 border border-slate-200 flex flex-col gap-5 shadow-2xs">
-                    <div className="flex items-center justify-between border-b border-slate-200/80 pb-3">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center font-bold">
-                          <Bot className="w-4 h-4" />
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h3 className="text-sm font-bold text-slate-900 m-0">LLMs.txt Configuration</h3>
-                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
-                              Generated
-                            </span>
-                          </div>
-                          <p className="text-[11px] text-gray-500 m-0">AI-readable website content directory served at /llms.txt.</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span
-                          className="hidden sm:inline-flex items-center gap-1.5 text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/90 px-2.5 py-1 rounded-full shadow-2xs"
-                          title={`Auto-refreshes daily every 24 hours. Next run in ~${autoRefreshCountdown}`}
-                        >
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                          24h Auto
-                        </span>
-                        <button
-                          type="button"
-                          disabled={llmsLoading || llmsCooldown > 0}
-                          onClick={handleRefreshLlms}
-                          className="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-100 transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs disabled:opacity-50 disabled:cursor-not-allowed"
-                          title={llmsCooldown > 0 ? `Available in ${llmsCooldown}s` : `Regenerate llms.txt (Auto-refreshes every 24h • next in ${autoRefreshCountdown})`}
-                        >
-                          <RefreshCw className={`w-3 h-3 ${llmsLoading ? 'animate-spin text-purple-600' : ''}`} />
-                          {llmsLoading ? 'Regenerating...' : llmsCooldown > 0 ? `Refresh in ${llmsCooldown}s` : 'Refresh LLMs'}
-                        </button>
-                      </div>
+                  {sitemapActionMsg && (
+                    <div className={`p-3 rounded-xl text-xs font-semibold flex items-center gap-2 ${sitemapActionMsg.type === 'success'
+                      ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
+                      : 'bg-red-50 border border-red-200 text-red-800'
+                      }`}>
+                      {sitemapActionMsg.type === 'success' ? <CheckCircle2 className="w-4 h-4 shrink-0" /> : <AlertCircle className="w-4 h-4 shrink-0" />}
+                      <span>{sitemapActionMsg.text}</span>
                     </div>
+                  )}
 
-                    {llmsActionMsg && (
-                      <div className={`p-3 rounded-xl text-xs font-semibold flex items-center gap-2 ${llmsActionMsg.type === 'success'
-                        ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
-                        : 'bg-red-50 border border-red-200 text-red-800'
-                        }`}>
-                        {llmsActionMsg.type === 'success' ? <CheckCircle2 className="w-4 h-4 shrink-0" /> : <AlertCircle className="w-4 h-4 shrink-0" />}
-                        <span>{llmsActionMsg.text}</span>
-                      </div>
-                    )}
-
-                    {/* Canonical LLMs Endpoint Display & Actions (Unified with XML Sitemap) */}
-                    <div>
-                      <div className="flex items-center justify-between mb-1.5">
-                        <label className="text-xs font-bold text-slate-700">Canonical LLMs Endpoint</label>
-                        <span className="text-[10px] font-bold text-ink-lt uppercase">
-                          Type: Markdown Manifest
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="flex-1 bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-mono font-semibold text-slate-800 select-all truncate">
-                          {`${activeSeoOrigin}/llms.txt`}
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const url = `${activeSeoOrigin}/llms.txt`;
-                            navigator.clipboard.writeText(url);
-                            showNotification('Copied', 'llms.txt URL copied to clipboard!', 'success');
-                          }}
-                          className="p-2.5 bg-white border border-slate-300 hover:bg-slate-100 rounded-xl text-slate-700 text-xs font-bold transition-colors flex items-center justify-center cursor-pointer shadow-2xs"
-                          title="Copy llms.txt URL"
-                        >
-                          <Copy className="w-4 h-4" />
-                        </button>
-                        <a
-                          href="/llms.txt"
-                          target="_blank"
-                          rel="noreferrer"
-                          className="p-2.5 bg-primary hover:bg-white hover:text-primary text-white rounded-xl text-xs font-bold transition-colors flex items-center justify-center cursor-pointer shadow-2xs"
-                          title="Open llms.txt in new tab"
-                        >
-                          <ExternalLink className="w-4 h-4" />
-                        </a>
-                      </div>
+                  {/* Sitemap Live URL Display & Actions */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-xs font-bold text-slate-700">Canonical Sitemap Endpoint</label>
+                      <span className="text-[10px] font-bold text-ink-lt uppercase">
+                        Type: XML URLSET
+                      </span>
                     </div>
-
-                    {/* LLMs Metrics Bar (Unified 3-box design matching Sitemap) */}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-1">
-                      <div className="p-3 bg-white rounded-xl border border-slate-200/80">
-                        <span className="text-[10px] font-bold text-ink-lt uppercase block mb-0.5">ELIGIBLE URLS</span>
-                        <span className="text-sm font-extrabold text-slate-900 font-mono">
-                          {llmsStats.eligibleUrls || sitemapStats.totalUrls || 480}
-                        </span>
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-mono font-semibold text-slate-800 select-all truncate">
+                        {`${activeSeoOrigin}/sitemap.xml`}
                       </div>
-                      <div className="p-3 bg-white rounded-xl border border-slate-200/80">
-                        <span className="text-[10px] font-bold text-ink-lt uppercase block mb-0.5">OUTPUT FORMAT</span>
-                        <span className="text-sm font-extrabold text-slate-900 font-mono">
-                          Markdown
-                        </span>
-                      </div>
-                      <div className="p-3 bg-white rounded-xl border border-slate-200/80 col-span-2 sm:col-span-1">
-                        <span className="text-[10px] font-bold text-ink-lt uppercase block mb-0.5">LAST GENERATED</span>
-                        <span className="text-xs font-semibold text-slate-700 block truncate" title={llmsStats.lastGenerated || 'Nov 17, 2026'}>
-                          {llmsStats.lastGenerated || 'Nov 17, 2026'}
-                        </span>
-                        <span className="text-[9px] font-bold text-emerald-700 flex items-center gap-1 mt-0.5" title={`24h auto-refresh cycle active. Next: in ~${autoRefreshCountdown}`}>
-                          <span className="w-1 h-1 rounded-full bg-emerald-500"></span>
-                          Auto-refreshes every 24h
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Positioning Notice (AI Readability / Content Discovery, not guaranteed ranking boost) */}
-                    <div className="bg-sky-50/60 p-3.5 rounded-xl border border-sky-100 text-[11px] text-slate-600 leading-relaxed">
-                      <span className="font-bold text-sky-900 block mb-0.5">ℹ️ AI Content Discovery &amp; LLM Readability Notice</span>
-                      Provides an AI-readable Markdown manifest at <code className="text-sky-800 font-bold bg-sky-100/70 px-1 py-0.5 rounded">/llms.txt</code> allowing conversational AI engines (ChatGPT, Claude, Perplexity, Gemini) to parse authoritative brand information, public pilgrimage services, and verified canonical links. Positioned purely for AI readability, fidelity, and discoverability—not as a guaranteed search ranking booster.
-                    </div>
-
-                    {/* Bottom Action Buttons matching Image 5 in Light Theme */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                       <button
                         type="button"
-                        disabled={llmsLoading || llmsCooldown > 0}
-                        onClick={handleRefreshLlms}
-                        className="py-2.5 px-4 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 text-xs font-bold transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-2xs disabled:opacity-50 disabled:cursor-not-allowed"
-                        title={llmsCooldown > 0 ? `Available in ${llmsCooldown}s` : 'Regenerate llms.txt'}
+                        onClick={() => {
+                          const url = `${activeSeoOrigin}/sitemap.xml`;
+                          navigator.clipboard.writeText(url);
+                          showNotification('Copied', 'Sitemap URL copied to clipboard!', 'success');
+                        }}
+                        className="p-2.5 bg-white border border-slate-300 hover:bg-slate-100 rounded-xl text-slate-700 text-xs font-bold transition-colors flex items-center justify-center cursor-pointer shadow-2xs"
+                        title="Copy Sitemap URL"
                       >
-                        <RefreshCw className={`w-3.5 h-3.5 ${llmsLoading ? 'animate-spin text-primary' : 'text-slate-600'}`} />
-                        {llmsLoading ? 'Regenerating...' : llmsCooldown > 0 ? `Regenerate in ${llmsCooldown}s` : 'Regenerate'}
+                        <Copy className="w-4 h-4" />
                       </button>
                       <a
-                        href="/llms.txt"
+                        href="/sitemap.xml"
                         target="_blank"
                         rel="noreferrer"
-                        className="py-2.5 px-4 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 text-xs font-bold transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
+                        className="p-2.5 bg-primary hover:bg-white hover:text-primary text-white rounded-xl text-xs font-bold transition-colors flex items-center justify-center cursor-pointer shadow-2xs"
+                        title="Open Sitemap in new tab"
                       >
-                        <Eye className="w-3.5 h-3.5 text-slate-600" />
-                        Preview
+                        <ExternalLink className="w-4 h-4" />
                       </a>
                     </div>
                   </div>
-                </div>
 
-                {/* Right Column: Robots.txt Directives & Diagnostics Card */}
-                <div className="flex flex-col gap-6">
-                  <div className="p-6 rounded-3xl bg-slate-50/80 border border-slate-200 flex flex-col gap-5 shadow-2xs">
-                    <div className="flex items-center justify-between border-b border-slate-200/80 pb-3">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center font-bold">
-                          🤖
-                        </div>
-                        <div>
-                          <h3 className="text-sm font-bold text-slate-900 m-0">Robots.txt Configuration</h3>
-                          <p className="text-[11px] text-gray-500 m-0">Crawler served at /robots.txt.</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span
-                          className="hidden sm:inline-flex items-center gap-1.5 text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/90 px-2.5 py-1 rounded-full shadow-2xs"
-                          title={`Auto-refreshes daily every 24 hours. Next run in ~${autoRefreshCountdown}`}
-                        >
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                          24h Auto
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const url = `${activeSeoOrigin}/robots.txt`;
-                            navigator.clipboard.writeText(url);
-                            showNotification('Copied', 'robots.txt URL copied to clipboard!', 'success');
-                          }}
-                          className="p-1.5 bg-white border border-slate-300 hover:bg-slate-100 rounded-lg text-slate-700 text-xs font-bold transition-colors cursor-pointer"
-                          title="Copy robots.txt URL"
-                        >
-                          <Copy className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          type="button"
-                          disabled={robotsLoading || robotsCooldown > 0}
-                          onClick={handleRefreshRobots}
-                          className="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-100 transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs disabled:opacity-50 disabled:cursor-not-allowed"
-                          title={robotsCooldown > 0 ? `Available in ${robotsCooldown}s` : `Refresh Robots.txt (Auto-refreshes every 24h • next in ${autoRefreshCountdown})`}
-                        >
-                          <RefreshCw className={`w-3 h-3 ${robotsLoading ? 'animate-spin text-purple-600' : ''}`} />
-                          {robotsLoading ? 'Refreshing...' : robotsCooldown > 0 ? `Refresh in ${robotsCooldown}s` : 'Refresh Robots'}
-                        </button>
-                        <a
-                          href="/robots.txt"
-                          target="_blank"
-                          rel="noreferrer"
-                          className="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-100 transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs"
-                        >
-                          <ExternalLink className="w-3 h-3" /> View robots.txt
-                        </a>
-                      </div>
+                  {/* Sitemap Metrics Bar */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-1">
+                    <div className="p-3 bg-white rounded-xl border border-slate-200/80">
+                      <span className="text-[10px] font-bold text-ink-lt uppercase block mb-0.5">ELIGIBLE URLS</span>
+                      <span className="text-sm font-extrabold text-slate-900 font-mono">
+                        {sitemapStats.totalUrls > 0 ? sitemapStats.totalUrls : (seoData.sitemapTotalUrls || 'Auto-computed')}
+                      </span>
                     </div>
-
-                    {robotsActionMsg && (
-                      <div className={`p-3 rounded-xl text-xs font-semibold flex items-center gap-2 ${robotsActionMsg.type === 'success'
-                        ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
-                        : 'bg-red-50 border border-red-200 text-red-800'
-                        }`}>
-                        {robotsActionMsg.type === 'success' ? <CheckCircle2 className="w-4 h-4 shrink-0" /> : <AlertCircle className="w-4 h-4 shrink-0" />}
-                        <span>{robotsActionMsg.text}</span>
-                      </div>
-                    )}
-
-                    {/* Effective Served Directives */}
-                    <div className="bg-white p-3.5 rounded-xl border border-slate-200 flex flex-col gap-2 font-mono text-[11px] text-slate-800 max-h-56 overflow-y-auto">
-                      <div className="flex items-center justify-between text-ink-lt uppercase text-[10px] font-bold border-b border-slate-100 pb-1">
-                        <span>EFFECTIVE ROBOTS.TXT DIRECTIVES</span>
-                        <span className={seoIndexingActive ? 'text-emerald-700 font-bold' : 'text-red-700 font-bold'}>
-                          {seoIndexingActive ? '● HEALTHY' : '● BLOCKED'}
-                        </span>
-                      </div>
-                      {seoIndexingActive ? (
-                        <div className="space-y-1">
-                          <div className="text-slate-500 font-bold"># Traditional Search Engines</div>
-                          <div>User-agent: Googlebot</div>
-                          <div>User-agent: Bingbot</div>
-                          <div>User-agent: Applebot</div>
-                          <div className="text-emerald-700 font-bold">Allow: /</div>
-                          <div className="text-gray-500">Disallow: /admin/</div>
-                          <div className="text-gray-500">Disallow: /api/</div>
-                          <div className="text-gray-500">Disallow: /letstravel</div>
-
-                          <div className="text-slate-500 font-bold pt-1"># AI Search / Answer Crawlers ({seoData.aiSearchCrawlersEnabled ?? true ? 'Allowed' : 'Blocked'})</div>
-                          <div>User-agent: ChatGPT-User</div>
-                          <div>User-agent: PerplexityBot</div>
-                          <div>User-agent: Claude-Web</div>
-                          <div>User-agent: OAI-SearchBot</div>
-                          <div className={(seoData.aiSearchCrawlersEnabled ?? true) ? 'text-emerald-700 font-bold' : 'text-red-700 font-bold'}>
-                            {(seoData.aiSearchCrawlersEnabled ?? true) ? 'Allow: /' : 'Disallow: /'}
-                          </div>
-
-                          <div className="text-slate-500 font-bold pt-1"># Cohere Audit Token ({seoData.cohereAiCrawlerEnabled ?? true ? 'Allowed' : 'Blocked'})</div>
-                          <div>User-agent: cohere-ai</div>
-                          <div className={(seoData.cohereAiCrawlerEnabled ?? true) ? 'text-emerald-700 font-bold' : 'text-red-700 font-bold'}>
-                            {(seoData.cohereAiCrawlerEnabled ?? true) ? 'Allow: /' : 'Disallow: /'}
-                          </div>
-
-                          <div className="text-slate-500 font-bold pt-1"># AI Training Crawlers ({seoData.aiTrainingCrawlersEnabled ? 'Allowed' : 'Blocked by default'})</div>
-                          <div>User-agent: GPTBot</div>
-                          <div>User-agent: ClaudeBot</div>
-                          <div>User-agent: Bytespider</div>
-                          <div className={seoData.aiTrainingCrawlersEnabled ? 'text-emerald-700 font-bold' : 'text-amber-700 font-bold'}>
-                            {seoData.aiTrainingCrawlersEnabled ? 'Allow: /' : 'Disallow: /'}
-                          </div>
-
-                          {Array.isArray(seoData.additionalDisallowPaths) && seoData.additionalDisallowPaths.map((p: string, pIdx: number) => (
-                            <div key={pIdx} className="text-amber-700">Disallow: {p}</div>
-                          ))}
-                          <div className="text-blue-700 font-bold pt-1">
-                            Sitemap: {`${activeSeoOrigin}/sitemap.xml`}
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="space-y-1 text-red-800 font-bold">
-                          <div>User-agent: *</div>
-                          <div className="text-red-700">Disallow: /</div>
-                          <div className="text-[10px] text-red font-normal"># Search engine indexing disabled by admin</div>
-                        </div>
-                      )}
+                    <div className="p-3 bg-white rounded-xl border border-slate-200/80">
+                      <span className="text-[10px] font-bold text-ink-lt uppercase block mb-0.5">SITEMAP SIZE</span>
+                      <span className="text-sm font-extrabold text-slate-900 font-mono">
+                        {sitemapStats.sizeKb && sitemapStats.sizeKb !== '0' ? `${sitemapStats.sizeKb} KB` : (seoData.sitemapSizeKb ? `${seoData.sitemapSizeKb} KB` : 'Dynamic')}
+                      </span>
                     </div>
-
-                    {/* AI crawler access policy (as in KingTravelNextJS) */}
-                    <div className="p-4 bg-white rounded-2xl border border-slate-200 space-y-3">
-                      <div>
-                        <div className="text-xs font-extrabold text-slate-900">AI crawler access policy</div>
-                        <p className="text-[11px] text-slate-500 mt-0.5 mb-0">AI search access is separate from bulk training access. The Cohere token exists for crawler-audit compatibility.</p>
-                      </div>
-                      <div className="flex items-center justify-between gap-4 p-3 rounded-xl bg-slate-50 border border-slate-200">
-                        <div>
-                          <span className="text-xs font-bold text-slate-900 block">AI Search Crawlers</span>
-                          <span className="text-[11px] text-slate-500">OAI-SearchBot, ChatGPT-User, PerplexityBot, and Claude-Web.</span>
-                        </div>
-                        <Switch
-                          checked={Boolean(seoData.aiSearchCrawlersEnabled ?? true)}
-                          onChange={(checked: boolean) => setSeoData({ ...seoData, aiSearchCrawlersEnabled: checked })}
-                        />
-                      </div>
-                      <div className="flex items-center justify-between gap-4 p-3 rounded-xl bg-slate-50 border border-slate-200">
-                        <div>
-                          <span className="text-xs font-bold text-slate-900 block">Cohere Audit Token</span>
-                          <span className="text-[11px] text-slate-500">Allows the legacy <code>cohere-ai</code> token so SEO audits do not report it as blocked.</span>
-                        </div>
-                        <Switch
-                          checked={Boolean(seoData.cohereAiCrawlerEnabled ?? true)}
-                          onChange={(checked: boolean) => setSeoData({ ...seoData, cohereAiCrawlerEnabled: checked })}
-                        />
-                      </div>
-                      <div className="flex items-center justify-between gap-4 p-3 rounded-xl bg-amber-50 border border-amber-200">
-                        <div>
-                          <span className="text-xs font-bold text-amber-950 block">AI Training Crawlers</span>
-                          <span className="text-[11px] text-amber-800">GPTBot, ClaudeBot, Bytespider, CCBot and related bulk crawlers. Disabled by default.</span>
-                        </div>
-                        <Switch
-                          checked={Boolean(seoData.aiTrainingCrawlersEnabled ?? false)}
-                          onChange={(checked: boolean) => setSeoData({ ...seoData, aiTrainingCrawlersEnabled: checked })}
-                        />
-                      </div>
+                    <div className="p-3 bg-white rounded-xl border border-slate-200/80 col-span-2 sm:col-span-1">
+                      <span className="text-[10px] font-bold text-ink-lt uppercase block mb-0.5">LAST GENERATED</span>
+                      <span className="text-xs font-semibold text-slate-700 block truncate" title={sitemapStats.lastGenerated || seoData.sitemapLastGenerated || 'Dynamic on crawler request'}>
+                        {sitemapStats.lastGenerated || seoData.sitemapLastGenerated || 'On crawler visit'}
+                      </span>
                     </div>
+                  </div>
 
-                    {/* Additional Disallow Routes Controls */}
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">Additional Disallow Paths (Optional)</label>
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="text"
-                          placeholder="e.g. /private/ or /staging-preview"
-                          id="newDisallowPathInput"
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                              e.preventDefault();
-                              const val = (e.currentTarget.value || '').trim();
-                              if (val && val.startsWith('/') && val !== '/') {
-                                const current = seoData.additionalDisallowPaths || [];
-                                if (!current.includes(val)) {
-                                  setSeoData({ ...seoData, additionalDisallowPaths: [...current, val] });
-                                }
-                                e.currentTarget.value = '';
-                              }
-                            }
-                          }}
-                          className="flex-1 p-2 rounded-xl border border-slate-300 bg-white text-xs font-mono font-medium outline-none focus:border-primary"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const input = document.getElementById('newDisallowPathInput') as HTMLInputElement;
-                            if (input) {
-                              const val = (input.value || '').trim();
-                              if (val && val.startsWith('/') && val !== '/') {
-                                const current = seoData.additionalDisallowPaths || [];
-                                if (!current.includes(val)) {
-                                  setSeoData({ ...seoData, additionalDisallowPaths: [...current, val] });
-                                }
-                                input.value = '';
-                              }
-                            }
-                          }}
-                          className="px-3 py-2 bg-slate-200 hover:bg-slate-300 rounded-xl text-xs font-bold text-slate-700 cursor-pointer"
-                        >
-                          Add Path
-                        </button>
-                      </div>
-
-                      {Array.isArray(seoData.additionalDisallowPaths) && seoData.additionalDisallowPaths.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 mt-2">
-                          {seoData.additionalDisallowPaths.map((p: string, pIdx: number) => (
-                            <span key={pIdx} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-xs font-mono font-bold text-slate-700 shadow-2xs">
-                              {p}
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setSeoData({
-                                    ...seoData,
-                                    additionalDisallowPaths: seoData.additionalDisallowPaths.filter((item: string) => item !== p),
-                                  });
-                                }}
-                                className="text-ink-lt hover:text-red cursor-pointer"
-                              >
-                                <X className="w-3 h-3" />
-                              </button>
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
+                  <div className="bg-emerald-50/50 p-3.5 rounded-xl border border-emerald-100 text-[11px] text-slate-600 leading-relaxed">
+                    <span className="font-bold text-emerald-900 block mb-0.5">✓ Automatic Multi-Entity Coverage</span>
+                    Includes published CMS pages, available Umrah &amp; Hajj packages, live visa service offerings, and published blog posts with clean URLs. Automatically excludes drafts and pages marked no-index.
                   </div>
                 </div>
 
-              </div>
+                {/* 2. Robots.txt Directives & Diagnostics Card */}
+                <div className="p-6 rounded-3xl bg-slate-50/80 border border-slate-200 flex flex-col gap-5 shadow-2xs">
+                  <div className="flex items-center justify-between border-b border-slate-200/80 pb-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center font-bold">
+                        🤖
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-bold text-slate-900 m-0">Robots.txt Configuration</h3>
+                        <p className="text-[11px] text-gray-500 m-0">Crawler instructions served at /robots.txt.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const url = `${activeSeoOrigin}/robots.txt`;
+                          navigator.clipboard.writeText(url);
+                          showNotification('Copied', 'robots.txt URL copied to clipboard!', 'success');
+                        }}
+                        className="p-1.5 bg-white border border-slate-300 hover:bg-slate-100 rounded-lg text-slate-700 text-xs font-bold transition-colors cursor-pointer"
+                        title="Copy robots.txt URL"
+                      >
+                        <Copy className="w-3.5 h-3.5" />
+                      </button>
+                      <a
+                        href="/robots.txt"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-100 transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                      >
+                        <ExternalLink className="w-3 h-3" /> View robots.txt
+                      </a>
+                    </div>
+                  </div>
 
-              {/* Integrations Grid (GSC & GA4) */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                  {/* Effective Served Directives */}
+                  <div className="bg-white p-3.5 rounded-xl border border-slate-200 flex flex-col gap-2 font-mono text-[11px] text-slate-800">
+                    <div className="flex items-center justify-between text-ink-lt uppercase text-[10px] font-bold border-b border-slate-100 pb-1">
+                      <span>EFFECTIVE ROBOTS.TXT DIRECTIVES</span>
+                      <span className={seoIndexingActive ? 'text-emerald-700 font-bold' : 'text-red-700 font-bold'}>
+                        {seoIndexingActive ? '● HEALTHY' : '● BLOCKED'}
+                      </span>
+                    </div>
+                    {seoIndexingActive ? (
+                      <div className="space-y-1">
+                        <div>User-agent: *</div>
+                        <div className="text-emerald-700 font-bold">Allow: /</div>
+                        <div className="text-gray-500">Disallow: /admin/</div>
+                        <div className="text-gray-500">Disallow: /api/</div>
+                        {Array.isArray(seoData.additionalDisallowPaths) && seoData.additionalDisallowPaths.map((p: string, pIdx: number) => (
+                          <div key={pIdx} className="text-amber-700">Disallow: {p}</div>
+                        ))}
+                        <div className="text-blue-700 font-bold pt-1">
+                          Sitemap: {`${activeSeoOrigin}/sitemap.xml`}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-1 text-red-800 font-bold">
+                        <div>User-agent: *</div>
+                        <div className="text-red-700">Disallow: /</div>
+                        <div className="text-[10px] text-red font-normal"># Search engine indexing disabled by admin</div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Additional Disallow Routes Controls */}
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Additional Disallow Paths (Optional)</label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        placeholder="e.g. /private/ or /staging-preview"
+                        id="newDisallowPathInput"
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            const val = (e.currentTarget.value || '').trim();
+                            if (val && val.startsWith('/') && val !== '/') {
+                              const current = seoData.additionalDisallowPaths || [];
+                              if (!current.includes(val)) {
+                                setSeoData({ ...seoData, additionalDisallowPaths: [...current, val] });
+                              }
+                              e.currentTarget.value = '';
+                            }
+                          }
+                        }}
+                        className="flex-1 p-2 rounded-xl border border-slate-300 bg-white text-xs font-mono font-medium outline-none focus:border-primary"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const input = document.getElementById('newDisallowPathInput') as HTMLInputElement;
+                          if (input) {
+                            const val = (input.value || '').trim();
+                            if (val && val.startsWith('/') && val !== '/') {
+                              const current = seoData.additionalDisallowPaths || [];
+                              if (!current.includes(val)) {
+                                setSeoData({ ...seoData, additionalDisallowPaths: [...current, val] });
+                              }
+                              input.value = '';
+                            }
+                          }
+                        }}
+                        className="px-3 py-2 bg-slate-200 hover:bg-slate-300 rounded-xl text-xs font-bold text-slate-700 cursor-pointer"
+                      >
+                        Add Path
+                      </button>
+                    </div>
+
+                    {Array.isArray(seoData.additionalDisallowPaths) && seoData.additionalDisallowPaths.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mt-2">
+                        {seoData.additionalDisallowPaths.map((p: string, pIdx: number) => (
+                          <span key={pIdx} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-xs font-mono font-bold text-slate-700 shadow-2xs">
+                            {p}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSeoData({
+                                  ...seoData,
+                                  additionalDisallowPaths: seoData.additionalDisallowPaths.filter((item: string) => item !== p),
+                                });
+                              }}
+                              className="text-ink-lt hover:text-red cursor-pointer"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
 
                 {/* 3. Google Search Console Card */}
                 <div className="p-6 rounded-3xl bg-slate-50/80 border border-slate-200 flex flex-col gap-5 shadow-2xs">
@@ -3312,21 +2825,9 @@ export default function AdminSettingsPage() {
                     </span>
                   </div>
                   <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-700">LLMs.txt AI Manifest</span>
-                    <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
-                      Passed (/llms.txt)
-                    </span>
-                  </div>
-                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-700">AI Crawler Access</span>
-                    <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
-                      Configured
-                    </span>
-                  </div>
-                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-700">Canonical Site URL</span>
                     <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800`}>
-                      {seoData.siteEnvironment === 'production' ? 'Production (non-www)' : 'Staging'}
+                      {seoData.siteEnvironment === 'production' ? 'Production' : 'Staging'}
                     </span>
                   </div>
                   <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex items-center justify-between">
@@ -3342,12 +2843,6 @@ export default function AdminSettingsPage() {
                     </span>
                   </div>
                   <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-700">Daily Auto-Refresh (24h)</span>
-                    <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
-                      Active (~{autoRefreshCountdown})
-                    </span>
-                  </div>
-                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-700">HTTPS Protocol</span>
                     <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
                       Enforced (HTTPS)
@@ -3359,7 +2854,7 @@ export default function AdminSettingsPage() {
                 <div className="p-3.5 bg-blue-50/70 rounded-xl border border-blue-100 text-[11px] text-blue-900 leading-relaxed">
                   {seoIndexingActive ? (
                     <div>
-                      <strong>💡 SEO Foundation Status:</strong> Search engine crawlers can reach public pages, your sitemap is dynamically generated at <code className="font-bold">/sitemap.xml</code> with canonical non-www URLs for Google Search Console, robots.txt directives and AI crawler policies are active, and an AI content directory is published at <code className="font-bold">/llms.txt</code>. Verify ownership in Google Search Console using the HTML verification tag to monitor indexing.
+                      <strong>💡 SEO Foundation Status:</strong> Search engine crawlers can reach public pages, your sitemap is dynamically generated at <code className="font-bold">/sitemap.xml</code>, and robots.txt directives are active. Verify your ownership in Google Search Console to monitor real-time Google indexing metrics.
                     </div>
                   ) : (
                     <div>

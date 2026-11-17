@@ -3,27 +3,25 @@ import { getSeoIntelligenceSettings } from '@/actions/pageActions';
 import { resolveCanonicalPublicOrigin } from '@/lib/urlResolver';
 import { NextResponse } from 'next/server';
 
-export const revalidate = 86400; // 24 hours auto-refresh
+// Revalidate this route according to cache preferences
+export const revalidate = 0; // Environment switches must update sitemap immediately.
 
 export async function GET() {
   try {
     const seoSettings = await getSeoIntelligenceSettings();
-    const canonicalOrigin = resolveCanonicalPublicOrigin(seoSettings) || 'https://britishhajtravel.com';
-    const baseUrl = canonicalOrigin.replace(/\/+$/, '');
+    const canonicalOrigin = resolveCanonicalPublicOrigin(seoSettings);
+    const baseUrl = canonicalOrigin;
     const sitemapXml = await generateSitemapXml(baseUrl);
 
     return new NextResponse(sitemapXml, {
       status: 200,
       headers: {
-        'Content-Type': 'application/xml; charset=utf-8',
-        'Cache-Control': 'public, max-age=86400, s-maxage=86400, stale-while-revalidate=43200',
+        'Content-Type': 'application/xml',
+        'Cache-Control': 'no-store',
       },
     });
   } catch (error) {
     console.error('Error generating sitemap:', error);
-    return new NextResponse('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>', {
-      status: 200,
-      headers: { 'Content-Type': 'application/xml; charset=utf-8' },
-    });
+    return new NextResponse('Error generating sitemap', { status: 500 });
   }
 }

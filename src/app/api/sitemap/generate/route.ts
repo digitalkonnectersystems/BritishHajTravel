@@ -1,65 +1,28 @@
 import { getCurrentSession } from '@/lib/auth';
 import { NextRequest, NextResponse } from 'next/server';
 import { generateSitemapXml } from '@/lib/sitemapGenerator';
-import { getSeoIntelligenceSettings, saveSeoIntelligenceSettingsAction } from '@/actions/pageActions';
+import { getSeoIntelligenceSettings } from '@/actions/pageActions';
 import { resolveCanonicalPublicOrigin } from '@/lib/urlResolver';
 import { db } from '@/db';
 import { sitemapLogs } from '@/db/schema';
-import { revalidatePath } from 'next/cache';
-
-const COOLDOWN_SECONDS = 300;
-let lastGenerationTime = 0;
+import { revalidateTag } from 'next/cache';
 
 export async function POST(req: NextRequest) {
   const session = await getCurrentSession();
-  if (!session || !['super_admin', 'admin', 'seo_manager'].includes(session.role)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  const now = Date.now();
-  const elapsed = (now - lastGenerationTime) / 1000;
-  let isForced = false;
-  try {
-    const body = await req.json().catch(() => ({}));
-    isForced = Boolean(body?.force);
-  } catch {
-    // empty body is fine
-  }
-
-  if (!isForced && elapsed < COOLDOWN_SECONDS) {
-    const remaining = Math.ceil(COOLDOWN_SECONDS - elapsed);
-    return NextResponse.json(
-      {
-        success: false,
-        error: `Cooldown active. Please wait ${remaining}s before refreshing again.`,
-        cooldownRemaining: remaining,
-      },
-      { status: 429 }
-    );
-  }
-
+  if (!session || !['super_admin', 'admin', 'seo_manager'].includes(session.role)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   try {
     const seoSettings = await getSeoIntelligenceSettings();
-    const canonicalOrigin = resolveCanonicalPublicOrigin(seoSettings) || 'https://britishhajtravel.com';
-    const baseUrl = canonicalOrigin.replace(/\/+$/, '');
+    const canonicalOrigin = resolveCanonicalPublicOrigin(seoSettings);
+    const baseUrl = canonicalOrigin || '/';
 
+    // Test generation to get metrics (this doesn't save to file if we rely on dynamic route,
+    // but ensures the code runs and gives us url counts)
     const xml = await generateSitemapXml(baseUrl);
 
     const urlCount = (xml.match(/<url>/g) || []).length;
     const sizeInBytes = new TextEncoder().encode(xml).length;
-    lastGenerationTime = now;
 
-    // Update last generated timestamp in SEO settings
-    try {
-      await saveSeoIntelligenceSettingsAction({
-        ...seoSettings,
-        sitemapLastGenerated: new Date().toISOString(),
-        sitemapTotalUrls: urlCount,
-        sitemapSizeKb: (sizeInBytes / 1024).toFixed(1),
-      });
-    } catch {
-      // Non-blocking
-    }
+    // revalidateTag('sitemap');
 
     try {
       await db.insert(sitemapLogs).values({
@@ -71,19 +34,11 @@ export async function POST(req: NextRequest) {
         },
         triggeredBy: 'admin',
       });
-    } catch {
+    } catch (logErr) {
       // Non-blocking log insert
     }
 
-    revalidatePath('/sitemap.xml');
-
-    return NextResponse.json({
-      success: true,
-      urlCount,
-      sizeInBytes,
-      lastGenerated: new Date().toISOString(),
-      cooldownSeconds: COOLDOWN_SECONDS,
-    });
+    return NextResponse.json({ success: true, urlCount, sizeInBytes });
   } catch (error: any) {
     console.error('Sitemap Generation Error:', error);
 
@@ -96,7 +51,7 @@ export async function POST(req: NextRequest) {
         },
         triggeredBy: 'admin',
       });
-    } catch {}
+    } catch (logErr) { }
 
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
