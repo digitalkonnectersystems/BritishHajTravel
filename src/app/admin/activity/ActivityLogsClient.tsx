@@ -427,8 +427,8 @@ export default function ActivityLogsClient({ initialActivities, initialAnalytics
                           </div>
                         </div>
                       </td>
-                      <td className="py-3.5 px-4 font-sans text-[12px] text-slate-600 max-w-sm">
-                        <div className="truncate">{act.details || '—'}</div>
+                      <td className="py-3 px-2.5 font-sans text-[12px] text-slate-600 max-w-sm">
+                        <div className="truncate line-clamp-3">{act.details || '—'}</div>
                         {(changes.length > 0 || act.previousEntry != null || act.newEntry != null) && (
                           <button
                             type="button"
@@ -440,7 +440,7 @@ export default function ActivityLogsClient({ initialActivities, initialAnalytics
                           </button>
                         )}
                       </td>
-                      <td className="py-3.5 px-4 text-right shrink-0">
+                      <td className="p-2 text-right shrink-0">
                         <div className="font-extrabold text-slate-800">{act.timeAgo || 'Recently'}</div>
                         <div className="text-[10px] text-gray-500">
                           {new Date(act.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}

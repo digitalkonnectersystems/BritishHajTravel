@@ -14,12 +14,9 @@
 *.pem
 *.rar
 *.zip
-/kingtravelcan_html
-*.html
 *.php
 /temp
 /temp_html
-public/uploads/
  
 # debug
 npm-debug.log*
@@ -75,3 +72,6 @@ alter_table.mjs
 *.cjs
 docs/performance
 env.local
+/scripts
+env.local
+/delivery
