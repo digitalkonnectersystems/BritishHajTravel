@@ -7,17 +7,25 @@ export const revalidate = 0;
 export async function GET(request: NextRequest) {
   try {
     const seoSettings = await getSeoIntelligenceSettings();
+    // Hostinger may use 0.0.0.0 as the internal server URL. The Host header
+    // contains the public hostname when accessed behind Hostinger's proxy.
+    const requestHost = request.headers.get('host') || '';
+    const publicHostname = requestHost.trim().toLowerCase().replace(/:\d+$/, '').replace(/\.$/, '');
+    const isProductionHost = isProductionSiteHost(publicHostname);
+
     console.info('[ROBOTS SEO DIAGNOSTIC]', {
-      hostname: request.nextUrl.hostname,
-      requestHost: request.headers.get('host'),
+      diagnosticVersion: 'public-host-v2',
+      internalHostname: request.nextUrl.hostname,
+      requestHost,
+      publicHostname,
       siteEnvironment: seoSettings?.siteEnvironment,
       siteIndexingEnabled: seoSettings?.siteIndexingEnabled,
-      isProductionHost: isProductionSiteHost(request.nextUrl.hostname),
+      isProductionHost,
     });
-    // Do not depend on the database's selected SEO environment alone. Staging and
-    // production may share settings, so a production setting must never expose
-    // the staging hostname to crawlers.
-    const isIndexingEnabled = isProductionSiteHost(request.nextUrl.hostname) && getSiteEnvironment(seoSettings) === 'production' && (seoSettings?.siteIndexingEnabled ?? true);
+    // Staging and unrecognized domains remain non-indexable.
+    const isIndexingEnabled = isProductionHost &&
+      getSiteEnvironment(seoSettings) === 'production' &&
+      seoSettings?.siteIndexingEnabled === true;
     const canonicalOrigin = resolveCanonicalPublicOrigin(seoSettings);
     const seoUrls = deriveSeoUrls(canonicalOrigin);
 
@@ -65,9 +73,9 @@ Disallow: /api/
     });
   } catch (error) {
     console.error('Error generating robots.txt:', error);
-    return new NextResponse('User-agent: *\nDisallow: /\n', {
-      status: 200,
-      headers: { 'Content-Type': 'text/plain' },
+    return new NextResponse('Temporarily unable to generate robots.txt\n', {
+      status: 503,
+      headers: { 'Content-Type': 'text/plain', 'Cache-Control': 'no-store', 'Retry-After': '300' },
     });
   }
 }
