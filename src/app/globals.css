@@ -728,6 +728,40 @@ header {
   align-items: center;
 }
 
+/* Homepage hero CTAs: a stationary light blink without scaling or fading. */
+.bht-hero-cta-pulse {
+  --bht-cta-pulse-color: rgba(204, 0, 0, 0.42);
+  animation: bht-hero-cta-blink 1.8s steps(1, end) infinite;
+  will-change: filter, box-shadow;
+}
+
+.bht-hero-cta-pulse--secondary {
+  --bht-cta-pulse-color: rgba(11, 22, 114, 0.32);
+  animation-delay: -0.9s;
+}
+
+.bht-hero-cta-pulse:hover,
+.bht-hero-cta-pulse:focus-visible {
+  animation-play-state: paused;
+}
+
+@keyframes bht-hero-cta-blink {
+  0%, 42%, 58%, 100% {
+    filter: brightness(1);
+    box-shadow: 0 5px 14px rgba(2, 12, 27, 0.12);
+  }
+  43%, 57% {
+    filter: brightness(1.2);
+    box-shadow: 0 0 0 4px var(--bht-cta-pulse-color), 0 0 24px var(--bht-cta-pulse-color);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bht-hero-cta-pulse {
+    animation: none;
+  }
+}
+
 .badges {
   position: relative;
   height: 100%;

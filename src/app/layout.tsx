@@ -8,7 +8,6 @@ import FloatingShareBar from "@/components/FloatingShareBar";
 import RevealOnScroll from "@/components/RevealOnScroll";
 import FrontendMaintenanceWrapper from "@/components/FrontendMaintenanceWrapper";
 import DisclaimerPopupModal from "@/components/DisclaimerPopupModal";
-import FaviconSync from "@/components/FaviconSync";
 import FontAwesomeStylesheet from "@/components/FontAwesomeStylesheet";
 import Script from "next/script";
 import {
@@ -27,6 +26,7 @@ import { isHiddenInternalLink, removeHiddenNavigation } from "@/lib/publicPageVi
 import "./globals.css";
 import { getCurrencyConfiguration } from "@/lib/currencyService";
 import { CurrencyProvider } from "@/components/CurrencyProvider";
+import { SITE_FAVICON_PATH } from "@/lib/siteFavicon";
 
 // The CMS navigation JSON is dynamically loaded; give it an explicit shape
 // before passing it to the generic visibility filter.
@@ -74,7 +74,6 @@ export async function generateMetadata(): Promise<Metadata> {
     getSiteIdentity(),
     getSeoIntelligenceSettings(),
   ]);
-  const faviconUrl = identity?.favicon || "/img/favicon.png";
   // SEO settings may be shared by the live and staging deployments. The actual
   // request host must be production before metadata can become indexable.
   const requestHost = (await headers()).get('host');
@@ -85,9 +84,9 @@ export async function generateMetadata(): Promise<Metadata> {
     title: identity?.siteName || "British Haj Travel UK",
     description: identity?.tagline || "",
     icons: {
-      icon: faviconUrl,
-      shortcut: faviconUrl,
-      apple: faviconUrl,
+      icon: { url: SITE_FAVICON_PATH, type: "image/png", sizes: "1254x1254" },
+      shortcut: SITE_FAVICON_PATH,
+      apple: { url: SITE_FAVICON_PATH, type: "image/png", sizes: "1254x1254" },
     },
     robots: !isIndexingEnabled ? { index: false, follow: false } : undefined,
     verification: seoSettings?.googleSearchConsoleCode ? {
@@ -138,7 +137,6 @@ export default async function RootLayout({
     servicesLinks: (footerData?.servicesLinks || []).filter((item: any) => !isHiddenInternalLink(item.url, hiddenPaths, publishedVisaPaths)),
     sitemapLinks: (footerData?.sitemapLinks || []).filter((item: any) => !isHiddenInternalLink(item.url, hiddenPaths, publishedVisaPaths)),
   };
-  const faviconUrl = identity?.favicon || "/img/favicon.ico";
   const initialMaintenanceMode = loginAuth?.maintenanceMode ?? false;
   const initialMaintenanceScope = loginAuth?.maintenanceScope === 'selected_pages' ? 'selected_pages' : 'entire_site';
   const initialMaintenancePaths = Array.isArray(loginAuth?.maintenancePaths) ? loginAuth.maintenancePaths : [];
@@ -153,9 +151,6 @@ export default async function RootLayout({
       className={`${marcellus.variable} ${plusJakartaSans.variable} ${poppins.variable} ${jost.variable}`}
     >
       <head>
-        <link rel="icon" href={faviconUrl} />
-        <link rel="shortcut icon" href={faviconUrl} />
-        <link rel="apple-touch-icon" href={faviconUrl} />
         <FontAwesomeStylesheet />
         {/* Google Analytics 4 (GA4) Tracking Script */}
         {isGaActive && (
@@ -182,7 +177,6 @@ export default async function RootLayout({
       </head>
 
       <body suppressHydrationWarning>
-        <FaviconSync faviconUrl={faviconUrl} />
         <CurrencyProvider initial={currencySettings}>
           <FrontendMaintenanceWrapper initialMaintenanceMode={initialMaintenanceMode} initialMaintenanceScope={initialMaintenanceScope} initialMaintenancePaths={initialMaintenancePaths}>
             <Header initialNavItems={liveNavItems} initialIdentity={identity} />

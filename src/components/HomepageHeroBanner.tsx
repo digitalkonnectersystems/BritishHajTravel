@@ -18,8 +18,8 @@ import SubmissionSuccessModal from "@/components/SubmissionSuccessModal";
 import { FORM_SUCCESS_MESSAGE } from "@/lib/formSuccess";
 import { resolveVisibleVisaCards, type PublicVisaPage } from "@/lib/publicPageVisibility";
 import chAccreditation from "@/assets/accreditation-ch.webp";
+import atolAccreditation from "@/assets/accreditation-atol.png";
 import iataAccreditation from "@/assets/accreditation-iata.webp";
-import pilgrimageAccreditation from "@/assets/accreditation-pilgrimage.webp";
 
 type SocialLink = {
   name: string;
@@ -30,8 +30,9 @@ type SocialLink = {
 
 const accreditations = [
   { src: chAccreditation, alt: "Registration badge 04214473" },
+  { src: atolAccreditation, alt: "ATOL protected", enlarged: true },
   { src: iataAccreditation, alt: "IATA badge 96005722" },
-  { src: pilgrimageAccreditation, alt: "Pilgrimage badge 1160" },
+  { src: "/images_BHT/accreditations/nusuk-vertical.png", alt: "Nusuk official platform logo", vertical: true },
 ];
 
 const fallbackSocialIconClass: Record<string, string> = {
@@ -44,6 +45,18 @@ const fallbackSocialIconClass: Record<string, string> = {
   twitter: "fa-x-twitter",
   x: "fa-x-twitter",
   whatsapp: "fa-whatsapp",
+};
+
+const socialBrandColors: Record<string, string> = {
+  facebook: "#1877F2",
+  instagram: "#E4405F",
+  linkedin: "#0A66C2",
+  tiktok: "#000000",
+  youtube: "#FF0000",
+  pinterest: "#E60023",
+  twitter: "#000000",
+  x: "#000000",
+  whatsapp: "#25D366",
 };
 
 
@@ -503,7 +516,7 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                           {heroData.primaryBtnLink && heroData.primaryBtnLabel ? (
                             <Link
                               href={heroData.primaryBtnLink}
-                              className="inline-flex min-h-[48px] sm:min-h-[56px]  max-w-full items-center justify-center rounded-full bg-red px-6 text-center text-sm font-extrabold uppercase tracking-[0.1em] text-white transition hover:translate-y-[-1px] hover:bg-red/90 hover:shadow-lg sm:px-7"
+                              className="bht-hero-cta-pulse inline-flex min-h-[48px] sm:min-h-[56px] max-w-full items-center justify-center rounded-full bg-red px-6 text-center text-sm font-extrabold uppercase tracking-[0.1em] text-white transition hover:bg-red/90 sm:px-7"
                             >
                               {heroData.primaryBtnLabel}
                             </Link>
@@ -511,7 +524,7 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                           {heroData.secondaryBtnLink && heroData.secondaryBtnLabel ? (
                             <Link
                               href={heroData.secondaryBtnLink}
-                              className="inline-flex min-h-[48px] sm:min-h-[56px] max-w-full items-center justify-center rounded-full bg-white px-6 text-center text-sm font-extrabold uppercase tracking-[0.1em] text-primary transition hover:translate-y-[-1px] hover:bg-slate-100 hover:shadow-lg sm:px-7"
+                              className="bht-hero-cta-pulse bht-hero-cta-pulse--secondary inline-flex min-h-[48px] sm:min-h-[56px] max-w-full items-center justify-center rounded-full bg-white px-6 text-center text-sm font-extrabold uppercase tracking-[0.1em] text-primary transition hover:bg-slate-100 sm:px-7"
                             >
                               {heroData.secondaryBtnLabel}
                             </Link>
@@ -525,7 +538,9 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                     {activeSocialLinks.length > 0 ? (
                       <nav aria-label="Follow us on social media" className="mb-4 flex flex-wrap items-center justify-center gap-2.5">
                         {activeSocialLinks.map((item, index) => {
-                          const iconName = fallbackSocialIconClass[item.name.toLowerCase().split(/[\s(]/)[0]];
+                          const socialKey = item.name.toLowerCase().split(/[\s(]/)[0];
+                          const iconName = fallbackSocialIconClass[socialKey];
+                          const brandColor = socialBrandColors[socialKey] || "#0B1672";
                           return (
                             <a
                               key={`${item.name}-${index}`}
@@ -534,7 +549,8 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                               rel={item.openInNewTab === false ? undefined : "noopener noreferrer"}
                               aria-label={`Follow us on ${item.name}`}
                               title={item.name}
-                              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white text-primary shadow-[0_5px_18px_rgba(2,12,27,0.15)] transition-transform hover:-translate-y-0.5 hover:bg-[#f5f6fb] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white shadow-[0_5px_18px_rgba(2,12,27,0.15)] transition-transform hover:-translate-y-0.5 hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                              style={{ color: brandColor }}
                             >
                               {iconName ? (
                                 <i className={`fa-brands ${iconName} text-lg`} aria-hidden="true" />
@@ -687,15 +703,19 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
 
                     <div className="mt-4 flex w-full flex-wrap items-center justify-center gap-3" role="group" aria-label="Travel industry accreditations">
                       {accreditations.map((badge) => (
-                        <Image
+                        <div
                           key={badge.alt}
-                          src={badge.src}
-                          alt={badge.alt}
-                          width={82}
-                          height={82}
-                          className="h-[74px] w-[74px] rounded-full border border-slate-200 bg-white object-cover shadow-[0_6px_16px_rgba(2,12,27,0.14)] sm:h-[82px] sm:w-[82px]"
-                          sizes="82px"
-                        />
+                          className="relative flex h-[74px] w-[74px] items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-white p-1.5 shadow-[0_6px_16px_rgba(2,12,27,0.14)] sm:h-[82px] sm:w-[82px]"
+                        >
+                          <Image
+                            src={badge.src}
+                            alt={badge.alt}
+                            width={82}
+                            height={82}
+                            className={`h-full w-full ${badge.vertical ? "object-cover object-center" : "object-contain"} ${badge.enlarged ? "scale-150" : ""}`}
+                            sizes="82px"
+                          />
+                        </div>
                       ))}
                     </div>
                   </div>

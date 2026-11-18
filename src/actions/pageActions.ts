@@ -3,6 +3,7 @@
 import { requireAdmin } from '@/lib/requireAdmin';
 import { validateSeoText } from '@/lib/seoLimits';
 import { validateCanonicalOverride } from '@/lib/seoMetadata';
+import { SITE_FAVICON_PATH } from '@/lib/siteFavicon';
 
 import { db } from '@/db';
 import { sitePages, siteSettings } from '@/db/schema';
@@ -877,7 +878,7 @@ export async function getDefaultSiteIdentity() {
     tagline: 'Trusted Hajj & Umrah Pilgrimage Travel Agency in UK',
     logo: '/images_BHT/bht-logo.png',
     logoAlt: 'British Haj Travel Logo',
-    favicon: '/images_BHT/bht-fav-logo.png',
+    favicon: SITE_FAVICON_PATH,
     faviconAlt: 'British Haj Travel Favicon',
   };
 }
@@ -907,9 +908,9 @@ export async function getSiteIdentity() {
   if (!identityData) identityData = siteIdentityMemoryCache || {};
 
   if (identityData) {
-    if (identityData.favicon) {
-      identityData.favicon = identityData.favicon.replace(/^https?:\/\/media\.britishhajjtravel\.com\/?/, '/media/');
-    }
+    // Search engines require one square favicon at a stable URL. Do not expose
+    // timestamped Media Library uploads as the site's favicon.
+    identityData.favicon = SITE_FAVICON_PATH;
     if (identityData.logo) {
       identityData.logo = identityData.logo.replace(/^https?:\/\/media\.britishhajjtravel\.com\/?/, '/media/');
     }
@@ -921,6 +922,7 @@ export async function saveSiteIdentityAction(data: any) {
   await requireAdmin(['admin']);
 
   try {
+    data = { ...data, favicon: SITE_FAVICON_PATH };
     siteIdentityMemoryCache = data;
     const existing = await db.select().from(siteSettings).where(eq(siteSettings.key, 'site_identity')).limit(1);
     if (existing && existing.length > 0) {

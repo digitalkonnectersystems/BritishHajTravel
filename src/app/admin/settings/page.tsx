@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { getCurrencySettingsAction, saveCurrencySettingsAction } from '@/actions/currencyActions';
 import { CURRENCY_OPTIONS, DEFAULT_CURRENCY, type CurrencySettings } from '@/lib/currencySettings';
-import { updateBrowserFavicon } from '@/components/FaviconSync';
+import { SITE_FAVICON_PATH } from '@/lib/siteFavicon';
 import ImageUploadWidget from '@/components/admin/ImageUploadWidget';
 import { uploadFile, uploadFileToFtp, generateAutoAltText, sanitizeMediaUrl } from '@/lib/uploadClient';
 import {
@@ -191,18 +191,10 @@ export default function AdminSettingsPage() {
     tagline: '',
     logo: '/img/logo.png',
     logoAlt: 'British Haj Travel UK Logo',
-    favicon: '/img/favicon.ico',
+    favicon: SITE_FAVICON_PATH,
     faviconAlt: 'British Haj Travel Favicon',
   });
   const [identitySaveMsg, setIdentitySaveMsg] = useState<string | null>(null);
-
-
-
-  useEffect(() => {
-    if (identityData?.favicon) {
-      updateBrowserFavicon(identityData.favicon);
-    }
-  }, [identityData?.favicon]);
 
   // Share Tools State
   const [shareData, setShareData] = useState<any>({
@@ -1134,9 +1126,6 @@ export default function AdminSettingsPage() {
           if (typeof window !== 'undefined') {
             localStorage.setItem('bht_site_identity', JSON.stringify(updatedIdentity));
             window.dispatchEvent(new Event('identity_updated'));
-            if (updatedIdentity.favicon) {
-              updateBrowserFavicon(updatedIdentity.favicon);
-            }
           }
           showNotification('Site Identity Published!', 'Site identity & branding updated successfully!', 'success');
         } catch (error) {
@@ -1158,9 +1147,6 @@ export default function AdminSettingsPage() {
       if (typeof window !== 'undefined') {
         localStorage.setItem('bht_site_identity', JSON.stringify(updatedIdentity));
         window.dispatchEvent(new Event('identity_updated'));
-        if (updatedIdentity.favicon) {
-          updateBrowserFavicon(updatedIdentity.favicon);
-        }
       }
 
       const navigationResult = await handleSaveNav(navTree);
@@ -3049,16 +3035,12 @@ export default function AdminSettingsPage() {
                   {/* Site Favicon Uploader & Preview */}
                   <div className="flex flex-col gap-2 pt-4 border-t border-slate-200/60">
                     <label className="block text-xs font-bold text-slate-700">Site Favicon</label>
-                    <div className="w-[140px] h-[140px]">
-                      <ImageUploadWidget
-                        value={identityData.favicon || ''}
-                        onChange={(url) => {
-                          setIdentityData((prev: any) => ({ ...prev, favicon: url }));
-                          if (url) updateBrowserFavicon(url);
-                        }}
-                      />
+                    <div className="flex h-[140px] w-[140px] items-center justify-center overflow-hidden rounded-xl border border-emerald-200 bg-slate-50 p-4">
+                      <img src={SITE_FAVICON_PATH} alt="British Haj Travel favicon" className="h-full w-full object-contain" />
                     </div>
-                    <span className="text-xs text-ink-lt font-bold mt-1">Recommended: .ico, .png, .svg</span>
+                    <span className="max-w-md text-xs font-bold text-ink-lt">
+                      Search favicon: {SITE_FAVICON_PATH}. It is square and deployment-controlled so its public URL remains stable for Google.
+                    </span>
                   </div>
                 </div>
               </div>
