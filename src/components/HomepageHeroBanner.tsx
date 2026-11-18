@@ -516,7 +516,7 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                           {heroData.primaryBtnLink && heroData.primaryBtnLabel ? (
                             <Link
                               href={heroData.primaryBtnLink}
-                              className="bht-hero-cta-pulse inline-flex min-h-[48px] sm:min-h-[56px] max-w-full items-center justify-center rounded-full bg-red px-6 text-center text-sm font-extrabold uppercase tracking-[0.1em] text-white transition hover:bg-red/90 sm:px-7"
+                              className="fadeOut inline-flex min-h-[48px] sm:min-h-[56px] max-w-full items-center justify-center rounded-full bg-red px-6 text-center text-sm font-extrabold uppercase tracking-[0.1em] text-white transition hover:bg-red/90 sm:px-7"
                             >
                               {heroData.primaryBtnLabel}
                             </Link>
@@ -524,7 +524,7 @@ export default function HomepageHeroBanner({ data, pageData, backgroundImage, pu
                           {heroData.secondaryBtnLink && heroData.secondaryBtnLabel ? (
                             <Link
                               href={heroData.secondaryBtnLink}
-                              className="bht-hero-cta-pulse bht-hero-cta-pulse--secondary inline-flex min-h-[48px] sm:min-h-[56px] max-w-full items-center justify-center rounded-full bg-white px-6 text-center text-sm font-extrabold uppercase tracking-[0.1em] text-primary transition hover:bg-slate-100 sm:px-7"
+                              className="fadeOut inline-flex min-h-[48px] sm:min-h-[56px] max-w-full items-center justify-center rounded-full bg-white px-6 text-center text-sm font-extrabold uppercase tracking-[0.1em] text-primary transition hover:bg-slate-100 sm:px-7"
                             >
                               {heroData.secondaryBtnLabel}
                             </Link>

@@ -197,7 +197,14 @@ input[type="date"]:not(.opacity-0):not([class*="opacity-0"])::-webkit-calendar-p
 .contact-info {
   /* font-size: 18px; */
 }
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
 
+.fadeOut {
+    animation: fadeOut 1.5s ease-in infinite; /* remove infinite*/
+}
 .contact-info h4 {
   font-weight: 800;
   color: var(--red);
