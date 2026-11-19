@@ -1,5 +1,7 @@
 'use server';
 
+import { runtimeInfo, runtimeError, runtimeWarn } from '@/lib/runtimeDiagnostics';
+
 import { requireAdmin } from '@/lib/requireAdmin';
 import { validateSeoText } from '@/lib/seoLimits';
 import { validateCanonicalOverride } from '@/lib/seoMetadata';
@@ -1938,12 +1940,14 @@ export async function getDefaultSeoIntelligence() {
 let seoIntelligenceMemoryCache: any = null;
 
 async function fetchSeoIntelligenceFromDb() {
+  const startedAt = Date.now();
   try {
     const res = await db.select().from(siteSettings).where(eq(siteSettings.key, 'seo_intelligence')).limit(1);
     if (res && res.length > 0 && res[0].value) {
       const parsed: any = safeJsonParse(res[0].value, null);
       if (parsed && typeof parsed === 'object') {
         const defaults = await getDefaultSeoIntelligence();
+        runtimeInfo('seo_settings.db_read', { found: true, siteEnvironment: parsed.siteEnvironment, siteIndexingEnabled: parsed.siteIndexingEnabled, elapsedMs: Date.now() - startedAt });
         return {
           ...defaults,
           ...parsed,
@@ -1952,8 +1956,10 @@ async function fetchSeoIntelligenceFromDb() {
       }
     }
   } catch (err) {
+    runtimeError('seo_settings.db_failed', err, { elapsedMs: Date.now() - startedAt });
     console.warn('fetchSeoIntelligenceFromDb error:', err);
   }
+  runtimeWarn('seo_settings.db_fallback', { fallback: seoIntelligenceMemoryCache ? 'memory' : 'staging_defaults', elapsedMs: Date.now() - startedAt });
   return seoIntelligenceMemoryCache || await getDefaultSeoIntelligence();
 }
 
@@ -1967,9 +1973,13 @@ export async function getSeoIntelligenceSettings() {
     );
     data = await getCached();
   } catch (err) {
+    runtimeError('seo_settings.cache_failed', err);
     console.warn('getSeoIntelligenceSettings DB query failed, using defaults:', err);
   }
-  if (!data) data = seoIntelligenceMemoryCache || await getDefaultSeoIntelligence();
+  if (!data) {
+    runtimeWarn('seo_settings.load_fallback', { fallback: seoIntelligenceMemoryCache ? 'memory' : 'staging_defaults' });
+    data = seoIntelligenceMemoryCache || await getDefaultSeoIntelligence();
+  }
   return data;
 }
 

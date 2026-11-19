@@ -27,6 +27,7 @@ import "./globals.css";
 import { getCurrencyConfiguration } from "@/lib/currencyService";
 import { CurrencyProvider } from "@/components/CurrencyProvider";
 import { SITE_FAVICON_PATH } from "@/lib/siteFavicon";
+import { runtimeInfo } from '@/lib/runtimeDiagnostics';
 
 // The CMS navigation JSON is dynamically loaded; give it an explicit shape
 // before passing it to the generic visibility filter.
@@ -69,6 +70,12 @@ export async function generateMetadata(): Promise<Metadata> {
   // request host must be production before metadata can become indexable.
   const requestHost = (await headers()).get('host');
   const isIndexingEnabled = isProductionSiteHost(requestHost) && getSiteEnvironment(seoSettings) === 'production' && (seoSettings?.siteIndexingEnabled ?? true);
+  runtimeInfo('metadata.root', {
+    requestHost, siteEnvironment: seoSettings?.siteEnvironment,
+    siteIndexingEnabled: seoSettings?.siteIndexingEnabled,
+    isProductionHost: isProductionSiteHost(requestHost),
+    isIndexingEnabled, metadataBase: resolveCanonicalPublicOrigin(seoSettings),
+  });
 
   return {
     metadataBase: new URL(resolveCanonicalPublicOrigin(seoSettings)),

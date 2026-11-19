@@ -9,12 +9,16 @@ import { verifyPassword, hashPassword, needsPasswordRehash } from '@/lib/passwor
 import { requireAdmin } from '@/lib/requireAdmin';
 import { logAdminActivityAction } from '@/actions/activityActions';
 import { recordUserHeartbeatAction } from '@/actions/userActions';
+import { runtimeInfo, runtimeWarn, runtimeError } from '@/lib/runtimeDiagnostics';
 
 export async function adminLogin(formData: FormData) {
+  const startedAt = Date.now();
+  runtimeInfo('auth.login_started', { action: 'adminLogin' });
   const email = String(formData.get('email') || '').trim().toLowerCase();
   const password = String(formData.get('password') || '');
 
   if (!email || !password) {
+    runtimeWarn('auth.login_rejected', { reason: 'missing_fields' });
     return { success: false, error: 'Email and password are required.' };
   }
 
@@ -87,11 +91,13 @@ export async function adminLogin(formData: FormData) {
   } catch (err) {
     // The actual diagnostic stays in server logs, not the public login UI.
     // Never log plaintext passwords, hashes, or session cookies.
+    runtimeError('auth.login_failed', err, { stage, elapsedMs: Date.now() - startedAt });
     console.error(`[adminLogin] Failed during ${stage}:`, err);
     return { success: false, error: 'Authentication failed.' };
   }
 
   // A Next.js redirect is an exception internally. Keep it outside the try/catch.
+  runtimeInfo('auth.login_redirect', { targetPath: '/admin/dashboard', elapsedMs: Date.now() - startedAt });
   redirect('/admin/dashboard');
 }
 

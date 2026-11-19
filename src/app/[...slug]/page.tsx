@@ -1,3 +1,4 @@
+import { runtimeInfo, runtimeWarn, runtimeError, shouldTracePublicPath } from '@/lib/runtimeDiagnostics';
 import { notFound, redirect, permanentRedirect } from "next/navigation";
 import { lookupRedirect, recordNotFound } from "@/actions/redirectActions";
 import type { Metadata } from "next";
@@ -21,21 +22,44 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug = [] } = await params;
   const slugPath = `/${slug.join('/')}`;
+  const trace = shouldTracePublicPath(slugPath);
+  const startedAt = Date.now();
   if (slugPath === '/about' || slugPath === '/cheap-flights-air-tickets') return {};
 
-  const page = await getPageBySlug(slugPath).catch(() => null);
+  const page = await getPageBySlug(slugPath).catch((error) => {
+    if (trace) runtimeError('metadata.lookup_failed', error, { path: slugPath, source: 'sitePages' });
+    return null;
+  });
   if (page && page.status !== 'draft') {
+    if (trace) runtimeInfo('metadata.resolved', { path: slugPath, source: 'sitePages', status: page.status, elapsedMs: Date.now() - startedAt });
     return buildPageMetadata(page, slugPath);
   }
 
   if (slug.length === 1) {
-    const blog = await getBlogBySlug(slug[0]).catch(() => null);
-    if (blog?.isPublished) return buildBlogMetadata(blog, slug[0]);
+    const blog = await getBlogBySlug(slug[0]).catch((error) => {
+      if (trace) runtimeError('metadata.lookup_failed', error, { path: slugPath, source: 'blogPosts' });
+      return null;
+    });
+    if (blog?.isPublished) {
+      if (trace) runtimeInfo('metadata.resolved', {
+        path: slugPath, source: 'blogPosts', published: true,
+        canonicalOverridePresent: Boolean(parseSeoSettings(blog.seoSettings).canonicalUrl),
+        elapsedMs: Date.now() - startedAt,
+      });
+      return buildBlogMetadata(blog, slug[0]);
+    }
 
-    const packageData = await getPackageBySlug(slug[0]).catch(() => null);
-    if (packageData && packageData.status !== 'draft') return buildPackageMetadata(packageData, slug[0]);
+    const packageData = await getPackageBySlug(slug[0]).catch((error) => {
+      if (trace) runtimeError('metadata.lookup_failed', error, { path: slugPath, source: 'packages' });
+      return null;
+    });
+    if (packageData && packageData.status !== 'draft') {
+      if (trace) runtimeInfo('metadata.resolved', { path: slugPath, source: 'packages', status: packageData.status, elapsedMs: Date.now() - startedAt });
+      return buildPackageMetadata(packageData, slug[0]);
+    }
   }
 
+  if (trace) runtimeWarn('metadata.not_found', { path: slugPath, elapsedMs: Date.now() - startedAt });
   return {};
 }
 
@@ -46,6 +70,8 @@ export default async function DynamicPage({
 }) {
   const { slug = [] } = await params;
   const slugPath = `/${slug.join("/")}`;
+  const trace = shouldTracePublicPath(slugPath);
+  const startedAt = Date.now();
   if (slugPath === "/about" || slugPath === "/cheap-flights-air-tickets") notFound();
   const showRelatedUmrahPackages = [
     "/ramadan-umrah-packages",
@@ -53,21 +79,43 @@ export default async function DynamicPage({
     "/december-umrah-packages",
     "/umrah-guide",
   ].includes(slugPath);
-  const page = await getPageBySlug(slugPath);
-
-  if (page?.status === 'draft') notFound();
+  let page;
+  try {
+    page = await getPageBySlug(slugPath);
+  } catch (error) {
+    if (trace) runtimeError('page.lookup_failed', error, { path: slugPath, source: 'sitePages' });
+    throw error;
+  }
+  if (trace) runtimeInfo('page.cms_lookup', { path: slugPath, found: Boolean(page), status: page?.status || 'missing', elapsedMs: Date.now() - startedAt });
+  if (page?.status === 'draft') {
+    if (trace) runtimeWarn('page.not_found', { path: slugPath, reason: 'draft' });
+    notFound();
+  }
 
   if (!page) {
     if (slug.length === 1) {
       // Root-level blog URL, e.g. /nusuk-hajj-2027
-      const blog = await getBlogBySlug(slug[0]).catch(() => null);
+      const blog = await getBlogBySlug(slug[0]).catch((error) => {
+        if (trace) runtimeError('page.lookup_failed', error, { path: slugPath, source: 'blogPosts' });
+        return null;
+      });
       if (blog?.isPublished) {
+        if (trace) runtimeInfo('page.resolved', {
+          path: slugPath, source: 'blogPosts', published: true,
+          contentPresent: Boolean(blog.content), contentChars: typeof blog.content === 'string' ? blog.content.length : 0,
+          elapsedMs: Date.now() - startedAt,
+        });
         return <BlogDetailPage blog={blog} slug={slug[0]} />;
       }
+      if (trace) runtimeWarn('page.blog_unavailable', { path: slugPath, found: Boolean(blog), published: Boolean(blog?.isPublished) });
 
       // Fallback: check if the slug matches a package
-      const packageData = await getPackageBySlug(slug[0]).catch(() => null);
+      const packageData = await getPackageBySlug(slug[0]).catch((error) => {
+        if (trace) runtimeError('page.lookup_failed', error, { path: slugPath, source: 'packages' });
+        return null;
+      });
       if (packageData) {
+        if (trace) runtimeInfo('page.resolved', { path: slugPath, source: 'packages', status: packageData.status, elapsedMs: Date.now() - startedAt });
         return (
           <PackageDetailPageClient
             initialSlug={slug[0]}
@@ -79,15 +127,18 @@ export default async function DynamicPage({
     try {
       const rule = await lookupRedirect(slugPath);
       if (rule) {
+        if (trace) runtimeInfo('page.cms_redirect', { path: slugPath, targetPath: rule.destinationPath, status: rule.httpCode });
         if (rule.httpCode === 308) permanentRedirect(rule.destinationPath);
         redirect(rule.destinationPath);
       }
     } catch (error: any) {
       // NEXT_REDIRECT is a framework control-flow exception, not a database failure.
       if (String(error?.digest || '').startsWith('NEXT_REDIRECT')) throw error;
+      if (trace) runtimeError('page.redirect_lookup_failed', error, { path: slugPath });
       console.error('Redirect lookup failed', error);
     }
     // Do not count an unpublished/draft page as an ordinary missing URL.
+    if (trace) runtimeWarn('page.not_found', { path: slugPath, reason: 'not_in_cms_blog_packages_or_redirects', elapsedMs: Date.now() - startedAt });
     if (!page) await recordNotFound(slugPath);
     notFound();
   }
@@ -127,11 +178,13 @@ export default async function DynamicPage({
       if (parsed && typeof parsed === 'object') {
         pageJsonLd = JSON.stringify(parsed).replace(/</g, '\\u003c');
       }
-    } catch {
+    } catch (error) {
+      if (trace) runtimeError('page.jsonld_invalid', error, { path: slugPath });
       // Invalid JSON-LD must not render as a script or break the page.
     }
   }
 
+  if (trace) runtimeInfo('page.resolved', { path: slugPath, source: 'sitePages', sections: sections.length, elapsedMs: Date.now() - startedAt });
   return (
     <main className={`${isFlightBooking ? "bg-blue-lt" : "bg-white"} min-h-screen`}>
       {pageJsonLd && (

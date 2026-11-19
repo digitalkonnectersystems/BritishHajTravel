@@ -11,6 +11,7 @@ import { getBlogCanonicalRoute, toAbsoluteUrl } from '@/lib/seoMetadata';
 import { normalizeBlogFaqs, getVisibleBlogFaqs } from '@/lib/blogFaq';
 import { buildBlogStructuredData, serializeBlogStructuredData } from '@/lib/blogStructuredData';
 import FaqSection from '@/components/FaqSection';
+import { runtimeInfo, shouldTracePublicPath } from '@/lib/runtimeDiagnostics';
 
 const CATEGORY_COLORS: Record<string, string> = {
   'Pilgrimage Guide': 'bg-emerald-100 text-emerald-700 border-emerald-200',
@@ -59,6 +60,11 @@ export default async function BlogDetailPage({ blog, slug }: { blog: any; slug: 
   const origin = resolveCanonicalPublicOrigin(seoIntelligence);
   const pagePath = getBlogCanonicalRoute(blog, slug);
   const pageUrl = toAbsoluteUrl(pagePath, `/${slug}`, origin);
+  if (shouldTracePublicPath(`/${slug}`)) runtimeInfo('blog.structured_data', {
+    path: `/${slug}`, structuredDataPageUrl: pageUrl,
+    featuredImagePresent: Boolean(blog.featuredImage),
+    faqCount: visibleFaqs.length,
+  });
   const jsonLd = buildBlogStructuredData({
     blog,
     pageUrl,

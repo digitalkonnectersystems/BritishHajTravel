@@ -1,3 +1,4 @@
+import { runtimeInfo, runtimeError, runtimeWarn } from '@/lib/runtimeDiagnostics';
 import { db } from '@/db';
 import { sitePages, packages, blogPosts, visaServices, destinations, visaProcessing, sitemapConfigs, sitemapLogs } from '@/db/schema';
 import { eq, or, and, isNotNull } from 'drizzle-orm';
@@ -67,6 +68,7 @@ export async function gatherAllSitemapItems(baseUrl: string): Promise<SitemapIte
     configs = await db.select().from(sitemapConfigs);
   } catch (err) {
     // Graceful fallback if sitemap_configs table has not been pushed to db yet
+    runtimeError('sitemap.source_failed', err, { source: 'sitemapConfigs' });
     configs = [];
   }
   
@@ -82,6 +84,7 @@ export async function gatherAllSitemapItems(baseUrl: string): Promise<SitemapIte
 
   const globalConfig = getConfig('global');
   if (globalConfig.includeInSitemap === false) {
+    runtimeWarn('sitemap.disabled_by_configuration', { source: 'global' });
     return [];
   }
 
@@ -134,6 +137,7 @@ export async function gatherAllSitemapItems(baseUrl: string): Promise<SitemapIte
         });
       }
     } catch (e) {
+      runtimeError('sitemap.source_failed', e, { source: 'sitePages' });
       console.warn('Sitemap sitePages fetch skipped:', e);
     }
   }
@@ -167,6 +171,7 @@ export async function gatherAllSitemapItems(baseUrl: string): Promise<SitemapIte
         });
       }
     } catch (e) {
+      runtimeError('sitemap.source_failed', e, { source: 'packages' });
       console.warn('Sitemap packages fetch skipped:', e);
     }
   }
@@ -200,6 +205,7 @@ export async function gatherAllSitemapItems(baseUrl: string): Promise<SitemapIte
         });
       }
     } catch (e) {
+      runtimeError('sitemap.source_failed', e, { source: 'blogPosts' });
       console.warn('Sitemap blogPosts fetch skipped:', e);
     }
   }
@@ -231,6 +237,7 @@ export async function gatherAllSitemapItems(baseUrl: string): Promise<SitemapIte
         });
       }
     } catch (e) {
+      runtimeError('sitemap.source_failed', e, { source: 'visaServices' });
       console.warn('Sitemap visaServices fetch skipped:', e);
     }
   }
@@ -255,6 +262,7 @@ export async function gatherAllSitemapItems(baseUrl: string): Promise<SitemapIte
         });
       }
     } catch (e) {
+      runtimeError('sitemap.source_failed', e, { source: 'destinations' });
       console.warn('Sitemap destinations fetch skipped:', e);
     }
   }
@@ -278,6 +286,7 @@ export async function gatherAllSitemapItems(baseUrl: string): Promise<SitemapIte
         });
       }
     } catch (e) {
+      runtimeError('sitemap.source_failed', e, { source: 'visaProcessing' });
       console.warn('Sitemap visaProcessing fetch skipped:', e);
     }
   }
@@ -291,5 +300,6 @@ export async function gatherAllSitemapItems(baseUrl: string): Promise<SitemapIte
     const loc = `${baseUrl.replace(/\/+$/, '')}${normalizedPath === '/' ? '/' : normalizedPath}`;
     if (!unique.has(key)) unique.set(key, { ...item, loc });
   }
+  runtimeInfo('sitemap.sources_complete', { rawUrls: items.length, uniqueUrls: unique.size, hasHajj2027: [...unique.values()].some(item => new URL(item.loc, baseUrl).pathname.replace(/\/+$/, '') === '/hajj-2027') });
   return [...unique.values()];
 }

@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSeoIntelligenceSettings } from '@/actions/pageActions';
 import { resolveCanonicalPublicOrigin, deriveSeoUrls, getSiteEnvironment, isProductionSiteHost } from '@/lib/urlResolver';
+import { runtimeInfo, runtimeError } from '@/lib/runtimeDiagnostics';
 
 export const revalidate = 0;
 
 export async function GET(request: NextRequest) {
+  const startedAt = Date.now();
   try {
     const seoSettings = await getSeoIntelligenceSettings();
     // Hostinger may use 0.0.0.0 as the internal server URL. The Host header
@@ -13,11 +15,11 @@ export async function GET(request: NextRequest) {
     const publicHostname = requestHost.trim().toLowerCase().replace(/:\d+$/, '').replace(/\.$/, '');
     const isProductionHost = isProductionSiteHost(publicHostname);
 
-    console.info('[ROBOTS SEO DIAGNOSTIC]', {
-      diagnosticVersion: 'public-host-v2',
+    runtimeInfo('robots.request', {
       internalHostname: request.nextUrl.hostname,
-      requestHost,
-      publicHostname,
+      requestHost, publicHostname,
+      forwardedHost: request.headers.get('x-forwarded-host') || '',
+      forwardedProto: request.headers.get('x-forwarded-proto') || '',
       siteEnvironment: seoSettings?.siteEnvironment,
       siteIndexingEnabled: seoSettings?.siteIndexingEnabled,
       isProductionHost,
@@ -64,6 +66,12 @@ Disallow: /api/
       }
     }
 
+    runtimeInfo('robots.result', {
+      requestHost, isIndexingEnabled,
+      canonicalOrigin, sitemapUrl: seoUrls.sitemapUrl,
+      disallowAll: !isIndexingEnabled, status: 200,
+      elapsedMs: Date.now() - startedAt,
+    });
     return new NextResponse(content, {
       status: 200,
       headers: {
@@ -72,6 +80,7 @@ Disallow: /api/
       },
     });
   } catch (error) {
+    runtimeError('robots.failed', error, { status: 503, elapsedMs: Date.now() - startedAt });
     console.error('Error generating robots.txt:', error);
     return new NextResponse('Temporarily unable to generate robots.txt\n', {
       status: 503,
