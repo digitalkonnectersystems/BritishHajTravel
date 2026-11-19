@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { Jost, Marcellus, Plus_Jakarta_Sans, Poppins } from "next/font/google";
+import { Marcellus, Plus_Jakarta_Sans, Poppins } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
@@ -56,15 +56,6 @@ const poppins = Poppins({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   variable: "--font-poppins",
-  display: "swap",
-  preload: false,
-});
-
-const jost = Jost({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-jost",
   display: "swap",
   preload: false,
 });
@@ -148,7 +139,7 @@ export default async function RootLayout({
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${marcellus.variable} ${plusJakartaSans.variable} ${poppins.variable} ${jost.variable}`}
+      className={`${marcellus.variable} ${plusJakartaSans.variable} ${poppins.variable}`}
     >
       <head>
         <FontAwesomeStylesheet />
