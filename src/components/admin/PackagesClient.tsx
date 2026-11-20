@@ -1333,7 +1333,9 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
                         {formatTravelMonth(pkg.month) || 'Flexible'}
                       </td>
                       <td className={`py-3.5 px-4 font-black ${isSoldOut ? 'text-red-500' : 'text-slate-900'}`}>
-                        £ ${Number(pkg.startingPrice).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                        {Number(pkg.startingPrice) === 0
+                          ? 'Coming Soon'
+                          : `£ ${Number(pkg.startingPrice).toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
                       </td>
                       <td className="py-3.5 px-4">
                         <span

@@ -451,7 +451,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
                         {formatTravelMonth(pkg.month) || 'Flexible'}
                       </td>
                       <td className="py-3.5 px-4 font-black text-slate-900">
-                        £ ${Number(pkg.startingPrice).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                        £ {Number(pkg.startingPrice).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </td>
                       <td className="py-3.5 px-4">
                         <button
