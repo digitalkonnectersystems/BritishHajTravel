@@ -2,6 +2,7 @@ import { runtimeInfo, runtimeError, runtimeWarn } from '@/lib/runtimeDiagnostics
 import { db } from '@/db';
 import { sitePages, packages, blogPosts, visaServices, destinations, visaProcessing, sitemapConfigs, sitemapLogs } from '@/db/schema';
 import { eq, or, and, isNotNull } from 'drizzle-orm';
+import { classify, EXCLUDED_PATHS, STATIC_PATHS, SITEMAP_SEGMENTS, segmentFileName, type SitemapSegment, type SitemapSource } from '@/lib/sitemapRules';
 
 interface SitemapItem {
   loc: string;
@@ -9,6 +10,22 @@ interface SitemapItem {
   changefreq?: string;
   priority?: string;
   images?: string[];
+  /** Data source the URL came from; used to choose its topic sitemap. */
+  source?: SitemapSource;
+  /** True when changefreq/priority were set on this page's own SEO settings in the CMS. */
+  explicit?: boolean;
+  segment?: SitemapSegment;
+}
+
+/**
+ * A page's own changefreq/priority wins over sitemapRules only when it was set deliberately.
+ * "monthly" + "0.5" was the old blanket default applied to every URL, so it is ignored.
+ */
+function isDeliberateSeoOverride(seo: { changeFrequency?: unknown; priority?: unknown } | null | undefined): boolean {
+  const freq = seo?.changeFrequency ? String(seo.changeFrequency) : '';
+  const prio = seo?.priority ? String(seo.priority) : '';
+  if (!freq && !prio) return false;
+  return !((freq === '' || freq === 'monthly') && (prio === '' || prio === '0.5'));
 }
 
 function escapeXml(unsafe: string): string {
@@ -32,8 +49,37 @@ function normalizeImageUrl(imgUrl: string, baseUrl: string): string {
   return `${cleanBase}${cleanPath}`;
 }
 
+/** Full list of every URL (used by Admin > SEO > Sitemap metrics). */
 export async function generateSitemapXml(baseUrl: string): Promise<string> {
+  return renderUrlset(await gatherAllSitemapItems(baseUrl), baseUrl);
+}
+
+/** One topic sitemap, e.g. /sitemap-hajj.xml. Highest priority first. */
+export async function generateSegmentSitemapXml(baseUrl: string, segment: SitemapSegment): Promise<string> {
+  const items = (await gatherAllSitemapItems(baseUrl))
+    .filter((item) => item.segment === segment)
+    .sort((a, b) => Number(b.priority || 0) - Number(a.priority || 0));
+  return renderUrlset(items, baseUrl);
+}
+
+/** /sitemap.xml: index of the topic sitemaps, each with its newest lastmod. */
+export async function generateSitemapIndexXml(baseUrl: string): Promise<string> {
   const items = await gatherAllSitemapItems(baseUrl);
+  const origin = baseUrl.replace(/\/+$/, '');
+  let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+  for (const segment of SITEMAP_SEGMENTS) {
+    const inSegment = items.filter((item) => item.segment === segment);
+    if (inSegment.length === 0) continue;
+    const lastmod = inSegment.map((item) => item.lastmod || '').sort().pop();
+    xml += `  <sitemap>\n    <loc>${escapeXml(`${origin}/${segmentFileName(segment)}`)}</loc>\n`;
+    if (lastmod) xml += `    <lastmod>${escapeXml(lastmod)}</lastmod>\n`;
+    xml += `  </sitemap>\n`;
+  }
+  xml += `</sitemapindex>`;
+  return xml;
+}
+
+function renderUrlset(items: SitemapItem[], baseUrl: string): string {
   
   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
   xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n`;
@@ -133,6 +179,8 @@ export async function gatherAllSitemapItems(baseUrl: string): Promise<SitemapIte
           lastmod: pageConfig.includeLastModified !== false ? (seo.lastModifiedOverride || (page.updatedAt ? new Date(page.updatedAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0])) : undefined,
           changefreq: seo.changeFrequency || pageConfig.changeFrequency || 'monthly',
           priority: seo.priority || pageConfig.priority || (cleanSlug === '' ? '1.0' : '0.8'),
+          source: 'sitePages',
+          explicit: isDeliberateSeoOverride(seo),
           images: pageConfig.includeImages !== false && page.bannerBgImage ? [page.bannerBgImage] : []
         });
       }
@@ -167,6 +215,8 @@ export async function gatherAllSitemapItems(baseUrl: string): Promise<SitemapIte
           lastmod: pkgConfig.includeLastModified !== false ? (seo.lastModifiedOverride || (pkg.updatedAt ? new Date(pkg.updatedAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0])) : undefined,
           changefreq: seo.changeFrequency || pkgConfig.changeFrequency || 'weekly',
           priority: seo.priority || pkgConfig.priority || '0.9',
+          source: 'packages',
+          explicit: isDeliberateSeoOverride(seo),
           images: pkgConfig.includeImages !== false && pkg.featuredImage ? [pkg.featuredImage] : []
         });
       }
@@ -201,6 +251,8 @@ export async function gatherAllSitemapItems(baseUrl: string): Promise<SitemapIte
           lastmod: blogConfig.includeLastModified !== false ? (seo.lastModifiedOverride || (post.updatedAt ? new Date(post.updatedAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0])) : undefined,
           changefreq: seo.changeFrequency || blogConfig.changeFrequency || 'weekly',
           priority: seo.priority || blogConfig.priority || '0.7',
+          source: 'blogPosts',
+          explicit: isDeliberateSeoOverride(seo),
           images: blogConfig.includeImages !== false && post.featuredImage ? [post.featuredImage] : []
         });
       }
@@ -234,6 +286,7 @@ export async function gatherAllSitemapItems(baseUrl: string): Promise<SitemapIte
           lastmod: visaConfig.includeLastModified !== false ? (visa.createdAt ? new Date(visa.createdAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]) : undefined,
           changefreq: visaConfig.changeFrequency || 'monthly',
           priority: visaConfig.priority || '0.6',
+          source: 'visaServices',
         });
       }
     } catch (e) {
@@ -258,6 +311,7 @@ export async function gatherAllSitemapItems(baseUrl: string): Promise<SitemapIte
           lastmod: item.updatedAt ? new Date(item.updatedAt).toISOString().split('T')[0] : undefined,
           changefreq: destinationConfig.changeFrequency || 'monthly',
           priority: destinationConfig.priority || '0.7',
+          source: 'destinations',
           images: destinationConfig.includeImages !== false && destinationOffer?.cardData?.bannerImage ? [destinationOffer.cardData.bannerImage] : [],
         });
       }
@@ -282,6 +336,7 @@ export async function gatherAllSitemapItems(baseUrl: string): Promise<SitemapIte
           lastmod: item.updatedAt ? new Date(item.updatedAt).toISOString().split('T')[0] : undefined,
           changefreq: visaPageConfig.changeFrequency || 'monthly',
           priority: visaPageConfig.priority || '0.7',
+          source: 'visaProcessing',
           images: visaPageConfig.includeImages !== false && item.bannerBgImage ? [item.bannerBgImage] : [],
         });
       }
@@ -299,6 +354,23 @@ export async function gatherAllSitemapItems(baseUrl: string): Promise<SitemapIte
     const key = normalizedPath.toLowerCase();
     const loc = `${baseUrl.replace(/\/+$/, '')}${normalizedPath === '/' ? '/' : normalizedPath}`;
     if (!unique.has(key)) unique.set(key, { ...item, loc });
+  }
+  // Always list public code routes that have no CMS record.
+  for (const path of STATIC_PATHS) {
+    if (!unique.has(path)) {
+      unique.set(path, { loc: `${baseUrl.replace(/\/+$/, '')}${path}`, lastmod: new Date().toISOString().split('T')[0], source: 'static' });
+    }
+  }
+
+  // Apply SEO rules: drop duplicates/expired/outdated URLs, then assign topic sitemap, changefreq and priority.
+  for (const [key, item] of [...unique.entries()]) {
+    if (EXCLUDED_PATHS.has(key)) { unique.delete(key); continue; }
+    const rule = classify(key, item.source || 'static');
+    item.segment = rule.segment;
+    if (!item.explicit) {
+      item.changefreq = rule.changefreq;
+      item.priority = rule.priority;
+    }
   }
   runtimeInfo('sitemap.sources_complete', { rawUrls: items.length, uniqueUrls: unique.size, hasHajj2027: [...unique.values()].some(item => new URL(item.loc, baseUrl).pathname.replace(/\/+$/, '') === '/hajj-2027') });
   return [...unique.values()];
