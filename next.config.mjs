@@ -1,4 +1,4 @@
-import { SEO_REDIRECTS } from "./seo-redirects.mjs";
+import { SEO_REDIRECTS, DEAD_LINK_REDIRECTS } from "./seo-redirects.mjs";
 
 /** @type {import("next").NextConfig} */
 const nextConfig = {
@@ -21,7 +21,11 @@ const nextConfig = {
   // },
   async redirects() {
     // Permanent SEO redirects for duplicate pages and expired offers (see seo-redirects.mjs).
-    return SEO_REDIRECTS.map(({ source, destination }) => ({ source, destination, statusCode: 301 }));
+    return [
+      ...SEO_REDIRECTS.map(({ source, destination }) => ({ source, destination, statusCode: 301 })),
+      // Dead links (404s) found by the site crawl and Search Console (see seo-redirects.mjs).
+      ...DEAD_LINK_REDIRECTS.map(({ source, destination }) => ({ source, destination, statusCode: 308 })),
+    ];
   },
   async rewrites() {
     return {

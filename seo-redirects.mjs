@@ -35,3 +35,36 @@ export const SEO_REDIRECTS = [
   { source: '/2015-umrah-and-hajj-advices', destination: '/hajj-guide' },
   { source: '/launches-5-star-hajj-packages-for-pilgrims-in-the-uk', destination: '/hajj-packages' },
 ];
+
+/**
+ * 308 redirects for dead links (pages that return 404).
+ * Found by crawling every sitemap page on 23 Nov 2026, plus the Search Console 404 report.
+ * Most are old WordPress package URLs still linked from blog posts.
+ * Exact paths come first; the category patterns at the end catch any other old package URL.
+ */
+export const DEAD_LINK_REDIRECTS = [
+  { source: '/hajj-agent-in-uk', destination: '/nusuk-hajj-agent' },
+  { source: '/about-us', destination: '/about' },
+  { source: '/win-free-umrah', destination: '/umrah-packages' },
+  { source: '/ramadan', destination: '/ramadan-umrah-packages' },
+  { source: '/audi-umrah-visa', destination: '/saudi-umrah-visa' },
+  { source: '/cheapest-umrah-packages-2018', destination: '/cheapest-umrah-packages' },
+  { source: '/islam-first-to-teach-toleranc', destination: '/islam-first-to-teach-tolerance' },
+  { source: '/products', destination: '/services' },
+  { source: '/a-piece-about-hajj-experience', destination: '/a-piece-about-hajj-experience-2' },
+  { source: '/package/hajj-packages/vip-hajj', destination: '/package/vip-hajj-2027' },
+  { source: '/package/hajj-packages/golden-hajj', destination: '/package/5-star-hajj-package-2027' },
+  { source: '/package/hajj-packages/silver-hajj', destination: '/hajj-packages' },
+  { source: '/package/umrah-packages/vip-umrah-14-nights', destination: '/vip-umrah' },
+  { source: '/package/umrah-packages/umrah-package', destination: '/umrah-package' },
+  { source: '/package/umrah-packages/golden-umrah-package', destination: '/umrah-packages' },
+  { source: '/package/umrah-packages/deluxe-umrah-package', destination: '/umrah-packages' },
+  { source: '/package/umrah-packages/ramadan-umrah-package-14-night', destination: '/ramadan-umrah-packages' },
+  { source: '/package/umrah-packages/ramadan-umrah-package-16-night', destination: '/ramadan-umrah-packages' },
+  { source: '/package/umrah-packages/ramadan-umrah-package-21-night', destination: '/ramadan-umrah-packages' },
+  { source: '/package/ramadan-umrah/ramadan-umrah-package-14-night', destination: '/ramadan-umrah-packages' },
+  // Any other old WordPress package URL (/package/<category>/<slug>)
+  { source: '/package/hajj-packages/:slug', destination: '/hajj-packages' },
+  { source: '/package/umrah-packages/:slug', destination: '/umrah-packages' },
+  { source: '/package/ramadan-umrah/:slug', destination: '/ramadan-umrah-packages' },
+];
