@@ -11,6 +11,7 @@ import { X, Calendar, User, Check, Star, Plane, TicketPercent, AlertCircle, Chev
 import { submitPackageBookingEnquiryAction } from "@/lib/publicEnquiryClient";
 import SubmissionSuccessModal from "@/components/SubmissionSuccessModal";
 import { isTbcPrice } from "@/lib/priceDisplay";
+import { getPackagePriceOptions, getLowestPriceOption } from '@/lib/packagePricing';
 import { useCurrency, usePriceFormatter } from '@/components/CurrencyProvider';
 
 
@@ -25,7 +26,7 @@ export default function PackageDetailPageClient({
 }) {
   const currencySettings = useCurrency();
   const rawSlug = initialSlug;
-  const [pkg] = useState<any>(() => initialPackage || null);
+  const pkg = initialPackage || null; // Always use fresh server data after navigation or revalidation.
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("+44");
   const [email, setEmail] = useState("");
@@ -74,8 +75,7 @@ export default function PackageDetailPageClient({
         children: parseInt(childrenCount, 10),
         infants: parseInt(infantsCount, 10),
         startDate: selectedDate,
-        totalPrice: estimatedTotalFormatted ? `${currencyCode} ${estimatedTotalFormatted}` :
-          (isTbcPrice(minPriceItem.price, minPriceItem.priceStatus) ? 'Coming Soon' : String(pkg?.startingPrice ?? pkg?.price ?? "")),
+        totalPrice: selectedPackagePrice !== null ? `${currencyCode} ${estimatedTotalFormatted}` : 'Coming Soon',
         sourceFormName: isDestination ? 'Destination Form' : pkg?.type === 'hajj' ? 'Hajj Package Booking Form' : 'Umrah Package Booking Form',
       });
 
@@ -140,63 +140,15 @@ export default function PackageDetailPageClient({
   const detailData = parseJsonSafe(pkg.detailPageData);
   const cardData = parseJsonSafe(pkg.cardData);
 
-  // Extract packagePrices from packageData, cardData, detailPageData, or relation
-  const packagePrices: { packageType: string; price: number; priceStatus?: string }[] = (() => {
-    const rawList =
-      cardData?.packagePrices ||
-      detailData?.packagePrices ||
-      pkg.packagePrices ||
-      (Array.isArray(pkg.prices)
-        ? pkg.prices.map((p: any) => ({
-          packageType:
-            p.occupancyType === 'quad'
-              ? 'Quad Occupancy'
-              : p.occupancyType === 'triple'
-                ? 'Triple Occupancy'
-                : p.occupancyType === 'double'
-                  ? 'Double Occupancy'
-                  : p.occupancyType === 'single'
-                    ? 'Single Occupancy'
-                    : p.notes || 'Package Type',
-          price: Number(p.amount) || 0,
-        }))
-        : null);
-
-    if (Array.isArray(rawList) && rawList.length > 0) {
-      return rawList
-        .map((item: any) => ({
-          packageType: (typeof item === 'object' ? item.packageType || item.type || '' : '').trim(),
-          price: Number(String(typeof item === 'object' ? item.price || item.amount || 0 : item).replace(/[^0-9.]/g, '')) || 0,
-          priceStatus: typeof item === 'object' ? item.priceStatus : undefined,
-        }))
-        .filter((item: any) => item.packageType && (item.price > 0 || item.priceStatus === 'tbc'));
-    }
-
-    const legacyBase = Number(String(pkg.startingPrice ?? pkg.price ?? '2795').replace(/[^0-9.]/g, '')) || 2795;
-    return [
-      { packageType: 'Quad Occupancy', price: legacyBase },
-      { packageType: 'Triple Occupancy', price: legacyBase + 400 },
-      { packageType: 'Double Occupancy', price: legacyBase + 800 },
-    ];
-  })();
-
-  // Find the minimum priced package type deterministically
-  const numericPackagePrices = packagePrices.filter((item) => !isTbcPrice(item.price, item.priceStatus) && item.price > 0);
-  const minPriceItem = packagePrices.length > 0
-    ? (numericPackagePrices.length > 0 ? numericPackagePrices.reduce((min, curr) => (curr.price < min.price ? curr : min), numericPackagePrices[0]) : packagePrices[0])
-    : { packageType: 'QUAD OCCUPANCY', price: Number(String(pkg.startingPrice ?? pkg.price ?? '2795').replace(/[^0-9.]/g, '')) || 2795 };
+  // Always keep numeric zero rows and TBC rows. Saved status controls display.
+  const packagePrices = getPackagePriceOptions(pkg);
+  const minPriceItem = getLowestPriceOption(packagePrices) || {
+    packageType: 'QUAD OCCUPANCY', price: 0, priceStatus: 'tbc' as const,
+  };
 
   const durationText = detailData.durationText || cardData.duration || pkg.durationText || `${pkg.duration || "14 DAYS"} / 13 NIGHTS`;
   const departure = detailData.departure || cardData.departure || pkg.departure || "UK";
   const destination = detailData.destination || cardData.destination || pkg.destination || "SAUDIA";
-
-  const minFormattedPrice = isTbcPrice(minPriceItem.price, minPriceItem.priceStatus) ? "Coming Soon" : minPriceItem.price.toLocaleString("en-CA", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  });
-
-  const bannerPrice = minFormattedPrice;
-  const priceSubtext = `PER PERSON - ${minPriceItem.packageType.toUpperCase()}`;
   const exclusiveBadge = detailData.exclusiveBadge || cardData.exclusiveBadge || pkg.exclusiveBadge || "STARTING FROM";
   const currencyCode = currencySettings.symbol;
 
@@ -207,10 +159,15 @@ export default function PackageDetailPageClient({
     }
   }, [packagePrices, selectedPackageType, minPriceItem.packageType]);
 
-  const effectivePackageType = selectedPackageType || (minPriceItem ? minPriceItem.packageType : (packagePrices[0]?.packageType || ""));
+  const effectivePackageType = packagePrices.some((p) => p.packageType === selectedPackageType)
+    ? selectedPackageType : minPriceItem.packageType;
 
   // Selected package type price for booking calculation
   const selectedPriceItem = packagePrices.find((p) => p.packageType === effectivePackageType);
+  const displayedPriceItem = selectedPriceItem || minPriceItem;
+  const price = isTbcPrice(displayedPriceItem.price, displayedPriceItem.priceStatus)
+    ? 'Coming Soon' : displayedPriceItem.price.toLocaleString('en-CA', { maximumFractionDigits: 0 });
+  const priceSubtext = `PER PERSON - ${displayedPriceItem.packageType.toUpperCase()}`;
   const selectedPackagePrice = selectedPriceItem && !isTbcPrice(selectedPriceItem.price, selectedPriceItem.priceStatus) ? selectedPriceItem.price : null;
   const estimatedTotalFormatted = selectedPackagePrice !== null
     ? selectedPackagePrice.toLocaleString("en-CA", {
@@ -219,7 +176,6 @@ export default function PackageDetailPageClient({
     })
     : null;
 
-  const price = bannerPrice;
 
   const operatorName = cardData.operatorName || pkg.operatorName || "British Hajj Travel";
   const operatorRating = cardData.operatorRating || pkg.operatorRating || "4.4/5";
@@ -909,7 +865,7 @@ export default function PackageDetailPageClient({
                 <div className="pt-2 flex justify-between items-center">
                   <span className="text-xs font-bold text-ink">Estimated Total</span>
                   <span className="text-xl font-black text-ink font-serif">
-                    {estimatedTotalFormatted ? `${currencyCode}${estimatedTotalFormatted}` : "—"}
+                    {selectedPackagePrice !== null ? `${currencyCode}${estimatedTotalFormatted}` : 'Coming Soon'}
                   </span>
                 </div>
 

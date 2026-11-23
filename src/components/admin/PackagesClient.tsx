@@ -20,6 +20,7 @@ import MonthYearPicker from '@/components/admin/MonthYearPicker';
 import DurationInput from '@/components/admin/DurationInput';
 import IconPicker from '@/components/admin/IconPicker';
 import { formatTravelMonth, formatDuration, parseDuration } from '@/lib/packageHelpers';
+import { validatePackagePriceRows, getStartingPriceFromRows, formatStartingPrice } from '@/lib/packagePricing';
 import Link from 'next/link';
 
 interface PackagesClientProps {
@@ -641,6 +642,7 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
     type,
     month: '',
     startingPrice: '1995.00',
+    startingPriceStatus: 'numeric',
     starRating: '5 Star',
     shortDescription: '',
     fullDescription: '',
@@ -685,17 +687,23 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
+    const checkedPrices = validatePackagePriceRows([{
+      packageType: 'Quad Occupancy',
+      price: newPkg.startingPrice,
+      priceStatus: newPkg.startingPriceStatus,
+    }]);
+    if (checkedPrices.error) { alert(checkedPrices.error); return; }
     const formData = new FormData();
     formData.append('title', newPkg.title);
     formData.append('slug', newPkg.slug);
     formData.append('type', newPkg.type);
     formData.append('month', newPkg.month);
-    formData.append('startingPrice', newPkg.startingPrice);
+    formData.append('startingPrice', getStartingPriceFromRows(checkedPrices.rows));
     formData.append('shortDescription', newPkg.shortDescription);
     formData.append('fullDescription', newPkg.fullDescription);
     formData.append('inclusions', newPkg.inclusions);
     if (newPkgCategoryId) formData.append('categoryId', newPkgCategoryId);
-    if (newPkg.cardData) formData.append('cardData', JSON.stringify(newPkg.cardData));
+    formData.append('cardData', JSON.stringify({ ...newPkg.cardData, packagePrices: checkedPrices.rows }));
     const gallery = (Array.isArray(newPkg.packagesGallery) ? newPkg.packagesGallery : []).filter(Boolean);
     formData.append('packagesGallery', JSON.stringify(gallery));
 
@@ -1004,12 +1012,23 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
 
               <div>
                 <label className="text-xs font-bold text-slate-700 block mb-1">Starting Price (£) *</label>
+                <select
+                  value={newPkg.startingPriceStatus}
+                  onChange={e => setNewPkg({ ...newPkg, startingPriceStatus: e.target.value, startingPrice: e.target.value === 'tbc' ? '0' : newPkg.startingPrice })}
+                  className="w-full mb-2 px-3.5 py-2.5 border border-slate-200 rounded-xl text-xs outline-none focus:border-primary"
+                >
+                  <option value="numeric">Numeric price</option>
+                  <option value="tbc">TBC (Coming Soon)</option>
+                </select>
                 <input
-                  type="text"
-                  placeholder="2695.00"
-                  value={newPkg.startingPrice}
+                  type={newPkg.startingPriceStatus === 'tbc' ? 'text' : 'number'}
+                  min={newPkg.startingPriceStatus === 'numeric' ? '0' : undefined}
+                  step="0.01"
+                  placeholder="0.00"
+                  value={newPkg.startingPriceStatus === 'tbc' ? 'Coming Soon' : newPkg.startingPrice}
                   onChange={e => setNewPkg({ ...newPkg, startingPrice: e.target.value })}
-                  required
+                  disabled={newPkg.startingPriceStatus === 'tbc'}
+                  required={newPkg.startingPriceStatus === 'numeric'}
                   className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-xs outline-none focus:border-primary"
                 />
               </div>
@@ -1333,9 +1352,7 @@ export default function PackagesClient({ initialPackages, defaultTab }: Packages
                         {formatTravelMonth(pkg.month) || 'Flexible'}
                       </td>
                       <td className={`py-3.5 px-4 font-black ${isSoldOut ? 'text-red-500' : 'text-slate-900'}`}>
-                        {Number(pkg.startingPrice) === 0
-                          ? 'Coming Soon'
-                          : `£ ${Number(pkg.startingPrice).toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
+                        {formatStartingPrice(pkg, '£ ', 'en-US', 2)}
                       </td>
                       <td className="py-3.5 px-4">
                         <span

@@ -9,6 +9,7 @@ import { revalidatePath } from 'next/cache';
 import { logAdminActivityAction } from '@/actions/activityActions';
 import { parseLegacyTravelMonth } from '@/lib/packageHelpers';
 import { isPackageCardVisible } from '@/lib/packageCardVisibility';
+import { validatePackagePriceRows, getStartingPriceFromRows } from '@/lib/packagePricing';
 
 function parseJsonField(val: any, fallback: any = {}) {
   if (!val) return fallback;
@@ -178,6 +179,8 @@ export async function updatePackageOrderAction(orderedIds: number[]) {
     revalidatePath('/admin/umrah-packages');
     revalidatePath('/hajj-packages');
     revalidatePath('/umrah-packages');
+    revalidatePath('/hajj/packages');
+    revalidatePath('/umrah/packages');
     revalidatePath('/march-umrah-packages');
     revalidatePath('/august-umrah-packages');
     revalidatePath('/hajj');
@@ -244,14 +247,14 @@ export async function createPackage(formData: FormData): Promise<{ success: bool
     const customSlug = formData.get('slug') as string;
     const type = (formData.get('type') as 'umrah' | 'hajj') || 'umrah';
     const month = formData.get('month') as string || '';
-    const startingPrice = (formData.get('startingPrice') as string) || '1995.00';
+    let startingPrice = (formData.get('startingPrice') as string) ?? '1995.00';
     const starRating = (formData.get('starRating') as string) || '5 Star';
     const status = (formData.get('status') as any) || 'available';
     const shortDescription = formData.get('shortDescription') as string || '';
     const fullDescription = formData.get('fullDescription') as string || '';
     const inclusions = formData.get('inclusions') as string || '[]';
     const cardDataStr = formData.get('cardData') as string || '';
-    const cardData = cardDataStr ? JSON.parse(cardDataStr) : null;
+    let cardData = cardDataStr ? JSON.parse(cardDataStr) : null;
 
     // Optional category assignment (Umrah/Hajj package categories)
     const rawCategoryId = formData.get('categoryId') as string | null;
@@ -264,6 +267,17 @@ export async function createPackage(formData: FormData): Promise<{ success: bool
       : null;
 
     if (!title) return { success: false, error: 'Package title is required.' };
+
+    // Keep the status and numeric amount separate; the database column is DECIMAL.
+    if (Array.isArray(cardData?.packagePrices)) {
+      const checked = validatePackagePriceRows(cardData.packagePrices);
+      if (checked.error) return { success: false, error: checked.error };
+      cardData = { ...cardData, packagePrices: checked.rows };
+      startingPrice = getStartingPriceFromRows(checked.rows);
+    }
+    if (!/^\d+(?:\.\d{1,2})?$/.test(String(startingPrice).trim()) || !Number.isFinite(Number(startingPrice))) {
+      return { success: false, error: 'Starting price must be a valid number of 0 or more.' };
+    }
 
     // Server-side validation for month format (accepts YYYY-MM, or clean string, reject malicious inputs)
     let sanitizedMonth = (month || '').trim().slice(0, 100);
@@ -305,6 +319,8 @@ export async function createPackage(formData: FormData): Promise<{ success: bool
     revalidatePath('/admin/umrah-packages');
     revalidatePath('/hajj-packages');
     revalidatePath('/umrah-packages');
+    revalidatePath('/hajj/packages');
+    revalidatePath('/umrah/packages');
     revalidatePath('/march-umrah-packages');
     revalidatePath('/august-umrah-packages');
     revalidatePath('/');
@@ -355,13 +371,33 @@ export async function updatePackageAction(
       return { success: false, error: 'Invalid characters in travel month.' };
     }
 
+    let priceToSave = data.startingPrice;
+    let cardDataToSave = data.cardData;
+    let detailDataToSave = data.detailPageData;
+    const card = parseJsonField(cardDataToSave, {});
+    const detail = parseJsonField(detailDataToSave, {});
+    const incomingRows = Array.isArray(card?.packagePrices)
+      ? card.packagePrices
+      : Array.isArray(detail?.packagePrices) ? detail.packagePrices : null;
+    if (incomingRows !== null) {
+      const checked = validatePackagePriceRows(incomingRows);
+      if (checked.error) return { success: false, error: checked.error };
+      priceToSave = getStartingPriceFromRows(checked.rows);
+      cardDataToSave = { ...card, packagePrices: checked.rows };
+      detailDataToSave = { ...detail, packagePrices: checked.rows };
+    }
+    if (priceToSave !== undefined &&
+        (!/^\d+(?:\.\d{1,2})?$/.test(String(priceToSave).trim()) || !Number.isFinite(Number(priceToSave)))) {
+      return { success: false, error: 'Starting price must be a valid number of 0 or more.' };
+    }
+
     const updateData: any = {
       title: data.title,
       slug: data.slug,
       type: data.type,
       categoryId: data.categoryId !== undefined ? (data.categoryId || null) : undefined,
       month: sanitizedMonth !== undefined ? sanitizedMonth : data.month,
-      startingPrice: data.startingPrice,
+      startingPrice: priceToSave,
       starRating: data.starRating,
       status: data.status,
       shortDescription: data.shortDescription,
@@ -369,8 +405,8 @@ export async function updatePackageAction(
       featuredImage: data.featuredImage,
       departureCity: data.departureCity,
       destination: data.destination,
-      cardData: data.cardData,
-      detailPageData: data.detailPageData,
+      cardData: cardDataToSave,
+      detailPageData: detailDataToSave,
       updatedAt: new Date(),
     };
 
@@ -397,12 +433,19 @@ export async function updatePackageAction(
     });
 
     revalidatePath('/admin/packages');
+    revalidatePath(`/admin/packages/${id}`);
     revalidatePath('/admin/hajj-packages');
     revalidatePath('/admin/umrah-packages');
     revalidatePath('/hajj-packages');
     revalidatePath('/umrah-packages');
+    revalidatePath('/hajj/packages');
+    revalidatePath('/umrah/packages');
     revalidatePath('/march-umrah-packages');
     revalidatePath('/august-umrah-packages');
+    for (const slug of new Set([previousEntry?.slug, data.slug].filter(Boolean))) {
+      revalidatePath(`/package/${slug}`);
+      revalidatePath(`/${slug}`);
+    }
     revalidatePath('/');
     revalidatePath('/', 'layout');
     return { success: true };

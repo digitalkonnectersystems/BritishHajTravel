@@ -10,6 +10,7 @@ import PackageCustomizationCTA from "@/components/PackageCustomizationCTA";
 import PageBanner from "@/components/PageBanner";
 import type { Metadata } from "next";
 import { buildPageMetadata } from "@/lib/seoMetadata";
+import { getPackagePriceOptions } from "@/lib/packagePricing";
 
 export async function generateMetadata(): Promise<Metadata> {
   const pageData = await getPageBySlug("/hajj-packages").catch(() => null);
@@ -38,6 +39,9 @@ export default async function HajjPackagesPage() {
           "",
         makkahHotel: cd.makkahHotel || null,
         madinahHotel: cd.madinahHotel || null,
+        // Retain the saved numeric/TBC status when adapting DB packages to
+        // fallback cards. A starting_price of 0.00 alone is ambiguous.
+        packagePrices: getPackagePriceOptions(pkg),
         price: pkg.startingPrice
           ? Number(pkg.startingPrice).toLocaleString("en-CA", {
             minimumFractionDigits: 0,

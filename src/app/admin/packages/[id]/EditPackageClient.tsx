@@ -12,6 +12,8 @@ import MonthYearPicker from '@/components/admin/MonthYearPicker';
 import DurationInput from '@/components/admin/DurationInput';
 import IconPicker from '@/components/admin/IconPicker';
 import { formatTravelMonth, formatDuration } from '@/lib/packageHelpers';
+import { validatePackagePriceRows, getStartingPriceFromRows } from '@/lib/packagePricing';
+import { isTbcPrice } from '@/lib/priceDisplay';
 
 const defaultHajjCardData = {
   bannerImage: '',
@@ -697,7 +699,7 @@ export default function EditPackageClient({ packageData }: EditPackageClientProp
                   : p.occupancyType === 'single'
                     ? 'Single Occupancy'
                     : p.notes || 'Package Type',
-          price: String(p.amount || ''),
+          price: String(p.amount ?? ''),
         }))
         : null);
 
@@ -705,7 +707,7 @@ export default function EditPackageClient({ packageData }: EditPackageClientProp
       return rawPrices.map((item: any) => ({
         packageType: typeof item === 'object' ? item.packageType || item.type || '' : '',
         price: typeof item === 'object' ? String(item.price ?? item.amount ?? '') : String(item ?? ''),
-        priceStatus: typeof item === 'object' && item.priceStatus === 'tbc' ? 'tbc' : 'numeric',
+        priceStatus: typeof item === 'object' && isTbcPrice(item.price, item.priceStatus) ? 'tbc' : 'numeric',
       }));
     }
 
@@ -731,7 +733,7 @@ export default function EditPackageClient({ packageData }: EditPackageClientProp
   const addPackagePriceRow = () => {
     setEditingPkg((prev: any) => ({
       ...prev,
-      packagePrices: [...(prev.packagePrices || []), { packageType: '', price: '' }],
+      packagePrices: [...(prev.packagePrices || []), { packageType: '', price: '', priceStatus: 'numeric' }],
     }));
   };
 
@@ -746,7 +748,9 @@ export default function EditPackageClient({ packageData }: EditPackageClientProp
   const updatePackagePriceRow = (idx: number, field: 'packageType' | 'price' | 'priceStatus', value: string) => {
     setEditingPkg((prev: any) => {
       const updated = [...(prev.packagePrices || [])];
-      updated[idx] = { ...updated[idx], [field]: value };
+      updated[idx] = field === 'priceStatus'
+        ? { ...updated[idx], priceStatus: value, price: value === 'tbc' ? '0' : updated[idx].price }
+        : { ...updated[idx], [field]: value };
       return { ...prev, packagePrices: updated };
     });
   };
@@ -755,37 +759,10 @@ export default function EditPackageClient({ packageData }: EditPackageClientProp
     e.preventDefault();
     if (!editingPkg) return;
 
-    // Filter and validate package types & prices
-    const validRows = (editingPkg.packagePrices || [])
-      .map((row: any) => ({
-        packageType: (row.packageType || '').trim(),
-        price: String(row.price || '').trim(),
-        priceStatus: row.priceStatus === 'tbc' ? 'tbc' : 'numeric',
-      }))
-      .filter((row: any) => row.packageType || row.price);
-
-    if (validRows.length === 0) {
-      alert('Please add at least one Package Type & Price.');
-      return;
-    }
-
-    for (const row of validRows) {
-      if (!row.packageType) {
-        alert('Package Type cannot be empty.');
-        return;
-      }
-      const num = Number(row.price);
-      if (row.priceStatus !== 'tbc' && (isNaN(num) || num <= 0)) {
-        alert(`Please enter a valid positive ${currencySettings.symbol} price for "${row.packageType}".`);
-        return;
-      }
-    }
-
-    // Determine minimum numeric price for startingPrice column compatibility
-    const numericPrices = validRows.map((r: any) => Number(r.price)).filter((n: number) => !isNaN(n) && n > 0);
-    const minPrice = numericPrices.length > 0
-      ? Math.min(...numericPrices).toFixed(2)
-      : String(editingPkg.startingPrice ?? '0.00');
+    const { rows: validRows, error } = validatePackagePriceRows(editingPkg.packagePrices);
+    if (error) { alert(error); return; }
+    // TBC is represented by priceStatus, never by text in the DECIMAL column.
+    const minPrice = getStartingPriceFromRows(validRows);
 
     const existingCardData = typeof editingPkg.cardData === 'string'
       ? parseJSON(editingPkg.cardData, {})
@@ -821,6 +798,8 @@ export default function EditPackageClient({ packageData }: EditPackageClientProp
     setIsSubmitting(false);
     if (res.success) {
       setSaveMsg('Package Updated Successfully!');
+      setEditingPkg((current: any) => ({ ...current, startingPrice: minPrice, packagePrices: validRows, cardData: updatedCardData, detailPageData: updatedDetailPageData }));
+      router.refresh();
       setTimeout(() => setSaveMsg(null), 3000);
     } else {
       alert(res.error || 'Failed to update package.');
@@ -973,11 +952,11 @@ export default function EditPackageClient({ packageData }: EditPackageClientProp
                       </div>
                       <div className="w-40 sm:w-48">
                         <label className="text-[9px] font-bold text-ink-lt mb-0.5 block">PRICE (£)</label>
-                        <select value={row.priceStatus || 'numeric'} onChange={e => updatePackagePriceRow(idx, 'priceStatus', e.target.value)} className="mb-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold"><option value="numeric">Numeric price</option><option value="tbc">TBC</option></select>
+                        <select value={row.priceStatus || 'numeric'} onChange={e => updatePackagePriceRow(idx, 'priceStatus', e.target.value)} className="mb-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold"><option value="numeric">Numeric price</option><option value="tbc">TBC (Coming Soon)</option></select>
                         <input
                           type="text"
                           placeholder="2795.00"
-                          value={row.price || ''}
+                          value={row.priceStatus === 'tbc' ? 'Coming Soon' : (row.price ?? '')}
                           disabled={row.priceStatus === 'tbc'}
                           onChange={e => updatePackagePriceRow(idx, 'price', e.target.value)}
                           className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-bold text-slate-900 outline-none focus:border-primary"

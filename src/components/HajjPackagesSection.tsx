@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { getPackagesByType, getPackagesByIds } from "@/actions/packageActions";
 import PackageBookingModal from "@/components/PackageBookingModal";
 import PackageDetailModal from "@/components/PackageDetailModal";
-import { isTbcPrice } from "@/lib/priceDisplay";
+import { getPackagePriceOptions, getLowestPriceOption } from '@/lib/packagePricing';
 import HajjLandscapeCard from "@/components/HajjLandscapeCard";
 import { isPackageCardVisible, isAccommodationVisible } from "@/lib/packageCardVisibility";
 export default function HajjPackagesSection({
@@ -245,15 +245,12 @@ export default function HajjPackagesSection({
                 const packageCode = cleanText(
                   cd.packageCode || pkg.packageCode || detailData.packageCode
                 );
-                const quadPrice = Array.isArray(cd.packagePrices) ? cd.packagePrices.find((item: any) => /quad/i.test(item.packageType || item.type || "")) : null;
-                const price = isTbcPrice(pkg.startingPrice, quadPrice?.priceStatus)
-                  ? "Coming Soon"
-                  : pkg.startingPrice
-                    ? Number(pkg.startingPrice).toLocaleString("en-CA", {
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 0,
-                    })
-                    : cleanText(pkg.price || cd.price);
+                const lowestPrice = getLowestPriceOption(getPackagePriceOptions(pkg));
+                const price = !lowestPrice
+                  ? cleanText(pkg.price || cd.price || 'Coming Soon')
+                  : lowestPrice.priceStatus === 'tbc'
+                    ? 'Coming Soon'
+                    : lowestPrice.price.toLocaleString('en-CA', { maximumFractionDigits: 0 });
                 const makkahHotel = cd.makkahHotel || pkg.makkahHotel;
                 const madinahHotel = cd.madinahHotel || pkg.madinahHotel;
                 const aziziyaHotel = cd.aziziyaHotel || pkg.aziziyaHotel;
@@ -363,6 +360,7 @@ export default function HajjPackagesSection({
                       operatorRating={operatorRating}
                       priceSubtext={priceSubtext}
                       price={price}
+                      priceStatus={lowestPrice?.priceStatus}
                       bookLabel={data?.isDestinationSection ? (cd.btnLabel || "Book Now") : (data?.buttonLabel || "BOOK NOW")}
                       onViewDetail={() => {
                         if (data?.isDestinationSection) {

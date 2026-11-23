@@ -4,6 +4,7 @@ import HajjLandscapeCard from "@/components/HajjLandscapeCard";
 import HajjPackagePager from "@/components/HajjPackagePager";
 import { isAccommodationVisible, isPackageCardVisible } from "@/lib/packageCardVisibility";
 import { isTbcPrice } from "@/lib/priceDisplay";
+import { formatPackagePriceOption, getLowestPriceOption, getPackagePriceOptions } from "@/lib/packagePricing";
 import { useCurrency } from "@/components/CurrencyProvider";
 import PageBanner from "@/components/PageBanner";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
@@ -77,8 +78,14 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
               const heroImage = cd.bannerImage || card.thumbnail || card.heroImage || card.featuredImage || card.image || "/uploads/sections/hajj_1.jpg";
               const title = card.title || cd.packageTitle || "Hajj Package 2027";
               const rawPrice = String(card.startingPrice ?? card.price ?? cd.price ?? "").trim();
-              const quadPrice = Array.isArray(cd.packagePrices) ? cd.packagePrices.find((p: any) => /quad/i.test(p.packageType || p.type || "")) : null;
-              const price = isTbcPrice(rawPrice, quadPrice?.priceStatus) ? "Coming Soon" : rawPrice ? `${currencySettings.symbol} ${Number.isFinite(Number(rawPrice.replace(/[,£$A-Z\s]/g, ""))) ? Number(rawPrice.replace(/[,£$A-Z\s]/g, "")).toLocaleString(currencySettings.locale) : rawPrice}` : "";
+              // Starting Price and other custom package types can be TBC too.
+              // Read the actual saved row status, never infer it from the numeric
+              // startingPrice (which is 0.00 for both TBC and numeric zero).
+              const selectedPrice = getLowestPriceOption(getPackagePriceOptions(card));
+              const price = selectedPrice
+                ? formatPackagePriceOption(selectedPrice, currencySettings.symbol, currencySettings.locale)
+                : isTbcPrice(rawPrice) ? "Coming Soon"
+                  : rawPrice ? `${currencySettings.symbol} ${Number.isFinite(Number(rawPrice.replace(/[,£$A-Z\s]/g, ""))) ? Number(rawPrice.replace(/[,£$A-Z\s]/g, "")).toLocaleString(currencySettings.locale) : rawPrice}` : "";
               const priceSubtext = cd.priceSubtext || card.priceSubtext || "";
               const operatorName = cd.operatorName || card.operatorName || "";
               const operatorRating = cd.operatorRating || card.operatorRating || "";
@@ -189,6 +196,7 @@ export default function HajjPackagesPageClient({ initialPageData, packages = [] 
                 operatorRating={operatorRating}
                 priceSubtext={priceSubtext}
                 price={price}
+                priceStatus={selectedPrice?.priceStatus}
                 bookLabel={btnLabel}
                 onViewDetail={() => { window.location.href = `/package/${pkgSlug}`; }}
                 onBook={() => { window.location.href = `/package/${pkgSlug}`; }}

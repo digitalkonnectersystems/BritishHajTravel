@@ -1,7 +1,8 @@
 export type PriceStatus = 'numeric' | 'tbc';
 
 export function isTbcPrice(value: unknown, status?: unknown) {
-  return status === 'tbc' || String(value ?? '').trim().toLowerCase() === 'tbc';
+  return ['tbc', 'coming soon'].includes(String(status ?? '').trim().toLowerCase()) ||
+    ['tbc', 'coming soon'].includes(String(value ?? '').trim().toLowerCase());
 }
 
 export function displayPrice(value: unknown, status?: unknown, currency = '£') {

@@ -11,6 +11,7 @@ import Link from 'next/link';
 import SeoCenterModal from '@/components/admin/SeoCenterModal';
 import MonthYearPicker from '@/components/admin/MonthYearPicker';
 import { formatTravelMonth } from '@/lib/packageHelpers';
+import { validatePackagePriceRows, getStartingPriceFromRows, formatStartingPrice } from '@/lib/packagePricing';
 
 interface PackagesClientProps {
   initialPackages: any[];
@@ -33,9 +34,9 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
     type: 'umrah' as 'umrah' | 'hajj',
     month: '',
     packagePrices: [
-      { packageType: 'Quad Occupancy', price: '2795.00' },
-      { packageType: 'Triple Occupancy', price: '3195.00' },
-      { packageType: 'Double Occupancy', price: '3595.00' },
+      { packageType: 'Quad Occupancy', price: '2795.00', priceStatus: 'numeric' },
+      { packageType: 'Triple Occupancy', price: '3195.00', priceStatus: 'numeric' },
+      { packageType: 'Double Occupancy', price: '3595.00', priceStatus: 'numeric' },
     ],
     starRating: '5 Star',
     shortDescription: '',
@@ -45,7 +46,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
   const addPackagePriceRow = () => {
     setNewPkg((prev: any) => ({
       ...prev,
-      packagePrices: [...(prev.packagePrices || []), { packageType: '', price: '' }],
+      packagePrices: [...(prev.packagePrices || []), { packageType: '', price: '', priceStatus: 'numeric' }],
     }));
   };
 
@@ -60,7 +61,9 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
   const updatePackagePriceRow = (idx: number, field: 'packageType' | 'price' | 'priceStatus', value: string) => {
     setNewPkg((prev: any) => {
       const updated = [...(prev.packagePrices || [])];
-      updated[idx] = { ...updated[idx], [field]: value };
+      updated[idx] = field === 'priceStatus'
+        ? { ...updated[idx], priceStatus: value, price: value === 'tbc' ? '0' : updated[idx].price }
+        : { ...updated[idx], [field]: value };
       return { ...prev, packagePrices: updated };
     });
   };
@@ -68,33 +71,9 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const validRows = (newPkg.packagePrices || [])
-      .map((row: any) => ({
-        packageType: (row.packageType || '').trim(),
-        price: String(row.price || '').trim(),
-        priceStatus: row.priceStatus === 'tbc' ? 'tbc' : 'numeric',
-      }))
-      .filter((row: any) => row.packageType || row.price);
-
-    if (validRows.length === 0) {
-      alert('Please add at least one Package Type & Price.');
-      return;
-    }
-
-    for (const row of validRows) {
-      if (!row.packageType) {
-        alert('Package Type cannot be empty.');
-        return;
-      }
-      const num = Number(row.price);
-      if (row.priceStatus !== 'tbc' && (isNaN(num) || num <= 0)) {
-        alert(`Please enter a valid positive ${currencySettings.symbol} price for "${row.packageType}".`);
-        return;
-      }
-    }
-
-    const numericPrices = validRows.map((r: any) => Number(r.price)).filter((n: number) => !isNaN(n) && n > 0);
-    const minPrice = numericPrices.length > 0 ? Math.min(...numericPrices).toFixed(2) : '1995.00';
+    const { rows: validRows, error } = validatePackagePriceRows(newPkg.packagePrices);
+    if (error) { alert(error); return; }
+    const minPrice = getStartingPriceFromRows(validRows);
 
     const cardDataWithPrices = {
       packagePrices: validRows,
@@ -124,9 +103,9 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
         type: 'umrah',
         month: '',
         packagePrices: [
-          { packageType: 'Quad Occupancy', price: '2795.00' },
-          { packageType: 'Triple Occupancy', price: '3195.00' },
-          { packageType: 'Double Occupancy', price: '3595.00' },
+          { packageType: 'Quad Occupancy', price: '2795.00', priceStatus: 'numeric' },
+          { packageType: 'Triple Occupancy', price: '3195.00', priceStatus: 'numeric' },
+          { packageType: 'Double Occupancy', price: '3595.00', priceStatus: 'numeric' },
         ],
         starRating: '5 Star',
         shortDescription: '',
@@ -324,11 +303,11 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
                     </div>
                     <div className="w-40 sm:w-48">
                       <label className="text-[9px] font-bold text-ink-lt mb-0.5 block">PRICE (£)</label>
-                      <select value={row.priceStatus || 'numeric'} onChange={e => updatePackagePriceRow(idx, 'priceStatus', e.target.value)} className="mb-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold"><option value="numeric">Numeric price</option><option value="tbc">TBC</option></select>
+                      <select value={row.priceStatus || 'numeric'} onChange={e => updatePackagePriceRow(idx, 'priceStatus', e.target.value)} className="mb-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold"><option value="numeric">Numeric price</option><option value="tbc">TBC (Coming Soon)</option></select>
                       <input
                         type="text"
                         placeholder="2795.00"
-                        value={row.price || ''}
+                        value={row.priceStatus === 'tbc' ? 'Coming Soon' : (row.price ?? '')}
                         disabled={row.priceStatus === 'tbc'}
                         onChange={e => updatePackagePriceRow(idx, 'price', e.target.value)}
                         className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-bold text-slate-900 outline-none focus:border-primary"
@@ -451,7 +430,7 @@ export default function PackagesClient({ initialPackages }: PackagesClientProps)
                         {formatTravelMonth(pkg.month) || 'Flexible'}
                       </td>
                       <td className="py-3.5 px-4 font-black text-slate-900">
-                        £ {Number(pkg.startingPrice).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                        {formatStartingPrice(pkg, '£ ', 'en-US', 2)}
                       </td>
                       <td className="py-3.5 px-4">
                         <button

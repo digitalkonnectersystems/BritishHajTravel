@@ -1,5 +1,6 @@
 "use client";
 import { useCurrency } from "@/components/CurrencyProvider";
+import { isTbcPrice } from "@/lib/priceDisplay";
 
 export type HajjCardAccommodation = {
   city: string;
@@ -27,6 +28,7 @@ export type HajjLandscapeCardProps = {
   operatorRating?: string;
   priceSubtext?: string;
   price?: string;
+  priceStatus?: "numeric" | "tbc";
   bookLabel: string;
   onViewDetail: () => void;
   onBook: () => void;
@@ -40,12 +42,21 @@ export default function HajjLandscapeCard({
   duration,
   priceSubtext,
   price,
+  priceStatus,
   bookLabel,
   onViewDetail,
   onBook,
 }: HajjLandscapeCardProps) {
   const currency = useCurrency();
-  const displayPrice = price && /^(?:CAD|GBP|USD|EUR|SAR|PKR|£|\$|€)\s*/i.test(price) ? `${currency.symbol} ${price.replace(/^(?:CAD|GBP|USD|EUR|SAR|PKR|£|\$|€)\s*/i, "")}` : price && /^\d[\d,.]*$/.test(price) ? `${currency.symbol} ${price}` : price;
+  // Price status must be checked explicitly: numeric 0 and TBC both store 0.00.
+  const comingSoon = isTbcPrice(price, priceStatus);
+  const displayPrice = comingSoon
+    ? "Coming Soon"
+    : price && /^(?:CAD|GBP|USD|EUR|SAR|PKR|£|\$|€)\s*/i.test(price)
+      ? `${currency.symbol} ${price.replace(/^(?:CAD|GBP|USD|EUR|SAR|PKR|£|\$|€)\s*/i, "")}`
+      : price && /^\d[\d,.]*$/.test(price)
+        ? `${currency.symbol} ${price}`
+        : price;
   return (
     <article className="group flex h-full min-w-0 flex-col overflow-hidden rounded-[22px] border border-[#d1d1d1] border-t-4 border-t-red bg-white ">
       <div className="relative h-44 shrink-0 overflow-hidden bg-[#071a45] sm:h-48">
@@ -78,7 +89,7 @@ export default function HajjLandscapeCard({
           </span>
           <p className="mb-4 text-lg font-black text-red flex items-center gap-2" title={displayPrice || "Price on request"}>
             {displayPrice || "Price on request"}
-            {price && <span className="text-sm font-medium text-ink-soft">/ Person</span>}
+            {price && !comingSoon && <span className="text-sm font-medium text-ink-soft">/ Person</span>}
           </p>
           <div className="flex gap-2">
             <button
