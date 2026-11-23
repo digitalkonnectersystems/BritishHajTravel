@@ -150,6 +150,7 @@ export default async function RootLayout({
     >
       <head>
         <FontAwesomeStylesheet />
+        <link rel="alternate" type="application/rss+xml" title="British Haj Travel RSS Feed" href="/feed/" />
         {/* Google Analytics 4 (GA4) Tracking Script */}
         {isGaActive && (
           <>
