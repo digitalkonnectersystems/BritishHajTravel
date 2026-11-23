@@ -1,3 +1,5 @@
+import { SEO_REDIRECTS } from "./seo-redirects.mjs";
+
 /** @type {import("next").NextConfig} */
 const nextConfig = {
   deploymentId:
@@ -17,6 +19,10 @@ const nextConfig = {
   //     },
   //   ];
   // },
+  async redirects() {
+    // Permanent SEO redirects for duplicate pages and expired offers (see seo-redirects.mjs).
+    return SEO_REDIRECTS.map(({ source, destination }) => ({ source, destination, statusCode: 301 }));
+  },
   async rewrites() {
     return {
       afterFiles: [
