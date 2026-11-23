@@ -110,7 +110,7 @@ export async function submitCustomizedPackageAction(raw: CustomizedEnquiryInput)
 }
 
 export async function getCustomizedEnquiriesAction() {
-  await requireAdmin(['admin', 'enquiry_manager']);
+  await requireAdmin(['admin']);
   const rows = await db.select().from(customizedPackageEnquiries)
     .where(isNull(customizedPackageEnquiries.deletedAt))
     .orderBy(desc(customizedPackageEnquiries.createdAt)).limit(500);
@@ -120,7 +120,7 @@ export async function getCustomizedEnquiriesAction() {
 }
 
 export async function updateCustomizedEnquiryStatusAction(id: number, status: 'new' | 'contacted' | 'qualified' | 'closed' | 'spam') {
-  await requireAdmin(['admin', 'enquiry_manager']);
+  await requireAdmin(['admin']);
   if (!Number.isSafeInteger(id) || id < 1 || !(['new','contacted','qualified','closed','spam'] as string[]).includes(status))
     throw new Error('Invalid enquiry update');
   const row = await db.select({enquiryNumber:customizedPackageEnquiries.enquiryNumber}).from(customizedPackageEnquiries)
@@ -137,7 +137,7 @@ export async function updateCustomizedEnquiryStatusAction(id: number, status: 'n
 }
 
 export async function deleteCustomizedEnquiryAction(id:number) {
-  await requireAdmin(['admin', 'enquiry_manager']);
+  await requireAdmin(['admin']);
   if (!Number.isSafeInteger(id) || id<1) throw new Error('Invalid enquiry');
   const row=await db.select({enquiryNumber:customizedPackageEnquiries.enquiryNumber}).from(customizedPackageEnquiries)
     .where(and(eq(customizedPackageEnquiries.id,id),isNull(customizedPackageEnquiries.deletedAt))).limit(1);

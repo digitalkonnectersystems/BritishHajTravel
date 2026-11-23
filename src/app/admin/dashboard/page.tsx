@@ -15,6 +15,7 @@ import { getActivityAnalyticsAction } from '@/actions/activityAnalyticsActions';
 export default async function AdminDashboardPage() {
   const session = await getCurrentSession();
   if (!session) redirect('/letstravel');
+  if (session.role === 'enquiry_manager') redirect('/admin/enquiries');
 
   const enquiries = ['super_admin', 'admin', 'enquiry_manager'].includes(session.role) ? await getDashboardRecentEnquiriesAction() : [];
   const packages = await getAllPackages();

@@ -10,6 +10,7 @@ import { requireAdmin } from '@/lib/requireAdmin';
 import { logAdminActivityAction } from '@/actions/activityActions';
 import { recordUserHeartbeatAction } from '@/actions/userActions';
 import { runtimeInfo, runtimeWarn, runtimeError } from '@/lib/runtimeDiagnostics';
+import { adminHomeForRole } from '@/lib/adminRoleAccess';
 
 export async function adminLogin(formData: FormData) {
   const startedAt = Date.now();
@@ -23,6 +24,7 @@ export async function adminLogin(formData: FormData) {
   }
 
   let stage = 'database lookup';
+  let loginDestination = '/admin/dashboard';
   try {
     // Select only the fields needed for authentication. This avoids failing
     // because of unrelated missing columns (for example, display badge fields).
@@ -53,6 +55,7 @@ export async function adminLogin(formData: FormData) {
     }
 
     stage = 'session creation';
+    loginDestination = adminHomeForRole(user.role);
     await createSessionCookie({
       userId: user.id,
       email: user.email,
@@ -97,8 +100,8 @@ export async function adminLogin(formData: FormData) {
   }
 
   // A Next.js redirect is an exception internally. Keep it outside the try/catch.
-  runtimeInfo('auth.login_redirect', { targetPath: '/admin/dashboard', elapsedMs: Date.now() - startedAt });
-  redirect('/admin/dashboard');
+  runtimeInfo('auth.login_redirect', { targetPath: loginDestination, elapsedMs: Date.now() - startedAt });
+  redirect(loginDestination);
 }
 
 export async function adminLogout() {

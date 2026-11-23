@@ -14,6 +14,7 @@ import { revalidatePath } from 'next/cache';
 import { dispatchFormEmails, type FormEmailAudit } from '@/lib/emailService';
 import { logAdminActivityAction } from '@/actions/activityActions';
 import { enquiryFormLabel } from '@/lib/formEnquiryCatalog';
+import { writeEnquiryStatusAudit } from '@/lib/enquiryStatusAudit';
 
 const validEmail = (email: unknown) => typeof email === 'string' && email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 const validName = (name: unknown) => typeof name === 'string' && name.trim().length >= 2 && name.trim().length <= 255;
@@ -901,32 +902,48 @@ async function deleteDedicatedEnquiry(row: EnquiryRow): Promise<void> {
   }
 }
 
-export async function updateEnquiryStatus(enquiryId: number, status: any, internalNotes?: string): Promise<void> {
-  await requireAdmin(['admin', 'enquiry_manager']);
+const ALLOWED_ENQUIRY_STATUSES = [
+  'new', 'contacted', 'qualified', 'quotation_sent',
+  'followup_required', 'booked', 'closed', 'spam',
+] as const;
 
+export async function updateEnquiryStatus(enquiryId: number, status: string, internalNotes?: string): Promise<void> {
+  const actor = await requireAdmin(['admin', 'enquiry_manager']);
+  if (!Number.isSafeInteger(enquiryId) || enquiryId < 1 ||
+      !ALLOWED_ENQUIRY_STATUSES.some((allowed) => allowed === status)) {
+    throw new Error('Invalid enquiry or status.');
+  }
+  // Restricted accounts cannot modify internal notes, even by calling the action directly.
+  if (actor.role === 'enquiry_manager' && internalNotes !== undefined) {
+    throw new Error('Enquiry managers may update status only.');
+  }
+
+  const validatedStatus = status as (typeof ALLOWED_ENQUIRY_STATUSES)[number];
   try {
     const found = await db.select().from(enquiries).where(eq(enquiries.id, enquiryId)).limit(1);
     const row = found[0];
     if (!row) throw new Error(`Enquiry ${enquiryId} was not found.`);
 
-    const previousEntry = { status: row.status, internalNotes: row.internalNotes };
-    await syncDedicatedEnquiryStatus(row, String(status));
-    await db
-      .update(enquiries)
-      .set({
-        status,
-        internalNotes: internalNotes === undefined ? row.internalNotes : internalNotes,
-        updatedAt: new Date(),
-      })
-      .where(eq(enquiries.id, enquiryId));
+    await syncDedicatedEnquiryStatus(row, validatedStatus);
+    await db.update(enquiries).set({
+      status: validatedStatus,
+      ...(internalNotes === undefined ? {} : { internalNotes }),
+      updatedAt: new Date(),
+    }).where(eq(enquiries.id, enquiryId));
 
-    await logAdminActivityAction({
-      type: 'enquiries',
-      action: 'Updated Enquiry Status',
-      details: `Enquiry ${row.enquiryNumber} (${row.fullName}) status changed to "${status}"`,
-      previousEntry,
-      newEntry: { status, internalNotes: internalNotes === undefined ? row.internalNotes : internalNotes },
-    });
+    // Audit through an internal-only helper; exposing a general audit-writing Server
+    // Action to the restricted role would allow it to forge unrelated events.
+    try {
+      await writeEnquiryStatusAudit({
+        actor,
+        enquiryNumber: row.enquiryNumber,
+        fullName: row.fullName,
+        previousStatus: row.status,
+        newStatus: validatedStatus,
+      });
+    } catch (auditError) {
+      console.warn('Enquiry status updated but audit logging failed:', auditError);
+    }
 
     revalidatePath('/admin/enquiries');
     revalidatePath('/admin/dashboard');
@@ -937,7 +954,7 @@ export async function updateEnquiryStatus(enquiryId: number, status: any, intern
 }
 
 export async function deleteEnquiryAction(id: number): Promise<{ success: boolean; error?: string }> {
-  await requireAdmin(['admin', 'enquiry_manager']);
+  await requireAdmin(['admin']);
 
   try {
     const found = await db.select().from(enquiries).where(eq(enquiries.id, id)).limit(1);
@@ -964,7 +981,7 @@ export async function deleteEnquiryAction(id: number): Promise<{ success: boolea
 }
 
 export async function markEnquiriesReadAction(ids: number[]): Promise<{ success: boolean; error?: string }> {
-  await requireAdmin(['admin', 'enquiry_manager']);
+  await requireAdmin(['admin']);
 
   try {
     if (!ids || ids.length === 0) return { success: true };
@@ -990,7 +1007,7 @@ export async function markEnquiriesReadAction(ids: number[]): Promise<{ success:
 }
 
 export async function deleteEnquiriesBulkAction(ids: number[]): Promise<{ success: boolean; error?: string }> {
-  await requireAdmin(['admin', 'enquiry_manager']);
+  await requireAdmin(['admin']);
 
   try {
     if (!ids || ids.length === 0) return { success: true };

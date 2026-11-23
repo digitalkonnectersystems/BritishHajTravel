@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { adminLogout } from '@/actions/authActions';
 import { useAdminSession } from '@/components/admin/AdminSessionProvider';
+import { isAllowedAdminPathForRole } from '@/lib/adminRoleAccess';
 import AdminPackageDetailModal from '@/components/admin/AdminPackageDetailModal';
 import SessionTimer from '@/components/admin/SessionTimer';
 import UserPresenceWidget from '@/components/admin/UserPresenceWidget';
@@ -258,6 +259,7 @@ export default function AdminLayout({ children, activeNavHref }: AdminLayoutProp
         {/* Nav */}
         <nav className="flex-1 pt-5 flex flex-col gap-1.5">
           {navItems.filter((item) => {
+            if (currentUser?.role === 'enquiry_manager') return item.href === '/admin/enquiries';
             if (!currentUser || currentUser.role === 'super_admin' || currentUser.role === 'admin') return true;
             if (item.href === '/admin/enquiries' || item.href === '/admin/customized-enquiries') return currentUser.role === 'enquiry_manager';
             if (item.href === '/admin/backend-logs') return false;
@@ -312,7 +314,7 @@ export default function AdminLayout({ children, activeNavHref }: AdminLayoutProp
           {/* Center: 8-Hour Session Countdown Timer & Team Presence */}
           <div className="flex items-center justify-center gap-3">
             <SessionTimer loginTime={currentUser?.loginTime} />
-            <UserPresenceWidget currentUser={currentUser} />
+            {currentUser.role !== 'enquiry_manager' && <UserPresenceWidget currentUser={currentUser} />}
           </div>
 
           {/* Right Side: Actions & Profile Menu */}
@@ -419,23 +421,23 @@ export default function AdminLayout({ children, activeNavHref }: AdminLayoutProp
                       <span>Account Settings</span>
                     </Link>}
 
-                    <Link
+                    {isAllowedAdminPathForRole(currentUser.role, '/admin/activity') && <Link
                       href="/admin/activity"
                       onClick={() => setProfileOpen(false)}
                       className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-primary hover:bg-emerald-50 transition-colors no-underline"
                     >
                       <Activity className="w-4 h-4 text-primary" />
                       <span>Activity Audit Logs</span>
-                    </Link>
+                    </Link>}
 
-                    <Link
+                    {isAllowedAdminPathForRole(currentUser.role, '/admin/pages') && <Link
                       href="/admin/pages"
                       onClick={() => setProfileOpen(false)}
                       className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-primary hover:bg-emerald-50 transition-colors no-underline"
                     >
                       <Layers className="w-4 h-4 text-amber-600" />
                       <span>Page Builder</span>
-                    </Link>
+                    </Link>}
                   </div>
 
                   {/* Logout Action */}

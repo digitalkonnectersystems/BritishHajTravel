@@ -3596,7 +3596,7 @@ export default function AdminSettingsPage() {
                                   : u.role === 'content_editor'
                                     ? 'Content Editor'
                                     : u.role === 'enquiry_manager'
-                                      ? 'Enquiry Manager'
+                                      ? 'Enquiries Only (Status Updates)'
                                       : 'SEO Manager'}
                             </span>
                           </td>
@@ -3778,7 +3778,7 @@ export default function AdminSettingsPage() {
                             >
                               <option value="admin">Full Admin</option>
                               <option value="content_editor">Restricted Editor</option>
-                              <option value="enquiry_manager">Enquiry Manager</option>
+                              <option value="enquiry_manager">Enquiries Only (View + Status)</option>
                               <option value="seo_manager">SEO Manager</option>
                             </select>
                           </div>

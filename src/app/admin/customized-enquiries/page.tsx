@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 export default async function CustomizedEnquiriesPage() {
   const session = await getCurrentSession();
   if (!session) redirect('/letstravel');
-  if (!['super_admin', 'admin', 'enquiry_manager'].includes(session.role)) redirect('/admin/dashboard');
+  if (!['super_admin', 'admin'].includes(session.role)) redirect('/admin/dashboard');
   const enquiries = await getCustomizedEnquiriesAction();
   return <AdminLayout user={session}><CustomizedEnquiriesClient initialRows={enquiries}/></AdminLayout>;
 }

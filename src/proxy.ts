@@ -1,13 +1,15 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { runtimeInfo, runtimeWarn, shouldTracePublicPath } from '@/lib/runtimeDiagnostics';
+import { verifySession } from '@/lib/sessionToken';
+import { ENQUIRY_MANAGER_HOME, isAllowedAdminPathForRole } from '@/lib/adminRoleAccess';
 
 /**
  * The public URL for flight tickets is /flights.
  * Only the current public Flights route is /flights; /airlines remains an alias.
  * Admin session verification is performed by the protected server-side code.
  */
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const isActionRequest = request.method === 'POST' && Boolean(request.headers.get('next-action'));
   const trace = isActionRequest || shouldTracePublicPath(pathname);
@@ -54,9 +56,11 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(destination, 308);
   }
 
-  const hasSessionCookie = Boolean(request.cookies.get('bht_admin_session')?.value);
+  const adminPage = normalizedPath === '/admin' || normalizedPath.startsWith('/admin/');
+  const adminApi = normalizedPath.startsWith('/api/admin/');
+  const sessionCookie = request.cookies.get('bht_admin_session')?.value;
 
-  if ((pathname === '/admin' || pathname.startsWith('/admin/')) && !hasSessionCookie) {
+  if (adminPage && !sessionCookie) {
     const loginUrl = new URL('/letstravel', request.url);
     loginUrl.searchParams.set('from', pathname);
     if (trace) runtimeInfo('proxy.redirect', {
@@ -64,6 +68,30 @@ export function proxy(request: NextRequest) {
       toPath: '/letstravel', status: 307, isActionRequest,
     });
     return NextResponse.redirect(loginUrl);
+  }
+
+  if ((adminPage || adminApi) && sessionCookie) {
+    // Verify the signed role. The mere presence of a cookie does not grant access.
+    // Only admin requests incur this lookup; the session-secret loader caches its value.
+    let session = null;
+    try { session = await verifySession(sessionCookie); } catch {
+      runtimeWarn('proxy.session_verification_failed', { path: pathname });
+    }
+    if (!session) {
+      if (adminApi || isActionRequest || !['GET', 'HEAD'].includes(request.method)) {
+        return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+      }
+      return NextResponse.redirect(new URL('/letstravel', request.url));
+    }
+
+    if (!isAllowedAdminPathForRole(session.role, normalizedPath) ||
+        (session.role === 'enquiry_manager' && adminApi)) {
+      if (adminApi || isActionRequest || !['GET', 'HEAD'].includes(request.method)) {
+        return NextResponse.json({ error: 'Forbidden: enquiries only' }, { status: 403 });
+      }
+      const destination = new URL(ENQUIRY_MANAGER_HOME, request.url);
+      return NextResponse.redirect(destination, 307);
+    }
   }
 
   return NextResponse.next();

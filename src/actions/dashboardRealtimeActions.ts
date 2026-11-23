@@ -7,7 +7,7 @@ import { and, count, eq, gte, isNull, sql, desc } from 'drizzle-orm';
 const days = 14;
 const dayKey = (date:Date) => date.toISOString().slice(0,10);
 export async function getDashboardRealtimeAction() {
-  await requireAdmin(['admin','enquiry_manager','content_editor','seo_manager']);
+  await requireAdmin(['admin','content_editor','seo_manager']);
   const earliest = new Date(); earliest.setUTCHours(0,0,0,0); earliest.setUTCDate(earliest.getUTCDate()-days+1);
   const results = await Promise.all([
     db.select({value:count()}).from(enquiries),
@@ -31,7 +31,7 @@ export async function getDashboardRealtimeAction() {
 // Dashboard-only projection: legacy databases can lack optional email-audit columns.
 // Never turn query failures into an empty list, which looks like zero actual enquiries.
 export async function getDashboardRecentEnquiriesAction() {
-  await requireAdmin(['admin','enquiry_manager']);
+  await requireAdmin(['admin']);
   return db.select({
     id: enquiries.id,
     enquiryNumber: enquiries.enquiryNumber,

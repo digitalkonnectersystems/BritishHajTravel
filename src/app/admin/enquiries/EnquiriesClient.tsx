@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { updateEnquiryStatus, deleteEnquiryAction, getEnquiriesList } from '@/actions/enquiryActions';
+import { useAdminSession } from '@/components/admin/AdminSessionProvider';
+import { canDeleteEnquiries } from '@/lib/adminRoleAccess';
 import ConfirmModal, { ConfirmModalConfig } from '@/components/ui/ConfirmModal';
 import ModalPortal from '@/components/ui/ModalPortal';
 import { Trash2, Search, Filter, Eye, X, Mail } from 'lucide-react';
@@ -21,6 +23,8 @@ const FORM_TAG_CONFIG: Record<string, { label: string; bg: string; text: string;
 };
 
 export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientProps) {
+  const currentUser = useAdminSession();
+  const allowDelete = canDeleteEnquiries(currentUser.role);
   const [enquiries, setEnquiries] = useState<any[]>(initialEnquiries);
   const [refreshError, setRefreshError] = useState('');
   useEffect(() => {
@@ -92,6 +96,7 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
   };
 
   const handleDelete = (id: number, refNum: string) => {
+    if (!allowDelete) return;
     setConfirmConfig({
       icon: <Trash2 className="w-4 h-4 text-red" />,
       title: `Delete Query ${refNum}?`,
@@ -282,14 +287,14 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
                           >
                             <Eye className="w-3.5 h-3.5" /> View
                           </button>
-                          <button
+                          {allowDelete && <button
                             type="button"
                             onClick={() => handleDelete(item.id, item.enquiryNumber || `QT-${item.id}`)}
                             title="Delete Query"
                             className="w-7 h-7 rounded-full bg-red-50 hover:bg-red text-red hover:text-white flex items-center justify-center border-none cursor-pointer transition-all"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
-                          </button>
+                          </button>}
                         </div>
                       </td>
                     </tr>
@@ -312,7 +317,7 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
                   {['new','contacted','qualified','quotation_sent','followup_required','booked','closed','spam'].map(status => <option key={status} value={status}>{status.replace(/_/g, ' ')}</option>)}
                 </select>
                 <button type="button" onClick={() => setSelectedEnquiry(item)} className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 font-bold text-blue-800">View</button>
-                <button type="button" onClick={() => handleDelete(item.id, item.enquiryNumber)} className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 font-bold text-red-800">Delete</button>
+                {allowDelete && <button type="button" onClick={() => handleDelete(item.id, item.enquiryNumber)} className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 font-bold text-red-800">Delete</button>}
               </div>
             </article>)}
           </div>
