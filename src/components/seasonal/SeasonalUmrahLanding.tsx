@@ -103,7 +103,7 @@ export default function SeasonalUmrahLanding({
             <h1 className="font-serif text-white text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">{data.title}</h1>
             <p className="mt-5 max-w-[710px] text-sm leading-[1.8] text-[#e5eaf9] sm:text-base">{data.intro}</p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <Link href="/umrah-packages/" className={ctaClass}>EXPLORE PACKAGES <ArrowRight size={16} aria-hidden="true" /></Link>
+              <Link href="/umrah-packages" className={ctaClass}>EXPLORE PACKAGES <ArrowRight size={16} aria-hidden="true" /></Link>
             </div>
           </div>
 
@@ -169,7 +169,7 @@ export default function SeasonalUmrahLanding({
             <p className="eyebrow">HISTORIC DEPARTURES</p>
             <h2 className={sectionTitleClass}>Package records are not configured yet</h2>
             <p className="max-w-2xl text-sm leading-relaxed text-slate-600">The page requires the supplied database migration to create the historic packages and their database-driven detail pages.</p>
-            <Link href="/umrah-packages/" className={ctaClass}>VIEW UMRAH PACKAGES <ArrowRight size={16} aria-hidden="true" /></Link>
+            <Link href="/umrah-packages" className={ctaClass}>VIEW UMRAH PACKAGES <ArrowRight size={16} aria-hidden="true" /></Link>
           </div>
         )}
       </section>
@@ -180,7 +180,7 @@ export default function SeasonalUmrahLanding({
             <p className="eyebrow">WHERE YOU STAY</p>
             <h2 className={sectionTitleClass}>Hotels in Makkah &amp; Madinah</h2>
             <p className="mb-6 mt-5 max-w-[470px] text-sm leading-[1.8] text-slate-600 sm:text-[15px]">Explore hotel options and confirm availability, walking distance, facilities and room types before choosing your package.</p>
-            <Link href="/hotels/" className={ctaClass}>VIEW ALL HOTELS <ArrowRight size={17} aria-hidden="true" /></Link>
+            <Link href="/hotels" className={ctaClass}>VIEW ALL HOTELS <ArrowRight size={17} aria-hidden="true" /></Link>
           </div>
           {first && (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

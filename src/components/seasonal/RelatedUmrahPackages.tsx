@@ -28,7 +28,7 @@ export default function RelatedUmrahPackages({
             <p className="eyebrow">EXPLORE MORE</p>
             <h2 id="other-umrah-packages-heading" className="font-serif text-primary text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[0.98]">Explore Other Umrah Packages</h2>
           </div>
-          <Link href="/umrah-packages/" className="inline-flex shrink-0 items-center gap-2 text-xs font-extrabold text-red transition-colors hover:text-[#ed1b24]">
+          <Link href="/umrah-packages" className="inline-flex shrink-0 items-center gap-2 text-xs font-extrabold text-red transition-colors hover:text-[#ed1b24]">
             VIEW ALL UMRAH PACKAGES <ArrowRight size={16} aria-hidden="true" />
           </Link>
         </div>
