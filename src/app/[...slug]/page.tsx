@@ -128,7 +128,9 @@ export default async function DynamicPage({
       const rule = await lookupRedirect(slugPath);
       if (rule) {
         if (trace) runtimeInfo('page.cms_redirect', { path: slugPath, targetPath: rule.destinationPath, status: rule.httpCode });
-        if (rule.httpCode === 308) permanentRedirect(rule.destinationPath);
+        if (rule.httpCode === 301 || rule.httpCode === 308) {
+          permanentRedirect(rule.destinationPath);
+        }
         redirect(rule.destinationPath);
       }
     } catch (error: any) {

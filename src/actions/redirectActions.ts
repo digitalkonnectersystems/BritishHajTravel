@@ -21,12 +21,14 @@ export async function listRedirectsAction() {
   ]);
   return { rules, hits };
 }
+const ALLOWED_REDIRECT_CODES = [301, 302, 307, 308] as const;
+
 export async function saveRedirectAction(raw: {id?:number; sourcePath:string; destinationPath:string; httpCode:number}) {
   await requireAdmin(['admin', 'content_editor']);
   const sourcePath = normalizeTrackedPath(raw.sourcePath);
   const destinationPath = normalizeTrackedPath(raw.destinationPath);
-  if (!validLocalPath(sourcePath) || !validLocalPath(destinationPath) || sourcePath===destinationPath || ![307,308].includes(raw.httpCode))
-    return { success:false, error:'Enter two distinct internal paths and a valid HTTP redirect code.' };
+  if (!validLocalPath(sourcePath) || !validLocalPath(destinationPath) || sourcePath===destinationPath || !ALLOWED_REDIRECT_CODES.includes(raw.httpCode as any))
+    return { success:false, error:'Enter two distinct internal paths and a valid HTTP redirect code (301, 302, 307, or 308).' };
   try {
     // A published CMS page wins over this catch-all redirect route.
     const occupiedSource = await db.select({id:sitePages.id}).from(sitePages)

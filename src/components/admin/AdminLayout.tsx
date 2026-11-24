@@ -261,7 +261,7 @@ export default function AdminLayout({ children, activeNavHref }: AdminLayoutProp
           {navItems.filter((item) => {
             if (currentUser?.role === 'enquiry_manager') return item.href === '/admin/enquiries';
             if (!currentUser || currentUser.role === 'super_admin' || currentUser.role === 'admin') return true;
-            if (item.href === '/admin/enquiries' || item.href === '/admin/customized-enquiries') return currentUser.role === 'enquiry_manager';
+            if (item.href === '/admin/enquiries' || item.href === '/admin/customized-enquiries') return false;
             if (item.href === '/admin/backend-logs') return false;
             if (item.href === '/admin/redirects') return currentUser.role === 'content_editor';
             if (item.href === '/admin/seo') return currentUser.role === 'content_editor' || currentUser.role === 'seo_manager';
