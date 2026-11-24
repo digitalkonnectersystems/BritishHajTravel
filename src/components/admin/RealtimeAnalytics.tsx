@@ -44,7 +44,7 @@ export default function RealtimeAnalytics({ initial, onSnapshot }: { initial: An
     {error && <p role="status" className="mb-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">{error}</p>}
     <div className="mb-5 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-9">
       {items.map(([label, value], i) => <div key={label} className="relative overflow-hidden rounded-2xl border border-slate-100 bg-slate-50 p-3 shadow-[0_10px_28px_-24px_rgba(15,23,42,.55)]">
-        <span className="absolute inset-x-0 top-0 h-[3px]" style={{ backgroundColor: ['#0d9488', '#3b82f6', '#ec4899'][i % 3] }} />
+        <span className="absolute inset-x-0 top-0 h-[3px]" style={{ backgroundColor: ['#0B1672', '#B50007'][i % 2] }} />
         <p className="text-[10px] font-bold text-gray-500">{label}</p><p className="mt-1 text-2xl font-black tabular-nums text-slate-900">{value}</p>
       </div>)}
     </div>

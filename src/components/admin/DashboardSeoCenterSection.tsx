@@ -25,7 +25,7 @@ interface DashboardSeoCenterSectionProps {
 function MetricWave({ value, label }: { value: number; label: string }) {
   const pct = Math.max(0, Math.min(100, Number(value) || 0));
   const end = 4 + pct * 1.92;
-  const color = pct >= 80 ? '#059669' : pct >= 50 ? '#ca8a04' : '#dc2626';
+  const color = pct >= 80 ? '#0B1672' : pct >= 50 ? '#3B82F6' : '#B50007';
   return <svg className="h-7 w-full" viewBox="0 0 200 28" role="img" aria-label={`${label}: ${pct} percent complete`}>
     <path d="M 4 15 L 196 15" stroke="#cbd5e1" strokeWidth="2" strokeLinecap="round" strokeDasharray="2 5" />
     {pct > 0 && <><path d={`M 4 15 Q ${4 + pct * .48} 9 ${end} 15`} stroke={color} strokeWidth="4" fill="none" strokeLinecap="round" /><circle cx={end} cy="15" r="3" fill={color} stroke="white" strokeWidth="1" /></>}
@@ -119,7 +119,7 @@ export default function DashboardSeoCenterSection({ pages, audit = [] }: Dashboa
         {/* Card 1: Health Rating Circle Gauge */}
         <div className="bg-[#F8FAFC] rounded-2xl p-5 border border-slate-200 flex flex-col items-center justify-center text-center relative overflow-hidden">
           <div className="w-full rounded-2xl bg-white/70 p-4 mb-3 border border-emerald-100 text-center">
-            <span className="block text-3xl font-black text-emerald-900">{healthRating}%</span>
+            <span className="block text-3xl font-black text-[#0B1672]">{healthRating}%</span>
             <span className="block text-[9px] font-extrabold uppercase tracking-wider text-gray-500">Measured health rating</span>
             <MetricWave value={healthRating} label="Overall SEO health" />
           </div>
@@ -239,7 +239,7 @@ export default function DashboardSeoCenterSection({ pages, audit = [] }: Dashboa
         {/* A single measured score, not fabricated historical data. */}
         <div className="rounded-2xl border border-slate-100 bg-slate-50 px-5 py-4">
           <div className="mb-1 flex items-baseline justify-between"><span className="text-xs font-bold text-slate-600">Current measured audit score</span><span className="text-2xl font-black text-primary">{healthRating}%</span></div>
-          <div className="relative mt-5 mb-6 overflow-hidden rounded-full bg-slate-200/75 h-5" role="meter" aria-label="Current SEO audit score" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.max(0, Math.min(100, healthRating))}>
+          <div className="relative mt-5 mb-6 overflow-hidden rounded-full bg-[#0B1672] h-5" role="meter" aria-label="Current SEO audit score" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.max(0, Math.min(100, healthRating))}>
             <div className="relative h-full rounded-full shadow-[0_4px_16px_rgba(56,189,248,.32)] transition-[width] duration-500" style={{ width: `${Math.max(0, Math.min(100, healthRating))}%`, backgroundColor: healthRating >= 80 ? '#059669' : healthRating >= 50 ? '#ca8a04' : '#dc2626' }} />
           </div>
           <div className="flex justify-between text-[10px] font-bold text-gray-500"><span>0 · Needs attention</span><span>50 · Improving</span><span>100 · Excellent</span></div>
