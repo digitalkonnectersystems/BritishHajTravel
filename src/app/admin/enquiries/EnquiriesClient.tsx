@@ -6,7 +6,7 @@ import { useAdminSession } from '@/components/admin/AdminSessionProvider';
 import { canDeleteEnquiries } from '@/lib/adminRoleAccess';
 import ConfirmModal, { ConfirmModalConfig } from '@/components/ui/ConfirmModal';
 import ModalPortal from '@/components/ui/ModalPortal';
-import { Trash2, Search, Filter, Eye, X, Mail } from 'lucide-react';
+import { Trash2, Search, Filter, Eye, X, Mail, Download } from 'lucide-react';
 import { WaveAnalyticsChart, chartDays, dailySeries } from '@/components/admin/WaveAnalyticsChart';
 import { ENQUIRY_FORM_CATALOG, enquiryFormKey, enquiryFormLabel } from '@/lib/formEnquiryCatalog';
 
@@ -21,6 +21,66 @@ const FORM_TAG_CONFIG: Record<string, { label: string; bg: string; text: string;
   visa_enquiry: { label: 'Visa Inquiry', bg: 'bg-sky-50', text: 'text-sky-700', border: 'border-sky-200' },
   flight_enquiry: { label: 'Flight Inquiry', bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
 };
+
+type EnquiryDateFilter = 'all' | 'today' | 'weekly' | 'monthly' | 'yearly';
+
+function isWithinDateFilter(value: unknown, filter: EnquiryDateFilter, now: Date): boolean {
+  if (filter === 'all') return true;
+  if (!value) return false;
+
+  const date = value instanceof Date ? value : new Date(String(value));
+  if (Number.isNaN(date.getTime()) || date > now) return false;
+
+  const start = new Date(now);
+  start.setHours(0, 0, 0, 0);
+  if (filter === 'weekly') {
+    const daysSinceMonday = (start.getDay() + 6) % 7;
+    start.setDate(start.getDate() - daysSinceMonday);
+  } else if (filter === 'monthly') {
+    start.setDate(1);
+  } else if (filter === 'yearly') {
+    start.setMonth(0, 1);
+  }
+  return date >= start;
+}
+
+function csvCell(value: unknown): string {
+  let text = value === null || value === undefined ? '' : String(value);
+  if (/^[=+\-@\t\r]/.test(text)) text = `'${text}`;
+  return `"${text.replace(/"/g, '""')}"`;
+}
+
+function normalizeMessageField(label: string): string {
+  return label.trim().replace(/\s+/g, ' ').toLowerCase();
+}
+
+function parseMessageFields(message: unknown): Map<string, { label: string; value: string }> {
+  const fields = new Map<string, { label: string; value: string }>();
+  if (typeof message !== 'string') return fields;
+
+  let currentKey: string | null = null;
+  for (const line of message.split(/\r?\n/)) {
+    const match = line.match(/^([^:\r\n]{1,80}):\s*(.*)$/);
+    if (match) {
+      const label = match[1].trim();
+      const key = normalizeMessageField(label);
+      if (!key) continue;
+
+      const previous = fields.get(key);
+      fields.set(key, {
+        label: previous?.label || label,
+        value: previous ? `${previous.value}\n${match[2]}` : match[2],
+      });
+      currentKey = key;
+    } else if (currentKey && line.trim()) {
+      const field = fields.get(currentKey)!;
+      field.value += `\n${line}`;
+    } else {
+      currentKey = null;
+    }
+  }
+  return fields;
+}
 
 export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientProps) {
   const currentUser = useAdminSession();
@@ -48,6 +108,7 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [formTypeTab, setFormTypeTab] = useState('all');
+  const [dateFilter, setDateFilter] = useState<EnquiryDateFilter>('all');
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
   const [confirmConfig, setConfirmConfig] = useState<ConfirmModalConfig | null>(null);
   const [selectedEnquiry, setSelectedEnquiry] = useState<any | null>(null);
@@ -61,6 +122,7 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedEnquiry]);
 
+  const filterNow = new Date();
   const filtered = enquiries.filter((e) => {
     const q = search.trim().toLowerCase();
     const matchesSearch =
@@ -75,8 +137,70 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
     const matchesStatus = statusFilter === 'all' || e.status === statusFilter;
     const matchesFormTab = formTypeTab === 'all' ||
       (formTypeTab === 'legacy' ? !enquiryFormKey(e.sourceForm) : enquiryFormKey(e.sourceForm) === formTypeTab);
-    return matchesSearch && matchesStatus && matchesFormTab;
+    const matchesDate = isWithinDateFilter(e.createdAt || e.created_at, dateFilter, filterNow);
+    return matchesSearch && matchesStatus && matchesFormTab && matchesDate;
   });
+
+  const downloadCsv = () => {
+    const columns = [
+      'Submitted At', 'Reference', 'Form', 'Name', 'Email', 'Phone', 'WhatsApp',
+      'City', 'Province', 'Package / Details', 'Departure', 'Adults', 'Children',
+      'Infants', 'Occupancy', 'Status', 'Message',
+    ];
+    const parsedMessages = filtered.map(item => parseMessageFields(item.message));
+    const existingColumns = new Set(columns.map(normalizeMessageField));
+    const dynamicColumns = new Map<string, string>();
+    for (const fields of parsedMessages) {
+      for (const [key, field] of fields) {
+        if (!existingColumns.has(key) && !dynamicColumns.has(key)) {
+          dynamicColumns.set(key, field.label);
+        }
+      }
+    }
+    const extraColumns = [...dynamicColumns.entries()]
+      .sort(([, first], [, second]) => first.localeCompare(second))
+      .map(([key, label]) => ({ key, label }));
+    const rows = filtered.map((item, index) => {
+      const createdAt = item.createdAt || item.created_at;
+      const date = createdAt ? new Date(createdAt) : null;
+      const values = [
+        date && !Number.isNaN(date.getTime()) ? date.toLocaleString('en-GB') : '',
+        item.enquiryNumber || `QT-${item.id}`,
+        enquiryFormLabel(item.sourceForm),
+        item.fullName,
+        item.email,
+        item.phone,
+        item.whatsapp,
+        item.city,
+        item.province,
+        item.preferredPackageType || item.type,
+        item.departureMonth,
+        item.adults,
+        item.children,
+        item.infants,
+        item.occupancy,
+        item.status,
+        item.message,
+        ...extraColumns.map(({ key }) => parsedMessages[index].get(key)?.value || ''),
+      ];
+      return values.map(csvCell).join(',');
+    });
+    const headers = [...columns, ...extraColumns.map(({ label }) => label)];
+    const blob = new Blob(['\uFEFF', [headers.map(csvCell).join(','), ...rows].join('\r\n')], {
+      type: 'text/csv;charset=utf-8',
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const formName = formTypeTab === 'all'
+      ? 'all-forms'
+      : formTypeTab === 'legacy'
+        ? 'legacy-forms'
+        : formTypeTab;
+    link.href = url;
+    link.download = `form-queries-${formName}-${dateFilter}.csv`;
+    link.click();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
 
   const newCount = enquiries.filter((e) => e.status === 'new').length;
   const enquiryDays = chartDays(14);
@@ -174,8 +298,20 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
           />
         </div>
 
-        <div className="flex items-center gap-2 w-full sm:w-auto">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
           <Filter className="w-4 h-4 text-gray-500" />
+          <select
+            aria-label="Filter enquiries by date"
+            value={dateFilter}
+            onChange={(e) => setDateFilter(e.target.value as EnquiryDateFilter)}
+            className="px-3 py-2 border border-slate-200 rounded-xl text-xs bg-white text-slate-700 font-bold outline-none cursor-pointer"
+          >
+            <option value="all">All time</option>
+            <option value="today">Today</option>
+            <option value="weekly">This week</option>
+            <option value="monthly">This month</option>
+            <option value="yearly">This year</option>
+          </select>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
@@ -191,6 +327,16 @@ export default function EnquiriesClient({ initialEnquiries }: EnquiriesClientPro
             <option value="closed">● Closed</option>
             <option value="spam">● Spam</option>
           </select>
+          <button
+            type="button"
+            onClick={downloadCsv}
+            disabled={filtered.length === 0}
+            title="Download matching enquiries as an Excel-compatible CSV"
+            className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-primary px-3 py-2 text-xs font-extrabold text-white transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <Download className="h-4 w-4" />
+            Download CSV
+          </button>
         </div>
       </div>
 
