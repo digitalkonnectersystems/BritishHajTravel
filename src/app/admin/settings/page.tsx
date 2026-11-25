@@ -418,6 +418,7 @@ export default function AdminSettingsPage() {
       { id: 'name', label: 'Name', type: 'text', placeholder: 'Name', required: true },
       { id: 'email', label: 'Email', type: 'email', placeholder: 'Email', required: true },
       { id: 'phone', label: 'Phone', type: 'tel', placeholder: 'xxxx-xxxx xxx', required: true },
+      { id: 'postcode', label: 'Postcode', type: 'text', placeholder: 'Postcode', required: false },
       { id: 'airport', label: 'Airport', type: 'select', placeholder: 'London (LON)', required: true },
       { id: 'packageTier', label: 'Umrah Package', type: 'select', placeholder: '5-Star', required: true },
       { id: 'travelDate', label: 'Estimated Date of Travel', type: 'date', placeholder: 'Select Date', required: true },
@@ -612,7 +613,7 @@ export default function AdminSettingsPage() {
   };
 
   const [formsData, setFormsData] = useState<any>({
-    umrahRegistrationForm: { title: 'Umrah Enquiry 2026-27 Form', subtitle: 'Reusable 9-field Umrah enquiry form for any published CMS page.', recipientEmail: '', successMessage: 'Your Umrah enquiry has been received. We will be in touch.', enabled: true, buttonText: 'Submit' },
+    umrahRegistrationForm: { title: 'Umrah Enquiry 2026-27 Form', subtitle: 'Reusable 10-field Umrah enquiry form for any published CMS page.', recipientEmail: '', successMessage: 'Your Umrah enquiry has been received. We will be in touch.', enabled: true, buttonText: 'Submit' },
     hajjRegistrationForm: { title: 'Hajj 2027 Registration Form', subtitle: 'Reusable Hajj registration form. Add it to a published CMS page from Admin > Pages > Sections.', recipientEmail: '', successMessage: 'Your Hajj 2027 registration enquiry has been received. We will be in touch.', enabled: true, buttonText: 'Submit' },
     yosrHajjForm: { title: 'YOSR Al Mashaer Hajj Form', subtitle: 'Reusable branded YOSR Hajj registration form. Add it from Admin > Pages > Sections.', recipientEmail: '', successMessage: 'Your YOSR Hajj registration enquiry was received. We will be in touch.', enabled: true, buttonText: 'Submit' },
     baanHoldingHajjForm: { title: 'BAAN Holding Hajj Interest Form', subtitle: 'BAAN Holding Hajj page registration modal at /baan-holding-hajj/.', recipientEmail: 'booking@britishhajjtravel.com', successMessage: 'Your BAAN Holding Hajj enquiry has been received.', enabled: true, buttonText: 'Submit Enquiry' },
@@ -735,12 +736,16 @@ export default function AdminSettingsPage() {
         }));
         if (data.formFieldsState) {
           setFormFieldsState((prev) => {
-            const merged = { ...prev, ...data.formFieldsState };
+            const merged: typeof prev = { ...prev, ...data.formFieldsState };
             Object.keys(prev).forEach((k) => {
               if (!merged[k] || merged[k].length === 0) {
                 merged[k] = prev[k];
               }
             });
+            const postcodeField = prev.umrahRegistrationForm.find(field => field.id === 'postcode');
+            if (postcodeField && !merged.umrahRegistrationForm.some(field => field.id === 'postcode')) {
+              merged.umrahRegistrationForm = [...merged.umrahRegistrationForm, postcodeField];
+            }
             return merged;
           });
         }

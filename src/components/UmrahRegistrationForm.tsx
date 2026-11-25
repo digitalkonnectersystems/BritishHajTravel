@@ -6,12 +6,13 @@ import { submitUmrahRegistrationEnquiryAction } from '@/lib/publicEnquiryClient'
 import { normalizeUkPhoneInput } from '@/lib/ukPhone';
 import { defaultBaanContent } from '@/lib/baanContent';
 
-type FieldKey = 'name' | 'email' | 'phone' | 'airport' | 'packageTier' | 'travelDate' | 'passengers' | 'makkahDays' | 'madinahDays';
+type FieldKey = 'name' | 'email' | 'phone' | 'postcode' | 'airport' | 'packageTier' | 'travelDate' | 'passengers' | 'makkahDays' | 'madinahDays';
 type FieldConfig = { id: string; label: string; type: string; placeholder: string; required: boolean };
 const defaultFields: Record<FieldKey, FieldConfig> = {
   name: { id: 'name', label: 'Name', type: 'text', placeholder: 'Name', required: true },
   email: { id: 'email', label: 'Email', type: 'email', placeholder: 'Email', required: true },
   phone: { id: 'phone', label: 'Phone', type: 'tel', placeholder: 'xxxx-xxxx xxx', required: true },
+  postcode: { id: 'postcode', label: 'Postcode', type: 'text', placeholder: 'Postcode', required: false },
   airport: { id: 'airport', label: 'Airport', type: 'select', placeholder: 'London (LON)', required: true },
   packageTier: { id: 'packageTier', label: 'Umrah Package', type: 'select', placeholder: '5-Star', required: true },
   travelDate: { id: 'travelDate', label: 'Estimated Date of Travel', type: 'date', placeholder: 'Select Date', required: true },
@@ -29,10 +30,11 @@ const choices: Partial<Record<FieldKey, string[]>> = {
 const fieldRows: FieldKey[][] = [
   ['name', 'email', 'phone'],
   ['airport', 'packageTier', 'travelDate'],
-  ['passengers', 'makkahDays', 'madinahDays'],
+  ['postcode', 'passengers', 'makkahDays', 'madinahDays'],
 ];
 const initialValues: Record<FieldKey, string> = {
   name: '', email: '', phone: '+44',
+  postcode: '',
   airport: defaultBaanContent.airportOptions[0] || '',
   packageTier: defaultBaanContent.packageOptions[0] || '',
   travelDate: '', passengers: '', makkahDays: '10', madinahDays: '8',
@@ -109,7 +111,7 @@ export default function UmrahRegistrationForm({
         setError(result.error || 'Unable to submit your enquiry.');
       } else {
         setSuccess(result.emailWarning ? `${successText} Email delivery may be delayed.` : successText);
-        setValues(current => ({ ...current, name: '', email: '', phone: '+44', travelDate: '', passengers: '' }));
+        setValues(current => ({ ...current, name: '', email: '', phone: '+44', postcode: '', travelDate: '', passengers: '' }));
       }
     } catch {
       setError('Unable to submit your enquiry. Please try again.');
@@ -135,10 +137,10 @@ export default function UmrahRegistrationForm({
       ) : (
         <input id={id} name={key} className={inputClass}
           type={key === 'passengers' ? 'number' : key === 'travelDate' ? 'date' : key === 'email' ? 'email' : key === 'phone' ? 'tel' : 'text'}
-          autoComplete={key === 'name' ? 'name' : key === 'email' ? 'email' : key === 'phone' ? 'tel' : undefined}
+          autoComplete={key === 'name' ? 'name' : key === 'email' ? 'email' : key === 'phone' ? 'tel' : key === 'postcode' ? 'postal-code' : undefined}
           placeholder={settings.placeholder} required={settings.required} value={values[key]}
           onChange={event => change(key, event.target.value)}
-          maxLength={key === 'phone' ? 13 : key === 'name' ? 255 : undefined}
+          maxLength={key === 'phone' ? 13 : key === 'name' ? 255 : key === 'postcode' ? 20 : undefined}
           min={key === 'passengers' ? 1 : undefined} max={key === 'passengers' ? 99 : undefined}
           pattern={key === 'phone' ? '\\+44[0-9]{10}' : undefined} />
       )}
@@ -151,7 +153,7 @@ export default function UmrahRegistrationForm({
       <h2 className="font-bold text-center text-[#ee1717] text-[23px] md:text-[25px] leading-tight mb-8">{heading}</h2>
       <form onSubmit={submit} className="space-y-3" autoComplete="on">
         {fieldRows.map((row, index) => (
-          <div key={index} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-3">
+          <div key={index} className={`grid grid-cols-1 sm:grid-cols-2 ${row.length === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-3'} gap-x-5 gap-y-3`}>
             {row.map(field)}
           </div>
         ))}

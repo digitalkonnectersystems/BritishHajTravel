@@ -392,7 +392,7 @@ const SECTION_CATALOG: SectionCategory[] = [
 
       { type: 'Banner Logo', description: 'Upload a page-specific logo and display it inside this page\'s shared hero banner.', pages: ['Any Page'] },
 
-      { type: 'Umrah Enquiry 2026-27 Form', description: 'Reusable nine-field Umrah enquiry section with separate admin/customer email templates.', pages: ['Any Page', 'Umrah Packages', 'Homepage'] },
+      { type: 'Umrah Enquiry 2026-27 Form', description: 'Reusable 10-field Umrah enquiry section with separate admin/customer email templates.', pages: ['Any Page', 'Umrah Packages', 'Homepage'] },
 
       { type: 'Hajj 2027 Registration Form', description: 'Reusable 10-field Hajj enquiry form with global form fields and separate admin/customer email templates. Place and reorder on any CMS page.', pages: ['Any Page', 'Hajj Packages', 'Homepage'] },
       { type: 'YOSR Al Mashaer Hajj Form', description: 'Branded 10-field YOSR Hajj form with independent admin/customer email templates. Reusable on any published page.', pages: ['Any Page', 'Hajj Packages', 'Homepage'] },

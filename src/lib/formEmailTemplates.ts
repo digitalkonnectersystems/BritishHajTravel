@@ -10,7 +10,7 @@ export type FormEmailTemplates = Record<string, FormEmailTemplatePair>;
 export const EMAIL_FORM_DEFINITIONS = [
   { key: 'hajjRegistrationForm', name: 'Hajj 2027 Registration Form', fields: 'enquiryNumber fullName email phone postcode airport packageTier passengers days room budget sourcePage' },
   { key: 'yosrHajjForm', name: 'YOSR Al Mashaer Hajj Form', fields: 'enquiryNumber fullName email phone postcode airport packageTier passengers days room budget sourcePage' },
-  { key: 'umrahRegistrationForm', name: 'Umrah Enquiry 2026-27 Form', fields: 'enquiryNumber fullName email phone airport packageTier travelDate passengers makkahDays madinahDays sourcePage' },
+  { key: 'umrahRegistrationForm', name: 'Umrah Enquiry 2026-27 Form', fields: 'enquiryNumber fullName email phone postcode airport packageTier travelDate passengers makkahDays madinahDays sourcePage' },
   { key: 'baanHoldingHajjForm', name: 'BAAN Holding Hajj Interest Form', fields: 'enquiryNumber fullName email phone postcode airport packageTier passengers days room budget' },
   { key: 'quoteForm', name: 'Get a Free Quote', fields: 'enquiryNumber fullName email phone packageType numberOfPilgrims message' },
   { key: 'packageDetailForm', name: 'Book Umrah Package', fields: 'bookingNumber packageName packageType fullName email phone adults children infants startDate totalPrice message' },
@@ -178,7 +178,7 @@ export function validateFormEmailTemplates(input: FormEmailTemplates): string | 
   return null;
 }
 export const FORM_EMAIL_SAMPLES: Record<string, Record<string, unknown>> = {
-  umrahRegistrationForm: { enquiryNumber: 'UM-123', fullName: 'Aisha Khan', email: 'aisha@example.com', phone: '+447957197390', airport: 'London (LON)', packageTier: '5-Star', travelDate: '2027-02-15', passengers: 2, makkahDays: 10, madinahDays: 8, sourcePage: '/umrah-packages/' },
+  umrahRegistrationForm: { enquiryNumber: 'UM-123', fullName: 'Aisha Khan', email: 'aisha@example.com', phone: '+447957197390', postcode: 'PR1 1AA', airport: 'London (LON)', packageTier: '5-Star', travelDate: '2027-02-15', passengers: 2, makkahDays: 10, madinahDays: 8, sourcePage: '/umrah-packages/' },
   yosrHajjForm: { enquiryNumber: 'YS-123', fullName: 'Ahmed Khan', email: 'ahmed@example.com', phone: '+447957197390', postcode: 'PR1 1AA', airport: 'London (LON)', packageTier: '5-Star', passengers: 2, days: '12 Days Packages', room: 'Double Room', budget: '5K - 7K', sourcePage: '/yosr-al-mashaer-hajj-uk-guide/' },
   hajjRegistrationForm: { enquiryNumber: 'HJ-123', fullName: 'Ahmed Khan', email: 'ahmed@example.com', phone: '+447957197390', postcode: 'PR1 1AA', airport: 'London (LON)', packageTier: '5-Star', passengers: 2, days: '12 Days Packages', room: 'Double Room', budget: '5K - 7K', sourcePage: '/hajj-packages/' },
   baanHoldingHajjForm: { enquiryNumber: 'BH-123', fullName: 'Ahmed Khan', email: 'ahmed@example.com', phone: '+447957197390', postcode: 'PR1 1AA', airport: 'London (LON)', packageTier: '5-Star', passengers: 2, days: '12 Days Packages', room: 'Double Room', budget: '5K - 7K' },

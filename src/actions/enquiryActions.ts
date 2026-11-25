@@ -67,6 +67,7 @@ export async function submitUmrahRegistrationEnquiryAction(data: {
   name: string;
   email: string;
   phone: string;
+  postcode?: string;
   airport: string;
   packageTier: string;
   travelDate: string;
@@ -83,6 +84,7 @@ export async function submitUmrahRegistrationEnquiryAction(data: {
     name: String(data.name || '').trim(),
     email: String(data.email || '').trim(),
     phone: String(data.phone || '').trim(),
+    postcode: String(data.postcode || '').trim(),
     airport: String(data.airport || '').trim(),
     packageTier: String(data.packageTier || '').trim(),
     travelDate: String(data.travelDate || '').trim(),
@@ -94,6 +96,7 @@ export async function submitUmrahRegistrationEnquiryAction(data: {
     && !Number.isNaN(Date.parse(clean.travelDate))
     && new Date(clean.travelDate).toISOString().slice(0, 10) === clean.travelDate;
   if (!validName(clean.name) || !validEmail(clean.email) || !isValidUkPhone(clean.phone) ||
+      clean.postcode.length > 20 ||
       !clean.airport || clean.airport.length > 120 || !clean.packageTier || clean.packageTier.length > 120 ||
       !dateValid || !countOk(clean.passengers, 1) ||
       !countOk(clean.makkahDays, 1) || clean.makkahDays > 60 ||
@@ -122,6 +125,7 @@ export async function submitUmrahRegistrationEnquiryAction(data: {
       `Page: ${sourcePage}`, `Airport: ${clean.airport}`, `Umrah Package: ${clean.packageTier}`,
       `Estimated Date of Travel: ${clean.travelDate}`, `Passengers: ${clean.passengers}`,
       `Days in Makkah: ${clean.makkahDays}`, `Days in Madinah: ${clean.madinahDays}`,
+      ...(clean.postcode ? [`Postcode: ${clean.postcode}`] : []),
     ].join('\n');
     await db.insert(enquiries).values({
       enquiryNumber, type: 'quote_request', fullName: clean.name, email: clean.email,
@@ -131,6 +135,7 @@ export async function submitUmrahRegistrationEnquiryAction(data: {
     await recordPublicEnquiry('Umrah Enquiry 2026-27 Form', enquiryNumber);
     const emailResult = await dispatchAndStoreEnquiryEmail(enquiryNumber, 'Umrah Enquiry 2026-27 Form', {
       enquiryNumber, fullName: clean.name, email: clean.email, phone: clean.phone,
+      postcode: clean.postcode,
       airport: clean.airport, packageTier: clean.packageTier, travelDate: clean.travelDate,
       passengers: clean.passengers, makkahDays: clean.makkahDays, madinahDays: clean.madinahDays,
       sourcePage,
