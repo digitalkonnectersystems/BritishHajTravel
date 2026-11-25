@@ -11,6 +11,8 @@ import { getBlogCanonicalRoute, toAbsoluteUrl } from '@/lib/seoMetadata';
 import { normalizeBlogFaqs, getVisibleBlogFaqs } from '@/lib/blogFaq';
 import { buildBlogStructuredData, serializeBlogStructuredData } from '@/lib/blogStructuredData';
 import FaqSection from '@/components/FaqSection';
+import { getLowestPriceOption, getPackagePriceOptions } from '@/lib/packagePricing';
+import { isTbcPrice } from '@/lib/priceDisplay';
 import { runtimeInfo, shouldTracePublicPath } from '@/lib/runtimeDiagnostics';
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -278,12 +280,26 @@ function SidebarPackageSection({
               pkg.featuredImage ||
               '/img/saudi-visa-1.webp';
 
-            const price = pkg.startingPrice
-              ? Number(pkg.startingPrice).toLocaleString(currency.locale, {
+            const lowestPrice = getLowestPriceOption(getPackagePriceOptions(pkg));
+            const comingSoon = lowestPrice
+              ? lowestPrice.priceStatus === 'tbc'
+              : isTbcPrice(pkg.startingPrice);
+            const numericPrice = lowestPrice
+              ? (lowestPrice.priceStatus === 'numeric' ? lowestPrice.price : null)
+              : (pkg.startingPrice !== null && pkg.startingPrice !== undefined && String(pkg.startingPrice).trim() !== '' && !comingSoon
+                ? Number(pkg.startingPrice)
+                : null);
+            const price = numericPrice !== null && Number.isFinite(numericPrice)
+              ? numericPrice.toLocaleString(currency.locale, {
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 0,
               })
               : null;
+            const displayPrice = comingSoon
+              ? 'Coming Soon'
+              : price
+                ? `${currency.symbol} ${price}`
+                : null;
 
             return (
               <div key={pkg.id} className="p-4">
@@ -311,8 +327,9 @@ function SidebarPackageSection({
                       <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wide">
                         From
                       </span>
-                      <div className="text-sm font-black text-primary">
-                        {price ? `${currency.symbol} ${price}` : 'Contact for price'}
+                      <div className="text-sm font-black text-red flex items-center gap-1.5">
+                        {displayPrice || "Price on request"}
+                        {price && !comingSoon}
                       </div>
                     </div>
                   </div>
