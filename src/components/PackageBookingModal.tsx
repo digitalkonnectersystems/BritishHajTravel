@@ -22,6 +22,7 @@ export default function PackageBookingModal({
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("+44");
   const [email, setEmail] = useState("");
+  const [postcode, setPostcode] = useState("");
   const [adults, setAdults] = useState("1");
   const [childrenCount, setChildrenCount] = useState("0");
   const [infantsCount, setInfantsCount] = useState("0");
@@ -176,6 +177,7 @@ export default function PackageBookingModal({
         fullName,
         phone,
         email,
+        postcode,
 
         adults: parseInt(adults, 10),
         children: parseInt(childrenCount, 10),
@@ -207,6 +209,7 @@ export default function PackageBookingModal({
 
         setFullName("");
         setEmail("");
+        setPostcode("");
         setSelectedDate("");
       } else {
         setBookingStatus(
@@ -383,6 +386,22 @@ export default function PackageBookingModal({
                   )}
                 </div>
 
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1" htmlFor="package-booking-postcode">
+                  Postcode <span className="font-normal text-slate-500">(optional)</span>
+                </label>
+                <input
+                  id="package-booking-postcode"
+                  type="text"
+                  autoComplete="postal-code"
+                  maxLength={20}
+                  placeholder="Postcode"
+                  value={postcode}
+                  onChange={(e) => setPostcode(e.target.value)}
+                  className="w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium"
+                />
               </div>
 
 

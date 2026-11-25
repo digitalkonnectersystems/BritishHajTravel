@@ -30,6 +30,7 @@ export default function PackageDetailPageClient({
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("+44");
   const [email, setEmail] = useState("");
+  const [postcode, setPostcode] = useState("");
   const [adults, setAdults] = useState("1");
   const [childrenCount, setChildrenCount] = useState("0");
   const [infantsCount, setInfantsCount] = useState("0");
@@ -71,6 +72,7 @@ export default function PackageDetailPageClient({
         fullName,
         phone,
         email,
+        postcode,
         adults: parseInt(adults, 10),
         children: parseInt(childrenCount, 10),
         infants: parseInt(infantsCount, 10),
@@ -87,6 +89,7 @@ export default function PackageDetailPageClient({
         setBookingStatus(null);
         setFullName("");
         setEmail("");
+        setPostcode("");
         setSelectedDate("");
         setSelectedPackageType("");
       } else {
@@ -729,6 +732,22 @@ export default function PackageDetailPageClient({
                       <span className="text-[10px] font-bold text-red mt-1 block">Please fill out this field.</span>
                     )}
                   </div>
+                </div>
+
+                <div>
+                  <label htmlFor="package-page-postcode" className="block text-xs font-bold text-slate-700 mb-1">
+                    Postcode <span className="font-normal text-slate-500">(optional)</span>
+                  </label>
+                  <input
+                    id="package-page-postcode"
+                    type="text"
+                    autoComplete="postal-code"
+                    maxLength={20}
+                    placeholder="Postcode"
+                    value={postcode}
+                    onChange={(e) => setPostcode(e.target.value)}
+                    className="w-full border border-line p-3 pr-3 rounded-sm bg-slate-50 outline-none focus:border-red transition-colors text-[#111111] text-sm font-medium"
+                  />
                 </div>
 
                 {/* Adults, Children, Infants Dropdowns */}

@@ -4768,7 +4768,7 @@ export default function AdminSettingsPage() {
                         </div>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
                           <div className="bg-[#0B132B] rounded-2xl p-4 text-white flex flex-col gap-3"><div className="text-xs font-bold">&lt;/&gt; EMAIL BODY HTML EDITOR <span className="text-emerald-400 text-[10px]">Live</span></div>
-                            <textarea rows={22} value={activeTemplate.body} onChange={e => updateFormTemplate('body', e.target.value)} className="w-full flex-1 bg-slate-900 text-white border border-slate-700 rounded-xl p-3 text-xs font-mono leading-relaxed" />
+                            <textarea rows={22} value={activeTemplate.body} onChange={e => updateFormTemplate('body', e.target.value)} className="w-full flex-1 bg-white text-white border border-slate-700 rounded-xl p-3 text-xs font-mono leading-relaxed" />
                           </div>
                           <div className="rounded-2xl border border-slate-200 p-4 flex flex-col gap-3"><div className="text-xs font-bold uppercase text-slate-700">Real-time email preview</div>
                             <div className="text-[11px] text-gray-500">To: {renderEmailTokens(activeTemplate.to, selectedForm.name, exampleData) || '(not configured)'}</div>

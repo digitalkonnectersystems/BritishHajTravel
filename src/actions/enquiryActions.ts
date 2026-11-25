@@ -393,6 +393,7 @@ export async function submitPackageBookingEnquiryAction(data: {
   fullName: string;
   phone: string;
   email: string;
+  postcode?: string;
   adults?: number;
   children?: number;
   infants?: number;
@@ -409,6 +410,7 @@ export async function submitPackageBookingEnquiryAction(data: {
       fullName,
       phone,
       email,
+      postcode = '',
       adults = 1,
       children = 0,
       infants = 0,
@@ -421,6 +423,9 @@ export async function submitPackageBookingEnquiryAction(data: {
     if (!isValidUkPhone(phone)) return {success: false, error: 'Phone must use +44 followed by exactly 10 digits.'};
     if (!validName(fullName) || !validEmail(email) || !phone) {
       return { success: false, error: 'Full Name, Email, and Phone number are required.' };
+    }
+    if (typeof postcode !== 'string' || postcode.length > 20) {
+      return { success: false, error: 'Postcode must be 20 characters or fewer.' };
     }
 
     if (!countOk(adults, 1) || !countOk(children) || !countOk(infants)) {
@@ -444,6 +449,7 @@ export async function submitPackageBookingEnquiryAction(data: {
       fullName,
       phone,
       email,
+      postcode: postcode.trim(),
       adults,
       children,
       infants,
@@ -467,7 +473,7 @@ export async function submitPackageBookingEnquiryAction(data: {
       departureMonth: startDate,
       status: 'new',
       sourceForm: enquiryFormLabel(formName),
-      message,
+      message: [message, postcode.trim() ? `Postcode: ${postcode.trim()}` : ''].filter(Boolean).join('\n'),
     });
     });
 
@@ -482,6 +488,7 @@ export async function submitPackageBookingEnquiryAction(data: {
         fullName,
         email,
         phone,
+        postcode: postcode.trim(),
         adults,
         children,
         infants,

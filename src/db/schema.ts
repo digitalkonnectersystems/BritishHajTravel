@@ -258,6 +258,7 @@ export const packageBookingEnquiries = mysqlTable('package_booking_enquiries', {
   fullName: varchar('full_name', { length: 255 }).notNull(),
   phone: varchar('phone', { length: 50 }).notNull(),
   email: varchar('email', { length: 255 }).notNull(),
+  postcode: varchar('postcode', { length: 20 }),
   adults: int('adults').default(1),
   children: int('children').default(0),
   infants: int('infants').default(0),

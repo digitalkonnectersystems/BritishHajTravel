@@ -221,6 +221,7 @@ export default function DynamicSiteForm({
           fullName,
           email,
           phone,
+          postcode: getVal(["postcode", "post code", "post_code", "postalcode", "postal code", "postalCode", "postal_code", "zip"]),
           packageName: packageType || "General Package Inquiry",
           message,
           adults: parseNumberSafe(getVal(["adults", "passengers"], "1"), 1),

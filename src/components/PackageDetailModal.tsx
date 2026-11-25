@@ -64,6 +64,7 @@ export default function PackageDetailModal({ isOpen, onClose, pkg }: PackageDeta
   const currencySettings = useCurrency();
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedPackageType, setSelectedPackageType] = useState<string>("");
+  const [postcode, setPostcode] = useState("");
   const [openFaqIdx, setOpenFaqIdx] = useState<number | null>(0);
 
   const parseJsonSafe = (val: any) => {
@@ -222,7 +223,8 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
   const handleBookingSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const formattedPriceStr = estimatedTotalFormatted ? `${currencyCode} ${estimatedTotalFormatted}` : price === 'Coming Soon' ? price : `${currencyCode} ${price}`;
-    const msg = `Hi British Hajj Travel! I want to book: ${title} (${formattedPriceStr}). Departure: ${departure}, Date: ${selectedDate || "Flexible"}, Package Type: ${effectivePackageType || "Standard"}.`;
+    const postcodeDetails = postcode.trim() ? `, Postcode: ${postcode.trim()}` : '';
+    const msg = `Hi British Hajj Travel! I want to book: ${title} (${formattedPriceStr}). Departure: ${departure}, Date: ${selectedDate || "Flexible"}, Package Type: ${effectivePackageType || "Standard"}${postcodeDetails}.`;
     window.open(`https://wa.me/19056248344?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
@@ -490,6 +492,22 @@ DURING STAY AT AZIZIYA - Hotel - Maktab-A-Category (Full Board)
                     </div>
                   </div>
                 )}
+
+                <div>
+                  <label htmlFor="package-detail-postcode" className="block text-xs font-bold text-slate-700 mb-1.5">
+                    Postcode <span className="font-normal text-slate-500">(optional)</span>
+                  </label>
+                  <input
+                    id="package-detail-postcode"
+                    type="text"
+                    autoComplete="postal-code"
+                    maxLength={20}
+                    value={postcode}
+                    onChange={(e) => setPostcode(e.target.value)}
+                    placeholder="Postcode"
+                    className="w-full bg-white border border-slate-200 rounded-xl p-3.5 text-xs text-slate-800 font-medium focus:ring-2 focus:ring-primary focus:outline-none"
+                  />
+                </div>
 
                 {/* Total Calculation Display */}
                 <div className="pt-2 flex justify-between items-center">
