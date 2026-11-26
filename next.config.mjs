@@ -8,9 +8,10 @@ const nextConfig = {
     process.env.VERCEL_GIT_COMMIT_SHA ||
     process.env.GITHUB_SHA ||
     undefined,
-  // experimental: {
-  //   inlineCss: true,
-  // },
+  experimental: {
+    // Keep this above the upload route's 100 MB file cap plus multipart overhead.
+    proxyClientMaxBodySize: '110mb',
+  },
   // async rewrites() {
   //   return [
   //     {

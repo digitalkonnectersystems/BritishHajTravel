@@ -41,6 +41,7 @@ import { getPackageHotelEntries } from '@/lib/packageHotelEntries';
 import SeoSettingsForm, { SeoSettings } from '@/components/admin/SeoSettingsForm';
 
 import ImageUploadWidget from '@/components/admin/ImageUploadWidget';
+import VideoUploadWidget from '@/components/admin/VideoUploadWidget';
 import { PILGRIMAGE_OFFERS_DEFAULTS } from '@/components/PilgrimageOffersSection';
 import HomepageSideBannerFields, { DEFAULT_HOMEPAGE_SIDE_BANNERS, readHomepageSideBanners } from '@/components/admin/HomepageSideBannerFields';
 import { DEFAULT_FEATURED_TRAVEL_SECTION } from '@/lib/featuredTravelExperiences';
@@ -402,6 +403,8 @@ const SECTION_CATALOG: SectionCategory[] = [
       { type: 'Text Block (Rich Text)', description: 'Free-form rich text editor block for long-form content.', pages: ['Any Page'] },
 
       { type: 'Elegant Text Content', description: 'Two-column section with text on the left, an image on the right, and an optional button.', pages: ['Any Page'] },
+
+      { type: 'Elegant Video Section', description: 'Two-column section with text on the left, an MP4 video on the right, and an optional button.', pages: ['Any Page'] },
 
       { type: 'Pilgrimage Offers & Quick Links', description: 'Two matching pink offer panels with image, feature checklist, three quick-link cards, Hajj CTA, editable slugs, and a centered eyebrow and heading.', pages: ['Any Page', 'Homepage', 'Hajj Packages', 'Umrah Packages'] },
 
@@ -1692,6 +1695,22 @@ function PageBuilderContent() {
         content: '',
         image: '',
         imageAlt: '',
+        buttonText: '',
+        buttonUrl: '',
+      };
+    } else if (type === 'Elegant Video Section') {
+      defaultData = {
+        eyebrow: '',
+        title: '',
+        highlight: '',
+        author: '',
+        paragraphOne: '',
+        paragraphTwo: '',
+        content: '',
+        videoUrl: '',
+        videoPoster: '',
+        videoFit: 'cover',
+        videoPosition: 'center',
         buttonText: '',
         buttonUrl: '',
       };
@@ -5157,7 +5176,7 @@ function PageBuilderContent() {
                               </div>
                             )}
 
-                            {sec.type !== 'Banner Logo' && sec.type !== 'Latest Blogs Grid' && sec.type !== 'Blog Posts Carousel' && sec.type !== 'Testimonials' && sec.type !== 'Hajj Services Grid' && sec.type !== 'Elegant Text Content' && sec.type !== 'Pilgrimage Offers & Quick Links' && sec.type !== 'Text Block (Rich Text)' && sec.type !== 'Packages Content (Rich Text)' && sec.type !== 'Plan Your Own Package Form' && sec.type !== 'Flight Enquiry Form' && sec.type !== 'Hajj 2027 Registration Form' && sec.type !== 'YOSR Al Mashaer Hajj Form' && sec.type !== 'Umrah Enquiry 2026-27 Form' && !['Package Detail Blocks', 'Package Flight Details', 'Package Hotel Details', 'Package Occupancy Prices', 'Package Inclusions', 'Package Detail Gallery'].includes(sec.type) && (
+                            {sec.type !== 'Banner Logo' && sec.type !== 'Latest Blogs Grid' && sec.type !== 'Blog Posts Carousel' && sec.type !== 'Testimonials' && sec.type !== 'Hajj Services Grid' && sec.type !== 'Elegant Text Content' && sec.type !== 'Elegant Video Section' && sec.type !== 'Pilgrimage Offers & Quick Links' && sec.type !== 'Text Block (Rich Text)' && sec.type !== 'Packages Content (Rich Text)' && sec.type !== 'Plan Your Own Package Form' && sec.type !== 'Flight Enquiry Form' && sec.type !== 'Hajj 2027 Registration Form' && sec.type !== 'YOSR Al Mashaer Hajj Form' && sec.type !== 'Umrah Enquiry 2026-27 Form' && !['Package Detail Blocks', 'Package Flight Details', 'Package Hotel Details', 'Package Occupancy Prices', 'Package Inclusions', 'Package Detail Gallery'].includes(sec.type) && (
 
                               <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 flex flex-col gap-2">
 
@@ -8597,6 +8616,124 @@ function PageBuilderContent() {
                                   minHeight="220px"
                                 />
                                 <p className="text-xs text-gray-500 m-0">Use Heading 2 and Heading 3 for titles inside the text. The styling is automatic. Existing Rich Text sections are unchanged.</p>
+                              </div>
+                            )}
+
+                            {sec.type === 'Elegant Video Section' && (
+                              <div className="mt-1 space-y-4 rounded-xl border border-slate-200 bg-white p-4">
+                                <div>
+                                  <h4 className="m-0 text-sm font-extrabold text-primary">Elegant Video Section</h4>
+                                  <p className="mb-0 mt-1 text-xs text-gray-500">Editorial text stays on the left, with a portrait video on the right. On mobile, the video appears beneath the text.</p>
+                                </div>
+                                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                  <label className="block text-xs font-semibold text-slate-700">
+                                    Optional small label
+                                    <input type="text" maxLength={100} value={sec.data?.eyebrow || ''}
+                                      onChange={e => updateSectionData(sec.id, 'eyebrow', e.target.value)}
+                                      placeholder="e.g. A MESSAGE FROM OUR TEAM"
+                                      className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                                  </label>
+                                  <label className="block text-xs font-semibold text-slate-700">
+                                    Heading
+                                    <input type="text" maxLength={170} value={sec.data?.title || ''}
+                                      onChange={e => updateSectionData(sec.id, 'title', e.target.value)}
+                                      placeholder="Main heading"
+                                      className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                                  </label>
+                                  <label className="block text-xs font-semibold text-slate-700">
+                                    Heading highlight
+                                    <input type="text" maxLength={100} value={sec.data?.highlight || ''}
+                                      onChange={e => updateSectionData(sec.id, 'highlight', e.target.value)}
+                                      placeholder="Optional colored words"
+                                      className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                                  </label>
+                                  <label className="block text-xs font-semibold text-slate-700">
+                                    Attribution / author
+                                    <input type="text" maxLength={120} value={sec.data?.author || ''}
+                                      onChange={e => updateSectionData(sec.id, 'author', e.target.value)}
+                                      placeholder="Optional name or team"
+                                      className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                                  </label>
+                                </div>
+                                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                  <label className="block text-xs font-semibold text-slate-700">
+                                    First paragraph
+                                    <textarea rows={5} maxLength={2500} value={sec.data?.paragraphOne || ''}
+                                      onChange={e => updateSectionData(sec.id, 'paragraphOne', e.target.value)}
+                                      className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                                  </label>
+                                  <label className="block text-xs font-semibold text-slate-700">
+                                    Second paragraph
+                                    <textarea rows={5} maxLength={2500} value={sec.data?.paragraphTwo || ''}
+                                      onChange={e => updateSectionData(sec.id, 'paragraphTwo', e.target.value)}
+                                      className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                                  </label>
+                                </div>
+                                <div className="rounded-lg border border-slate-200 bg-slate-50/70 p-3.5">
+                                  <span className="mb-2 flex items-center gap-1.5 text-xs font-bold text-slate-800">
+                                    MP4 Video (Optional)
+                                  </span>
+                                  <VideoUploadWidget
+                                    value={sec.data?.videoUrl || ''}
+                                    onChange={url => updateSectionData(sec.id, 'videoUrl', url)}
+                                  />
+                                </div>
+                                <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                                  <div>
+                                    <label className="mb-1 block text-xs font-semibold text-slate-700">Video poster (optional)</label>
+                                    <ImageUploadWidget
+                                      value={sec.data?.videoPoster || ''}
+                                      onChange={url => updateSectionData(sec.id, 'videoPoster', url)}
+                                      subfolder="sections"
+                                      compact
+                                    />
+                                  </div>
+                                  <label className="block text-xs font-semibold text-slate-700">
+                                    Video fit
+                                    <select value={sec.data?.videoFit || 'cover'} onChange={e => updateSectionData(sec.id, 'videoFit', e.target.value)}
+                                      className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm">
+                                      <option value="cover">Cover</option>
+                                      <option value="contain">Contain</option>
+                                      <option value="fill">Fill</option>
+                                    </select>
+                                  </label>
+                                  <label className="block text-xs font-semibold text-slate-700">
+                                    Video position
+                                    <select value={sec.data?.videoPosition || 'center'} onChange={e => updateSectionData(sec.id, 'videoPosition', e.target.value)}
+                                      className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm">
+                                      <option value="center">Center</option>
+                                      <option value="top">Top</option>
+                                      <option value="bottom">Bottom</option>
+                                      <option value="left">Left</option>
+                                      <option value="right">Right</option>
+                                      <option value="center top">Center top</option>
+                                      <option value="center bottom">Center bottom</option>
+                                    </select>
+                                  </label>
+                                </div>
+                                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                  <label className="block text-xs font-semibold text-slate-700">
+                                    Optional button text
+                                    <input type="text" maxLength={90} value={sec.data?.buttonText || ''}
+                                      onChange={e => updateSectionData(sec.id, 'buttonText', e.target.value)}
+                                      placeholder="e.g. Learn More"
+                                      className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                                  </label>
+                                  <label className="block text-xs font-semibold text-slate-700">
+                                    Optional button URL
+                                    <input type="text" value={sec.data?.buttonUrl || ''}
+                                      onChange={e => updateSectionData(sec.id, 'buttonUrl', e.target.value)}
+                                      placeholder="e.g. /contact"
+                                      className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                                  </label>
+                                </div>
+                                <label className="block text-xs font-semibold text-slate-700">Additional rich text content (optional)</label>
+                                <TiptapEditor
+                                  value={sec.data?.content || ''}
+                                  onChange={html => updateSectionData(sec.id, 'content', html)}
+                                  minHeight="220px"
+                                />
+                                <p className="m-0 text-xs text-gray-500">Use this for any extra formatted copy below the two paragraphs.</p>
                               </div>
                             )}
 

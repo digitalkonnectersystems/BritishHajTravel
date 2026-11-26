@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Download, FileSpreadsheet, Pencil, Trash2 } from 'lucide-react';
 import {
   listRedirectsAction, saveRedirectAction, disableRedirectAction,
   enableRedirectAction, deleteRedirectAction, updateNotFoundHitStatusAction,
@@ -53,6 +53,43 @@ function getCodeBadge(code: number) {
 function formatHitDate(value: Date | string | null | undefined): string {
   const date = value ? new Date(value) : null;
   return date && !Number.isNaN(date.getTime()) ? date.toLocaleString('en-GB') : '—';
+}
+
+type ExportCell = string | number;
+
+function escapeCsvCell(value: ExportCell): string {
+  let text = String(value ?? '');
+  if (/^[=+\-@\t\r]/.test(text)) text = `'${text}`;
+  return `"${text.replace(/"/g, '""')}"`;
+}
+
+function escapeXml(value: ExportCell): string {
+  return String(value ?? '')
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+function xmlRow(values: ExportCell[], isHeader = false): string {
+  const style = isHeader ? ' ss:StyleID="Header"' : '';
+  return `<Row${style}>${values.map(value => {
+    const type = typeof value === 'number' && Number.isFinite(value) ? 'Number' : 'String';
+    return `<Cell><Data ss:Type="${type}">${escapeXml(value)}</Data></Cell>`;
+  }).join('')}</Row>`;
+}
+
+function downloadFile(filename: string, content: BlobPart, type: string) {
+  const url = URL.createObjectURL(new Blob([content], { type }));
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 export default function RedirectsClient({ initialRules, initialHits }: { initialRules: Rule[]; initialHits: Hit[] }) {
@@ -118,6 +155,44 @@ export default function RedirectsClient({ initialRules, initialHits }: { initial
   const filteredHits = useMemo(() => {
     return hits.filter(h => `${h.requestPath}`.toLowerCase().includes(search.toLowerCase()));
   }, [hits, search]);
+
+  const exportRows = () => ({
+    rules: filteredRules.map(r => [r.sourcePath, r.destinationPath, r.httpCode, r.status, formatHitDate(r.createdAt)] as ExportCell[]),
+    hits: filteredHits.map(h => [h.requestPath, Number(h.hits || 0), h.status, formatHitDate(h.lastSeen)] as ExportCell[]),
+  });
+
+  const exportCsv = () => {
+    const { rules: ruleRows, hits: hitRows } = exportRows();
+    const rows: ExportCell[][] = [
+      ['Redirect Rules'],
+      ['Source Path', 'Destination Path', 'HTTP Code', 'Status', 'Created At'],
+      ...ruleRows,
+      [],
+      ['Unmatched CMS Paths'],
+      ['Request Path', 'Hits', 'Status', 'Last Seen'],
+      ...hitRows,
+    ];
+    const csv = `\uFEFF${rows.map(row => row.map(escapeCsvCell).join(',')).join('\r\n')}`;
+    downloadFile('redirects-and-unmatched-paths.csv', csv, 'text/csv;charset=utf-8');
+  };
+
+  const exportExcel = () => {
+    const { rules: ruleRows, hits: hitRows } = exportRows();
+    const workbook = `<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+  <Styles><Style ss:ID="Header"><Font ss:Bold="1"/></Style></Styles>
+  <Worksheet ss:Name="Redirect Rules"><Table>
+    ${xmlRow(['Source Path', 'Destination Path', 'HTTP Code', 'Status', 'Created At'], true)}
+    ${ruleRows.map(row => xmlRow(row)).join('')}
+  </Table></Worksheet>
+  <Worksheet ss:Name="Unmatched CMS Paths"><Table>
+    ${xmlRow(['Request Path', 'Hits', 'Status', 'Last Seen'], true)}
+    ${hitRows.map(row => xmlRow(row)).join('')}
+  </Table></Worksheet>
+</Workbook>`;
+    downloadFile('redirects-and-unmatched-paths.xls', workbook, 'application/vnd.ms-excel;charset=utf-8');
+  };
 
   async function perform(action: () => Promise<{ success: boolean; error?: string }>) {
     setBusy(true);
@@ -299,6 +374,24 @@ export default function RedirectsClient({ initialRules, initialHits }: { initial
           <option value="302">302 (Temporary Redirect)</option>
           <option value="307">307 (Temporary - Method Preserved)</option>
         </select>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={exportCsv}
+            className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+            title="Export the currently filtered redirect rules and unmatched paths as CSV"
+          >
+            <Download className="h-4 w-4" /> Export CSV
+          </button>
+          <button
+            type="button"
+            onClick={exportExcel}
+            className="inline-flex items-center gap-2 rounded-lg bg-[#071644] px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#10265d]"
+            title="Export the currently filtered data to an Excel workbook with two worksheets"
+          >
+            <FileSpreadsheet className="h-4 w-4" /> Export Excel
+          </button>
+        </div>
       </div>
 
       <h2 className="text-lg font-bold text-slate-900">Redirect rules</h2>

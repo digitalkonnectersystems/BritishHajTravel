@@ -45,6 +45,7 @@ import ProcessStepsSection from '@/components/ProcessStepsSection';
 import GuideVideoSection from '@/components/GuideVideoSection';
 import SafeRichText from '@/components/SafeRichText';
 import ElegantTextSection from '@/components/ElegantTextSection';
+import ElegantVideoSection from '@/components/ElegantVideoSection';
 import PilgrimageOffersSection from '@/components/PilgrimageOffersSection';
 import HotelDirectorySection from '@/components/HotelDirectorySection';
 import PlanYourOwnPackageSection from '@/components/PlanYourOwnPackageSection';
@@ -172,6 +173,9 @@ export default function PageSectionsRenderer({ sections, pageData, initialPackag
         }
         if (sec.type === 'Elegant Text Content') {
           return <ElegantTextSection key={sec.id || idx} data={sec.data || {}} />;
+        }
+        if (sec.type === 'Elegant Video Section') {
+          return <ElegantVideoSection key={sec.id || idx} data={sec.data || {}} />;
         }
         if (sec.type === 'Text Block (Rich Text)' || sec.type === 'Packages Content (Rich Text)') {
           let content: string = sec.data?.content || '';
