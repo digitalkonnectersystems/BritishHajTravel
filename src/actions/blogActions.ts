@@ -3,11 +3,12 @@
 import { requireAdmin } from '@/lib/requireAdmin';
 
 import { db } from '@/db';
-import { blogPosts, siteSettings } from '@/db/schema';
-import { eq, desc, ne, and } from 'drizzle-orm';
+import { blogPosts, packageCategories, siteSettings } from '@/db/schema';
+import { eq, desc, ne, and, inArray } from 'drizzle-orm';
 import { revalidatePath, updateTag, unstable_cache } from 'next/cache';
 import { logAdminActivityAction } from '@/actions/activityActions';
 import { normalizeBlogFaqs, validateBlogFaqs, type BlogFaqSection } from '@/lib/blogFaq';
+import { ENQUIRY_FORM_CATALOG } from '@/lib/formEnquiryCatalog';
 
 // ─── Auto-slugify title ────────────────────────────────────────────────────
 export async function slugifyBlogTitle(title: string): Promise<string> {
@@ -216,6 +217,13 @@ export interface BlogSavePayload {
   authorName?: string;
   isPublished?: boolean;
   publishedAt?: string | null; // ISO date string or null
+  formKey?: string | null;
+  showSidebarBookingForm?: boolean;
+  showOtherArticles?: boolean;
+  showUmrahPackages?: boolean;
+  showHajjPackages?: boolean;
+  umrahPackageCategoryId?: number | null;
+  hajjPackageCategoryId?: number | null;
 }
 
 export async function saveBlogAction(data: BlogSavePayload) {
@@ -233,7 +241,20 @@ export async function saveBlogAction(data: BlogSavePayload) {
     authorName = 'British Haj Travel Editorial',
     isPublished = true,
     publishedAt,
+    formKey,
+    showSidebarBookingForm,
+    showOtherArticles,
+    showUmrahPackages,
+    showHajjPackages,
+    umrahPackageCategoryId,
+    hajjPackageCategoryId,
   } = data;
+
+  const validFormKeys = new Set<string>(ENQUIRY_FORM_CATALOG.map((form) => form.key));
+  if (formKey != null && formKey !== '' && !validFormKeys.has(formKey)) {
+    return { success: false, error: 'Select a valid form for this blog post.' };
+  }
+  const selectedFormKey = formKey || null;
 
   // No incomplete or duplicate FAQ may appear on the page or inside JSON-LD.
   const faqValidationError = faqs === undefined ? null : validateBlogFaqs(faqs);
@@ -249,6 +270,27 @@ export async function saveBlogAction(data: BlogSavePayload) {
   }
 
   try {
+    const categorySelections = [
+      ...(umrahPackageCategoryId !== undefined && umrahPackageCategoryId !== null
+        ? [{ id: umrahPackageCategoryId, type: 'umrah' as const }]
+        : []),
+      ...(hajjPackageCategoryId !== undefined && hajjPackageCategoryId !== null
+        ? [{ id: hajjPackageCategoryId, type: 'hajj' as const }]
+        : []),
+    ];
+    if (categorySelections.some(({ id }) => !Number.isInteger(id) || id < 1)) {
+      return { success: false, error: 'Select valid package categories for this blog post.' };
+    }
+    if (categorySelections.length > 0) {
+      const categories = await db
+        .select({ id: packageCategories.id, type: packageCategories.type })
+        .from(packageCategories)
+        .where(inArray(packageCategories.id, categorySelections.map(({ id }) => id)));
+      if (categorySelections.some(({ id, type }) => !categories.some((category) => category.id === id && category.type === type))) {
+        return { success: false, error: 'Select a category matching the package type.' };
+      }
+    }
+
     if (id) {
       const beforeRows = await db.select().from(blogPosts).where(eq(blogPosts.id, id)).limit(1);
       const previousEntry = beforeRows[0] || null;
@@ -260,9 +302,16 @@ export async function saveBlogAction(data: BlogSavePayload) {
         featuredImage: featuredImage ?? null,
         category,
         authorName,
+        formKey: selectedFormKey,
         isPublished,
         updatedAt: new Date(),
       };
+      if (showSidebarBookingForm !== undefined) updateData.showSidebarBookingForm = showSidebarBookingForm;
+      if (showOtherArticles !== undefined) updateData.showOtherArticles = showOtherArticles;
+      if (showUmrahPackages !== undefined) updateData.showUmrahPackages = showUmrahPackages;
+      if (showHajjPackages !== undefined) updateData.showHajjPackages = showHajjPackages;
+      if (umrahPackageCategoryId !== undefined) updateData.umrahPackageCategoryId = umrahPackageCategoryId;
+      if (hajjPackageCategoryId !== undefined) updateData.hajjPackageCategoryId = hajjPackageCategoryId;
       // Legacy callers that do not provide FAQs must not erase existing Q&As.
       if (cleanedFaqs !== undefined) updateData.faqs = cleanedFaqs;
       // Editing an existing blog without selecting a new date must not
@@ -302,6 +351,13 @@ export async function saveBlogAction(data: BlogSavePayload) {
         featuredImage: featuredImage ?? null,
         category,
         authorName,
+        formKey: selectedFormKey,
+        showSidebarBookingForm: showSidebarBookingForm ?? true,
+        showOtherArticles: showOtherArticles ?? true,
+        showUmrahPackages: showUmrahPackages ?? true,
+        showHajjPackages: showHajjPackages ?? true,
+        umrahPackageCategoryId: umrahPackageCategoryId ?? null,
+        hajjPackageCategoryId: hajjPackageCategoryId ?? null,
         isPublished,
         // New blog: if the date picker is empty, save the current date.
         // Drizzle serializes Date into the existing published_at TIMESTAMP.

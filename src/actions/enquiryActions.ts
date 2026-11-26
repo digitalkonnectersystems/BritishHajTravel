@@ -8,8 +8,8 @@ import { recordPublicEnquiry } from '@/lib/publicEnquiryAudit';
 import { isValidUkPhone } from '@/lib/ukPhone';
 
 import { db } from '@/db';
-import { enquiries, quoteEnquiries, packageBookingEnquiries, contactEnquiries, visaEnquiries, flightEnquiries } from '@/db/schema';
-import { eq, desc, inArray } from 'drizzle-orm';
+import { enquiries, quoteEnquiries, packageBookingEnquiries, contactEnquiries, visaEnquiries, flightEnquiries, blogPosts } from '@/db/schema';
+import { eq, desc, inArray, and } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { dispatchFormEmails, type FormEmailAudit } from '@/lib/emailService';
 import { logAdminActivityAction } from '@/actions/activityActions';
@@ -62,6 +62,21 @@ async function dispatchAndStoreEnquiryEmail(
   );
 }
 
+async function isBlogPublishedWithForm(sourcePage: string, formKey: string) {
+  const slug = String(sourcePage || '').split('/').filter(Boolean).join('/');
+  if (!slug || slug.includes('/')) return false;
+  const rows = await db
+    .select({ id: blogPosts.id })
+    .from(blogPosts)
+    .where(and(
+      eq(blogPosts.slug, slug),
+      eq(blogPosts.isPublished, true),
+      eq(blogPosts.formKey, formKey),
+    ))
+    .limit(1);
+  return rows.length > 0;
+}
+
 /** Enquiry for a reusable Umrah registration section on published CMS pages. */
 export async function submitUmrahRegistrationEnquiryAction(data: {
   name: string;
@@ -112,8 +127,9 @@ export async function submitUmrahRegistrationEnquiryAction(data: {
       try { const parsed = JSON.parse(String(cmsPage.sections)); return Array.isArray(parsed) ? parsed : []; }
       catch { return [] as any[]; }
     })();
-    if (cmsPage?.status !== 'published' || !sections.some((section: any) =>
-      section?.type === 'Umrah Enquiry 2026-27 Form' && section.hidden !== true && section.visible !== false)) {
+    const cmsFormEnabled = cmsPage?.status === 'published' && sections.some((section: any) =>
+      section?.type === 'Umrah Enquiry 2026-27 Form' && section.hidden !== true && section.visible !== false);
+    if (!cmsFormEnabled && !await isBlogPublishedWithForm(sourcePage, 'umrahRegistrationForm')) {
       return { success: false, error: 'This Umrah form is not available on this page.' };
     }
     const settings = await getFormsSettings();
@@ -209,8 +225,9 @@ async function submitHajjVariantEnquiry(data: {
   })();
   // Registration forms are available only when an admin has added a visible
   // section to a published CMS page, even on the original five Hajj URLs.
-  if (cmsPage?.status !== 'published' || !cmsSections.some((section: any) =>
-      section?.type === sectionType && section.hidden !== true && section.visible !== false)) {
+  const cmsFormEnabled = cmsPage?.status === 'published' && cmsSections.some((section: any) =>
+      section?.type === sectionType && section.hidden !== true && section.visible !== false);
+  if (!cmsFormEnabled && !await isBlogPublishedWithForm(sourcePage, formKey)) {
     return { success: false, error: 'This registration form is not available on this page.' };
   }
   if (!validName(clean.name) || !validEmail(clean.email) || !isValidUkPhone(clean.phone) ||

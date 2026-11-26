@@ -9,9 +9,11 @@ import {
   submitPackageBookingEnquiryAction,
   submitContactEnquiryAction,
   submitVisaEnquiryAction,
+  submitBaanInterest,
 } from "@/lib/publicEnquiryClient";
 import { getFormsSettings } from "@/actions/pageActions";
 import { getPublicPackageOptions } from "@/actions/packageActions";
+import { defaultBaanContent } from "@/lib/baanContent";
 import { CheckCircle, AlertTriangle } from "lucide-react";
 import GlassNotificationModal from "@/components/ui/GlassNotificationModal";
 
@@ -33,6 +35,11 @@ interface DynamicSiteFormProps {
 // ── Dropdown options keyed by field label (case-insensitive partial match) ──
 function getSelectOptions(label: string): string[] {
   const l = label.toLowerCase();
+  if (l.includes("airport")) return defaultBaanContent.airportOptions;
+  if (l.includes("hajj package")) return defaultBaanContent.packageOptions;
+  if (l.includes("number of days") || l === "days") return defaultBaanContent.durationOptions;
+  if (l.includes("room")) return defaultBaanContent.roomOptions;
+  if (l.includes("budget")) return defaultBaanContent.budgetOptions;
   if (l.includes("trip type")) return ["One-Way", "Round Trip"];
   if (l.includes("passenger")) return ["1", "2", "3", "4", "5", "6+"];
   if (l.includes("class")) return ["Economy", "Business", "First Class"];
@@ -101,29 +108,35 @@ export default function DynamicSiteForm({
       try {
         const settings = await getFormsSettings();
         if (settings) {
-          // Extract fields list
-          if (fieldsOverride?.length && !preferFormConfig) {
-            setFieldsList(fieldsOverride);
+          const applyFields = (configuredFields: any[]) => {
+            const fields = formKey === "visaConsultation" &&
+              !configuredFields.some((field) =>
+                field.id === "email" || field.type === "email" || /email/i.test(field.label || "")
+              )
+              ? [...configuredFields, { id: "email", label: "Email Address", type: "email", placeholder: "Email Address", required: true }]
+              : configuredFields;
+            setFieldsList(fields);
             const initialData: Record<string, string> = {};
-            fieldsOverride.forEach((f: any) => { initialData[f.id] = f.type === "tel" ? "+44" : ""; });
-            setFormData(initialData);
-          } else if (settings.formFieldsState && settings.formFieldsState[formKey]) {
-            setFieldsList(settings.formFieldsState[formKey]);
-            const initialData: Record<string, string> = {};
-            settings.formFieldsState[formKey].forEach((f: any) => {
-              initialData[f.id] = f.type === "tel" ? "+44" : "";
+            fields.forEach((field: any) => {
+              initialData[field.id] = field.type === "tel" ? "+44" : "";
             });
             setFormData(initialData);
+          };
+
+          // Extract fields list
+          if (fieldsOverride?.length && !preferFormConfig) {
+            applyFields(fieldsOverride);
+          } else if (settings.formFieldsState && settings.formFieldsState[formKey]) {
+            applyFields(settings.formFieldsState[formKey]);
           } else if (settings[formKey]) {
             setFormConfig(settings[formKey]);
             if (settings[formKey].fields) {
-              setFieldsList(settings[formKey].fields);
-              const initialData: Record<string, string> = {};
-              settings[formKey].fields.forEach((f: any) => {
-                initialData[f.id] = f.type === "tel" ? "+44" : "";
-              });
-              setFormData(initialData);
+              applyFields(settings[formKey].fields);
+            } else if (fieldsOverride?.length) {
+              applyFields(fieldsOverride);
             }
+          } else if (fieldsOverride?.length) {
+            applyFields(fieldsOverride);
           }
 
           // Extract form configuration (title, subtitle, success message)
@@ -177,13 +190,13 @@ export default function DynamicSiteForm({
         return isNaN(parsed) ? fallback : parsed;
       };
 
-      const fullName = getVal(["1", "passenger_name", "full_name", "fullName", "name"]);
-      const email = getVal(["2", "email", "email_address"]);
-      const phone = getVal(["3", "phone", "contact_phone", "mobile"]);
+      const fullName = getVal(["full name", "passenger name", "applicant name", "pilgrim name", "name"]);
+      const email = getVal(["email", "email address"]);
+      const phone = getVal(["phone", "phone number", "contact phone", "mobile"]);
       const quantity = getVal(["quantity", "travelersCount", "passengers", "adults"], "1");
-      const travelDate = getVal(["travelDate", "travel_date", "departureDate", "travel date"]);
-      const packageType = getVal(["package_type", "packageType", "trip_type"]);
-      const message = getVal(["11", "message", "special_request", "details"]);
+      const travelDate = getVal(["travel date", "departure date", "travelDate", "travel_date", "departureDate"]);
+      const packageType = getVal(["package type", "package", "destination", "package_type", "packageType", "trip_type"]);
+      const message = getVal(["message", "special request", "details", "notes", "consultation"]);
       const website = getVal(["website", "url"]);
 
       let res: { success: boolean; error?: string; message?: string; emailWarning?: string } = {
@@ -207,13 +220,20 @@ export default function DynamicSiteForm({
           sourceFormName: 'Flights Booking Inquiry Form',
         });
       } else if (formKey === "quoteForm" || formKey === "hajjCustomizeForm") {
+        const customizationDetails = [
+          message,
+          travelDate ? `Travel date: ${formatDateReadable(travelDate)}` : "",
+          formKey === "hajjCustomizeForm" && getVal(["room occupancy", "room size"])
+            ? `Room occupancy: ${getVal(["room occupancy", "room size"])}`
+            : "",
+        ].filter(Boolean).join("\n");
         res = await submitQuoteEnquiryAction({
           fullName,
           phone,
           email,
-          packageType,
+          packageType: formKey === "hajjCustomizeForm" ? "Customized Hajj Package" : packageType,
           numberOfPilgrims: parseNumberSafe(getVal(["adults", "passengers"], "1"), 1),
-          message,
+          message: customizationDetails,
           sourceFormName: formKey === 'hajjCustomizeForm' ? 'Hajj Page Customize Form' : 'Get a Free Quote Form',
         });
       } else if (formKey === "packageDetailForm" || formKey === "hajjPackageDetailForm" || formKey === "packageInquiry") {
@@ -224,13 +244,45 @@ export default function DynamicSiteForm({
           postcode: getVal(["postcode", "post code", "post_code", "postalcode", "postal code", "postalCode", "postal_code", "zip"]),
           packageName: packageType || "General Package Inquiry",
           message,
-          adults: parseNumberSafe(getVal(["adults", "passengers"], "1"), 1),
+          adults: parseNumberSafe(getVal(["adults", "passengers", "travelers", "number of travelers"], "1"), 1),
           children: parseNumberSafe(getVal(["children"], "0"), 0),
           infants: parseNumberSafe(getVal(["infants"], "0"), 0),
-          startDate: getVal(["departureDate", "travel_date", "start_date"]),
+          startDate: getVal(["start date", "departure date", "departureDate", "travel_date", "start_date", "7"]),
           sourceFormName: formKey === 'packageInquiry' ? 'Package Inquiry Form' : formKey === 'hajjPackageDetailForm' ? 'Hajj Package Booking Form' : 'Umrah Package Booking Form',
         });
+      } else if (formKey === "destinationForm") {
+        res = await submitPackageBookingEnquiryAction({
+          fullName,
+          email,
+          phone,
+          postcode: getVal(["postcode", "post code", "post_code", "postalcode", "postal code", "postalCode", "postal_code", "zip"]),
+          packageName: packageType || "Destination Enquiry",
+          message,
+          adults: parseNumberSafe(getVal(["adults", "passengers", "travelers", "number of travelers"], "1"), 1),
+          children: parseNumberSafe(getVal(["children"], "0"), 0),
+          infants: parseNumberSafe(getVal(["infants"], "0"), 0),
+          sourceFormName: 'Destination Form',
+        });
+      } else if (formKey === "baanHoldingHajjForm") {
+        res = await submitBaanInterest({
+          name: fullName,
+          email,
+          phone,
+          postcode: getVal(["postcode", "post code", "post_code", "postalcode", "postal code", "postalCode", "postal_code", "zip", "4"]),
+          airport: getVal(["airport", "5"]),
+          packageTier: getVal(["packageTier", "package_type", "packageType", "hajj package", "6"]),
+          passengers: parseNumberSafe(getVal(["passengers", "number of passengers", "7"], "1"), 1),
+          days: getVal(["days", "number of days", "8"]),
+          room: getVal(["room", "room size", "9"]),
+          budget: getVal(["budget", "budget per person", "10"]),
+        });
       } else if (formKey === "visaConsultation" || formKey === "umrahVisaOrder") {
+        const visaDetails = formKey === "visaConsultation"
+          ? [
+            getVal(["destination"]) ? `Destination: ${getVal(["destination"])}` : "",
+            getVal(["passport type"]) ? `Passport type: ${getVal(["passport type"])}` : "",
+          ].filter(Boolean).join("\n")
+          : "";
         res = await submitVisaEnquiryAction({
           fullName,
           email,
@@ -238,7 +290,7 @@ export default function DynamicSiteForm({
           travelersCount: parseNumberSafe(quantity, 1),
           nationality: getVal(["nationality"], "British"),
           travelDate,
-          message: [message, travelDate ? `Travel date: ${travelDate}` : ""].filter(Boolean).join("\n"),
+          message: [message, visaDetails, travelDate ? `Travel date: ${formatDateReadable(travelDate)}` : ""].filter(Boolean).join("\n"),
           sourceFormName: formKey === 'umrahVisaOrder' ? 'Umrah Visa Order Form' : 'Visa Consultation Form',
         });
       } else if (formKey === "contact" || formKey === "dropUsMessage") {

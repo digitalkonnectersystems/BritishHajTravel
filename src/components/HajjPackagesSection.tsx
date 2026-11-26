@@ -13,10 +13,12 @@ export default function HajjPackagesSection({
   data,
   initialPackages,
   pageData,
+  columns = 4,
 }: {
   data: any;
   initialPackages?: any;
   pageData?: any;
+  columns?: 3 | 4;
 }) {
   const pathname = usePathname();
   const eyebrow = data?.eyebrow || "LUXURY HAJJ PACKAGES";
@@ -155,6 +157,9 @@ export default function HajjPackagesSection({
   const sectionClass = isHomepage
     ? "py-6 md:py-10 bg-white"
     : "py-6 md:py-10 bg-white";
+  const packageGridClass = columns === 3
+    ? "grid grid-cols-1 items-stretch gap-5 md:grid-cols-2 xl:grid-cols-3"
+    : "grid grid-cols-1 items-stretch gap-5 md:grid-cols-2 xl:grid-cols-4";
   return (
     <section className={sectionClass}>
       <div className="max-w-[1400px] mx-auto px-5">
@@ -170,7 +175,7 @@ export default function HajjPackagesSection({
         </div>
         {/* Loading skeleton */}
         {loading && (
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
+          <div className={columns === 3 ? "grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3" : "grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4"}>
             {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
@@ -204,7 +209,7 @@ export default function HajjPackagesSection({
               aria-label="Hajj packages"
               tabIndex={0}
               onScroll={isHomepage ? updateSliderControls : undefined}
-              className={isHomepage ? "flex items-stretch gap-5 overflow-x-auto overscroll-x-contain snap-x snap-mandatory xl:gap-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" : "grid grid-cols-1 items-stretch gap-5 md:grid-cols-2 xl:grid-cols-4"}
+              className={isHomepage ? "flex items-stretch gap-5 overflow-x-auto overscroll-x-contain snap-x snap-mandatory xl:gap-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" : packageGridClass}
             >
               {visiblePkgs.map((pkg: any, idx: number) => {
                 let cd = pkg.cardData || {};

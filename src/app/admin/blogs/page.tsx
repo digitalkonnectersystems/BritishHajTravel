@@ -17,6 +17,7 @@ export default function AdminBlogsPage() {
   const [blogs, setBlogs] = useState<any[]>([]);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [dateSort, setDateSort] = useState<'featured' | 'newest' | 'oldest'>('featured');
   const [confirmConfig, setConfirmConfig] = useState<ConfirmModalConfig | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [seoModalOpen, setSeoModalOpen] = useState(false);
@@ -101,6 +102,14 @@ export default function AdminBlogsPage() {
     const matchesStatus = statusFilter === 'all' || bStatus === statusFilter;
     return matchesSearch && matchesStatus;
   });
+  const visibleBlogs = dateSort === 'featured'
+    ? filtered
+    : [...filtered].sort((a, b) => {
+      const dateA = new Date(a.publishedAt || a.createdAt || 0).getTime() || 0;
+      const dateB = new Date(b.publishedAt || b.createdAt || 0).getTime() || 0;
+      return dateSort === 'newest' ? dateB - dateA : dateA - dateB;
+    });
+  const canReorder = dateSort === 'featured' && !search.trim() && statusFilter === 'all';
 
   const formatDate = (d: any) => {
     if (!d) return '—';
@@ -115,7 +124,7 @@ export default function AdminBlogsPage() {
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
             <h1 className="text-2xl font-extrabold text-slate-900 m-0">Blog Posts</h1>
-            <p className="text-xs text-soft-ink mt-0.5 mb-0">Drag and reorder blogs — the 1st/top blog is highlighted as the Featured article on the live website</p>
+            <p className="text-xs text-soft-ink mt-0.5 mb-0">Sort by date or use Featured / manual order to reorder posts; the top post is featured on the live website.</p>
           </div>
           <Link
             href="/admin/blogs/edit"
@@ -127,7 +136,7 @@ export default function AdminBlogsPage() {
         </div>
 
         {/* Filter Bar */}
-        <div className="bg-white rounded-2xl p-5 border border-slate-100 flex items-center justify-between gap-4 shadow-xs">
+        <div className="bg-white rounded-2xl p-5 border border-slate-100 flex flex-wrap items-center justify-between gap-4 shadow-xs">
           <input
             type="text"
             placeholder="Search by title or slug..."
@@ -135,6 +144,19 @@ export default function AdminBlogsPage() {
             onChange={(e) => setSearch(e.target.value)}
             className="flex-1 max-w-md px-4 py-2.5 border border-slate-200 rounded-xl text-xs outline-none"
           />
+          <select
+            aria-label="Sort blog posts by date"
+            value={dateSort}
+            onChange={(e) => {
+              setDateSort(e.target.value as 'featured' | 'newest' | 'oldest');
+              setDraggedIndex(null);
+            }}
+            className="px-3.5 py-2 rounded-xl border border-slate-200 text-xs bg-white outline-none"
+          >
+            <option value="featured">Featured / manual order</option>
+            <option value="newest">Newest to oldest</option>
+            <option value="oldest">Oldest to newest</option>
+          </select>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
@@ -161,22 +183,22 @@ export default function AdminBlogsPage() {
               </tr>
             </thead>
             <tbody>
-              {filtered.length === 0 && (
+              {visibleBlogs.length === 0 && (
                 <tr>
                   <td colSpan={7} className="py-12 text-center text-gray-500 text-xs">
                     {blogs.length === 0 ? 'No blog posts yet. Create your first one above.' : 'No results match your search.'}
                   </td>
                 </tr>
               )}
-              {filtered.map((b: any, idx: number) => {
-                const isTopFeatured = idx === 0 && !search && statusFilter === 'all';
+              {visibleBlogs.map((b: any, idx: number) => {
+                const isTopFeatured = idx === 0 && canReorder;
                 return (
                   <tr
                     key={b.id}
-                    draggable
-                    onDragStart={(e) => handleDragStart(e, idx)}
-                    onDragOver={(e) => handleDragOver(e, idx)}
-                    onDragEnd={handleDragEnd}
+                    draggable={canReorder}
+                    onDragStart={canReorder ? (e) => handleDragStart(e, idx) : undefined}
+                    onDragOver={canReorder ? (e) => handleDragOver(e, idx) : undefined}
+                    onDragEnd={canReorder ? handleDragEnd : undefined}
                     className={`border-b transition-colors ${draggedIndex === idx
                       ? 'bg-emerald-50 border-emerald-300'
                       : isTopFeatured
@@ -185,7 +207,7 @@ export default function AdminBlogsPage() {
                       }`}
                   >
                     {/* Drag Handle */}
-                    <td className="py-3 px-3 text-center text-gray-500 cursor-grab active:cursor-grabbing select-none" title="Drag to reorder">
+                    <td className={`py-3 px-3 text-center text-gray-500 select-none ${canReorder ? 'cursor-grab active:cursor-grabbing' : 'opacity-40'}`} title={canReorder ? "Drag to reorder" : "Switch to Featured / manual order with no filters to reorder"}>
                       <span className="text-sm font-bold opacity-60 hover:opacity-100">⋮⋮</span>
                     </td>
 

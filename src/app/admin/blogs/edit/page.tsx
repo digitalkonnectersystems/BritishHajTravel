@@ -16,6 +16,8 @@ import { Save, Upload, ArrowLeft, Sliders, Eye } from 'lucide-react';
 import CategoryDropdown from '@/components/admin/CategoryDropdown';
 import BlogFaqEditor from '@/components/admin/BlogFaqEditor';
 import { EMPTY_BLOG_FAQS, normalizeBlogFaqs, validateBlogFaqs } from '@/lib/blogFaq';
+import { ENQUIRY_FORM_CATALOG } from '@/lib/formEnquiryCatalog';
+import { getPackageCategories, type PackageCategoryWithCount } from '@/actions/packageCategoryActions';
 
 function BlogEditorInner() {
   const searchParams = useSearchParams();
@@ -40,12 +42,44 @@ function BlogEditorInner() {
     authorName: 'British Haj Travel Editorial',
     isPublished: true,
     publishedAt: '',
+    formKey: '',
+    showSidebarBookingForm: true,
+    showOtherArticles: true,
+    showUmrahPackages: true,
+    showHajjPackages: true,
+    umrahPackageCategoryId: '',
+    hajjPackageCategoryId: '',
   });
+  const [umrahCategories, setUmrahCategories] = useState<PackageCategoryWithCount[]>([]);
+  const [hajjCategories, setHajjCategories] = useState<PackageCategoryWithCount[]>([]);
 
   const notify = (title: string, message: string, type: 'success' | 'error' | 'warning' | 'info' = 'success') =>
     setNotification({ isOpen: true, type, title, message });
 
   // Load existing blog if editing
+  useEffect(() => {
+    let active = true;
+    Promise.all([getPackageCategories('umrah'), getPackageCategories('hajj')])
+      .then(([umrah, hajj]) => {
+        if (!active) return;
+        setUmrahCategories(umrah);
+        setHajjCategories(hajj);
+      })
+      .catch(() => {
+        if (active) {
+          setNotification({
+            isOpen: true,
+            type: 'error',
+            title: 'Categories Unavailable',
+            message: 'Package categories could not be loaded. Please refresh and try again.',
+          });
+        }
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
   useEffect(() => {
     if (!blogId) return;
     getBlogById(blogId).then((b) => {
@@ -61,6 +95,13 @@ function BlogEditorInner() {
         authorName: b.authorName || 'British Haj Travel Editorial',
         isPublished: b.isPublished ?? true,
         publishedAt: b.publishedAt ? new Date(b.publishedAt).toISOString().split('T')[0] : '',
+        formKey: b.formKey || '',
+        showSidebarBookingForm: b.showSidebarBookingForm !== false,
+        showOtherArticles: b.showOtherArticles !== false,
+        showUmrahPackages: b.showUmrahPackages !== false,
+        showHajjPackages: b.showHajjPackages !== false,
+        umrahPackageCategoryId: b.umrahPackageCategoryId ? String(b.umrahPackageCategoryId) : '',
+        hajjPackageCategoryId: b.hajjPackageCategoryId ? String(b.hajjPackageCategoryId) : '',
       });
     });
   }, [blogId]);
@@ -107,6 +148,13 @@ function BlogEditorInner() {
       authorName: form.authorName,
       isPublished: form.isPublished,
       publishedAt: form.publishedAt || null,
+      formKey: form.formKey || null,
+      showSidebarBookingForm: form.showSidebarBookingForm,
+      showOtherArticles: form.showOtherArticles,
+      showUmrahPackages: form.showUmrahPackages,
+      showHajjPackages: form.showHajjPackages,
+      umrahPackageCategoryId: form.umrahPackageCategoryId ? Number(form.umrahPackageCategoryId) : null,
+      hajjPackageCategoryId: form.hajjPackageCategoryId ? Number(form.hajjPackageCategoryId) : null,
     });
     setSaving(false);
     if (res.success) {
@@ -222,6 +270,59 @@ function BlogEditorInner() {
 
             {/* Full Content */}
             <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-xs">
+              {fieldLabel('Form displayed before article content')}
+              <p className="text-[11px] text-gray-500 mb-2">
+                Choose an existing form to display above the blog article on its public detail page.
+              </p>
+              <select
+                value={form.formKey}
+                onChange={(e) => setForm((p) => ({ ...p, formKey: e.target.value }))}
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm text-slate-700 outline-none focus:border-primary"
+              >
+                <option value="">No form</option>
+                {ENQUIRY_FORM_CATALOG.map((item) => (
+                  <option key={item.key} value={item.key}>{item.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-xs">
+              {fieldLabel('Package categories displayed before article content')}
+              <p className="text-[11px] text-gray-500 mb-4">
+                Selected categories are shown after the form (if selected), with Hajj packages first and Umrah packages second.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  {fieldLabel('Hajj Packages')}
+                  <select
+                    value={form.hajjPackageCategoryId}
+                    onChange={(e) => setForm((p) => ({ ...p, hajjPackageCategoryId: e.target.value }))}
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm text-slate-700 outline-none focus:border-primary"
+                  >
+                    <option value="">Do not display Hajj packages</option>
+                    {hajjCategories.map((category) => (
+                      <option key={category.id} value={category.id}>{category.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  {fieldLabel('Umrah Packages')}
+                  <select
+                    value={form.umrahPackageCategoryId}
+                    onChange={(e) => setForm((p) => ({ ...p, umrahPackageCategoryId: e.target.value }))}
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm text-slate-700 outline-none focus:border-primary"
+                  >
+                    <option value="">Do not display Umrah packages</option>
+                    {umrahCategories.map((category) => (
+                      <option key={category.id} value={category.id}>{category.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Full Content */}
+            <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-xs">
               {fieldLabel('Full Blog Content', true)}
               <p className="text-[11px] text-gray-500 mb-2">Supports HTML markup for headings, bold, lists, images etc.</p>
               <TiptapEditor
@@ -239,6 +340,31 @@ function BlogEditorInner() {
 
           {/* Right Column — Meta */}
           <div className="flex flex-col gap-5 xl:sticky xl:top-6">
+
+            <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-xs flex flex-col gap-4">
+              <h3 className="text-xs font-extrabold text-slate-600 uppercase tracking-wider m-0">Right Sidebar Sections</h3>
+              {([
+                ['showSidebarBookingForm', 'Booking Form'],
+                ['showOtherArticles', 'Other Articles'],
+                ['showUmrahPackages', 'Umrah Packages'],
+                ['showHajjPackages', 'Hajj Packages'],
+              ] as const).map(([key, label]) => (
+                <div key={key} className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-slate-800">{label}</span>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={form[key]}
+                      onChange={(e) => setForm((p) => ({ ...p, [key]: e.target.checked }))}
+                      className="sr-only peer"
+                      aria-label={`Show ${label} in the blog sidebar`}
+                    />
+                    <div className="w-10 h-5 bg-slate-200 peer-focus:ring-2 peer-focus:ring-emerald-300 rounded-full peer peer-checked:bg-primary transition-colors" />
+                    <div className="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-5" />
+                  </label>
+                </div>
+              ))}
+            </div>
 
             {/* Thumbnail */}
             <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-xs">

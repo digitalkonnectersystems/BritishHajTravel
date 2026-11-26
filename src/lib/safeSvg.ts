@@ -34,7 +34,9 @@ const STYLE_PROPS = new Set([
   'stroke-linejoin','stroke-dasharray','stroke-dashoffset','stroke-opacity',
   'opacity','stop-color','stop-opacity','clip-path','mask','color','display',
   'font-size','font-family','font-weight','text-anchor','paint-order',
-  'vector-effect','shape-rendering','enable-background',
+  'vector-effect','shape-rendering','enable-background','stroke-miterlimit',
+  'clip-rule','dominant-baseline','letter-spacing','width','height',
+  'vertical-align','overflow',
 ]);
 
 function decodeEntities(value: string) {

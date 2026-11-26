@@ -16,12 +16,14 @@ export default function UpcomingUmrahPackages({
   pageData,
   onBookNow,
   hideFooterLink = false,
+  columns = 4,
 }: {
   data: any;
   initialPackages?: any;
   pageData?: any;
   onBookNow?: (pkg: any) => void;
   hideFooterLink?: boolean;
+  columns?: 3 | 4;
 }) {
   const pathname = usePathname();
   const eyebrow = data?.eyebrow || "EXCLUSIVE UPCOMING";
@@ -99,6 +101,9 @@ export default function UpcomingUmrahPackages({
   const visiblePkgs = filterSectionPackages(pkgs, data, "umrah");
   const displayedPkgs = isHomepage ? visiblePkgs.slice(0, 4) : visiblePkgs;
   const sectionBgClass = isUmrahListingPage ? "bg-blue-lt" : isHomepage ? "bg-white" : (pathname === "/" ? "bg-white" : "bg-blue-lt");
+  const packageGridClass = columns === 3
+    ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-5 items-stretch mb-6 md:mb-10"
+    : "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5 items-stretch mb-6 md:mb-10";
 
   return (
     // <section className={`py-10  ${sectionBgClass} bg-[#f4f7fb]`}>
@@ -120,7 +125,7 @@ export default function UpcomingUmrahPackages({
 
         {/* Loading skeleton */}
         {loading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+          <div className={columns === 3 ? "grid grid-cols-1 md:grid-cols-3 gap-6" : "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6"}>
             {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
@@ -148,7 +153,7 @@ export default function UpcomingUmrahPackages({
 
         {/* Packages Grid */}
         {!loading && visiblePkgs.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5 items-stretch mb-6 md:mb-10">
+          <div className={packageGridClass}>
             {displayedPkgs.map((pkg: any, idx: number) => {
               let cd = pkg.cardData || {};
               if (typeof cd === 'string') {

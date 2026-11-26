@@ -1736,7 +1736,7 @@ export default function AdminSettingsPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {(footerData.socialLinks || []).map((item: any, sIdx: number) => (
-                    <div {...footerDragHandlers('socialLinks', sIdx)} title="Drag row to reorder" key={sIdx} className="bg-white p-3 rounded-xl border border-slate-200 flex flex-col gap-2.5">
+                    <div {...footerDragHandlers('socialLinks', sIdx)} title="Drag row to reorder" key={item.id ?? `${item.name || 'social'}-${item.url || ''}-${sIdx}`} className="bg-white p-3 rounded-xl border border-slate-200 flex flex-col gap-2.5">
                       <div className="flex justify-between items-center">
                         <span className="text-[10px] font-bold text-gray-500 uppercase">Icon #{sIdx + 1}: {item.name}</span>
                         <button
@@ -1757,7 +1757,7 @@ export default function AdminSettingsPage() {
                           {item.icon ? (
                             <img src={item.icon} alt={item.name} className="w-6 h-6 max-h-full max-w-full object-contain" />
                           ) : (
-                            <span className="text-[9px] text-white font-bold">SVG</span>
+                            <span className="text-[9px] text-white font-bold">ICON</span>
                           )}
                         </div>
                         <div className="flex-1 flex flex-col gap-1.5">
@@ -1787,16 +1787,19 @@ export default function AdminSettingsPage() {
                           </div>
                           <div className="flex gap-2 items-center justify-between">
                             <label className="flex bg-slate-200 hover:bg-slate-300 text-slate-800 px-2 py-1 rounded text-[10px] font-bold cursor-pointer gap-2 items-center transition-colors">
-                              <CloudUpload className="w-3 h-3" /> Upload SVG
+                              <CloudUpload className="w-3 h-3" /> Upload SVG or PNG
                               <input
                                 type="file"
-                                accept=".svg,image/svg+xml"
+                                accept=".svg,.png,image/svg+xml,image/png"
                                 className="hidden"
                                 onChange={async (e) => {
                                   const file = e.target.files?.[0];
                                   if (file) {
-                                    if (!file.name.toLowerCase().endsWith('.svg') && file.type !== 'image/svg+xml') {
-                                      showNotification('Invalid File Type', 'Please upload an SVG icon (.svg format only).', 'error');
+                                    const filename = file.name.toLowerCase();
+                                    const validExtension = filename.endsWith('.svg') || filename.endsWith('.png');
+                                    const validMimeType = !file.type || file.type === 'image/svg+xml' || file.type === 'image/png';
+                                    if (!validExtension || !validMimeType) {
+                                      showNotification('Invalid File Type', 'Please upload an SVG or PNG icon.', 'error');
                                       return;
                                     }
                                     const url = await uploadFileToFtp(file, 'social');

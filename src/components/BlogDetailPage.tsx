@@ -2,6 +2,9 @@ import { getRelatedBlogs } from '@/actions/blogActions';
 import { getCurrencyConfiguration } from '@/lib/currencyService';
 import Link from 'next/link';
 import BlogSidebarBookingForm from '@/components/BlogSidebarBookingForm';
+import BlogEmbeddedForm from '@/components/BlogEmbeddedForm';
+import UpcomingUmrahPackages from '@/components/UpcomingUmrahPackages';
+import HajjPackagesSection from '@/components/HajjPackagesSection';
 import { getPackagesByType } from '@/actions/packageActions';
 import { RICH_TEXT_PROSE_CLASS } from '@/lib/richTextProseClass';
 import { getBlogFeaturedImage } from '@/lib/blogImages';
@@ -53,6 +56,11 @@ export default async function BlogDetailPage({ blog, slug }: { blog: any; slug: 
   const hajjPackages = (hajjPackageRows || []).filter(
     (pkg: any) => pkg.status === 'available'
   );
+  const showSidebarBookingForm = blog.showSidebarBookingForm !== false && blog.formKey !== 'blogSidebarForm';
+  const showOtherArticles = blog.showOtherArticles !== false;
+  const showUmrahPackages = blog.showUmrahPackages !== false;
+  const showHajjPackages = blog.showHajjPackages !== false;
+  const hasSidebarContent = showSidebarBookingForm || showOtherArticles || showUmrahPackages || showHajjPackages;
   const displayDate = formatDate(blog.publishedAt || blog.createdAt);
   const catClass = CATEGORY_COLORS[blog.category ?? ''] ?? 'bg-emerald-100 text-emerald-700 border-emerald-200';
 
@@ -114,7 +122,7 @@ export default async function BlogDetailPage({ blog, slug }: { blog: any; slug: 
       {/* ── Content Layout ── */}
       <section className="bg-blue-lt section-outer">
         <div className="section-inner">
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-10 items-start">
+          <div className={`grid grid-cols-1 gap-10 items-start ${hasSidebarContent ? 'lg:grid-cols-[1fr_340px]' : ''}`}>
 
             {/* ── Main Article Content ── */}
             <article>
@@ -126,6 +134,19 @@ export default async function BlogDetailPage({ blog, slug }: { blog: any; slug: 
                 <span>›</span>
                 <span className="text-slate-600 font-medium max-sm:truncate max-sm:max-w-[200px]">{blog.title}</span>
               </nav>
+
+              <BlogEmbeddedForm
+                formKey={blog.formKey}
+                blogTitle={blog.title}
+                sourcePage={`/${slug}`}
+              />
+
+              {blog.hajjPackageCategoryId != null && (
+                <HajjPackagesSection data={{ categoryId: blog.hajjPackageCategoryId }} columns={hasSidebarContent ? 3 : 4} />
+              )}
+              {blog.umrahPackageCategoryId != null && (
+                <UpcomingUmrahPackages data={{ categoryId: blog.umrahPackageCategoryId }} columns={hasSidebarContent ? 3 : 4} />
+              )}
 
               {/* Excerpt callout */}
               {blog.excerpt && (
@@ -167,13 +188,16 @@ export default async function BlogDetailPage({ blog, slug }: { blog: any; slug: 
             </article>
 
             {/* ── Sidebar ── */}
-            <aside className="lg:top-6">
+            {hasSidebarContent && <aside className="lg:top-6">
               {/* Booking Form Widget */}
-              <div className="mb-8">
-                <BlogSidebarBookingForm blogTitle={blog.title} />
-              </div>
+              {showSidebarBookingForm && (
+                <div className="mb-8">
+                  <BlogSidebarBookingForm blogTitle={blog.title} />
+                </div>
+              )}
 
               {/* ── Related Posts ── */}
+              {showOtherArticles && (
               <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
                 <div className="px-5 py-4 border-b border-slate-100 flex items-center">
                   {/* <span className="w-1 h-5 bg-primary rounded-full inline-block" /> */}
@@ -208,28 +232,29 @@ export default async function BlogDetailPage({ blog, slug }: { blog: any; slug: 
                   </Link>
                 </div>
               </div>
+              )}
 
               {/* Umrah Packages */}
-              <div className="mt-8">
+              {showUmrahPackages && <div className="mt-8">
                 <SidebarPackageSection
                   currency={currency}
                   title="Umrah Packages"
                   packages={umrahPackages}
                   emptyText="No Umrah packages available."
                 />
-              </div>
+              </div>}
 
               {/* Hajj Packages */}
-              <div className="mt-8">
+              {showHajjPackages && <div className="mt-8">
                 <SidebarPackageSection
                   currency={currency}
                   title="Hajj Packages"
                   packages={hajjPackages}
                   emptyText="No Hajj packages available."
                 />
-              </div>
+              </div>}
 
-            </aside>
+            </aside>}
           </div>
         </div>
       </section>
