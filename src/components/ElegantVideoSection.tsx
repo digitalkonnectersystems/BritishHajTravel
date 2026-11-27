@@ -50,7 +50,7 @@ export default function ElegantVideoSection({ data = {} }: { data?: ElegantVideo
 
   return (
     <section className="bg-blue-lt py-8 md:py-10" aria-label={eyebrow || 'Page information'}>
-      <div className="mx-auto grid max-w-7xl grid-cols-1 items-start gap-8 px-4 sm:px-5 md:grid-cols-[minmax(0,1fr)_minmax(250px,300px)] md:gap-12 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-16">
+      <div className="mx-auto max-w-[1400px] grid max-w-7xl grid-cols-1 items-start gap-8 px-4 sm:px-5 md:grid-cols-[minmax(0,1fr)_minmax(250px,300px)] md:gap-12 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-16">
         <div className="min-w-0">
           {eyebrow && <span className="eyebrow mb-5 block">{eyebrow}</span>}
           {(title || highlight) && (
